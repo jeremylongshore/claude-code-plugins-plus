@@ -534,12 +534,13 @@ jobs:
           done
           echo "✅ Dependency scan complete"
 
-  # Blueprint 727 E6.4: R1 needs an independently visible, always-reporting
-  # blocking job.  It is listed in ci-required below rather than being folded
-  # into `validate`, so a pre-existing failure in an unrelated validation lane
-  # cannot obscure the compliance-ratchet result.  The validator emits the
-  # complete skills/commands/agents/manifests corpus; observed runtime is
-  # about 70 seconds, bounded here at two minutes.
+  # Blueprint 727 E6.4/E6.7: R1 plus the post-observation R2/R4 monotone metric
+  # checks need an independently visible, always-reporting blocking job.  It
+  # is listed in ci-required below rather than folded into `validate`, so a
+  # pre-existing failure in an unrelated validation lane cannot obscure the
+  # compliance-ratchet result.  The validator emits the complete
+  # skills/commands/agents/manifests corpus; observed runtime is about 70
+  # seconds, bounded here at two minutes.
   marketplace-compliance-ratchet:
     name: marketplace-compliance-ratchet
     runs-on: ubuntu-latest
@@ -567,7 +568,7 @@ jobs:
             --check-growth-only \
             --base "origin/$BASE_REF" \
             --head-ref "$HEAD_REF"
-      - name: Reject marketplace compliance debt outside the pinned baseline
+      - name: Enforce R1/R2/R4 marketplace compliance ratchet
         run: |
           python3 -c "import yaml" 2>/dev/null || python3 -m pip install --quiet pyyaml
           python3 scripts/check-marketplace-compliance-baseline.py

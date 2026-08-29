@@ -62,6 +62,45 @@ class MarketplaceComplianceRatchetTests(unittest.TestCase):
             ["schema_version drift: baseline=4.1.0, live=4.2.0"],
         )
 
+    def test_monotone_metrics_allow_equal_or_improved_values(self):
+        baseline = {
+            "totals": {"errors": 10, "grade_A_plus_B_pct": 75.0},
+        }
+        current = {
+            "totals": {"errors": 9, "grade_A_plus_B_pct": 80.0},
+        }
+        self.assertEqual(self.ratchet.metric_drift(baseline, current), [])
+
+    def test_error_total_growth_fails_r2(self):
+        baseline = {"totals": {"errors": 10, "grade_A_plus_B_pct": 75.0}}
+        current = {"totals": {"errors": 11, "grade_A_plus_B_pct": 75.0}}
+        self.assertEqual(
+            self.ratchet.metric_drift(baseline, current),
+            ["totals.errors increased: baseline=10, live=11"],
+        )
+
+    def test_a_plus_b_share_dilution_fails_r4(self):
+        baseline = {"totals": {"errors": 10, "grade_A_plus_B_pct": 75.0}}
+        current = {"totals": {"errors": 10, "grade_A_plus_B_pct": 74.5}}
+        self.assertEqual(
+            self.ratchet.metric_drift(baseline, current),
+            ["totals.grade_A_plus_B_pct fell: baseline=75, live=74.5"],
+        )
+
+    def test_monotone_metrics_fail_closed_when_totals_are_missing(self):
+        self.assertEqual(
+            self.ratchet.metric_drift({}, {"totals": {}}),
+            ["baseline and live payload must declare object totals"],
+        )
+
+    def test_monotone_metrics_fail_closed_on_non_numeric_values(self):
+        baseline = {"totals": {"errors": 10, "grade_A_plus_B_pct": 75.0}}
+        current = {"totals": {"errors": "10", "grade_A_plus_B_pct": 75.0}}
+        self.assertEqual(
+            self.ratchet.metric_drift(baseline, current),
+            ["live totals.errors must be a finite number"],
+        )
+
     def test_baseline_growth_is_refused_on_a_regular_pull_request(self):
         baseline = {"entries": ["a/SKILL.md :: E-ONE :: name"]}
         current = {"entries": ["a/SKILL.md :: E-ONE :: name", "b/SKILL.md :: E-TWO :: tags"]}

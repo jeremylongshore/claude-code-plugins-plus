@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import subprocess
 import sys
 from pathlib import Path
@@ -64,6 +65,52 @@ def metadata_drift(baseline: dict[str, Any], current: dict[str, Any]) -> list[st
             errors.append(f"unknown live rule id(s): {', '.join(added)}")
         if removed:
             errors.append(f"baseline rule id(s) absent from live inventory: {', '.join(removed)}")
+    return errors
+
+
+def metric_drift(baseline: dict[str, Any], current: dict[str, Any]) -> list[str]:
+    """Return violations of the E6.7 monotone marketplace metrics.
+
+    R2 prevents a fix from increasing the total number of validator errors.
+    R4 prevents corpus dilution by requiring the A-plus-B share to hold or
+    improve.  These checks deliberately compare the emitted totals rather than
+    recomputing them here, keeping the canonical validator the sole owner of
+    metric classification.
+    """
+
+    errors: list[str] = []
+    baseline_totals = baseline.get("totals")
+    current_totals = current.get("totals")
+    if not isinstance(baseline_totals, dict) or not isinstance(current_totals, dict):
+        return ["baseline and live payload must declare object totals"]
+
+    for key in ("errors", "grade_A_plus_B_pct"):
+        baseline_value = baseline_totals.get(key)
+        current_value = current_totals.get(key)
+        if isinstance(baseline_value, bool) or not isinstance(baseline_value, (int, float)):
+            errors.append(f"baseline totals.{key} must be a finite number")
+            continue
+        if isinstance(current_value, bool) or not isinstance(current_value, (int, float)):
+            errors.append(f"live totals.{key} must be a finite number")
+            continue
+        if not math.isfinite(baseline_value):
+            errors.append(f"baseline totals.{key} must be a finite number")
+            continue
+        if not math.isfinite(current_value):
+            errors.append(f"live totals.{key} must be a finite number")
+            continue
+        if baseline_value < 0 or current_value < 0:
+            errors.append(f"totals.{key} must be non-negative")
+            continue
+        if key == "errors" and current_value > baseline_value:
+            errors.append(
+                f"totals.errors increased: baseline={baseline_value:g}, live={current_value:g}"
+            )
+        elif key == "grade_A_plus_B_pct" and current_value < baseline_value:
+            errors.append(
+                "totals.grade_A_plus_B_pct fell: "
+                f"baseline={baseline_value:g}, live={current_value:g}"
+            )
     return errors
 
 
@@ -159,6 +206,13 @@ def main() -> int:
     if drift:
         print("marketplace-compliance-ratchet: FAIL — baseline contract drift:", file=sys.stderr)
         for error in drift:
+            print(f"  {error}", file=sys.stderr)
+        return 1
+
+    metric_failures = metric_drift(baseline, current)
+    if metric_failures:
+        print("marketplace-compliance-ratchet: FAIL — non-monotone marketplace metrics:", file=sys.stderr)
+        for error in metric_failures:
             print(f"  {error}", file=sys.stderr)
         return 1
 
