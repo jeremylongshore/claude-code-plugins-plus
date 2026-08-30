@@ -5,9 +5,9 @@
 **Status:** PROPOSED — becomes AUTHORITATIVE on merge **and** on the `STANDARDS.md § Canonical documents` pointer landing in the same PR (see § 12, gate G4). **The pointer landed in this PR** (§ 11.1 carries the proof); the condition is satisfied as written, not weakened.
 **Doc class:** `canonical`
 **Date:** 2026-08-13
-**Scope:** the whole platform — corpus, catalog, canonical skill contract, harness adapters, provenance and licensing, evaluation and evidence, CI, release and supply chain, documentation governance, cross-repo authority boundaries, and the ten-epic execution plan.
+**Scope:** the whole platform — corpus, catalog, canonical skill contract, harness adapters, provenance and licensing, evaluation and evidence, CI, release and supply chain, documentation governance, cross-repo authority boundaries, the original ten-epic execution plan, and the approved model-neutral Epic 11 extension.
 **Authority:** Intent Solutions — **tonsofskills.com** (the live property). The retired legacy domain recorded in frozen document 6767-h is removed by Epic 1 from every actionable first-party and generated surface.
-**Repository:** `jeremylongshore/claude-code-plugins-plus-skills` (canonical). Public install slug `jeremylongshore/claude-code-plugins` is a **frozen compatibility contract** — see § 5.6.
+**Repository:** `jeremylongshore/tons-of-skills-marketplace` (canonical). Historical GitHub URLs redirect, and public install slug `jeremylongshore/claude-code-plugins` is a **frozen compatibility contract** — see § 5.6 and decision 803.
 
 ---
 
@@ -22,10 +22,14 @@ The owner **conditionally ratified** this blueprint on 2026-08-13 and returned n
 | 3   | Correct the disputed compliance figures             | **§ 3.1** (re-measurement, embedded) + scorecard rows 4 and 6 + § 1, § 2, § 13 E8, § 14 row 27   |
 | 4   | Repair the benchmark licensing rule                 | `728 § 4` binding preamble + annotations on rows A2, A4, A5, A6, B4, B7, D1                      |
 | 5   | Remove the Mission 01 / Epic 1 ambiguity            | **§ 13 EPIC 1** → "Mission 01 is NOT Epic 1" (delivery table + per-bead disposition)             |
-| 6   | Preserve progressive epic activation                | **§ 13** binding activation rule + **§ 15.1** the one authorized launch sequence                 |
+| 6   | Preserve progressive epic activation                | **§ 13** + **§ 15.1** historical launch control; amended execution authority recorded in § 5     |
 | 7   | Record the npm-token resolution (do NOT perform it) | **§ 18.9** (+ sequencing note in § 18.4)                                                         |
 | 8   | Preserve honest independent review                  | **§ 18.5** (rewritten) + Epic 10 independence precondition                                       |
 | 9   | Draft contributor wording (do NOT post it)          | `000-docs/709-DR-GUID-reviewing-external-prs.md` § 8 — **drafted, not posted**                   |
+
+The table records the 2026-08-13 ratification corrections. The later owner-authorized 2026-08-26
+amendment is additive: it changed repository identity, authorized full Beads graph instantiation,
+and added Epic 11 without rewriting the original ratification history.
 
 ---
 
@@ -85,7 +89,11 @@ A canonical, harness-free skill contract plus thin **generated** adapters; runti
 
 ### The single recommended path
 
-Ten epics, one strategy: **close the machine boundaries in decision-hierarchy order, pin the debt, then certify a small honest set.** Not "raise the grade." The sequence is forced by the hierarchy, not by effort:
+The original ratification defined ten epics. The owner-authorized 2026-08-26 amendment added a
+model-neutral distribution and identity-migration epic, so the effective programme now has
+**eleven epics, one strategy: close the machine boundaries in decision-hierarchy order, pin the
+debt, then certify a small honest set.** Not "raise the grade." The sequence is forced by the
+hierarchy, not by effort:
 
 > **Quarantine the legal exposure → freeze the false authorities → pin the debt → close the safety boundaries → build the canonical contract → make evidence real → certify a small set and publish the backlog beside it.**
 
@@ -404,6 +412,16 @@ The authority flow is: **canonical portable skill → validated (GENERATED) harn
 > amendment also authorizes full Beads graph instantiation for this blueprint; Beads
 > still enforces dependencies, evidence, and closure gates. Detailed identity,
 > harness, and customer-install contracts are recorded in 803–805.
+
+**Denominator reconciliation — 2026-08-30.** The original ratified plan remains a historical
+**10-epic / 141-task / 151-record** baseline. The approved Epic 11 extension adds one epic and twelve
+original task requirements. Execution then discovered eight legitimate implementation
+prerequisites across Epics 5–11, including E11.13. The live canonical programme denominator is
+therefore **11 epics / 161 implementation requirements / 172 records**. This is an acceptance
+denominator, not a raw `bd children` count: dispositioned duplicate shells do not add work, a bundled
+implementation bead may satisfy more than one numbered requirement without shrinking the plan,
+and administrative AAR/closure/reconciliation records do not silently create implementation
+requirements.
 
 ### 5.1 The four homes, and the one rule
 
@@ -1031,24 +1049,50 @@ intentsolutions.io
 
 ---
 
-## 13. THE TEN EPICS
+## 13. THE ORIGINAL TEN EPICS AND THE APPROVED EPIC 11 EXTENSION
 
 **How to read this section.** Each epic carries: objective · measurable outcome · dependencies and entry criteria · **proposed** PR-sized beads · bead dependency graph · risks and mitigations · allowed and PROHIBITED scope · a Claude Code execution prompt · acceptance criteria · tests and evals · evidence contract · rollback · independent-review gate · exit scorecard · AAR + bd-memory requirement · GitHub Issue projection.
 
-**The beads below are PROPOSED and documented here only. Nothing in this document instantiates a bead, opens an issue, or creates a Plane record.** The `N.M` handles are document-local references for the dependency graphs — they are **not** bead IDs and must never appear in a bead title, commit, or issue body (plain-English bead naming rule, in force since 2026-05-22).
+**Ratification boundary.** The ten full epic bodies below are the original ratified plan. At that
+time their beads were proposals documented here only. The 2026-08-26 amendment subsequently
+authorized full Beads graph instantiation and added Epic 11, whose effective inventory is appended
+after Epic 10. The `N.M` handles remain specification references, not authority over live issue IDs;
+Beads/Dolt owns current task state and dependency truth.
 
-#### Progressive epic activation — BINDING (ratification correction 6)
+### Activation authority — amended after ratification correction 6
 
-The full ten-epic strategy and the whole work inventory below stay exactly as written. **What is bounded is activation, not ambition.** Six rules, and they are not advisory:
+The original progressive-activation rule is preserved here as ratification history; it governed the
+initial containment mission before the owner-authorized 2026-08-26 amendment. It no longer
+prohibits full graph instantiation. The durable parts remain: Beads authority, dependency order,
+evidence-backed closure, independent review, and explicit escalation for external mutations.
+
+**Current execution authority:**
+
+1. **Beads/Dolt is the task authority.** GitHub Issues and Plane are projections. Drift is reconciled
+   toward Beads, never away from it.
+2. The full approved graph may exist. A task becomes executable only when its live dependencies,
+   scope, WIP boundary, and acceptance evidence permit it; instantiation alone never proves readiness.
+3. Parallel work is allowed only where the dependency graph and file ownership make it safe. No
+   actor may bypass a blocker, manufacture a duplicate implementation, or close from inherited intent.
+4. Every governed unit still closes with its required tests, evidence, independent review, AAR or
+   closure record, rollback, and read-back. External registry, credential, organization, and Tailnet
+   mutations remain owner/external actions unless separately authorized.
+
+The six original launch rules are retained below in historical form so the initial decision is not
+rewritten after the fact:
 
 1. **Beads/Dolt is the task authority.** GitHub Issues and Plane are **projections**. A projection is never the record; drift is reconciled toward beads, never away from it.
-2. **Do NOT instantiate all ~151 proposed beads in one uncontrolled batch.** A 151-bead dump is unreviewable, unprioritizable, and destroys the audit value of the record it pretends to create. Beads are hand-rolled, design-first, one epic at a time.
-3. **Instantiate only the owner-authorized execution slice** — the beads the owner has explicitly approved for the slice about to run, and nothing beyond it. Everything else stays a proposal in this document.
-4. **Execute ONE governed slice at a time.** A slice is complete only when its independent review, its AAR, and its evidence capture are all done and the **owner review gate** has passed. Only then may the next slice be activated.
+2. At ratification, the ~151 proposed records were not to be instantiated in one uncontrolled batch.
+3. Before the amendment, only the owner-authorized execution slice was instantiated.
+4. Before the amendment, one governed slice ran at a time and exited through review, AAR, evidence,
+   and the owner review gate.
 5. **A P0 containment bead from a later-numbered epic may run first ONLY when § 1's binding decision hierarchy proves it outranks normal sequence** — and the proof is written down, naming the rank and the exposure it closes.
 6. **Any such exception is recorded as an explicit PRE-PROGRAM CONTAINMENT MISSION**, with its own name, its own AAR, and its own boundary. It is **never** silent cross-epic scope drift, and it never entitles the rest of that epic to start early.
 
-**The dependency graphs in this section and in § 15 are DEPENDENCY graphs, not activation schedules.** An arrow means "this cannot be correct before that," not "start both now." § 15's single authorized launch sequence is the only activation order this document states.
+**The dependency graphs in this section and in § 15 are DEPENDENCY graphs, not activation
+schedules.** An arrow means "this cannot be correct before that," not "start both now." Section 15.1
+records the original launch sequence; the amended current activation authority is the live Beads graph
+plus the four rules above.
 
 **Rules that apply to every epic without restating them ten times:**
 
@@ -1485,7 +1529,7 @@ E2 freeze ──▶ 1.13             (cross-epic: the frozen set is an input)
 **Proposed beads (14).**
 
 | #    | Bead title                                                                                                        | Type · P                | Acceptance (abbreviated)                                                                                                                                                                                                         |
-| ---- | ----------------------------------------------------------------------------------------------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| ---- | ----------------------------------------------------------------------------------------------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 4.1  | Publish a register of every safety property the platform claims and the boundary that enforces it.                | task · P0               | A tracked `DR-STND` register: each claim's exact public wording and location, the enforcing artifact (harness runtime / CI job file:line / MCP server code / **prose only**), and which harnesses it holds for.                  |
 | 4.2  | Add a tool-token vocabulary gate that fails on any `allowed-tools` token outside the declared universe.           | feature · P0            | A job in `ci-required.needs`; the 21 verified offending files are fixed or dispositioned first so the gate adds zero new baseline debt.                                                                                          |
 | 4.3  | Freeze unscoped `Bash` declarations with a shrink-only ratchet so no new skill can add one.                       | feature · P0            | Triple-keyed ratchet pins the current bare-`Bash` skills and tier-2 tool-safety findings; totals monotone non-increasing; baseline bot-written on merge.                                                                         |
@@ -1493,7 +1537,7 @@ E2 freeze ──▶ 1.13             (cross-epic: the frozen set is an input)
 | 4.5  | Replace the gitleaks file-type blanket allowlist with path-anchored, reason-carrying exceptions.                  | feature · P0            | `.gitleaks.toml` no longer allowlists `SKILL.md`/`README.md`/`CHANGELOG.md`/`references/*.md` by type; each surviving exception is a specific path with a written reason and expiry.                                             |
 | 4.6  | Add a blocking, diff-scoped scan for unverifiable secrets on every pull request.                                  | feature · P0            | A trufflehog job **without** `--only-verified`, scoped to changed files, on `pull_request`, in `ci-required.needs`. Closes the union gap: a rotated key or internal token in a SKILL.md is currently invisible to both scanners. |
 | 4.7  | Run the supply-chain content scan on pushes to main, not only on pull requests.                                   | bug · P0                | `scan-synced-content.mjs --changed-only` also runs on `push: main`; REFUSE stays exit 2 and unwaivable; the PR states the residual (`enforce_admins:false`).                                                                     |
-| 4.8  | Give the MCP config validator a deadline and make it fail closed on the classes it already detects.               | bug · P1                | `validate-plugins.yml:98`'s `                                                                                                                                                                                                    |     | true`gains a`REPORT-ONLY-UNTIL:` marker **and** the unambiguous classes (invalid JSON, missing transport-required fields) become blocking. |
+| 4.8  | Give the MCP config validator a deadline and make it fail closed on the classes it already detects.               | bug · P1                | `validate-plugins.yml:98`'s `\|\| true` gains a `REPORT-ONLY-UNTIL:` marker **and** the unambiguous classes (invalid JSON, missing transport-required fields) become blocking.                                                   |
 | 4.9  | Prove or withdraw the Dolt MCP server's destructive-verb refusal guarantee.                                       | feature · P0            | Either a conformance test drives the plugin's **actual MCP entrypoint** with destructive verbs and asserts refusal, or the README claim is withdrawn. No third option.                                                           |
 | 4.10 | Require every MCP plugin to declare its destructive-operation policy and back it with an executable refusal test. | feature · P0            | All 14 declare `destructive_policy ∈ {refuse, recommend-only, permit-with-confirmation, permit}` plus the enforcing artifact path; a gate fails a `refuse`/`recommend-only` declaration with no passing refusal test.            |
 | 4.11 | Ratchet agent frontmatter errors so the report-only window cannot expand.                                         | task · P1               | The 253-error `--agents-only` baseline pinned with the same triple-keyed ratchet; the schema 3.11.0 body-vs-allowlist check confirmed inside the ratchet.                                                                        |
@@ -1549,13 +1593,13 @@ E2 freeze ──▶ 1.13             (cross-epic: the frozen set is an input)
 **Proposed beads (13).**
 
 | #    | Bead title                                                                                                | Type · P     | Acceptance (abbreviated)                                                                                                                                                                                                                                                                                                                                                          |
-| ---- | --------------------------------------------------------------------------------------------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | -------------------------------------------------------------------------------------- |
+| ---- | --------------------------------------------------------------------------------------------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 5.1  | Make the inventory exporter refuse any run whose header count disagrees with its own row count.           | bug · P0     | `gate_run_completeness()` additionally asserts `discovery_runs.total_skills == COUNT(*) …` and raises `SyncError` naming both numbers; the existing `IS NULL` check is retained (different failure); unit tests reconstruct run 6's exact shape; a dry run against the current DB **fails**, captured verbatim. The producer fix is a separate bead filed before this one closes. |
 | 5.2  | Rename the behavioral-eval run column so it can never be joined against the discovery run counter.        | bug · P1     | `forge_proofs.run_id` → `jrig_run_id` across schema, recorder, enricher, and export column lists.                                                                                                                                                                                                                                                                                 |
 | 5.3  | Detect files whose extension claims a binary type while their bytes are text, and refuse to promote them. | bug · P0     | The promotion path fails closed on extension/magic-byte disagreement; the drift gate can no longer print "in sync" while republishing counterfeits.                                                                                                                                                                                                                               |
 | 5.4  | Gate the tracked grade exports so they can never lag the latest exported inventory run.                   | feature · P1 | A check asserts `grade-histogram.json.run_id == MAX(discovery_runs.id)` and that `grades.csv` row count matches; today this fails (exports at run 10, DB at run 11).                                                                                                                                                                                                              |
 | 5.5  | Quarantine the counterfeit asset files and record a disposition for each.                                 | task · P1    | Each of the 12 gets a recorded disposition (replace / rename / withdraw the claim); none remains in the curated mirror.                                                                                                                                                                                                                                                           |
-| 5.6  | Make the curated-mirror promotion workflow fail closed instead of swallowing grading and sync failures.   | bug · P0     | `promote-curated.yml:90-91`'s two `                                                                                                                                                                                                                                                                                                                                               |     | true`removed or bounded with`REPORT-ONLY-UNTIL:`; a forced failure produces a red run. |
+| 5.6  | Make the curated-mirror promotion workflow fail closed instead of swallowing grading and sync failures.   | bug · P0     | `promote-curated.yml:90-91`'s two `\|\| true` swallows are removed or bounded with `REPORT-ONLY-UNTIL:`; a forced failure produces a red run.                                                                                                                                                                                                                                     |
 | 5.7  | Build a hermetic end-to-end fixture that runs the whole inventory cycle against scratch databases.        | test · P0    | `rebuild-inventory` → `--populate-db` → `dolt-sync` → `promote-to-curated` against temp SQLite, temp Dolt, and a fake remote; **refuses to run** if a `dolt sql-server` holds port 3308.                                                                                                                                                                                          |
 | 5.8  | Add a negative test proving a leaked eval runtime table aborts the public export.                         | test · P0    | A planted j-rig run table causes `gate_export_allowlist()` to hard-fail before any push.                                                                                                                                                                                                                                                                                          |
 | 5.9  | Make the exporter refuse to run while a Dolt sql-server holds the repository.                             | feature · P1 | Mechanical refusal replaces the prose single-writer rule.                                                                                                                                                                                                                                                                                                                         |
@@ -1918,6 +1962,70 @@ E2 freeze ──▶ 1.13             (cross-epic: the frozen set is an input)
 
 ---
 
+### EPIC 11 — Model-neutral distribution and identity migration (approved extension)
+
+**Objective.** Make Tons of Skills a model-neutral marketplace with one portable Agent Skills
+source, registry-backed native installation paths, truthful support claims, and a
+compatibility-preserving public repository identity.
+
+**Authority.** Owner-authorized amendment dated 2026-08-26; decision and implementation
+contracts 803–805; Beads parent `claude-rblh`. This extension does not reopen the original ten
+epics' technical philosophy. Omarchy Quattro/QML plugins are native extensions, not Agent Skills
+adapters, and no harness is publicly supported without registry-backed evidence.
+
+**Effective implementation requirements (13).** The first twelve are the approved extension.
+E11.13 is a real prerequisite discovered during rename preflight. Bead `claude-rblh.17` performs
+the required blueprint/graph reconciliation, but—like the Epic 5 and Epic 9 closure beads—it is an
+administrative closure-support record and does not increase the implementation denominator.
+
+| #     | Task requirement                                                           | Acceptance boundary                                                                                  |
+| ----- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 11.1  | Authorize the model-neutral contract and repository identity migration     | Decision 803 names the canonical identity, compatibility aliases, public-claim rule, and exclusions. |
+| 11.2  | Define and validate the harness registry schema                            | Only registry-backed `verified-native` entries may support a public harness claim.                   |
+| 11.3  | Verify official harness skill support and installation paths               | Primary-source evidence is retained; unknown or unsupported paths remain unclaimed.                  |
+| 11.4  | Implement one portable Agent Skills source contract                        | One source tree; no copied per-harness skill trees.                                                  |
+| 11.5  | Add registry-backed universal installer commands                           | Installer resolves only declared portable targets and fails closed on unsupported/native classes.    |
+| 11.6  | Validate native-path installation behavior                                 | Disposable-path tests prove the declared user/project destinations without touching personal state.  |
+| 11.7  | Align public site and README language with verified support                | Model-neutral positioning is truthful; support wording is generated or checked against the registry. |
+| 11.8  | Complete repository-rename preflight and external identity audit           | Every external identity is verified or assigned a blocking remediation with an owner and receipt.    |
+| 11.9  | Execute and receipt the canonical GitHub repository rename                 | Canonical URL, legacy redirect, origin, and rollback receipt are retained.                           |
+| 11.10 | Verify legacy URL, install slug, CLI command, and package identity         | Compatibility paths work without claiming a package or install-slug rename.                          |
+| 11.11 | Establish the Omarchy native-extension lane                                | QML/shell extensions are never represented as portable Agent Skills.                                 |
+| 11.12 | Monitor the migration and file the post-migration AAR                      | AAR records receipts, rollback, unresolved dependencies, and registry status.                        |
+| 11.13 | Update and verify the Tailscale OIDC trust subject after repository rename | Canonical subject succeeds; former repository subject is refused; redacted Tailnet receipt retained. |
+
+**Dependency boundary.** E11.1 and E11.2 are independent roots in the live graph. E11.1 is the
+governing decision record, but it is not represented as a Beads blocking edge. The enforced
+portable-distribution chain is `11.2 → 11.3 → 11.4 → 11.5 → 11.6 → 11.7`. The identity chain is
+`11.8 → 11.9`, followed by parallel E11.10 compatibility verification and E11.13 external trust
+remediation; both feed E11.12. E11.11 depends on E11.2 and also feeds E11.12. E11.13 is post-rename
+work, not a prerequisite for performing the preflight that discovered it. The live Beads graph must
+preserve that direction.
+
+**Administrative-record disposition.** Physical child records `claude-rblh.13`, `.14`, and `.15` are
+administrative duplicate shells for canonical E11.10, E11.11, and E11.12. They add zero task
+requirements and carry no dependency or implementation authority over canonical `.10`, `.11`, and
+`.12`. Bead `.17` is closure/reconciliation support and also adds zero implementation requirements.
+The physical 17-child count is therefore **13 implementation requirements + 1 closure-support
+record + 3 duplicate shells** and must never be presented as the Epic 11 acceptance denominator.
+
+**Allowed scope.** Registry, installer, model-neutral public copy, repository-identity migration,
+compatibility verification, and the separate Omarchy native-extension lane.
+
+**PROHIBITED scope.** Copying skill trees per harness; claiming support without a verified registry
+record; renaming legacy install/package identities without separate evidence; treating native QML or
+shell extensions as portable skills; bypassing an unresolved external trust boundary.
+
+**Acceptance criteria.** All 13 effective implementation requirements close with registry-backed or retained
+migration evidence; compatibility paths remain verified; public claims match the registry; native
+extensions remain separately typed; the post-migration AAR includes the Tailscale trust receipt.
+
+**AAR + rollback.** The AAR records canonical and legacy URL behavior, installer and support
+receipts, the external trust migration, duplicate disposition, and rollback observables. Repository
+rollback never implies deleting redirects, rewriting npm identity, or weakening evidence gates.
+
+---
+
 ## 14. AUDIT FINDINGS MAPPED TO PROPOSED BEADS
 
 Severity: **P0** = safety / legal / false public claim · **P1** = source-of-truth integrity or fail-open gate · **P2** = drift / maintenance · **P3** = cosmetic.
@@ -2010,7 +2118,10 @@ Severity: **P0** = safety / legal / false public claim · **P1** = source-of-tru
 
 ### The true chain
 
-**Read this diagram as a DEPENDENCY graph, not a schedule.** An arrow means "cannot be correct before"; it does **not** authorize starting anything. Activation order is § 15.1 — the single authorized launch sequence — and nothing outside the currently authorized slice starts, no matter what this graph permits (§ 13, progressive epic activation).
+**Read this diagram as a DEPENDENCY graph, not a schedule.** An arrow means "cannot be correct
+before"; it does **not** authorize starting anything. Section 15.1 records the original launch
+sequence that governed the pre-amendment containment mission. Current execution authority is § 13's
+amended rule plus the live Beads dependency graph.
 
 ```
                     ┌─────────────────────────────────────────────┐
@@ -2069,7 +2180,9 @@ Severity: **P0** = safety / legal / false public claim · **P1** = source-of-tru
 
 ### Genuinely parallelizable
 
-**"Parallelizable" means "will not corrupt each other if authorized together" — it is a safety property, not an authorization.** Nothing below starts until § 15.1's slice gate says so.
+**"Parallelizable" means "will not corrupt each other if authorized together" — it is a safety
+property, not an authorization.** Under the amendment, Beads dependencies, WIP, file ownership, and
+the evidence boundary determine whether parallel work is actually ready.
 
 - **E2 (authority) ∥ E7 (supply chain) ∥ E1 (measurement)** — disjoint file sets, no shared gate.
 - **E4.1 / 4.7 / 4.8 / 4.12 ∥ everything** — the register, the push-leg scan, the MCP deadline, and Slack routing touch nothing else.
@@ -2077,7 +2190,7 @@ Severity: **P0** = safety / legal / false public claim · **P1** = source-of-tru
 - **E5's Freshie integrity chain ∥ E6's ratchet** — different subsystems entirely.
 - **E8's batch migrations ∥ E9** — once the ratchet is live, batches run continuously in the background of everything else.
 
-### The ONE recommended first implementation bead
+### The original recommended first implementation bead (historical launch decision)
 
 > **Epic 7, bead 7.1 — "Mark every externally mirrored package private so it can never be published."**
 
@@ -2087,13 +2200,16 @@ Severity: **P0** = safety / legal / false public claim · **P1** = source-of-tru
 2. **It has zero prerequisites.** Unlike E7.3 (needs the CI invariant), E6.2 (needs a quiet tree and a corpus resolver), or E2.3 (needs the freeze), 7.1 depends on nothing.
 3. **It is additive, mechanical, and trivially revertible.** One `"private": true` line per package plus a tree-wide invariant test. No corpus file, no catalog, no workflow logic, no external mutation.
 4. **It quarantines silently.** It stops future exposure without any public announcement, preserving the owner's freedom to decide the _existing_-artifact remediation (§ 18.1, § 18.2) on his own timeline rather than under pressure created by our own fix.
-5. **It is small enough to finish and prove in one sitting**, which matters: the first bead of a 150-bead program should demonstrate the whole discipline — measure, fix the root cause, add the gate in the same PR, prove the gate bites, close with evidence.
+5. **It is small enough to finish and prove in one sitting**, which matters: the first bead of the 151-record ratified programme should demonstrate the whole discipline — measure, fix the root cause, add the gate in the same PR, prove the gate bites, close with evidence.
 
-### 15.1 The ONE authorized launch sequence (ratification correction 6)
+### 15.1 The original authorized launch sequence (historical; ratification correction 6)
 
-This subsection **supersedes every other ordering statement in this document** — including the "genuinely parallelizable" list above, which describes what _may_ be parallel once authorized, not what starts. If any diagram, list, or epic body appears to contradict it, this subsection wins.
+At ratification, this subsection **superseded every other ordering statement in the document** and
+governed the first containment mission. The 2026-08-26 owner amendment superseded it as current
+activation authority when it authorized full Beads graph instantiation. It remains here to preserve
+the launch decision and its evidence; it must not be used to deactivate or delete the live graph.
 
-**Slice 1 — PRE-PROGRAM CONTAINMENT MISSION (the only thing authorized to start).**
+**Slice 1 — PRE-PROGRAM CONTAINMENT MISSION (the only thing authorized to start at ratification).**
 
 | In slice 1                                                                     | Rank / justification                                                                                  |
 | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
@@ -2102,13 +2218,22 @@ This subsection **supersedes every other ordering statement in this document** �
 
 **Why this is an exception and how it is recorded.** E7.1 and E7.13 belong to **Epic 7**, and running them before Epics 1–6 is exactly the "later-numbered P0 containment bead runs first" case that § 13 rule 5 governs. The proof is on the record: rank 2 (legal / licensing / attribution / reputational) outranks rank 4 (SoT integrity, which the ratchet serves) and rank 3, and 63 provenance-marked repository package mirrors (58 scoped npm packages and 5 non-scoped mirrors) are publishable **right now** through a `push: main` path with no publisher-level provenance gate. Per § 13 rule 6 this is therefore filed as a named **PRE-PROGRAM CONTAINMENT MISSION** with its own AAR — **not** as "starting Epic 7." Closing E7.1 and E7.13 does **not** activate E7.2, E7.3, or any other Epic 7 bead.
 
-**These two beads run as one slice, not as "parallel epics."** Parallelism _inside_ an authorized slice is fine and expected; what rule 2 forbids is instantiating multiple epics' beads at once. Slice 1 is two beads. Nothing else is instantiated, in bd or anywhere else.
+**These two beads ran as one slice, not as "parallel epics."** Parallelism _inside_ that authorized
+slice was permitted; the original rule forbade instantiating multiple epics at once. This paragraph
+describes the historical launch boundary, not the post-amendment live graph.
 
 **Explicitly NOT in slice 1:** **E4.14 / E1.14** (the plaintext MCP credential). It is an owner-gated escalation (§ 18.7) — the pre-flight check is delegable, the rotation is not, and no rotation is performed or assumed. The earlier draft's Day-0 diagram listed it beside E7.1; that was a dependency observation, and it is corrected here.
 
-**Slice exit conditions — all four, before anything else is instantiated.** (a) both beads closed with the command output that proves them; (b) independent review by someone who is not the implementer, per § 18.5's honest-review rule; (c) the containment-mission AAR filed; (d) **the owner review gate passed.**
+**Historical slice exit conditions — all four were required before the next activation decision.**
+(a) both beads closed with the command output that proves them; (b) independent review by someone
+who is not the implementer, per § 18.5's honest-review rule; (c) the containment-mission AAR filed;
+(d) **the owner review gate passed.**
 
-**Slice 2 and beyond — authorized one at a time, never pre-instantiated.** The dependency graph above says the natural next candidates are the Epic 2 authority freeze (strictly serial `2.2 → 2.1 → 2.3`), the Epic 1 measurement harness (`1.0 → 1.5/1.6/1.7/1.8`), and the Epic 7 publish filter — **but which of them runs next is an owner decision made after slice 1's gate, not a schedule this document sets.** Recording a candidate is not authorizing it.
+**Original slice-2 rule, now superseded as an activation constraint.** The dependency graph named the
+Epic 2 authority freeze, Epic 1 measurement harness, and Epic 7 publish filter as natural next
+candidates, while leaving the choice to the owner after slice 1. The amendment later made that choice
+for graph instantiation: the approved full graph exists, while Beads dependencies and closure gates
+still decide what can execute and what can close.
 
 ---
 
@@ -2145,7 +2270,9 @@ What runs forever, and what each thing would catch if it stopped.
 
 ---
 
-## 17. PROPOSED BEAD COUNT
+## 17. RATIFIED AND EFFECTIVE PROGRAMME DENOMINATORS
+
+### Original ratified plan (historical baseline)
 
 | Epic | Title                                                                | Task beads |
 | ---- | -------------------------------------------------------------------- | ---------: |
@@ -2173,7 +2300,44 @@ What runs forever, and what each thing would catch if it stopped.
 
 **Epic 1's count deliberately did not drop.** Two beads were narrowed and one was partially informed by the completed Mission 01, but none was retired, and no filler bead was invented to protect a headline number in either direction (§ 13 EPIC 1, "Mission 01 is NOT Epic 1"). **A count is a consequence of the work, never a target.**
 
-**These 151 beads are a proposal, not a batch to create.** Per § 13's binding progressive-activation rule, only the owner-authorized slice is ever instantiated; § 15.1 names slice 1 as exactly **two** beads.
+At ratification these 151 records were proposals, not a batch to create; § 15.1 limited the first
+activation to two containment beads. That statement remains the historical baseline, but its
+instantiation constraint was superseded by the 2026-08-26 amendment.
+
+### Approved extension and current effective denominator
+
+| Component                                             | Implementation requirements | Epic records | Total records |
+| ----------------------------------------------------- | --------------------------: | -----------: | ------------: |
+| Original ratified plan                                |                         141 |           10 |           151 |
+| Epic 11 original approved extension                   |                          12 |            1 |            13 |
+| Discovered prerequisites across Epics 5–11            |                           8 |            0 |             8 |
+| **Current effective canonical programme denominator** |                     **161** |       **11** |       **172** |
+
+The eight discovered implementation prerequisites close real implementation/evidence gaps found
+during execution; they are not duplicate shells or administrative closure records:
+
+| Bead             | Discovered prerequisite                                                  |
+| ---------------- | ------------------------------------------------------------------------ |
+| `claude-h05s.15` | Run the Freshie export allowlist before Dolt identity setup              |
+| `claude-nfzl.18` | Restore pinned Ruff format compliance in CI scripts                      |
+| `claude-jqvw.17` | Make version-surface agreement work in shallow CI clones                 |
+| `claude-5e0c.31` | Reconcile llm-box AGPL metadata and publication projections              |
+| `claude-5e0c.32` | Repair first-party duplicate headings that blocked Markdown validation   |
+| `claude-5e0c.33` | Regenerate the gated disposition ledger and Epic 1 scorecard             |
+| `claude-snmr.15` | Classify certification standard 808 in the canonical document-class gate |
+| `claude-rblh.16` | E11.13: update and verify the post-rename Tailscale OIDC trust subject   |
+
+These are canonical acceptance requirements, not raw database-row counts. The live Epic 11 parent
+has 17 physical children: 13 effective implementation requirements, closure/reconciliation bead
+`claude-rblh.17`, and three dispositioned duplicates (`.13`, `.14`, `.15`) of canonical E11.10,
+E11.11, and E11.12. The closure record and duplicate shells add **zero** to the implementation
+denominator. Conversely, one physical implementation bead may deliberately satisfy several
+numbered requirements. Count from this table and the task maps, never from raw child length.
+
+The amendment authorizes the full approved Beads graph. It does not waive dependencies, evidence,
+review, rollback, external-action boundaries, or closure read-back. The post-modernization discovery
+programme (`claude-qyxc`) depends on Epic 11 and remains outside this 172-record modernization
+denominator.
 
 **Ownership conflicts resolved.** Each duplicate collapses to one owner; the other epic _consumes_. A second implementation is an automatic bead rejection.
 
@@ -2306,7 +2470,10 @@ Where the source analyses disagreed, the call and the ranking basis. Recorded so
 
 Stated so the boundary is explicit and no reader infers more authority than was exercised.
 
-- It **instantiates nothing**: no bead, no GitHub issue, no Plane record, no branch protection change, no registry mutation. Every bead in § 13 is a proposal to be created by a human or an executing agent under the plain-English naming rule.
+- At original ratification on 2026-08-13, it **instantiated nothing**. The later 2026-08-26 owner
+  amendment authorized the full graph, which was instantiated externally in Beads. This document
+  still performs no Beads, GitHub Issue, Plane, branch-protection, registry, credential, or Tailnet
+  mutation; § 13 specifies requirements while Beads/Dolt owns their live state.
 - It **changes no production behavior**: no schema, validator, workflow, adapter, marketplace file, README, or catalog entry is modified by this document.
 - It **does not flip kernel authority** and does not move any pin.
 - It **does not resolve the nine escalations** in § 18; it states them, with recommendations, consequences of acting and of delaying, and the reason each exceeds delegated authority. In particular it performs **no** credential revocation, rotation, or GitHub Environment change (§ 18.9), and **no** branch-protection change (§ 18.5).
