@@ -1785,6 +1785,14 @@ jobs:
       - name: Check the README landing contract
         run: pnpm run validate:readme-contract
 
+      # Model-neutral rename compatibility (blueprint 727 E11.10 / decision
+      # 803): canonical repository/catalog endpoints coexist with the frozen
+      # marketplace slug, npm package, ccpi command, and tons binary alias.
+      # Public redirects are checked separately with the script's --live mode;
+      # required CI remains deterministic and network-free.
+      - name: Check the post-rename identity compatibility contract
+        run: pnpm run validate:identity-compatibility
+
       # The canonical harness-free skill contract (blueprint 727 § 5.2, Epic 3
       # E3.2): schemas/canonical/v0 must compile under Ajv 2020 strict and hold
       # its red runs (closed schema, no vendor-literal model class, registry-
