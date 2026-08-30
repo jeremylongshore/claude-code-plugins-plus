@@ -3,8 +3,8 @@
   "authority": "Blueprint 727 §8; Freshie graded export",
   "source": {
     "path": "freshie/grades.csv",
-    "sha256": "2a097c2d1e09b5cd1bcdf7cf21bd4e005d1d2011392231b4d2a64c363a4df9bf",
-    "artifact_count": 3628
+    "sha256": "72fbb289e8451d9a4bbe95cae0b9a1797588c0197589f94ddd1cde48241e4ef0",
+    "artifact_count": 3630
   },
   "rule_order": [
     "G0",
@@ -21,7 +21,7 @@
   "counts": {
     "AUTO-MIGRATE": 537,
     "CERTIFY": 0,
-    "CERTIFY-PENDING-EVIDENCE": 2745,
+    "CERTIFY-PENDING-EVIDENCE": 2747,
     "CERTIFY-UPSTREAM": 0,
     "DEEP-REMEDIATE": 2,
     "QUARANTINE": 344
@@ -6448,9 +6448,31 @@
       ]
     },
     {
+      "path": "plugins/community/contributing-clanker/skills/contribute-prepare/SKILL.md",
+      "grade": "A",
+      "score": 96,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/community/contributing-clanker/skills/contribute-publish/SKILL.md",
+      "grade": "A",
+      "score": 97,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
       "path": "plugins/community/contributing-clanker/skills/contribute/SKILL.md",
-      "grade": "B",
-      "score": 87,
+      "grade": "A",
+      "score": 97,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -23945,8 +23967,8 @@
     },
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-ci-integration/SKILL.md",
-      "grade": "C",
-      "score": 75,
+      "grade": "B",
+      "score": 81,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -23956,8 +23978,8 @@
     },
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-common-errors/SKILL.md",
-      "grade": "C",
-      "score": 78,
+      "grade": "B",
+      "score": 86,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -23967,8 +23989,8 @@
     },
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-core-workflow-a/SKILL.md",
-      "grade": "C",
-      "score": 74,
+      "grade": "B",
+      "score": 81,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -23979,7 +24001,7 @@
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-core-workflow-b/SKILL.md",
       "grade": "C",
-      "score": 73,
+      "score": 79,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -23989,8 +24011,8 @@
     },
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-cost-tuning/SKILL.md",
-      "grade": "B",
-      "score": 88,
+      "grade": "A",
+      "score": 92,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -24000,8 +24022,8 @@
     },
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-data-handling/SKILL.md",
-      "grade": "B",
-      "score": 87,
+      "grade": "A",
+      "score": 93,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -24023,7 +24045,7 @@
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-deploy-integration/SKILL.md",
       "grade": "C",
-      "score": 73,
+      "score": 79,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -24034,7 +24056,7 @@
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-enterprise-rbac/SKILL.md",
       "grade": "A",
-      "score": 92,
+      "score": 96,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -24044,8 +24066,8 @@
     },
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-hello-world/SKILL.md",
-      "grade": "C",
-      "score": 76,
+      "grade": "B",
+      "score": 80,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -24055,8 +24077,8 @@
     },
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-incident-runbook/SKILL.md",
-      "grade": "B",
-      "score": 87,
+      "grade": "A",
+      "score": 95,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -24067,7 +24089,7 @@
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-install-auth/SKILL.md",
       "grade": "B",
-      "score": 83,
+      "score": 87,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -24077,8 +24099,8 @@
     },
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-local-dev-loop/SKILL.md",
-      "grade": "C",
-      "score": 77,
+      "grade": "B",
+      "score": 81,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -24088,193 +24110,6 @@
     },
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-migration-deep-dive/SKILL.md",
-      "grade": "B",
-      "score": 88,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-multi-env-setup/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-observability/SKILL.md",
-      "grade": "B",
-      "score": 85,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-performance-tuning/SKILL.md",
-      "grade": "C",
-      "score": 75,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-prod-checklist/SKILL.md",
-      "grade": "A",
-      "score": 90,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-rate-limits/SKILL.md",
-      "grade": "B",
-      "score": 84,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-reference-architecture/SKILL.md",
-      "grade": "B",
-      "score": 87,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-sdk-patterns/SKILL.md",
-      "grade": "B",
-      "score": 83,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-security-basics/SKILL.md",
-      "grade": "C",
-      "score": 73,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-upgrade-migration/SKILL.md",
-      "grade": "B",
-      "score": 87,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-webhooks-events/SKILL.md",
-      "grade": "C",
-      "score": 76,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/lindy-pack/skills/lindy-ci-integration/SKILL.md",
-      "grade": "B",
-      "score": 86,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/lindy-pack/skills/lindy-common-errors/SKILL.md",
-      "grade": "A",
-      "score": 93,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/lindy-pack/skills/lindy-core-workflow-a/SKILL.md",
-      "grade": "A",
-      "score": 94,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/lindy-pack/skills/lindy-core-workflow-b/SKILL.md",
-      "grade": "A",
-      "score": 93,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/lindy-pack/skills/lindy-cost-tuning/SKILL.md",
-      "grade": "A",
-      "score": 94,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/lindy-pack/skills/lindy-data-handling/SKILL.md",
-      "grade": "B",
-      "score": 87,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/lindy-pack/skills/lindy-debug-bundle/SKILL.md",
       "grade": "A",
       "score": 92,
       "diagnostics": [],
@@ -24285,7 +24120,51 @@
       ]
     },
     {
-      "path": "plugins/saas-packs/lindy-pack/skills/lindy-deploy-integration/SKILL.md",
+      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-multi-env-setup/SKILL.md",
+      "grade": "B",
+      "score": 82,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-observability/SKILL.md",
+      "grade": "A",
+      "score": 92,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-performance-tuning/SKILL.md",
+      "grade": "B",
+      "score": 80,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-prod-checklist/SKILL.md",
+      "grade": "A",
+      "score": 94,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-rate-limits/SKILL.md",
       "grade": "A",
       "score": 90,
       "diagnostics": [],
@@ -24296,7 +24175,7 @@
       ]
     },
     {
-      "path": "plugins/saas-packs/lindy-pack/skills/lindy-enterprise-rbac/SKILL.md",
+      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-reference-architecture/SKILL.md",
       "grade": "B",
       "score": 89,
       "diagnostics": [],
@@ -24307,9 +24186,152 @@
       ]
     },
     {
-      "path": "plugins/saas-packs/lindy-pack/skills/lindy-hello-world/SKILL.md",
+      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-sdk-patterns/SKILL.md",
+      "grade": "A",
+      "score": 92,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-security-basics/SKILL.md",
+      "grade": "C",
+      "score": 79,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-upgrade-migration/SKILL.md",
+      "grade": "A",
+      "score": 91,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-webhooks-events/SKILL.md",
+      "grade": "B",
+      "score": 82,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/lindy-pack/skills/lindy-ci-integration/SKILL.md",
+      "grade": "A",
+      "score": 91,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/lindy-pack/skills/lindy-common-errors/SKILL.md",
       "grade": "A",
       "score": 97,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/lindy-pack/skills/lindy-core-workflow-a/SKILL.md",
+      "grade": "A",
+      "score": 99,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/lindy-pack/skills/lindy-core-workflow-b/SKILL.md",
+      "grade": "A",
+      "score": 97,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/lindy-pack/skills/lindy-cost-tuning/SKILL.md",
+      "grade": "A",
+      "score": 99,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/lindy-pack/skills/lindy-data-handling/SKILL.md",
+      "grade": "A",
+      "score": 91,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/lindy-pack/skills/lindy-debug-bundle/SKILL.md",
+      "grade": "A",
+      "score": 96,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/lindy-pack/skills/lindy-deploy-integration/SKILL.md",
+      "grade": "A",
+      "score": 94,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/lindy-pack/skills/lindy-enterprise-rbac/SKILL.md",
+      "grade": "A",
+      "score": 93,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/lindy-pack/skills/lindy-hello-world/SKILL.md",
+      "grade": "A",
+      "score": 98,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",

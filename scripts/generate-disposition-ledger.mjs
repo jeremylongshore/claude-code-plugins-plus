@@ -19,6 +19,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { resolveCorpus } from './corpus-resolver.mjs';
 import { resolvePluginProvenance } from './plugin-provenance.mjs';
 import { GRADE, scanContent } from './scan-synced-content.mjs';
 
@@ -91,6 +92,34 @@ export function parseGrades(text) {
   // `localeCompare` varies with the runner locale. The ledger is a
   // byte-addressed artifact, so order paths by code point instead.
   return rows.sort((left, right) => (left.path < right.path ? -1 : left.path > right.path ? 1 : 0));
+}
+
+export function assertGradeCorpusParity(
+  root,
+  gradeRows,
+  gradedPaths = resolveCorpus('graded', { root }),
+) {
+  const gradePaths = new Set(gradeRows.map((row) => row.path));
+  const corpusPaths = new Set(gradedPaths);
+  const omitted = [...corpusPaths]
+    .filter((entry) => !gradePaths.has(entry))
+    .sort((left, right) => (left < right ? -1 : left > right ? 1 : 0));
+  const stale = [...gradePaths]
+    .filter((entry) => !corpusPaths.has(entry))
+    .sort((left, right) => (left < right ? -1 : left > right ? 1 : 0));
+
+  if (omitted.length === 0 && stale.length === 0) return;
+
+  const details = [];
+  if (omitted.length > 0) {
+    details.push(`grades export omits ${omitted.length} graded artifact(s): ${omitted.join(', ')}`);
+  }
+  if (stale.length > 0) {
+    details.push(
+      `grades export contains ${stale.length} artifact(s) outside the graded corpus: ${stale.join(', ')}`,
+    );
+  }
+  fail(details.join('; '));
 }
 
 function validatorJson(root, args, maxBuffer) {
@@ -345,6 +374,7 @@ export function main(argv = process.argv.slice(2)) {
   const options = parseArgs(argv);
   const gradePath = path.join(options.root, 'freshie/grades.csv');
   const grades = parseGrades(fs.readFileSync(gradePath, 'utf8'));
+  assertGradeCorpusParity(options.root, grades);
   for (const row of grades) {
     if (!fs.existsSync(path.join(options.root, row.path)))
       fail(`graded artifact is missing: ${row.path}`);
