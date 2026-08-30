@@ -549,6 +549,19 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   assert.equal(rows[58].values.full_cycle, false);
 
   base = fixture();
+  const replacedMethod = readFileSync(
+    join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
+    'utf8',
+  ).replace(
+    '    def setUpClass(cls):\n',
+    '    def setUpClass(cls):\n        cls.test_full_cycle_uses_only_scratch_state_and_refuses_live_server = lambda self: None\n',
+  );
+  put(base.root, 'tests/test_freshie_hermetic_cycle.py', replacedMethod);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.full_cycle, false);
+
+  base = fixture();
   const lifecycleSkip = readFileSync(
     join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
     'utf8',
@@ -580,6 +593,16 @@ class HermeticFreshieCycleTests(unittest.TestCase):
     '/tmp/unverified/dolt',
   );
   put(base.root, workflowPath, unsafeWorkflow);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.pinned_dolt, false);
+
+  base = fixture();
+  const aliasedOverwrite = readFileSync(join(base.root, workflowPath), 'utf8').replace(
+    '      - name: Run Freshie hermetic publication cycle\n',
+    '      - name: Overwrite Dolt through an alias\n        if: matrix.test-type == \'python-tests\'\n        env:\n          DOLT_DEST: /usr/local/bin/dolt\n        run: sudo /usr/bin/install -m 0755 /tmp/unverified/dolt "$DOLT_DEST"\n      - name: Run Freshie hermetic publication cycle\n',
+  );
+  put(base.root, workflowPath, aliasedOverwrite);
   rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[58].status, 'partial');
   assert.equal(rows[58].values.pinned_dolt, false);

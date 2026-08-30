@@ -1208,6 +1208,8 @@ function freshieHermeticContract(reader, executionShape = {}) {
   const hermeticStep = steps.find(
     (step) => step?.name === 'Run Freshie hermetic publication cycle',
   );
+  const doltStepIndex = steps.indexOf(doltStep);
+  const hermeticStepIndex = steps.indexOf(hermeticStep);
   const matrixTypes = testJob?.strategy?.matrix?.['test-type'];
   const ciNeedsRaw = parsed?.jobs?.['ci-required']?.needs;
   const ciNeeds = typeof ciNeedsRaw === 'string' ? [ciNeedsRaw] : ciNeedsRaw;
@@ -1293,6 +1295,8 @@ PY`;
       doltDestinationReferences[0] === canonicalDoltInstall &&
       jobDoltDestinationReferences.length === 1 &&
       jobDoltDestinationReferences[0] === canonicalDoltInstall &&
+      doltStepIndex >= 0 &&
+      hermeticStepIndex === doltStepIndex + 1 &&
       /readonly dolt_version='[^']+'/.test(doltRun) &&
       /readonly dolt_sha256='[a-f0-9]{64}'/.test(doltRun) &&
       /printf[^\n]+"\$dolt_sha256"[^\n]+"\$dolt_archive"[^\n]+sha256sum --check --strict/.test(

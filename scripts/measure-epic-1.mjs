@@ -251,8 +251,61 @@ try:
         )
         for node in ast.walk(tree)
     )
+    governed_methods = {
+        "setUpClass",
+        "setUp",
+        "_run",
+        "test_full_cycle_uses_only_scratch_state_and_refuses_live_server",
+        "tearDown",
+        "tearDownClass",
+    }
+    mutation_nodes = (ast.Assign, ast.AnnAssign, ast.AugAssign, ast.Delete)
+    def references_governed_method(node):
+        return any(
+            (
+                isinstance(item, ast.Attribute)
+                and item.attr in governed_methods
+            )
+            or (
+                isinstance(item, ast.Name)
+                and item.id in governed_methods
+            )
+            or (
+                isinstance(item, ast.Constant)
+                and item.value in governed_methods
+            )
+            for item in ast.walk(node)
+        )
+
+    def assignment_targets(node):
+        if isinstance(node, ast.Assign):
+            return node.targets
+        if isinstance(node, (ast.AnnAssign, ast.AugAssign)):
+            return [node.target]
+        if isinstance(node, ast.Delete):
+            return node.targets
+        return []
+
+    lifecycle_mutation = any(
+        isinstance(node, mutation_nodes)
+        and any(references_governed_method(target) for target in assignment_targets(node))
+        for node in ast.walk(tree)
+    ) or any(
+        isinstance(node, ast.Call)
+        and call_name(node).lower()
+        in {"setattr", "__setattr__", "delattr", "__delattr__", "patch", "object"}
+        and (
+            references_governed_method(node)
+            or call_name(node).lower() in {"setattr", "__setattr__", "delattr", "__delattr__"}
+        )
+        for node in ast.walk(tree)
+    )
     result["no_dead_code"] = (
-        synchronous_methods and not forbidden and not skipped and not lifecycle_skip
+        synchronous_methods
+        and not forbidden
+        and not skipped
+        and not lifecycle_skip
+        and not lifecycle_mutation
     )
     result["reachable_full_cycle"] = ordered and len(stages["SYNC"]) >= 2
 
