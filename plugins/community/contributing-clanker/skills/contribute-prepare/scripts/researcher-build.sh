@@ -19,8 +19,7 @@
 #   - Policy file inventory (CONTRIBUTING, CLA, DCO, AI_POLICY, SECURITY,
 #     CODEOWNERS, PR template, code of conduct, governance)
 #   - Raw CONTRIBUTING.md (with key excerpts)
-#   - Depth-1 follow of links inside CONTRIBUTING.md (handbook, AI policy,
-#     review guide) — saved with fetched-at timestamps
+#   - External links named by CONTRIBUTING.md, listed without fetching them
 #   - External merge friendliness (last 90 days)
 #   - Bots that auto-review on this repo (sampled from a recent PR)
 #   - Convention detection: commit format, branch naming, sign-off, CLA, AI
@@ -28,7 +27,7 @@
 # Design notes:
 #   - Read-only against GitHub. Never writes to upstream.
 #   - Uses temp dir for intermediate files; cleans up on exit.
-#   - All gh / curl failures degrade gracefully — partial dossier > nothing.
+#   - GitHub read failures degrade gracefully — partial dossier > nothing.
 
 set -uo pipefail
 
@@ -48,7 +47,7 @@ for arg in "$@"; do
   esac
 done
 
-if [[ -z "$REPO" || "$REPO" != */* ]]; then
+if [[ -z "$REPO" || ! "$REPO" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]; then
   /usr/bin/echo "usage: $0 <owner>/<repo> [--no-link-follow] [--stdout]" >&2
   exit 64
 fi
@@ -182,37 +181,19 @@ else
   : > "$LINKS_FILE"
 fi
 
-# ---- 4. Follow depth-1 links — aggressively (per user direction 2026-05-02) ----
-# Init array empty (set -u trip otherwise on `${#FOLLOWED_LINKS[@]}`).
-declare -a FOLLOWED_LINKS=()
-declare -A LINK_TITLES=()
+# ---- 4. Record external references without fetching untrusted URLs ----
+# A repository controls CONTRIBUTING.md and therefore controls every extracted
+# URL. Fetching those URLs would let an untrusted repository probe local or
+# private-network endpoints. The portable distribution records references only.
+declare -a DISCOVERED_LINKS=()
 if [[ "$NO_LINK_FOLLOW" != "--no-link-follow" && -s "$LINKS_FILE" ]] ; then
-  log "[4/8] depth-1 follow on links (skip social/external)"
+  log "[4/8] listing external references without fetching them"
   while read -r URL ; do
-    # Skip social/external (twitter, x, discord, mailto, slack, youtube, linkedin, etc.)
-    if /usr/bin/echo "$URL" | /usr/bin/grep -qiE 'twitter\.com|x\.com|discord\.gg|discord\.com|mailto:|slack\.com|youtube\.com|youtu\.be|linkedin\.com|facebook\.com|instagram\.com'; then
-      continue
-    fi
-    # Skip GitHub anchor-only URLs (already covered by repo file scan)
-    [[ "$URL" == *"#"* ]] && continue
-    # Cap at 15 follows to keep cost bounded (was 5; user wanted aggressive)
-    [[ "${#FOLLOWED_LINKS[@]}" -ge 15 ]] && break
-    BODY=$(/usr/bin/curl -sSL --max-time 10 -A 'researcher-build/1.0' "$URL" 2>/dev/null | /usr/bin/head -c 50000)
-    if [[ -n "$BODY" && "$BODY" != *"404: Not Found"* ]] ; then
-      FOLLOWED_LINKS+=("$URL")
-      # Extract <title> tag (case-insensitive, strip whitespace, cap length).
-      # Falls back to the URL when no title element present.
-      TITLE=$(/usr/bin/printf '%s' "$BODY" \
-        | /usr/bin/grep -ioE '<title[^>]*>[^<]*</title>' \
-        | /usr/bin/head -1 \
-        | /usr/bin/sed -E 's|<title[^>]*>||I; s|</title>||I; s/^[[:space:]]+//; s/[[:space:]]+$//' \
-        | /usr/bin/cut -c1-120)
-      LINK_TITLES[$URL]="${TITLE:-$URL}"
-      /usr/bin/printf '%s' "$BODY" > "$TMPDIR/link-$(/usr/bin/echo "$URL" | /usr/bin/md5sum | /usr/bin/cut -c1-8).html"
-    fi
+    [[ "${#DISCOVERED_LINKS[@]}" -ge 15 ]] && break
+    DISCOVERED_LINKS+=("$URL")
   done < "$LINKS_FILE"
 else
-  log "[4/8] link follow disabled"
+  log "[4/8] external reference listing disabled"
 fi
 
 # ---- 5. External merge friendliness (last 90d) ----
@@ -253,9 +234,9 @@ if [[ -n "$RECENT_PR" ]] ; then
 fi
 
 # ---- 7. Convention detection ----
-log "[7/8] detecting conventions from CONTRIBUTING + linked pages"
+log "[7/8] detecting conventions from repository-hosted CONTRIBUTING"
 ALL_TEXT="$TMPDIR/all-text.txt"
-{ /usr/bin/cat "$CONTRIB_RAW" 2>/dev/null ; /usr/bin/cat "$TMPDIR"/link-*.html 2>/dev/null ; } > "$ALL_TEXT"
+/usr/bin/cat "$CONTRIB_RAW" > "$ALL_TEXT"
 
 detect() { /usr/bin/grep -qiE "$1" "$ALL_TEXT" 2>/dev/null && echo "true" || echo "false" ; }
 
@@ -268,7 +249,7 @@ ETIQUETTE_REQUIRED=$(detect 'comment on the issue|request assignment|let.{0,20}k
 TEST_CMD=$(/usr/bin/grep -ioE '(make|cargo|pnpm|yarn|npm|pytest|sbt|go) (test|test-cov|lint|format-check|typecheck|check)[^`\n]*' "$ALL_TEXT" 2>/dev/null | /usr/bin/head -1 | /usr/bin/sed 's/[`"]//g' | /usr/bin/cut -c1-100)
 
 # ---- 8. Emit the dossier ----
-log "[8/8] emitting dossier ($CONTRIB_BYTES bytes CONTRIBUTING, ${#FOLLOWED_LINKS[@]} links followed, $EXT_COUNT ext merges)"
+log "[8/8] emitting dossier ($CONTRIB_BYTES bytes CONTRIBUTING, ${#DISCOVERED_LINKS[@]} external references listed, $EXT_COUNT ext merges)"
 
 policy_list_yaml() {
   for KEY in "${!POLICY_FILES[@]}" ; do
@@ -312,14 +293,11 @@ issue_templates_section() {
 }
 
 linked_sources_yaml() {
-  if [[ "${#FOLLOWED_LINKS[@]}" -eq 0 ]] ; then
-    /usr/bin/printf '  - (none followed)\n'
+  if [[ "${#DISCOVERED_LINKS[@]}" -eq 0 ]] ; then
+    /usr/bin/printf '  - (none listed)\n'
   else
-    for U in "${FOLLOWED_LINKS[@]}" ; do
-      T="${LINK_TITLES[$U]:-$U}"
-      # Escape double quotes for YAML safety.
-      T_ESC="${T//\"/\\\"}"
-      /usr/bin/printf '  - { url: "%s", title: "%s", fetched_at: "%s" }\n' "$U" "$T_ESC" "$NOW"
+    for U in "${DISCOVERED_LINKS[@]}" ; do
+      /usr/bin/printf '  - { url: "%s", status: "not-fetched" }\n' "$U"
     done
   fi
 }
@@ -416,14 +394,15 @@ fi
 
 /usr/bin/cat <<TAIL
 
-## Linked sources (depth-1 follow)
+## External references (not fetched)
 
-$(if [[ "${#FOLLOWED_LINKS[@]}" -eq 0 ]] ; then
-    /usr/bin/echo "_No links followed (none found in CONTRIBUTING)._"
+$(if [[ "${#DISCOVERED_LINKS[@]}" -eq 0 ]] ; then
+    /usr/bin/echo "_No external references listed._"
   else
-    for U in "${FOLLOWED_LINKS[@]}" ; do
-      T="${LINK_TITLES[$U]:-$U}"
-      /usr/bin/printf -- '- [%s](%s) — fetched %s\n' "$T" "$U" "$NOW"
+    /usr/bin/echo "_These URLs came from repository-controlled text and were not retrieved. Review them manually before opening._"
+    /usr/bin/echo
+    for U in "${DISCOVERED_LINKS[@]}" ; do
+      /usr/bin/printf -- '- <%s>\n' "$U"
     done
   fi)
 

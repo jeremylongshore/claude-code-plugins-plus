@@ -32,8 +32,7 @@
   "files": [
     "README.md",
     ".claude-plugin",
-    "skills",
-    "hooks"
+    "skills"
   ],
   "scripts": {
     "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install contributing-clanker\\\\n  or /plugin install contributing-clanker@claude-code-plugins-plus in Claude Code\\\\n\\\")\""

@@ -20,6 +20,24 @@ The plugin exposes three separately invoked skills:
 Installing the plugin creates no state, clones, hooks, credentials, background
 jobs, or GitHub objects. Invoking `contribute` also performs no writes.
 
+## Distribution boundary
+
+The canonical source for the public package is this tracked marketplace
+directory. A maintainer's personal checkout, installed-skill symlink, and
+`CONTRIBUTE_STATE_DIR` are private runtime inputs, not publication sources.
+
+- Do not mirror or bulk-copy a personal `contributing-clanker` checkout into
+  this directory.
+- Do not package candidate records, dossiers, logs, credentials, worktrees, or
+  user-authored gates.
+- Do not add install/uninstall hooks that create, migrate, or synchronize local
+  state.
+- Port changes deliberately, review the marketplace diff, and run the
+  portability regression tests before publication.
+
+Catalog and website projections are generated only from this tracked directory.
+They do not read the maintainer's home directory or configured runtime state.
+
 ## Thirty-second start
 
 Start with the safe audit:
@@ -133,4 +151,5 @@ Claude-specific command, path, memory store, or subagent is required.
 
 ## License
 
-MIT. Source project: https://github.com/jeremylongshore/contributing-clanker
+MIT. Public package source:
+https://github.com/jeremylongshore/tons-of-skills-marketplace/tree/main/plugins/community/contributing-clanker

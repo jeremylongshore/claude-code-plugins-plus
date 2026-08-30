@@ -13,6 +13,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "plugins/community/contributing-clanker"
 SKILLS = PLUGIN / "skills"
+CURATED_AUDIT = ROOT / "skills/.curated/contribute"
 
 
 class ContributingClankerPortabilityTests(unittest.TestCase):
@@ -30,8 +31,39 @@ class ContributingClankerPortabilityTests(unittest.TestCase):
         self.assertIn("Do not run prompt-load or activation-time shell commands", text)
 
     def test_no_automatic_persistence_hooks_exist(self) -> None:
-        self.assertFalse((PLUGIN / "hooks/install.sh").exists())
-        self.assertFalse((PLUGIN / "hooks/uninstall.sh").exists())
+        self.assertFalse((PLUGIN / "hooks").exists())
+
+    def test_distribution_is_decoupled_from_personal_upstream(self) -> None:
+        marketplace_repository = (
+            "https://github.com/jeremylongshore/tons-of-skills-marketplace/"
+            "tree/main/plugins/community/contributing-clanker"
+        )
+        personal_repository = "https://github.com/jeremylongshore/contributing-clanker"
+        manifest = json.loads((PLUGIN / ".claude-plugin/plugin.json").read_text(encoding="utf-8"))
+        package = json.loads((PLUGIN / "package.json").read_text(encoding="utf-8"))
+        readme = (PLUGIN / "README.md").read_text(encoding="utf-8")
+
+        self.assertEqual(manifest["repository"], marketplace_repository)
+        self.assertNotIn(personal_repository, json.dumps(manifest))
+        self.assertNotIn("hooks", package["files"])
+        self.assertIn("Do not mirror or bulk-copy a personal", readme)
+
+        for path in PLUGIN.rglob("*"):
+            self.assertFalse(path.is_symlink(), f"published plugin must not contain symlink: {path}")
+
+    def test_curated_audit_is_an_exact_read_only_projection(self) -> None:
+        source = SKILLS / "contribute"
+        source_files = {path.relative_to(source) for path in source.rglob("*") if path.is_file()}
+        curated_files = {
+            path.relative_to(CURATED_AUDIT) for path in CURATED_AUDIT.rglob("*") if path.is_file()
+        }
+        self.assertEqual(curated_files, source_files)
+        for relative in source_files:
+            self.assertEqual(
+                (CURATED_AUDIT / relative).read_bytes(),
+                (source / relative).read_bytes(),
+                str(relative),
+            )
 
     def test_no_hidden_format_characters_or_personal_layouts(self) -> None:
         forbidden_codepoints = {0x200B, 0x200C, 0x200D, 0x2060, 0xFEFF}
@@ -123,6 +155,26 @@ class ContributingClankerPortabilityTests(unittest.TestCase):
         self.assertIn("No external action has been taken", prepare)
         self.assertIn("fresh human approval", " ".join(publish.split()))
         self.assertIn("Earlier blanket permission", publish)
+
+    def test_prepare_does_not_fetch_repository_supplied_urls(self) -> None:
+        researcher = SKILLS / "contribute-prepare/scripts/researcher-build.sh"
+        text = researcher.read_text(encoding="utf-8")
+        self.assertNotIn("/usr/bin/curl", text)
+        self.assertNotIn("wget", text)
+        self.assertIn("were not retrieved", text)
+        self.assertIn("status: \"not-fetched\"", text)
+
+        env = os.environ.copy()
+        env["CONTRIBUTE_STATE_DIR"] = "/tmp/contribute-portability-test"
+        invalid = subprocess.run(
+            ["bash", str(researcher), "owner/repo/extra", "--stdout"],
+            env=env,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(invalid.returncode, 64)
+        self.assertIn("usage:", invalid.stderr)
 
 
 if __name__ == "__main__":
