@@ -78,11 +78,11 @@ target does not count.
 ## Supported actions
 
 ```bash
-gh issue comment <number> --repo <owner>/<repo> --body-file <approved-file>
-gh issue create --repo <owner>/<repo> --title <approved-title> --body-file <approved-file>
-git -C <approved-worktree> push <approved-remote> <approved-refspec>
-gh pr create --repo <owner>/<repo> --head <approved-head> --base <approved-base> \
-  --title <approved-title> --body-file <approved-file>
+gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body-file "$APPROVED_FILE"
+gh issue create --repo "$REPOSITORY" --title "$APPROVED_TITLE" --body-file "$APPROVED_FILE"
+git -C "$APPROVED_WORKTREE" push "$APPROVED_REMOTE" "$APPROVED_REFSPEC"
+gh pr create --repo "$REPOSITORY" --head "$APPROVED_HEAD" --base "$APPROVED_BASE" \
+  --title "$APPROVED_TITLE" --body-file "$APPROVED_FILE"
 ```
 
 These are examples, not permission to run them. Never combine multiple mutations
