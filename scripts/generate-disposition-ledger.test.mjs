@@ -4,7 +4,11 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 
-import { classifyArtifact, parseGrades } from './generate-disposition-ledger.mjs';
+import {
+  assertGradeCorpusParity,
+  classifyArtifact,
+  parseGrades,
+} from './generate-disposition-ledger.mjs';
 
 test('parseGrades rejects duplicate and unsafe inventory rows', () => {
   assert.throws(() => parseGrades('skill_path,grade,score\na,A,99\na,A,99\n'), /duplicate/);
@@ -16,6 +20,23 @@ test('parseGrades uses locale-independent code-point path order', () => {
   assert.deepEqual(
     rows.map((row) => row.path),
     ['B/SKILL.md', 'a/SKILL.md'],
+  );
+});
+
+test('graded-corpus parity refuses omitted and stale grade rows', () => {
+  const root = mkdtempSync(path.join(os.tmpdir(), 'ledger-'));
+  const current = { path: 'plugins/example/current/SKILL.md', grade: 'A', score: 99 };
+  const stale = { path: 'plugins/example/stale/SKILL.md', grade: 'B', score: 88 };
+
+  assert.doesNotThrow(() => assertGradeCorpusParity(root, [current], [current.path]));
+  assert.throws(
+    () =>
+      assertGradeCorpusParity(root, [current], [current.path, 'plugins/example/omitted/SKILL.md']),
+    /grades export omits 1 graded artifact\(s\): plugins\/example\/omitted\/SKILL\.md/,
+  );
+  assert.throws(
+    () => assertGradeCorpusParity(root, [current, stale], [current.path]),
+    /grades export contains 1 artifact\(s\) outside the graded corpus: plugins\/example\/stale\/SKILL\.md/,
   );
 });
 
