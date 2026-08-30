@@ -1,7 +1,7 @@
 {
   "name": "contributing-clanker",
-  "version": "0.8.0",
-  "description": "Local-only OSS contribution command center with 41 deterministic gates against AI-slop failure modes",
+  "version": "0.9.0",
+  "description": "Portable OSS contribution workflow with separated audit, preparation, and human-approved publishing authority",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io",

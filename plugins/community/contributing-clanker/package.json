@@ -1,7 +1,7 @@
 {
   "name": "@intentsolutionsio/contributing-clanker",
-  "version": "0.1.7",
-  "description": "Local-only OSS contribution command center with 41 deterministic gates against AI-slop failure modes",
+  "version": "0.9.0",
+  "description": "Portable OSS contribution workflow with separated audit, preparation, and human-approved publishing authority",
   "keywords": [
     "oss",
     "contributions",
@@ -15,11 +15,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "url": "git+https://github.com/jeremylongshore/tons-of-skills-marketplace.git",
     "directory": "plugins/community/contributing-clanker"
   },
   "homepage": "https://tonsofskills.com/plugins/contributing-clanker",
-  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "bugs": "https://github.com/jeremylongshore/tons-of-skills-marketplace/issues",
   "license": "MIT",
   "author": {
     "name": "Jeremy Longshore",
