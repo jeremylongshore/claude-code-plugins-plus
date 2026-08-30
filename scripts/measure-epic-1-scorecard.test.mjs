@@ -24,6 +24,7 @@ function fixture() {
   const files = {
     '.github/dependabot.yml': 'version: 2\nupdates: []\n',
     '.github/workflows/publish-changed-packages.yml': `on:\n  workflow_run:\n    workflows: ['Validate Plugins']\njobs:\n  preflight:\n    steps:\n      - run: node scripts/npm-publication-preflight.mjs\n  publish:\n    environment: npm-production\n    steps:\n      - run: node scripts/publish-candidate-report.mjs && npm publish\n`,
+    '.github/workflows/emit-evidence.yml': `permissions:\n  id-token: write\njobs:\n  sign:\n    steps:\n      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803\n`,
     '.github/workflows/validate-plugins.yml': `on:\n  pull_request:\n  push:\n    branches: [main]\njobs:\n  validate:\n    steps:\n      - run: python3 scripts/validate-skills-schema.py --marketplace\n      - run: python3 -m unittest tests.test_prose_anchors\n  ci-required:\n    needs:\n      - validate\n`,
     '.gitleaks.toml': "[allowlist]\npaths = ['''(?i).*/README\\.md$''']\nregexes = []\n",
     '.claude-plugin/marketplace.extended.json': JSON.stringify({
@@ -328,12 +329,28 @@ test('link instrumentation stays excluded while domain instrumentation cannot by
 test('unresolved rows fail closed with null values rather than fabricated zeroes', () => {
   const rows = buildExtendedScorecardRows(input(fixture()));
   for (const number of [
-    7, 8, 9, 15, 16, 17, 18, 19, 23, 29, 36, 49, 50, 51, 52, 53, 54, 55, 58, 60, 61, 62,
+    7, 8, 9, 15, 16, 17, 18, 19, 23, 29, 49, 50, 51, 52, 53, 54, 55, 58, 60, 61, 62,
   ]) {
     assert.equal(rows[number].values, null, `row ${number}`);
     assert.match(rows[number].reason_code, /^[A-Z][A-Z0-9_]+$/);
     assert.ok(rows[number].required_inputs.length > 0);
   }
+});
+
+test('measures privileged workflow action pins and exposes mutable references', () => {
+  const base = fixture();
+  let row = buildExtendedScorecardRows(input(base))[36];
+  assert.equal(row.status, 'measured');
+  assert.deepEqual(row.values.mutable_uses, []);
+  assert.equal(row.values.total_uses, 1);
+
+  put(
+    base.root,
+    '.github/workflows/emit-evidence.yml',
+    'permissions:\n  id-token: write\njobs:\n  sign:\n    steps:\n      - uses: actions/checkout@v6\n',
+  );
+  row = buildExtendedScorecardRows(input(base))[36];
+  assert.deepEqual(row.values.mutable_uses, ['.github/workflows/emit-evidence.yml:6']);
 });
 
 test('measurements follow fixture inputs and do not preserve historical blueprint numbers', () => {

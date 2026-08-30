@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3130,
-        "tracked_files": 23128
+        "tracked_files": 23130
       }
     },
     "2": {
@@ -1548,17 +1548,27 @@
       }
     },
     "36": {
-      "cohort": "tracked privileged workflows",
+      "cohort": "tracked OIDC, npm-token, and signing workflows selected by the E7.9 privileged-action policy",
       "dimension": "Third-party actions on mutable tags in privileged workflows",
-      "reason_code": "MISSING_PRIVILEGED_WORKFLOW_POLICY",
       "reproduce": "pnpm run measure:e1 --row=36 --stdout",
-      "required_inputs": [
-        "machine-readable privileged-workflow definition",
-        "trusted-action pin policy"
+      "source": [
+        ".github/workflows/cli-publish.yml",
+        ".github/workflows/deploy-vps.yml",
+        ".github/workflows/emit-evidence.yml",
+        ".github/workflows/emit-publication-evidence.yml",
+        ".github/workflows/publish-all-packages.yml",
+        ".github/workflows/publish-changed-packages.yml",
+        ".github/workflows/publish-mcp-registry.yml",
+        ".github/workflows/release.yml",
+        ".github/workflows/verify-npm-production-credential.yml"
       ],
-      "source": [],
-      "status": "not_reproducible",
-      "values": null
+      "status": "measured",
+      "values": {
+        "distinct_actions": 8,
+        "mutable_uses": [],
+        "target_mutable_uses": 0,
+        "total_uses": 36
+      }
     },
     "37": {
       "cohort": "tracked .github Dependabot configuration",
@@ -1788,7 +1798,7 @@
         "invalid_patterns": 0,
         "invisible_files": 21,
         "target_invisible_files": 0,
-        "tracked_files": 23128
+        "tracked_files": 23130
       }
     },
     "47": {

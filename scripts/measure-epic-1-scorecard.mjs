@@ -14,6 +14,7 @@ import { canonicalDocumentLinks, inspectAuthorityMetadata } from './check-doc-au
 import { CORPUS_COHORTS, resolveCorpus } from './corpus-resolver.mjs';
 import { scanDeadDomainPolicy } from './dead-domain-policy.mjs';
 import { artifactRegistration } from './generated-artifact-registry.mjs';
+import { inspectWorkflowEntries } from './check-privileged-action-pins.mjs';
 
 const DEAD_DOMAIN_BASELINE_RECEIPT = Object.freeze({
   head_sha: '3543d5d167bd4e8d27666c8893080bca3bd72950',
@@ -129,16 +130,6 @@ const UNRESOLVED_ROWS = new Map([
       required_inputs: [
         'resolved upstream commit per mirror',
         'retained primary upstream license text',
-      ],
-    },
-  ],
-  [
-    36,
-    {
-      reason_code: 'MISSING_PRIVILEGED_WORKFLOW_POLICY',
-      required_inputs: [
-        'machine-readable privileged-workflow definition',
-        'trusted-action pin policy',
       ],
     },
   ],
@@ -1356,7 +1347,22 @@ export function buildExtendedScorecardRows({
     sboms,
     { sboms: sboms.length, target_minimum: 15 },
   );
-  output[36] = unresolved(36, 'tracked privileged workflows');
+  const workflowEntries = reader.paths
+    .filter((path) => /^\.github\/workflows\/[^/]+\.ya?ml$/.test(path))
+    .map((path) => ({ path, text: reader.text(path) ?? '' }));
+  const actionPins = inspectWorkflowEntries(workflowEntries);
+  output[36] = baseRow(
+    36,
+    'measured',
+    'tracked OIDC, npm-token, and signing workflows selected by the E7.9 privileged-action policy',
+    actionPins.privilegedWorkflows,
+    {
+      distinct_actions: actionPins.distinctActions.length,
+      mutable_uses: actionPins.unpinned.map((entry) => `${entry.path}:${entry.line}`),
+      target_mutable_uses: 0,
+      total_uses: actionPins.uses.length,
+    },
+  );
   const dependabot = reader.paths.filter((path) => /^\.github\/dependabot\.ya?ml$/.test(path));
   output[37] = baseRow(37, 'measured', 'tracked .github Dependabot configuration', dependabot, {
     present: dependabot.length === 1,

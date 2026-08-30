@@ -390,6 +390,11 @@ jobs:
       - name: Test npm publication locks
         run: node --test scripts/npm-publication-lock.test.mjs
 
+      # E7.9: any workflow that can mint OIDC credentials, publish to npm, or
+      # sign evidence must pin every external action to an immutable commit.
+      - name: Enforce privileged action SHA pins
+        run: pnpm run validate:privileged-action-pins
+
       - name: Pin the required skill-conform harness exactly
         run: node --test scripts/check-audit-harness-pin.test.mjs
 
