@@ -149,7 +149,7 @@ function fixture() {
     `          printf '%s  %s\\n' "$dolt_sha256" dolt.tar.gz | sha256sum --check --strict
           sudo install -m 0755 dolt /usr/local/bin/dolt
           dolt version`,
-    `          readonly dolt_archive="/tmp/dolt.tar.gz"
+    `          readonly dolt_archive="/tmp/dolt-linux-amd64-v\${dolt_version}.tar.gz"
           readonly dolt_extract="/tmp/dolt-extract"
           printf '%s  %s\\n' "$dolt_sha256" "$dolt_archive" | sha256sum --check --strict
           tar -xzf "$dolt_archive" -C "$dolt_extract"
@@ -529,11 +529,34 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   assert.equal(rows[58].values.full_cycle, false);
 
   base = fixture();
+  const generatorTest = readFileSync(
+    join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
+    'utf8',
+  ).replace(
+    '    def test_full_cycle_uses_only_scratch_state_and_refuses_live_server(self):\n',
+    '    def test_full_cycle_uses_only_scratch_state_and_refuses_live_server(self):\n        yield None\n',
+  );
+  put(base.root, 'tests/test_freshie_hermetic_cycle.py', generatorTest);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.full_cycle, false);
+
+  base = fixture();
   const unsafeWorkflow = readFileSync(join(base.root, workflowPath), 'utf8').replace(
     '"$dolt_extract/dolt-linux-amd64/bin/dolt"',
     '/tmp/unverified/dolt',
   );
   put(base.root, workflowPath, unsafeWorkflow);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.pinned_dolt, false);
+
+  base = fixture();
+  const alternateOverwriteWorkflow = readFileSync(join(base.root, workflowPath), 'utf8').replace(
+    '          test "$installed_dolt_version" = "$dolt_version"\n',
+    '          test "$installed_dolt_version" = "$dolt_version"\n          sudo /usr/bin/install -m 0755 /tmp/unverified/dolt /usr/local/bin/dolt\n',
+  );
+  put(base.root, workflowPath, alternateOverwriteWorkflow);
   rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[58].status, 'partial');
   assert.equal(rows[58].values.pinned_dolt, false);

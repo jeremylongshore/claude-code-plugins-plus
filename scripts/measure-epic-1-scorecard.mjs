@@ -1212,13 +1212,35 @@ function freshieHermeticContract(reader, executionShape = {}) {
   const ciNeedsRaw = parsed?.jobs?.['ci-required']?.needs;
   const ciNeeds = typeof ciNeedsRaw === 'string' ? [ciNeedsRaw] : ciNeedsRaw;
   const doltRun = typeof doltStep?.run === 'string' ? doltStep.run : '';
-  const doltInstallWriters = doltRun
+  const doltLines = doltRun
     .split(/\r?\n/)
-    .filter((line) =>
-      /(?:^|\s)(?:(?:sudo\s+)?(?:install|cp|mv|ln)|tee)\b[^\n]*\/usr\/local\/bin\/dolt|>\s*\/usr\/local\/bin\/dolt/.test(
-        line,
-      ),
-    );
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const canonicalDoltInstall =
+    'sudo install -m 0755 "$dolt_extract/dolt-linux-amd64/bin/dolt" /usr/local/bin/dolt';
+  const doltDestinationReferences = doltLines.filter((line) =>
+    line.includes('/usr/local/bin/dolt'),
+  );
+  const allowedPinnedDoltLines = [
+    /^set -euo pipefail$/,
+    /^readonly dolt_version='[^']+'$/,
+    /^readonly dolt_sha256='[a-f0-9]{64}'$/,
+    /^readonly dolt_archive="(?:\$\{RUNNER_TEMP\}|\/tmp)\/dolt-linux-amd64-v?\$\{?dolt_version\}?\.tar\.gz"$/,
+    /^readonly dolt_extract="(?:\$\{RUNNER_TEMP\}|\/tmp)\/dolt-(?:v\$\{dolt_version\}|extract)"$/,
+    /^mkdir -p "\$dolt_extract"$/,
+    /^curl --fail --location --silent --show-error \\$/,
+    /^"https:\/\/github\.com\/dolthub\/dolt\/releases\/download\/v\$\{dolt_version\}\/dolt-linux-amd64\.tar\.gz" \\$/,
+    /^--output "\$dolt_archive"$/,
+    /^printf '%s {2}%s\\n' "\$dolt_sha256" "\$dolt_archive" \| sha256sum --check --strict$/,
+    /^tar -xzf "\$dolt_archive" -C "\$dolt_extract"$/,
+    new RegExp(`^${canonicalDoltInstall.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`),
+    /^installed_dolt_version="\$\(dolt version \| awk '\{print \$3\}'\)"$/,
+    /^readonly installed_dolt_version$/,
+    /^test "\$installed_dolt_version" = "\$dolt_version"$/,
+  ];
+  const onlyPinnedDoltCommands = doltLines.every((line) =>
+    allowedPinnedDoltLines.some((pattern) => pattern.test(line)),
+  );
   const checks = {
     blocking_ci_registration:
       Array.isArray(matrixTypes) &&
@@ -1242,7 +1264,9 @@ function freshieHermeticContract(reader, executionShape = {}) {
       !/UPDATE skill_compliance/.test(source),
     pinned_dolt:
       pythonIf(doltStep) &&
-      doltInstallWriters.length === 1 &&
+      onlyPinnedDoltCommands &&
+      doltDestinationReferences.length === 1 &&
+      doltDestinationReferences[0] === canonicalDoltInstall &&
       /readonly dolt_version='[^']+'/.test(doltRun) &&
       /readonly dolt_sha256='[a-f0-9]{64}'/.test(doltRun) &&
       /printf[^\n]+"\$dolt_sha256"[^\n]+"\$dolt_archive"[^\n]+sha256sum --check --strict/.test(

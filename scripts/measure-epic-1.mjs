@@ -174,6 +174,9 @@ try:
     test = methods["test_full_cycle_uses_only_scratch_state_and_refuses_live_server"]
     runner = methods["_run"]
     setup = methods["setUp"]
+    synchronous_methods = all(
+        isinstance(method, ast.FunctionDef) for method in (test, runner, setup)
+    )
 
     conditional = (ast.If, ast.For, ast.AsyncFor, ast.While, ast.Match, ast.comprehension)
     def parent_map(method):
@@ -216,7 +219,7 @@ try:
             < stages["PROMOTE"][0].lineno
         )
     forbidden = any(
-        isinstance(node, (ast.Pass, ast.Return, ast.Raise))
+        isinstance(node, (ast.Pass, ast.Return, ast.Raise, ast.Yield, ast.YieldFrom, ast.Await))
         for node in ast.walk(test)
     ) or any(
         (
@@ -230,7 +233,7 @@ try:
         isinstance(node, ast.Call) and call_name(node).lower().startswith("skip")
         for node in ast.walk(test)
     )
-    result["no_dead_code"] = not forbidden and not skipped
+    result["no_dead_code"] = synchronous_methods and not forbidden and not skipped
     result["reachable_full_cycle"] = ordered and len(stages["SYNC"]) >= 2
 
     result["reachable_fake_remote_push"] = any(
