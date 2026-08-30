@@ -7792,18 +7792,6 @@
       "license": "MIT"
     },
     {
-      "name": "skyvern",
-      "source": "./plugins/productivity/skyvern",
-      "description": "AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins",
-      "version": "0.1.0",
-      "category": "productivity",
-      "author": {
-        "name": "Skyvern-AI",
-        "url": "https://github.com/Skyvern-AI"
-      },
-      "license": "AGPL-3.0"
-    },
-    {
       "name": "tonone",
       "source": "./plugins/ai-agency/tonone",
       "description": "23-agent engineering + product team with 125 skills for Claude Code",
@@ -7861,32 +7849,6 @@
       },
       "homepage": "https://github.com/jeremylongshore/x-bug-triage-plugin",
       "repository": "https://github.com/jeremylongshore/x-bug-triage-plugin",
-      "license": "MIT"
-    },
-    {
-      "name": "hyperflow",
-      "source": "./plugins/ai-agency/hyperflow",
-      "description": "Advanced multi-agent orchestration with persistent cross-session memory, per-step multi-level review, persona stitching, and adaptive flow profiles",
-      "version": "4.26.1",
-      "category": "ai-agency",
-      "keywords": [
-        "claude-code-plugin",
-        "multi-agent",
-        "dynamic-workflows",
-        "workflow-chain",
-        "triageflow",
-        "personas",
-        "flow-profiles",
-        "code-review",
-        "project-memory",
-        "multi-tool"
-      ],
-      "author": {
-        "name": "Mohammed Abdelhady",
-        "url": "https://github.com/Mohammed-Abdelhady"
-      },
-      "homepage": "https://github.com/Mohammed-Abdelhady/hyperflow",
-      "repository": "https://github.com/Mohammed-Abdelhady/hyperflow",
       "license": "MIT"
     },
     {
@@ -8285,29 +8247,6 @@
       "homepage": "https://github.com/datopian/portaljs",
       "repository": "https://github.com/datopian/portaljs",
       "license": "MIT"
-    },
-    {
-      "name": "llm-box",
-      "source": "./plugins/community/llm-box",
-      "description": "Terminal-first workflow automation engine. Generate and execute YAML workflows from plain English with 20+ nodes and 15+ LLM providers.",
-      "version": "0.3.0",
-      "category": "community",
-      "keywords": [
-        "workflow",
-        "automation",
-        "terminal",
-        "cli",
-        "yaml",
-        "llm",
-        "mcp"
-      ],
-      "author": {
-        "name": "alib8b8",
-        "url": "https://github.com/alib8b8"
-      },
-      "homepage": "https://github.com/alib8b8/llm-box",
-      "repository": "https://github.com/alib8b8/llm-box",
-      "license": "AGPL-3.0"
     },
     {
       "name": "j-rig",

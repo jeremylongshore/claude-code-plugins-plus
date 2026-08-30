@@ -19,6 +19,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { publishedPlugins } = require('./publication-policy.cjs');
 
 const repoRoot = path.join(__dirname, '..');
 const extendedPath = path.join(repoRoot, '.claude-plugin', 'marketplace.extended.json');
@@ -44,6 +45,7 @@ const FLOOR_DISALLOWED_KEYS = new Set([
   'jrig', // { verified, layers_passed, total_layers, baseline_delta }
   'generated', // boolean — set by /skill-creator --forge in plugin.json AND mirrored to marketplace.extended.json
   'author_type', // 'human' | 'forge' — provenance flag, ditto
+  'publication', // provenance-only quarantine state; quarantined rows are omitted below
 ]);
 
 // Catalog-entry-only keys documented in the Anthropic plugin-marketplaces
@@ -151,7 +153,7 @@ const DISALLOWED_KEYS = new Set([...derivedKeys, ...FLOOR_DISALLOWED_KEYS]);
 
 const sanitized = {
   ...marketplace,
-  plugins: marketplace.plugins.map((plugin) => {
+  plugins: publishedPlugins(marketplace.plugins, 'extended catalog').map((plugin) => {
     if (plugin === null || typeof plugin !== 'object') {
       return plugin;
     }

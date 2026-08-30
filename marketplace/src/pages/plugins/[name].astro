@@ -12,8 +12,11 @@ import readmeSections from '../../data/readme-sections.json';
 export async function getStaticPaths() {
   const catalogPath = join(process.cwd(), '../.claude-plugin/marketplace.extended.json');
   const catalog = JSON.parse(readFileSync(catalogPath, 'utf-8'));
+  const installCatalogPath = join(process.cwd(), '../.claude-plugin/marketplace.json');
+  const installCatalog = JSON.parse(readFileSync(installCatalogPath, 'utf-8'));
+  const installableNames = new Set(installCatalog.plugins.map((plugin: any) => plugin.name));
 
-  return catalog.plugins.map((plugin: any) => ({
+  return catalog.plugins.filter((plugin: any) => installableNames.has(plugin.name)).map((plugin: any) => ({
     params: { name: plugin.name },
     props: { plugin },
   }));
@@ -40,8 +43,11 @@ const componentList = formatComponents(plugin.components);
 const relatedPlugins = await (async () => {
   const catalogPath = join(process.cwd(), '../.claude-plugin/marketplace.extended.json');
   const catalog = JSON.parse(readFileSync(catalogPath, 'utf-8'));
+  const installCatalogPath = join(process.cwd(), '../.claude-plugin/marketplace.json');
+  const installCatalog = JSON.parse(readFileSync(installCatalogPath, 'utf-8'));
+  const installableNames = new Set(installCatalog.plugins.map((candidate: any) => candidate.name));
   return catalog.plugins
-    .filter((p: any) => p.category === plugin.category && p.name !== plugin.name)
+    .filter((p: any) => installableNames.has(p.name) && p.category === plugin.category && p.name !== plugin.name)
     .slice(0, 6);
 })();
 

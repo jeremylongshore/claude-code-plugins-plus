@@ -5,15 +5,15 @@
     "generator": "marketplace/scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 442,
-    "totalSkills": 3069,
+    "totalPlugins": 439,
+    "totalSkills": 3039,
     "totalCommands": 85,
-    "pluginsWithSkills": 410,
+    "pluginsWithSkills": 407,
     "byCategory": {
-      "productivity": 30,
+      "productivity": 29,
       "security": 27,
       "testing": 28,
-      "ai-agency": 10,
+      "ai-agency": 9,
       "ai-ml": 36,
       "mcp": 16,
       "packages": 5,
@@ -24,7 +24,7 @@
       "skill-enhancers": 9,
       "database": 26,
       "business-tools": 6,
-      "community": 21,
+      "community": 20,
       "examples": 5,
       "saas-packs": 106,
       "analytics": 1,
@@ -11013,26 +11013,6 @@
       "type": "instruction-plugin"
     },
     {
-      "slug": "skyvern",
-      "name": "skyvern",
-      "displayName": "skyvern",
-      "description": "AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins",
-      "version": "0.1.0",
-      "category": "productivity",
-      "keywords": [],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install skyvern",
-      "sourcePath": "./plugins/productivity/skyvern",
-      "isFeatured": false,
-      "author": {
-        "name": "Skyvern-AI",
-        "url": "https://github.com/Skyvern-AI"
-      },
-      "type": "instruction-plugin"
-    },
-    {
       "slug": "tonone",
       "name": "tonone",
       "displayName": "tonone",
@@ -11100,37 +11080,6 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "hyperflow",
-      "name": "hyperflow",
-      "displayName": "hyperflow",
-      "description": "Advanced multi-agent orchestration with persistent cross-session memory, per-step multi-level review, persona stitching, and adaptive flow profiles",
-      "version": "4.26.1",
-      "category": "ai-agency",
-      "keywords": [
-        "claude-code-plugin",
-        "multi-agent",
-        "dynamic-workflows",
-        "workflow-chain",
-        "triageflow",
-        "personas",
-        "flow-profiles",
-        "code-review",
-        "project-memory",
-        "multi-tool"
-      ],
-      "hasSkills": true,
-      "skillCount": 28,
-      "commandCount": 0,
-      "installCommand": "/plugin install hyperflow",
-      "sourcePath": "./plugins/ai-agency/hyperflow",
-      "isFeatured": false,
-      "author": {
-        "name": "Mohammed Abdelhady",
-        "url": "https://github.com/Mohammed-Abdelhady"
       },
       "type": "instruction-plugin"
     },
@@ -11638,34 +11587,6 @@
       "author": {
         "name": "Datopian",
         "url": "https://www.datopian.com"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "llm-box",
-      "name": "llm-box",
-      "displayName": "llm box",
-      "description": "Terminal-first workflow automation engine. Generate and execute YAML workflows from plain English with 20+ nodes and 15+ LLM providers.",
-      "version": "0.3.0",
-      "category": "community",
-      "keywords": [
-        "workflow",
-        "automation",
-        "terminal",
-        "cli",
-        "yaml",
-        "llm",
-        "mcp"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install llm-box",
-      "sourcePath": "./plugins/community/llm-box",
-      "isFeatured": false,
-      "author": {
-        "name": "alib8b8",
-        "url": "https://github.com/alib8b8"
       },
       "type": "instruction-plugin"
     },

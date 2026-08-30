@@ -7,6 +7,16 @@
  * this script normalizes that boundary, verifies every row still exists, and
  * refuses stale or ambiguous input rather than emitting a partial ledger.
  *
+ * First-match-wins gate order (Blueprint 727 §8):
+ *   G0 SECURITY          -> QUARANTINE
+ *   G1 LEGAL/PROVENANCE -> QUARANTINE
+ *   G2 TRUTHFULNESS     -> QUARANTINE
+ *   G3 OWNERSHIP        -> CERTIFY-UPSTREAM or QUARANTINE
+ *   G4 UNSAFE-BY-DESIGN -> DEEP-REMEDIATE
+ *   G5 STRUCTURAL-ONLY  -> AUTO-MIGRATE
+ *   G6 CLEAN + PROVEN   -> CERTIFY (emitted only by the retained-evidence evaluator)
+ *   G7 CLEAN, NO EVIDENCE -> CERTIFY-PENDING-EVIDENCE
+ *
  * Usage:
  *   node scripts/generate-disposition-ledger.mjs
  *   node scripts/generate-disposition-ledger.mjs --check
@@ -27,6 +37,8 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const STRUCTURAL_ERROR =
   /^(?:\[frontmatter\] Missing required field:|\[body\] Required section missing:|\[relative-link\]|\[body\] Line \d+: uses backslashes)/;
 const UNSAFE_ERROR = /^\[tier2:(?:tool-safety|orchestration-bounds)\]/;
+const SHELL_SUBSTITUTION_ERROR =
+  /^\[security\] YAML field '.+' contains shell substitution \(e\.g\. \$\(\.\.\.\), backticks, or \$\{VAR\}\) that will not evaluate:/;
 const TRUTHFULNESS_ERROR =
   /(?:Linked file not found|Reference escapes skill directory|contains absolute\/OS-specific path)/;
 const BUCKETS = new Set([
@@ -198,11 +210,6 @@ function validateRows(root, gradeRows) {
   return rows;
 }
 
-function frontmatterHasShellSubstitution(text) {
-  const match = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/.exec(text);
-  return Boolean(match && /\$\(/.test(match[1]));
-}
-
 function sourceCommit(markerPath) {
   try {
     const source = JSON.parse(fs.readFileSync(markerPath, 'utf8'));
@@ -249,7 +256,7 @@ function errorsFor(record) {
 
 export function classifyArtifact({ root, row, validation, cache = new Map() }) {
   const absolute = path.join(root, row.path);
-  const text = fs.readFileSync(absolute, 'utf8');
+  fs.readFileSync(absolute, 'utf8');
   const diagnostics = errorsFor(validation);
   const errorCount = Array.isArray(validation.errors)
     ? validation.errors.length
@@ -259,7 +266,10 @@ export function classifyArtifact({ root, row, validation, cache = new Map() }) {
   const resolved = { path: row.path, grade: row.grade, score: row.score, diagnostics };
 
   // G0: non-waivable security facts take precedence over every later gate.
-  if (frontmatterHasShellSubstitution(text)) {
+  // Consume the canonical validator diagnostic instead of maintaining a
+  // second, inevitably divergent shell-substitution parser here. This covers
+  // all three validator forms: $(...), backticks, and unguarded ${VAR}.
+  if (diagnostics.some((diagnostic) => SHELL_SUBSTITUTION_ERROR.test(diagnostic))) {
     return {
       ...resolved,
       disposition: 'QUARANTINE',

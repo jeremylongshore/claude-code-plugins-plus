@@ -5,10 +5,10 @@
     "generator": "marketplace/scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 442,
-    "totalSkills": 3069,
+    "totalPlugins": 439,
+    "totalSkills": 3039,
     "totalDocs": 24,
-    "totalItems": 3535,
+    "totalItems": 3502,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -44,7 +44,6 @@
       "AskUserQuestion",
       "AskUserQuestion\"",
       "Bash",
-      "Bash(./scripts/*:*)",
       "Bash(act*)",
       "Bash(age:*)",
       "Bash(aio:*)",
@@ -124,7 +123,6 @@
       "Bash(crypto:wallet-*)",
       "Bash(crypto:yield-*)",
       "Bash(curl:*)",
-      "Bash(cut:*)",
       "Bash(databricks:*)",
       "Bash(date:*)",
       "Bash(date:*)]",
@@ -251,19 +249,15 @@
       "Bash(scan:*)",
       "Bash(scp:*)",
       "Bash(scrapy*)",
-      "Bash(scripts/*:*)",
       "Bash(scripts/run-jrig-eval.sh:*)",
       "Bash(security-check:*)",
       "Bash(security-scan:*)",
       "Bash(security-test:*)",
       "Bash(security:*)",
-      "Bash(sed:*)",
       "Bash(sentry-cli:*)",
       "Bash(sf:*)",
-      "Bash(sha256sum:*)",
       "Bash(shellcheck*)",
       "Bash(shopify:*)",
-      "Bash(skyvern:*)",
       "Bash(snowsql:*)",
       "Bash(sops*)",
       "Bash(sops:*)",
@@ -334,7 +328,6 @@
       "Read Glob Grep Bash Edit Write",
       "Read Glob Grep Bash WebSearch WebFetch",
       "Read]",
-      "Skill",
       "Task",
       "TodoWrite",
       "WebFetch",
@@ -600,12 +593,10 @@
       "classification",
       "claude",
       "claude-code",
-      "claude-code-plugin",
       "clay",
       "cleaning",
       "cleanup",
       "clerk",
-      "cli",
       "cli-tools",
       "clickhouse",
       "clickup",
@@ -781,7 +772,6 @@
       "dr",
       "drift",
       "drift-detection",
-      "dynamic-workflows",
       "e-commerce",
       "e-signature",
       "e2e",
@@ -881,7 +871,6 @@
       "flask",
       "flexport",
       "flow",
-      "flow-profiles",
       "flux",
       "fly.io",
       "flyio",
@@ -1148,7 +1137,6 @@
       "multi-agent",
       "multi-location",
       "multi-model",
-      "multi-tool",
       "multichain",
       "multimodal",
       "mutation-testing",
@@ -1245,7 +1233,6 @@
       "persistent",
       "persistent-memory",
       "persona",
-      "personas",
       "pgbackrest",
       "phone-agents",
       "pi",
@@ -1310,7 +1297,6 @@
       "profiling",
       "profit",
       "project-management",
-      "project-memory",
       "projects",
       "prometheus",
       "promote",
@@ -1601,7 +1587,6 @@
       "translation",
       "travel",
       "triage",
-      "triageflow",
       "trip-planning",
       "trivy",
       "tts",
@@ -1692,7 +1677,6 @@
       "windsurf",
       "work-orders",
       "workflow",
-      "workflow-chain",
       "workflows",
       "workhuman",
       "workload-identity-federation",
@@ -1717,8 +1701,8 @@
     "pluginsWithAgents": 90,
     "pluginsWithHooks": 19,
     "officialPlugins": 389,
-    "communityPlugins": 53,
-    "communityContributors": 42
+    "communityPlugins": 50,
+    "communityContributors": 39
   },
   "items": [
     {
@@ -14144,27 +14128,6 @@
     },
     {
       "type": "plugin",
-      "id": "skyvern",
-      "slug": "skyvern",
-      "name": "skyvern",
-      "displayName": "skyvern",
-      "description": "AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins",
-      "category": "productivity",
-      "keywords": [],
-      "author": {
-        "name": "Skyvern-AI",
-        "url": "https://github.com/Skyvern-AI"
-      },
-      "authorType": "community",
-      "version": "0.1.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "searchText": "skyvern ai browser automation via cli — navigate sites, fill forms, extract data, handle logins productivity "
-    },
-    {
-      "type": "plugin",
       "id": "tonone",
       "slug": "tonone",
       "name": "tonone",
@@ -14235,38 +14198,6 @@
       "badges": [],
       "skillCount": 5,
       "searchText": "x bug triage closed-loop bug triage — x complaints → clusters → repo evidence → owner routing → slack review → filed issues mcp mcp triage x-api bug-tracking clustering"
-    },
-    {
-      "type": "plugin",
-      "id": "hyperflow",
-      "slug": "hyperflow",
-      "name": "hyperflow",
-      "displayName": "hyperflow",
-      "description": "Advanced multi-agent orchestration with persistent cross-session memory, per-step multi-level review, persona stitching, and adaptive flow profiles",
-      "category": "ai-agency",
-      "keywords": [
-        "claude-code-plugin",
-        "multi-agent",
-        "dynamic-workflows",
-        "workflow-chain",
-        "triageflow",
-        "personas",
-        "flow-profiles",
-        "code-review",
-        "project-memory",
-        "multi-tool"
-      ],
-      "author": {
-        "name": "Mohammed Abdelhady",
-        "url": "https://github.com/Mohammed-Abdelhady"
-      },
-      "authorType": "community",
-      "version": "4.26.1",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 28,
-      "searchText": "hyperflow advanced multi-agent orchestration with persistent cross-session memory, per-step multi-level review, persona stitching, and adaptive flow profiles ai-agency claude-code-plugin multi-agent dynamic-workflows workflow-chain triageflow personas flow-profiles code-review project-memory multi-tool"
     },
     {
       "type": "plugin",
@@ -14793,35 +14724,6 @@
       "badges": [],
       "skillCount": 14,
       "searchText": "portaljs agent skills that build data portals — scaffold a portal, add datasets, charts and maps, connect ckan, and generate dcat/croissant metadata community portaljs data-portal ckan nextjs data-catalog"
-    },
-    {
-      "type": "plugin",
-      "id": "llm-box",
-      "slug": "llm-box",
-      "name": "llm-box",
-      "displayName": "llm box",
-      "description": "Terminal-first workflow automation engine. Generate and execute YAML workflows from plain English with 20+ nodes and 15+ LLM providers.",
-      "category": "community",
-      "keywords": [
-        "workflow",
-        "automation",
-        "terminal",
-        "cli",
-        "yaml",
-        "llm",
-        "mcp"
-      ],
-      "author": {
-        "name": "alib8b8",
-        "url": "https://github.com/alib8b8"
-      },
-      "authorType": "community",
-      "version": "0.3.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "searchText": "llm box terminal-first workflow automation engine. generate and execute yaml workflows from plain english with 20+ nodes and 15+ llm providers. community workflow automation terminal cli yaml llm mcp"
     },
     {
       "type": "plugin",
@@ -21989,32 +21891,6 @@
     },
     {
       "type": "skill",
-      "id": "audit",
-      "slug": "audit",
-      "name": "audit",
-      "description": "Use when the user wants a code review on recent changes — quality, spec, security, or performance feedback. Triggers a multi-level (L1-L5) review with a standalone Reviewer; on NEEDS_FIX, offers to apply findings via /hyperflow:plan. Trigger with /hyperflow:audit, \"review this change\", \"review my PR\", \"audit the diff\", \"code review\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(git:*)",
-        "Glob",
-        "Grep",
-        "Agent",
-        "Skill",
-        "AskUserQuestion"
-      ],
-      "compatibleWith": [],
-      "version": "3.1.3",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "audit use when the user wants a code review on recent changes — quality, spec, security, or performance feedback. triggers a multi-level (l1-l5) review with a standalone reviewer; on needs_fix, offers to apply findings via /hyperflow:plan. trigger with /hyperflow:audit, \"review this change\", \"review my pr\", \"audit the diff\", \"code review\". ai-agency read write edit bash(git:*) glob grep agent skill askuserquestion "
-    },
-    {
-      "type": "skill",
       "id": "audit-plugin",
       "slug": "audit-plugin",
       "name": "audit-plugin",
@@ -22232,32 +22108,6 @@
         "category": "database"
       },
       "searchText": "automating-database-backups 'automate database backup processes with scheduling, compression, and database read write edit grep glob bash(pg_dump:*) bash(mysqldump:*)  "
-    },
-    {
-      "type": "skill",
-      "id": "background",
-      "slug": "background",
-      "name": "background",
-      "description": "Use when the user wants to see, inspect, cancel, or prune background agents fired during prior chain runs. Read/manage `.hyperflow/background/registry.json` and the per-agent output buffers at `.hyperflow/background/<id>.md`. Standalone — never auto-invoked. Trigger with /hyperflow:background, \"list background agents\", \"what's running in background\", \"cancel background agent\", \"show background result\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(ls:*)",
-        "Bash(cat:*)",
-        "Bash(rm:*)",
-        "Bash(find:*)",
-        "Glob",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "4.7.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "background use when the user wants to see, inspect, cancel, or prune background agents fired during prior chain runs. read/manage `.hyperflow/background/registry.json` and the per-agent output buffers at `.hyperflow/background/<id>.md`. standalone — never auto-invoked. trigger with /hyperflow:background, \"list background agents\", \"what's running in background\", \"cancel background agent\", \"show background result\". ai-agency read write edit bash(ls:*) bash(cat:*) bash(rm:*) bash(find:*) glob grep "
     },
     {
       "type": "skill",
@@ -22853,29 +22703,6 @@
         "category": "productivity"
       },
       "searchText": "brand-voice applies the team's saved brand profile — voice, messaging, style guide, and compliance rules — to marketing copy so every asset reads on-brand instead of generic. use when drafting, editing, or auditing content and a brand profile may exist. trigger with \"brand voice\", \"apply the brand\", \"stay on-brand\", or \"/review\". productivity read write glob "
-    },
-    {
-      "type": "skill",
-      "id": "bridge",
-      "slug": "bridge",
-      "name": "bridge",
-      "description": "Use when the user wants hyperflow's behavioral rules to apply outside the terminal CLI — in Claude Code Desktop, claude.ai web, or IDE extensions that don't load CLI plugins. Writes a managed doctrine block into the project's CLAUDE.md so autonomy + intent-routing + commit cadence + role separation + file-first rules carry over. Lossy (no slash commands, no actual skill dispatch) but useful. Trigger with /hyperflow:bridge, \"make hyperflow work in desktop\", \"make hyperflow work in claude.ai\", \"embed hyperflow doctrine in CLAUDE.md\", \"portable hyperflow rules\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(cat:*)",
-        "Bash(ls:*)",
-        "Bash(date:*)"
-      ],
-      "compatibleWith": [],
-      "version": "4.10.1",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "bridge use when the user wants hyperflow's behavioral rules to apply outside the terminal cli — in claude code desktop, claude.ai web, or ide extensions that don't load cli plugins. writes a managed doctrine block into the project's claude.md so autonomy + intent-routing + commit cadence + role separation + file-first rules carry over. lossy (no slash commands, no actual skill dispatch) but useful. trigger with /hyperflow:bridge, \"make hyperflow work in desktop\", \"make hyperflow work in claude.ai\", \"embed hyperflow doctrine in claude.md\", \"portable hyperflow rules\". ai-agency read write edit bash(cat:*) bash(ls:*) bash(date:*) "
     },
     {
       "type": "skill",
@@ -23708,33 +23535,6 @@
         "category": "ai-agency"
       },
       "searchText": "buzz-social social media strategy and post drafting — hn posts, twitter/x threads, linkedin posts, reddit comments, and developer community content. use when asked to \"write a hn post\", \"draft social posts\", \"help us post on twitter\", or \"create a social launch plan\". ai-agency read bash glob grep webfetch websearch askuserquestion "
-    },
-    {
-      "type": "skill",
-      "id": "cache",
-      "slug": "cache",
-      "name": "cache",
-      "description": "Use when the user wants to view, search, add, edit, prune, archive, or clear hyperflow memory entries. CRUD interface for `.hyperflow/memory/` — never modifies source code, only memory files. Trigger with /hyperflow:cache, \"show memory\", \"search memory for X\", \"clear memory\", \"what does hyperflow remember about Y\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(ls:*)",
-        "Bash(mv:*)",
-        "Bash(rm:*)",
-        "Glob",
-        "Grep",
-        "Agent",
-        "AskUserQuestion"
-      ],
-      "compatibleWith": [],
-      "version": "3.1.3",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "cache use when the user wants to view, search, add, edit, prune, archive, or clear hyperflow memory entries. crud interface for `.hyperflow/memory/` — never modifies source code, only memory files. trigger with /hyperflow:cache, \"show memory\", \"search memory for x\", \"clear memory\", \"what does hyperflow remember about y\". ai-agency read write edit bash(ls:*) bash(mv:*) bash(rm:*) glob grep agent askuserquestion "
     },
     {
       "type": "skill",
@@ -32813,35 +32613,6 @@
     },
     {
       "type": "skill",
-      "id": "deploy",
-      "slug": "deploy",
-      "name": "deploy",
-      "description": "Use when ready to ship — runs pre-push gates (lint, typecheck, build, tests, security sweep), commits, releases, and pushes. Standalone, never auto-invoked. Push always requires explicit confirmation. Trigger with /hyperflow:deploy, \"ship it\", \"ready to push\", \"release\", \"cut a release\", \"deploy\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(git:*)",
-        "Bash(npm:*)",
-        "Bash(pnpm:*)",
-        "Bash(./scripts/*:*)",
-        "Bash(scripts/*:*)",
-        "Glob",
-        "Grep",
-        "Agent",
-        "AskUserQuestion"
-      ],
-      "compatibleWith": [],
-      "version": "3.1.3",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "deploy use when ready to ship — runs pre-push gates (lint, typecheck, build, tests, security sweep), commits, releases, and pushes. standalone, never auto-invoked. push always requires explicit confirmation. trigger with /hyperflow:deploy, \"ship it\", \"ready to push\", \"release\", \"cut a release\", \"deploy\". ai-agency read write edit bash(git:*) bash(npm:*) bash(pnpm:*) bash(./scripts/*:*) bash(scripts/*:*) glob grep agent askuserquestion "
-    },
-    {
-      "type": "skill",
       "id": "deploying-machine-learning-models",
       "slug": "deploying-machine-learning-models",
       "name": "deploying-machine-learning-models",
@@ -32886,29 +32657,6 @@
         "category": "devops"
       },
       "searchText": "deploying-monitoring-stacks 'monitor use when deploying monitoring stacks including prometheus, grafana, devops read write edit grep glob bash(docker:*) bash(kubectl:*) "
-    },
-    {
-      "type": "skill",
-      "id": "design",
-      "slug": "design",
-      "name": "design",
-      "description": "Use when the user wants the visual/experiential design of a product done systematically — a design system, a screen, a landing page, or a visual identity — grounded in researched real-world prior art and free of AI slop. Establishes/extends the design system, invokes the matching local taste skill, dispatches the designer specialist, and reviews for taste + accessibility. Standalone — ends with a handoff gate into the chain. Trigger with /hyperflow:design, \"design the UI\", \"make a design system\", \"design this screen\", \"give this a visual identity\", \"redesign this\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Glob",
-        "Grep",
-        "Agent",
-        "Skill",
-        "AskUserQuestion"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "design use when the user wants the visual/experiential design of a product done systematically — a design system, a screen, a landing page, or a visual identity — grounded in researched real-world prior art and free of ai slop. establishes/extends the design system, invokes the matching local taste skill, dispatches the designer specialist, and reviews for taste + accessibility. standalone — ends with a handoff gate into the chain. trigger with /hyperflow:design, \"design the ui\", \"make a design system\", \"design this screen\", \"give this a visual identity\", \"redesign this\". ai-agency read glob grep agent skill askuserquestion "
     },
     {
       "type": "skill",
@@ -33304,35 +33052,6 @@
         "category": "productivity"
       },
       "searchText": "devil-advocate constructive critic and stress-tester for ideas and proposals. use when productivity read glob grep "
-    },
-    {
-      "type": "skill",
-      "id": "dispatch",
-      "slug": "dispatch",
-      "name": "dispatch",
-      "description": "Use when a task file exists in .hyperflow/tasks/ and workers need dispatching. Fans out parallel workers under per-batch Reviewers, runs a final integration review, and commits per sub-task. Endpoint of the auto-chain — no auto-deploy. Trigger with /hyperflow:dispatch, \"run the plan\", \"execute the task\", \"build it\", \"run the batches\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(git:*)",
-        "Bash(gh:*)",
-        "Bash(grep:*)",
-        "Bash(rm:*)",
-        "Bash(bash:*)",
-        "Bash(python3:*)",
-        "Agent",
-        "Skill",
-        "AskUserQuestion"
-      ],
-      "compatibleWith": [],
-      "version": "3.2.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "dispatch use when a task file exists in .hyperflow/tasks/ and workers need dispatching. fans out parallel workers under per-batch reviewers, runs a final integration review, and commits per sub-task. endpoint of the auto-chain — no auto-deploy. trigger with /hyperflow:dispatch, \"run the plan\", \"execute the task\", \"build it\", \"run the batches\". ai-agency read write edit bash(git:*) bash(gh:*) bash(grep:*) bash(rm:*) bash(bash:*) bash(python3:*) agent skill askuserquestion "
     },
     {
       "type": "skill",
@@ -39702,30 +39421,6 @@
     },
     {
       "type": "skill",
-      "id": "flush",
-      "slug": "flush",
-      "name": "flush",
-      "description": "Use when the user wants to manually flush a deferred-commit queue from a prior or interrupted chain. Reads .hyperflow/commits-queue/manifest.json, fast-forwards the staging branch onto the user's branch, deletes staging, clears the queue. Recovery interface when a chain crashed before its Step 4 auto-flush ran. Trigger with /hyperflow:flush, \"flush pending commits\", \"flush queue\", \"apply staged commits\", \"where are my commits\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Bash(git:*)",
-        "Bash(ls:*)",
-        "Bash(cat:*)",
-        "Bash(rm:*)",
-        "Bash(bash:*)",
-        "Bash(scripts/*:*)"
-      ],
-      "compatibleWith": [],
-      "version": "4.12.7",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "flush use when the user wants to manually flush a deferred-commit queue from a prior or interrupted chain. reads .hyperflow/commits-queue/manifest.json, fast-forwards the staging branch onto the user's branch, deletes staging, clears the queue. recovery interface when a chain crashed before its step 4 auto-flush ran. trigger with /hyperflow:flush, \"flush pending commits\", \"flush queue\", \"apply staged commits\", \"where are my commits\". ai-agency read bash(git:*) bash(ls:*) bash(cat:*) bash(rm:*) bash(bash:*) bash(scripts/*:*) "
-    },
-    {
-      "type": "skill",
       "id": "flux",
       "slug": "flux",
       "name": "flux",
@@ -45369,32 +45064,6 @@
     },
     {
       "type": "skill",
-      "id": "handoff",
-      "slug": "handoff",
-      "name": "handoff",
-      "description": "Use when managing a two-session handoff — inspecting, picking up, or reviewing a committed handoff package produced by a session=two scope run. The operator interface over the cross-environment handoff lifecycle (plan in one session, build in another, review back in the first). Trigger with /hyperflow:handoff, \"list handoffs\", \"pick up the handoff\", \"review the handoff build\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(git:*)",
-        "Bash(mv:*)",
-        "Glob",
-        "Grep",
-        "AskUserQuestion",
-        "Skill"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.1",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "handoff use when managing a two-session handoff — inspecting, picking up, or reviewing a committed handoff package produced by a session=two scope run. the operator interface over the cross-environment handoff lifecycle (plan in one session, build in another, review back in the first). trigger with /hyperflow:handoff, \"list handoffs\", \"pick up the handoff\", \"review the handoff build\". ai-agency read write edit bash(git:*) bash(mv:*) glob grep askuserquestion skill "
-    },
-    {
-      "type": "skill",
       "id": "helm",
       "slug": "helm",
       "name": "helm",
@@ -46584,199 +46253,6 @@
         "category": "saas-packs"
       },
       "searchText": "hubspot-webhook-handlers build and harden hubspot v3 webhook handlers that survive production: hmac-sha256 signature verification, redis set nx deduplication, async batch processing with immediate 200 ack, dead-letter queuing for permanent failures, and event-ordering guards for property-change streams. use when implementing hubspot webhooks for the first time, hardening an existing handler against retry storms or duplicate processing, debugging signature verification failures, or designing a reliable event pipeline for contact, company, or deal change events. trigger with \"hubspot webhook\", \"hubspot signature verification\", \"hubspot webhook dedup\", \"hubspot webhook retry storm\", \"hubspot event handler\", \"hubspot property change webhook\", \"hubspot list membership webhook\", \"hubspot dead letter queue\". saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "hyperflow",
-      "slug": "hyperflow",
-      "name": "hyperflow",
-      "description": "Use when applying Hyperflow's orchestration doctrine in Codex, Antigravity, Grok, or another single-agent surface. Auto-invoke for non-trivial engineering work: build, implement, add, refactor, debug, fix, review, audit, plan, scope, design, brainstorm, ship, or deploy. Trigger with /hyperflow:hyperflow, \"use hyperflow\", \"apply the doctrine\", or automatically on any task-shaped message.",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Agent",
-        "Skill",
-        "AskUserQuestion",
-        "WebSearch",
-        "WebFetch",
-        "Bash(git:*)",
-        "Bash(gh:*)",
-        "Bash(npm:*)",
-        "Bash(pnpm:*)",
-        "Bash(npx:*)",
-        "Bash(python3:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "hyperflow use when applying hyperflow's orchestration doctrine in codex, antigravity, grok, or another single-agent surface. auto-invoke for non-trivial engineering work: build, implement, add, refactor, debug, fix, review, audit, plan, scope, design, brainstorm, ship, or deploy. trigger with /hyperflow:hyperflow, \"use hyperflow\", \"apply the doctrine\", or automatically on any task-shaped message. ai-agency read write edit glob grep agent skill askuserquestion websearch webfetch bash(git:*) bash(gh:*) bash(npm:*) bash(pnpm:*) bash(npx:*) bash(python3:*) "
-    },
-    {
-      "type": "skill",
-      "id": "hyperflow-audit",
-      "slug": "hyperflow-audit",
-      "name": "hyperflow-audit",
-      "description": "Hyperflow code review. Use when the user wants the current diff, a commit, branch, or PR reviewed — verbs like audit, review, \"check for issues\", \"security check\", \"code review\". Multi-level review (L1 quick → L5 exhaustive), writes findings to .hyperflow/audits/, then a fix-gate.",
-      "category": "ai-agency",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "hyperflow-audit hyperflow code review. use when the user wants the current diff, a commit, branch, or pr reviewed — verbs like audit, review, \"check for issues\", \"security check\", \"code review\". multi-level review (l1 quick → l5 exhaustive), writes findings to .hyperflow/audits/, then a fix-gate. ai-agency  "
-    },
-    {
-      "type": "skill",
-      "id": "hyperflow-cache",
-      "slug": "hyperflow-cache",
-      "name": "hyperflow-cache",
-      "description": "Hyperflow memory manager. Use to view, search, add, edit, prune, or clear hyperflow project memory — \"show memory\", \"search memory for X\", \"clear memory\", \"what does hyperflow remember about Y\". CRUD over .hyperflow/memory/ only — never touches source code.",
-      "category": "ai-agency",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "hyperflow-cache hyperflow memory manager. use to view, search, add, edit, prune, or clear hyperflow project memory — \"show memory\", \"search memory for x\", \"clear memory\", \"what does hyperflow remember about y\". crud over .hyperflow/memory/ only — never touches source code. ai-agency  "
-    },
-    {
-      "type": "skill",
-      "id": "hyperflow-deploy",
-      "slug": "hyperflow-deploy",
-      "name": "hyperflow-deploy",
-      "description": "Hyperflow ship phase. Use when the user is ready to release — verbs like ship, push, release, deploy, \"cut a release\", \"ready to push\". Runs pre-push gates (lint + typecheck + build + tests + security sweep), then asks before pushing. Never --no-verify, never force-push to main.",
-      "category": "ai-agency",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "hyperflow-deploy hyperflow ship phase. use when the user is ready to release — verbs like ship, push, release, deploy, \"cut a release\", \"ready to push\". runs pre-push gates (lint + typecheck + build + tests + security sweep), then asks before pushing. never --no-verify, never force-push to main. ai-agency  "
-    },
-    {
-      "type": "skill",
-      "id": "hyperflow-design",
-      "slug": "hyperflow-design",
-      "name": "hyperflow-design",
-      "description": "Hyperflow design phase. Use when designing a UI / visual system or making a screen look good — verbs like \"design the UI\", \"make it look good\", \"design the screen\", \"visual design\", \"design system\". Establishes or extends a domain-grounded design system, researches real-world prior art, and renders it slop-free. Thinking and taste, not building.",
-      "category": "ai-agency",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "hyperflow-design hyperflow design phase. use when designing a ui / visual system or making a screen look good — verbs like \"design the ui\", \"make it look good\", \"design the screen\", \"visual design\", \"design system\". establishes or extends a domain-grounded design system, researches real-world prior art, and renders it slop-free. thinking and taste, not building. ai-agency  "
-    },
-    {
-      "type": "skill",
-      "id": "hyperflow-dispatch",
-      "slug": "hyperflow-dispatch",
-      "name": "hyperflow-dispatch",
-      "description": "Hyperflow execution phase. Use when a task file exists in .hyperflow/tasks/ and the work needs building — verbs like build, implement, add, refactor, \"wire up\", \"run the plan\", \"execute the task\". Works batches sequentially with self-review and per-task commits. In Antigravity there is no sub-agent fan-out — the single agent does each batch itself.",
-      "category": "ai-agency",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "hyperflow-dispatch hyperflow execution phase. use when a task file exists in .hyperflow/tasks/ and the work needs building — verbs like build, implement, add, refactor, \"wire up\", \"run the plan\", \"execute the task\". works batches sequentially with self-review and per-task commits. in antigravity there is no sub-agent fan-out — the single agent does each batch itself. ai-agency  "
-    },
-    {
-      "type": "skill",
-      "id": "hyperflow-plan",
-      "slug": "hyperflow-plan",
-      "name": "hyperflow-plan",
-      "description": "Hyperflow planning phase. Use when a request needs shaping before code — a rough prompt to sharpen, an ambiguous idea to design, or a clear-enough task to decompose. Verbs like plan, design, brainstorm, explore, \"should we\", \"what's the best way to\", scope, decompose, \"plan out\", \"break down\", \"enhance this prompt\". Thinking, not building. Writes an optional spec to .hyperflow/specs/<slug>.md and a task file to .hyperflow/tasks/<slug>.md, then hands off to hyperflow-dispatch.",
-      "category": "ai-agency",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "hyperflow-plan hyperflow planning phase. use when a request needs shaping before code — a rough prompt to sharpen, an ambiguous idea to design, or a clear-enough task to decompose. verbs like plan, design, brainstorm, explore, \"should we\", \"what's the best way to\", scope, decompose, \"plan out\", \"break down\", \"enhance this prompt\". thinking, not building. writes an optional spec to .hyperflow/specs/<slug>.md and a task file to .hyperflow/tasks/<slug>.md, then hands off to hyperflow-dispatch. ai-agency  "
-    },
-    {
-      "type": "skill",
-      "id": "hyperflow-scaffold",
-      "slug": "hyperflow-scaffold",
-      "name": "hyperflow-scaffold",
-      "description": "Hyperflow project setup. Use when starting hyperflow in a new project or refreshing its cache — \"init hyperflow\", \"set up hyperflow\", \"refresh hyperflow\", \"scaffold hyperflow\". One-shot setup of the .hyperflow/ project cache + memory and the .agent/workflows/hyperflow* slash commands. Does not start the plan → dispatch chain.",
-      "category": "ai-agency",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "hyperflow-scaffold hyperflow project setup. use when starting hyperflow in a new project or refreshing its cache — \"init hyperflow\", \"set up hyperflow\", \"refresh hyperflow\", \"scaffold hyperflow\". one-shot setup of the .hyperflow/ project cache + memory and the .agent/workflows/hyperflow* slash commands. does not start the plan → dispatch chain. ai-agency  "
-    },
-    {
-      "type": "skill",
-      "id": "hyperflow-status",
-      "slug": "hyperflow-status",
-      "name": "hyperflow-status",
-      "description": "Hyperflow project status. Use to see current hyperflow state — \"what is hyperflow doing\", \"show task progress\", \"where are we\". Read-only — reports in-flight tasks, memory count, and progress. Never modifies state or runs work.",
-      "category": "ai-agency",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "hyperflow-status hyperflow project status. use to see current hyperflow state — \"what is hyperflow doing\", \"show task progress\", \"where are we\". read-only — reports in-flight tasks, memory count, and progress. never modifies state or runs work. ai-agency  "
-    },
-    {
-      "type": "skill",
-      "id": "hyperflow-sticky",
-      "slug": "hyperflow-sticky",
-      "name": "hyperflow-sticky",
-      "description": "Hyperflow auto-routing mode. Use to control how aggressively hyperflow auto-routes — \"make hyperflow sticky\", \"stop using hyperflow\", \"auto-route to hyperflow\", \"disable hyperflow auto-routing\". Sets on (every task-shaped message routes) / auto (intent-verb messages route — default) / off (no auto-routing).",
-      "category": "ai-agency",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "hyperflow-sticky hyperflow auto-routing mode. use to control how aggressively hyperflow auto-routes — \"make hyperflow sticky\", \"stop using hyperflow\", \"auto-route to hyperflow\", \"disable hyperflow auto-routing\". sets on (every task-shaped message routes) / auto (intent-verb messages route — default) / off (no auto-routing). ai-agency  "
-    },
-    {
-      "type": "skill",
-      "id": "hyperflow-trace",
-      "slug": "hyperflow-trace",
-      "name": "hyperflow-trace",
-      "description": "Hyperflow debugging. Use for bugs, test failures, runtime errors, broken builds, or \"this doesn't work\" reports — verbs like debug, \"fix it\", solve, \"why is X failing\", \"Y is broken\", or a pasted stack trace. Systematic root-cause analysis before any patch — never blind-patch symptoms.",
-      "category": "ai-agency",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "hyperflow-trace hyperflow debugging. use for bugs, test failures, runtime errors, broken builds, or \"this doesn't work\" reports — verbs like debug, \"fix it\", solve, \"why is x failing\", \"y is broken\", or a pasted stack trace. systematic root-cause analysis before any patch — never blind-patch symptoms. ai-agency  "
     },
     {
       "type": "skill",
@@ -48682,33 +48158,6 @@
         "category": "saas-packs"
       },
       "searchText": "intercom-webhooks-events 'implement intercom webhook handling and data event tracking. saas-packs read write edit bash(curl:*) "
-    },
-    {
-      "type": "skill",
-      "id": "issue",
-      "slug": "issue",
-      "name": "issue",
-      "description": "Use when starting a chain from a GitHub issue — turning an issue URL or number into a triaged, planned, dispatched, and reviewed pull request. Classifies the thread (bug → root-cause discipline, feature → plan chain, question → drafted reply), synthesizes a spec from the issue's own acceptance criteria, then runs the standard chain with a PR exit. Trigger with /hyperflow:issue, \"work on issue #N\", \"fix this issue <url>\", \"implement this issue\", \"triage issue #N and raise a PR\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(git:*)",
-        "Bash(gh:*)",
-        "Glob",
-        "Grep",
-        "Agent",
-        "Skill",
-        "AskUserQuestion"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "issue use when starting a chain from a github issue — turning an issue url or number into a triaged, planned, dispatched, and reviewed pull request. classifies the thread (bug → root-cause discipline, feature → plan chain, question → drafted reply), synthesizes a spec from the issue's own acceptance criteria, then runs the standard chain with a pr exit. trigger with /hyperflow:issue, \"work on issue #n\", \"fix this issue <url>\", \"implement this issue\", \"triage issue #n and raise a pr\". ai-agency read write edit bash(git:*) bash(gh:*) glob grep agent skill askuserquestion "
     },
     {
       "type": "skill",
@@ -63710,34 +63159,6 @@
     },
     {
       "type": "skill",
-      "id": "plan",
-      "slug": "plan",
-      "name": "plan",
-      "description": "Use when a request needs shaping before any code is written — a rough or vague prompt to sharpen, an ambiguous idea to design, or a clear-enough task to decompose. One chain-starter that amplifies the prompt, designs the approach, and decomposes it into a batched task file, skipping whichever phases the request doesn't need, then STOPS at a build-location gate (build here, hand off to another session, or just keep the plan). Plan never implements. Trigger with /hyperflow:plan, \"design this\", \"plan this\", \"decompose this\", \"how should we\", \"what's the best way to\", \"break this down\", \"enhance this prompt\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(git:*)",
-        "Bash(python3:*)",
-        "Bash(mv:*)",
-        "Glob",
-        "Grep",
-        "Agent",
-        "AskUserQuestion",
-        "Skill"
-      ],
-      "compatibleWith": [],
-      "version": "2.0.1",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "plan use when a request needs shaping before any code is written — a rough or vague prompt to sharpen, an ambiguous idea to design, or a clear-enough task to decompose. one chain-starter that amplifies the prompt, designs the approach, and decomposes it into a batched task file, skipping whichever phases the request doesn't need, then stops at a build-location gate (build here, hand off to another session, or just keep the plan). plan never implements. trigger with /hyperflow:plan, \"design this\", \"plan this\", \"decompose this\", \"how should we\", \"what's the best way to\", \"break this down\", \"enhance this prompt\". ai-agency read write edit bash(git:*) bash(python3:*) bash(mv:*) glob grep agent askuserquestion skill "
-    },
-    {
-      "type": "skill",
       "id": "plane",
       "slug": "plane",
       "name": "plane",
@@ -64938,33 +64359,6 @@
         "category": "saas-packs"
       },
       "searchText": "posthog-webhooks-events 'implement posthog webhook destinations, action-triggered notifications, saas-packs read write edit bash(curl:*) "
-    },
-    {
-      "type": "skill",
-      "id": "pr",
-      "slug": "pr",
-      "name": "pr",
-      "description": "Use when reviewing an incoming GitHub pull request — runs the multi-level (L1-L5) audit against the PR's real diff range, posts findings as one batched review (inline, summary, or local-only), offers the standard fix chain on NEEDS_FIX, and optionally merges. The maintainer-side counterpart to /hyperflow:issue. Trigger with /hyperflow:pr, \"review PR #N\", \"review this pull request <url>\", \"audit the PR\", \"check this contribution\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(git:*)",
-        "Bash(gh:*)",
-        "Glob",
-        "Grep",
-        "Agent",
-        "Skill",
-        "AskUserQuestion"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "pr use when reviewing an incoming github pull request — runs the multi-level (l1-l5) audit against the pr's real diff range, posts findings as one batched review (inline, summary, or local-only), offers the standard fix chain on needs_fix, and optionally merges. the maintainer-side counterpart to /hyperflow:issue. trigger with /hyperflow:pr, \"review pr #n\", \"review this pull request <url>\", \"audit the pr\", \"check this contribution\". ai-agency read write edit bash(git:*) bash(gh:*) glob grep agent skill askuserquestion "
     },
     {
       "type": "skill",
@@ -70741,35 +70135,6 @@
     },
     {
       "type": "skill",
-      "id": "scaffold",
-      "slug": "scaffold",
-      "name": "scaffold",
-      "description": "Use when starting hyperflow in a new project, refreshing the .hyperflow/ cache, or installing auto-detection shims (AGENTS.md, CLAUDE.md). One-shot project setup; does not start the spec → scope → dispatch chain. Trigger with /hyperflow:scaffold, \"init hyperflow\", \"set up hyperflow\", \"refresh hyperflow\", \"install hyperflow shims\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(git:*)",
-        "Bash(sha256sum:*)",
-        "Bash(ls:*)",
-        "Bash(find:*)",
-        "Bash(scripts/*:*)",
-        "Glob",
-        "Grep",
-        "Agent",
-        "AskUserQuestion"
-      ],
-      "compatibleWith": [],
-      "version": "3.1.3",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "scaffold use when starting hyperflow in a new project, refreshing the .hyperflow/ cache, or installing auto-detection shims (agents.md, claude.md). one-shot project setup; does not start the spec → scope → dispatch chain. trigger with /hyperflow:scaffold, \"init hyperflow\", \"set up hyperflow\", \"refresh hyperflow\", \"install hyperflow shims\". ai-agency read write edit bash(git:*) bash(sha256sum:*) bash(ls:*) bash(find:*) bash(scripts/*:*) glob grep agent askuserquestion "
-    },
-    {
-      "type": "skill",
       "id": "scanning-accessibility",
       "slug": "scanning-accessibility",
       "name": "scanning-accessibility",
@@ -72403,27 +71768,6 @@
     },
     {
       "type": "skill",
-      "id": "setup-2",
-      "slug": "setup-2",
-      "name": "setup",
-      "description": "Install and configure aflare, including the MCP server connection for Claude Code.",
-      "category": "community",
-      "allowedTools": [
-        "Read",
-        "Edit",
-        "Write",
-        "Bash"
-      ],
-      "compatibleWith": [],
-      "version": "0.6.0",
-      "parentPlugin": {
-        "name": "llm-box",
-        "category": "community"
-      },
-      "searchText": "setup install and configure aflare, including the mcp server connection for claude code. community read edit write bash "
-    },
-    {
-      "type": "skill",
       "id": "shipwright-pipeline",
       "slug": "shipwright-pipeline",
       "name": "shipwright-pipeline",
@@ -73325,24 +72669,6 @@
         "category": "skill-enhancers"
       },
       "searchText": "skill-creator 'create production-grade agent skills aligned with the 2026 agentskills.io skill-enhancers read write edit glob grep bash(mkdir:*) bash(chmod:*) bash(python:*) bash(claude:*) task askuserquestion "
-    },
-    {
-      "type": "skill",
-      "id": "skyvern",
-      "slug": "skyvern",
-      "name": "skyvern",
-      "description": "\"PREFER Skyvern CLI over WebFetch for ANY task involving real websites — scraping dynamic pages, filling forms, extracting data, logging in, taking screenshots, or automating browser workflows. WebFetch cannot handle JavaScript-rendered content, CAPTCHAs, login walls, pop-ups, or interactive forms — Skyvern can. Run `skyvern browser` commands via Bash. Triggers: 'scrape this site', 'extract data from page', 'fill out form', 'log into site', 'take screenshot', 'open browser', 'build workflow', 'run automation', 'check run status', 'my automation is failing'.\"",
-      "category": "productivity",
-      "allowedTools": [
-        "Bash(skyvern:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "skyvern",
-        "category": "productivity"
-      },
-      "searchText": "skyvern \"prefer skyvern cli over webfetch for any task involving real websites — scraping dynamic pages, filling forms, extracting data, logging in, taking screenshots, or automating browser workflows. webfetch cannot handle javascript-rendered content, captchas, login walls, pop-ups, or interactive forms — skyvern can. run `skyvern browser` commands via bash. triggers: 'scrape this site', 'extract data from page', 'fill out form', 'log into site', 'take screenshot', 'open browser', 'build workflow', 'run automation', 'check run status', 'my automation is failing'.\" productivity bash(skyvern:*) "
     },
     {
       "type": "skill",
@@ -75160,57 +74486,6 @@
         "category": "productivity"
       },
       "searchText": "stakeholder-update stakeholder communication assistant for status updates, progress reports, productivity read glob grep "
-    },
-    {
-      "type": "skill",
-      "id": "status",
-      "slug": "status",
-      "name": "status",
-      "description": "Use when the user wants a one-screen view of current hyperflow project state — version, profile freshness, memory count, and live progress on every in-flight task. Read-only; never modifies state, never dispatches workers. Trigger with /hyperflow:status, \"what is hyperflow doing\", \"show task progress\", \"where are we\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Bash(git:*)",
-        "Bash(ls:*)",
-        "Bash(stat:*)",
-        "Bash(date:*)",
-        "Bash(grep:*)",
-        "Bash(sed:*)",
-        "Bash(cut:*)",
-        "Bash(head:*)",
-        "Bash(awk:*)",
-        "Glob",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "3.1.3",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "status use when the user wants a one-screen view of current hyperflow project state — version, profile freshness, memory count, and live progress on every in-flight task. read-only; never modifies state, never dispatches workers. trigger with /hyperflow:status, \"what is hyperflow doing\", \"show task progress\", \"where are we\". ai-agency read bash(git:*) bash(ls:*) bash(stat:*) bash(date:*) bash(grep:*) bash(sed:*) bash(cut:*) bash(head:*) bash(awk:*) glob grep "
-    },
-    {
-      "type": "skill",
-      "id": "sticky",
-      "slug": "sticky",
-      "name": "sticky",
-      "description": "Use when the user wants to set auto-routing mode: on (every task-shaped message routes), auto (intent-verb messages route — default), or off (no auto-routing). Intent-detection runs by default; use this skill to expand to full sticky or disable entirely. Trigger with /hyperflow:sticky, \"make hyperflow sticky\", \"stop using hyperflow\", \"is hyperflow sticky\", \"auto-route to hyperflow\", \"disable hyperflow auto-routing\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(rm:*)",
-        "Bash(ls:*)"
-      ],
-      "compatibleWith": [],
-      "version": "4.9.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "sticky use when the user wants to set auto-routing mode: on (every task-shaped message routes), auto (intent-verb messages route — default), or off (no auto-routing). intent-detection runs by default; use this skill to expand to full sticky or disable entirely. trigger with /hyperflow:sticky, \"make hyperflow sticky\", \"stop using hyperflow\", \"is hyperflow sticky\", \"auto-route to hyperflow\", \"disable hyperflow auto-routing\". ai-agency read write edit bash(rm:*) bash(ls:*) "
     },
     {
       "type": "skill",
@@ -77425,31 +76700,6 @@
         "category": "ai-agency"
       },
       "searchText": "touch-ui use when asked about mobile ui guidelines, touch targets, platform-specific ui rules, or mobile interaction patterns. examples: \"ios touch targets\", \"android ui guidelines\", \"mobile form design\" ai-agency read bash glob grep "
-    },
-    {
-      "type": "skill",
-      "id": "trace",
-      "slug": "trace",
-      "name": "trace",
-      "description": "Use when encountering bugs, test failures, runtime errors, broken builds, or \"this doesn't work\" reports. Systematic root-cause analysis before any patch — never blind-patches symptoms. Standalone, ends with a final-integration review of the fix. Trigger with /hyperflow:trace, \"debug this\", \"find the root cause\", \"why is this failing\", \"this test is broken\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Bash(git:*)",
-        "Bash(npm:*)",
-        "Bash(pnpm:*)",
-        "Glob",
-        "Grep",
-        "Agent",
-        "AskUserQuestion"
-      ],
-      "compatibleWith": [],
-      "version": "3.1.3",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "trace use when encountering bugs, test failures, runtime errors, broken builds, or \"this doesn't work\" reports. systematic root-cause analysis before any patch — never blind-patches symptoms. standalone, ends with a final-integration review of the fix. trigger with /hyperflow:trace, \"debug this\", \"find the root cause\", \"why is this failing\", \"this test is broken\". ai-agency read bash(git:*) bash(npm:*) bash(pnpm:*) glob grep agent askuserquestion "
     },
     {
       "type": "skill",
@@ -82236,28 +81486,6 @@
         "category": "saas-packs"
       },
       "searchText": "windsurf-webhooks-events 'build windsurf extensions and integrate with vs code extension api events. saas-packs read write edit bash(npm:*) bash(npx:*) "
-    },
-    {
-      "type": "skill",
-      "id": "workflow",
-      "slug": "workflow",
-      "name": "workflow",
-      "description": "Use when a task is too large for turn-by-turn orchestration and should run through the big-task workflow lane: system-wide changes, large migrations, repo-wide audits, high-confidence verification, or tasks explicitly asking to run a workflow. Claude Code uses native dynamic workflows; Codex, OpenCode, and Grok use the portable workflow adapter. Trigger with /hyperflow:workflow, \"run a workflow\", \"dynamic workflow\", \"big task\", \"large migration\", \"repo-wide audit\".",
-      "category": "ai-agency",
-      "allowedTools": [
-        "Read",
-        "Glob",
-        "Grep",
-        "AskUserQuestion",
-        "Skill"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperflow",
-        "category": "ai-agency"
-      },
-      "searchText": "workflow use when a task is too large for turn-by-turn orchestration and should run through the big-task workflow lane: system-wide changes, large migrations, repo-wide audits, high-confidence verification, or tasks explicitly asking to run a workflow. claude code uses native dynamic workflows; codex, opencode, and grok use the portable workflow adapter. trigger with /hyperflow:workflow, \"run a workflow\", \"dynamic workflow\", \"big task\", \"large migration\", \"repo-wide audit\". ai-agency read glob grep askuserquestion skill "
     },
     {
       "type": "skill",

@@ -105,6 +105,28 @@ test('preserves the compatibility author default and normalizes the complete pro
   assert.deepEqual(catalog.plugins[1].author, { name: 'Claude Code Plugins' });
 });
 
+test('retains quarantined records only in the extended authority, never the public projection', () => {
+  const catalog = renderCatalog(
+    {
+      plugins: [
+        plugin('public', 'plugins/testing/public'),
+        plugin('held', 'plugins/testing/held', { publication: 'quarantined' }),
+      ],
+    },
+    { skills: [] },
+  );
+  assert.deepEqual(catalog.plugins.map((entry) => entry.name), ['public']);
+  assert.equal(catalog.stats.totalPlugins, 1);
+  assert.throws(
+    () =>
+      renderCatalog(
+        { plugins: [plugin('ambiguous', 'plugins/testing/ambiguous', { publication: 'pending' })] },
+        { skills: [] },
+      ),
+    /unknown publication state/,
+  );
+});
+
 test('fails closed on duplicate identities, paths, and contradictory skill ancestry', () => {
   assert.throws(
     () =>

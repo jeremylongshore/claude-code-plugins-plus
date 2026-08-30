@@ -12,7 +12,8 @@ Invariants:
 3. No plugin with a source under ./plugins/jeremy-*/ appears in the catalog.
    (personal-prefix directories are FS-only by policy.)
 4. Every plugin name is a non-empty string and appears exactly once.
-5. marketplace.extended.json and marketplace.json report the same plugin count.
+5. marketplace.json contains exactly the publishable extended rows; provenance-only
+   rows marked `publication: quarantined` remain only in the extended catalog.
 6. Every plugin directory in the catalog has a sibling `package.json`. Lets
    the npm tracking/publish workflow enumerate a complete set of packages.
 7. The two catalogs named by STANDARDS.md are the only tracked
@@ -83,6 +84,21 @@ def catalog_name_errors(plugins: list[object]) -> list[str]:
     return errors
 
 
+def publishable_plugins(plugins: list[object]) -> tuple[list[dict], list[str]]:
+    """Return public rows and fail-closed errors for unknown publication states."""
+    published: list[dict] = []
+    errors: list[str] = []
+    for index, plugin in enumerate(plugins):
+        if not isinstance(plugin, dict):
+            continue
+        state = plugin.get("publication")
+        if state is None:
+            published.append(plugin)
+        elif state != "quarantined":
+            errors.append(f"catalog row {index}: unknown publication state `{state}`")
+    return published, errors
+
+
 def tracked_catalog_shadows(root: Path | None = None) -> list[str]:
     """Return tracked catalog-shaped files under `.claude-plugin/` except the canonical pair.
 
@@ -120,6 +136,8 @@ def main() -> int:
     plugins = data.get("plugins", [])
 
     errors: list[str] = catalog_name_errors(plugins)
+    published, publication_errors = publishable_plugins(plugins)
+    errors.extend(publication_errors)
 
     try:
         for shadow in tracked_catalog_shadows():
@@ -169,9 +187,10 @@ def main() -> int:
         with SYNCED.open() as f:
             synced = json.load(f)
         synced_count = len(synced.get("plugins", []))
-        if synced_count != len(plugins):
+        if synced_count != len(published):
             errors.append(
-                f"marketplace.json has {synced_count} plugins but extended has {len(plugins)}. "
+                f"marketplace.json has {synced_count} plugins but extended has "
+                f"{len(published)} publishable rows ({len(plugins)} total records). "
                 "Run `pnpm run sync-marketplace`."
             )
 
@@ -181,7 +200,10 @@ def main() -> int:
             print(f"  - {e}")
         return 1
 
-    print(f"Catalog invariant check passed ({len(plugins)} plugins).")
+    print(
+        f"Catalog invariant check passed ({len(published)} published plugins; "
+        f"{len(plugins) - len(published)} quarantined records)."
+    )
     return 0
 
 
