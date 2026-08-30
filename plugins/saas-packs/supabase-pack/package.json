@@ -30,11 +30,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "url": "git+https://github.com/jeremylongshore/tons-of-skills-marketplace.git",
     "directory": "plugins/saas-packs/supabase-pack"
   },
   "bugs": {
-    "url": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues"
+    "url": "https://github.com/jeremylongshore/tons-of-skills-marketplace/issues"
   },
   "homepage": "https://tonsofskills.com/learn/supabase/",
   "publishConfig": {

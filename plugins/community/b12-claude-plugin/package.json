@@ -13,11 +13,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "url": "git+https://github.com/jeremylongshore/tons-of-skills-marketplace.git",
     "directory": "plugins/community/b12-claude-plugin"
   },
   "homepage": "https://tonsofskills.com/plugins/b12-claude-plugin",
-  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "bugs": "https://github.com/jeremylongshore/tons-of-skills-marketplace/issues",
   "license": "Apache-2.0",
   "author": {
     "name": "B12.io",

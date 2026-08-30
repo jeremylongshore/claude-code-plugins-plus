@@ -17,6 +17,7 @@
 
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 const PLUGINS_DIR = join(ROOT, 'plugins');
@@ -25,6 +26,10 @@ const PLUGINS_DIR = join(ROOT, 'plugins');
 // actual repository GitHub Actions is running in.
 const REPO_URL = 'https://github.com/jeremylongshore/tons-of-skills-marketplace';
 const SCOPE = '@intentsolutionsio';
+const LEGACY_REPO_URLS = [
+  'https://github.com/jeremylongshore/claude-code-plugins-plus-skills',
+  'https://github.com/jeremylongshore/claude-code-plugins',
+];
 
 // FS-only / personal-prefix dirs and known duplicates — skip entirely.
 const EXCLUDE_PREFIXES = [
@@ -177,6 +182,31 @@ function buildPackageJson(pluginDir, pluginJson) {
   return pkg;
 }
 
+export function reconcileGeneratedPackageMetadata(pkg, relDir, { sourceOwned = false } = {}) {
+  if (sourceOwned) return { changed: false, pkg };
+  const repositoryUrl = typeof pkg?.repository === 'object' ? pkg.repository?.url : null;
+  const managedByRepositoryPolicy =
+    pkg?.name?.startsWith(`${SCOPE}/`) ||
+    (pkg?.repository?.directory === relDir &&
+      /^git\+https:\/\/github\.com\/jeremylongshore\/(?:claude-code-plugins(?:-plus-skills)?|tons-of-skills-marketplace)\.git$/.test(
+        repositoryUrl ?? '',
+      ));
+  if (!managedByRepositoryPolicy) return { changed: false, pkg };
+  const rewritten = rewriteLegacyRepositoryUrls(JSON.stringify(pkg));
+  if (rewritten === JSON.stringify(pkg)) return { changed: false, pkg };
+  return {
+    changed: true,
+    pkg: JSON.parse(rewritten),
+  };
+}
+
+export function rewriteLegacyRepositoryUrls(source) {
+  return LEGACY_REPO_URLS.reduce(
+    (current, legacyUrl) => current.replaceAll(legacyUrl, REPO_URL),
+    source,
+  );
+}
+
 async function probeNpmRegistry(name) {
   try {
     const res = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name)}`, {
@@ -215,6 +245,7 @@ async function main() {
   const needsScaffold = [];
   const skipped = [];
   const existing = [];
+  const metadataUpdates = [];
 
   for (const pluginDir of pluginDirs) {
     if (isExcluded(pluginDir)) {
@@ -222,7 +253,16 @@ async function main() {
       continue;
     }
     if (existsSync(join(pluginDir, 'package.json'))) {
+      const packagePath = join(pluginDir, 'package.json');
+      const source = readFileSync(packagePath, 'utf-8');
+      const pkg = JSON.parse(source);
+      const reconciled = reconcileGeneratedPackageMetadata(pkg, relative(ROOT, pluginDir), {
+        sourceOwned: existsSync(join(pluginDir, '.source.json')),
+      });
       existing.push(pluginDir);
+      if (reconciled.changed) {
+        metadataUpdates.push({ packagePath, source: rewriteLegacyRepositoryUrls(source) });
+      }
       continue;
     }
     const pluginJson = readPluginJson(pluginDir);
@@ -236,6 +276,7 @@ async function main() {
   }
 
   console.log(`Plugins with package.json already: ${existing.length}`);
+  console.log(`Generated metadata to reconcile:   ${metadataUpdates.length}`);
   console.log(`Plugins to scaffold:                ${needsScaffold.length}`);
   console.log(`Skipped (excluded/invalid):         ${skipped.length}`);
   if (skipped.length) {
@@ -282,10 +323,16 @@ async function main() {
     writeFileSync(join(pluginDir, 'package.json'), out);
     written++;
   }
+  for (const { packagePath, source } of metadataUpdates) {
+    writeFileSync(packagePath, source);
+  }
   console.log(`\nWrote ${written} package.json files.`);
+  console.log(`Reconciled ${metadataUpdates.length} generated package.json files.`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
