@@ -1,18 +1,18 @@
 {
   "$comment": "Triple-keyed safety-ratchet baseline (E4.3/E4.4/E4.11). Regenerate ONLY via `node scripts/check-safety-ratchet.mjs --write` in the PR that shrinks a class; the gate fails any growth or swap. shell_substitution is never waivable.",
-  "pinned_at": "2026-08-26",
+  "pinned_at": "2026-08-30",
   "schema_version": "4.1.0",
   "agents_terminal_error_count": 236,
   "classes": {
     "bare_bash": {
-      "count": 1,
-      "set_sha256": "e0724e4263bb5cd3fcafa9b2c12d2b67e7adcedcb3113f1887e5ad05622de115",
-      "members": ["plugins/community/framecraft/skills/demo-video/SKILL.md"]
+      "count": 0,
+      "set_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "members": []
     },
     "tier2_tool_safety": {
-      "count": 1,
-      "set_sha256": "e0724e4263bb5cd3fcafa9b2c12d2b67e7adcedcb3113f1887e5ad05622de115",
-      "members": ["plugins/community/framecraft/skills/demo-video/SKILL.md"]
+      "count": 0,
+      "set_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "members": []
     },
     "shell_substitution": {
       "count": 0,
