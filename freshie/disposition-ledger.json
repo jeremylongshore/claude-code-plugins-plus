@@ -21,9 +21,9 @@
   "counts": {
     "AUTO-MIGRATE": 537,
     "CERTIFY": 0,
-    "CERTIFY-PENDING-EVIDENCE": 2744,
+    "CERTIFY-PENDING-EVIDENCE": 2745,
     "CERTIFY-UPSTREAM": 0,
-    "DEEP-REMEDIATE": 3,
+    "DEEP-REMEDIATE": 2,
     "QUARANTINE": 344
   },
   "artifacts": [
@@ -6451,13 +6451,11 @@
       "path": "plugins/community/contributing-clanker/skills/contribute/SKILL.md",
       "grade": "B",
       "score": 87,
-      "diagnostics": [
-        "[frontmatter] 'description' exceeds 1024 characters"
-      ],
-      "disposition": "DEEP-REMEDIATE",
-      "gate": "G4",
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
       "reason_codes": [
-        "NON_STRUCTURAL_VALIDATION_FAILURE"
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
       ]
     },
     {
