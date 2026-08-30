@@ -5510,6 +5510,15 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--structural-metrics",
+        action="store_true",
+        help=(
+            "4.1.0 (E8.8): emit missing-required-frontmatter metrics as JSON and exit. "
+            "First-party and provenance-marked mirror records are reported separately so "
+            "the remediation ratchet can fail closed without editing upstream-owned files."
+        ),
+    )
+    parser.add_argument(
         "--standard",
         action="store_true",
         help="Use standard tier (Anthropic spec exactly: name + description required). This is the default.",
@@ -5906,6 +5915,38 @@ def main() -> int:
             "bare_bash": sorted(bare_bash),
             "tier2_tool_safety": sorted(tier2_tool_safety),
             "shell_substitution": sorted(shell_substitution),
+        }
+        print(_json.dumps(metrics, indent=1))
+        return 0
+
+    if args.structural_metrics:
+
+        def _is_mirror(path: Path) -> bool:
+            probe = path.parent
+            while probe != repo_root and probe != probe.parent:
+                if (probe / ".source.json").exists():
+                    return True
+                probe = probe.parent
+            return False
+
+        missing_pattern = re.compile(r"^\[frontmatter\] Missing required field: '([^']+)' \(marketplace\)$")
+        first_party: List[str] = []
+        mirrors: List[str] = []
+        for skill_path in find_skill_files(repo_root):
+            rel = str(skill_path.relative_to(repo_root))
+            result = validate_skill(skill_path, TIER_MARKETPLACE)
+            for error in result.get("errors", []):
+                match = missing_pattern.match(error)
+                if not match:
+                    continue
+                member = f"{rel}::{match.group(1)}"
+                (mirrors if _is_mirror(skill_path) else first_party).append(member)
+        import json as _json
+
+        metrics = {
+            "schema_version": SCHEMA_VERSION,
+            "first_party_missing_required_frontmatter": sorted(first_party),
+            "mirror_missing_required_frontmatter": sorted(mirrors),
         }
         print(_json.dumps(metrics, indent=1))
         return 0

@@ -1800,6 +1800,20 @@ E2 freeze ──▶ 1.13             (cross-epic: the frozen set is an input)
 | 8.14 | Archive the dead-domain and superseded references outside the authority documents.             | task · P2    | Consumes Epic 1 bead 1.13 after Epic 2's freeze.                                                                                                         |
 | 8.15 | Certify the first cohort with real behavioral evidence and publish grades with their class.    | feature · P1 | A capped cohort (10–15 skills, § 18.6) reaches E2/E3 with retained hash-matched artifacts; grades publish with their evidence class and a `recall_note`. |
 
+**E8.8 ownership correction (2026-08-30).** The original 728-record row remains the
+ratified historical baseline, but its literal remediation reading conflicts with this epic's
+own `.source.json` stop-rule. A clean run at base `478aaf177` reproduces 728 missing-required-
+frontmatter records across 294 skills: **one editable first-party record** (Hyperfocus,
+`allowed-tools`) and **727 upstream-owned mirror records**. Commit `7ed360083` clears the sole
+first-party record by declaring the minimal `Read` capability. Mirror bytes are not credited as
+remediation: commit `1243dac98` removed 137 failing mirror records, and `2aba004d4` removed or
+rewrote 12 `llm-box` records while introducing two `x-twitter-scraper` records. The governed
+current state is 580 records across 265 mirror skills, all ledgered `QUARANTINE`, and zero
+first-party records. Therefore the operative acceptance is: editable first-party debt reaches
+and remains at zero; every raw mirror finding stays unedited and quarantined; the structural
+ratchet fails any first-party growth or equal-count swap. The correction changes neither the
+historical count nor the prohibition on editing upstream-owned files.
+
 **Bead dependency graph.**
 
 ```
