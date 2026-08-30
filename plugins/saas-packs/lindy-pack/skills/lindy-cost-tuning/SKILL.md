@@ -14,7 +14,7 @@ description: 'Optimize Lindy AI costs through credit management, model selection
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.17.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
