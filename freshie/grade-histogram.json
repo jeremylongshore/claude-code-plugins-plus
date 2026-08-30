@@ -1,5 +1,5 @@
 {
-  "run_id": 13,
+  "run_id": 14,
   "total": 3630,
   "grades": {
     "A": 1872,
@@ -8,5 +8,6 @@
     "D": 157,
     "F": 5
   },
-  "dolt_commit": "9g8rmug5asj787a2sthkq68v2htckdvc"
+  "dolt_commit": "2ljhn79ge74uj1kd7q2chqgo9ne0tulb",
+  "grades_csv_sha256": "72fbb289e8451d9a4bbe95cae0b9a1797588c0197589f94ddd1cde48241e4ef0"
 }

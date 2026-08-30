@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3130,
-        "tracked_files": 23131
+        "tracked_files": 23132
       }
     },
     "2": {
@@ -1798,7 +1798,7 @@
         "invalid_patterns": 0,
         "invisible_files": 21,
         "target_invisible_files": 0,
-        "tracked_files": 23131
+        "tracked_files": 23132
       }
     },
     "47": {
@@ -1879,52 +1879,112 @@
       "values": null
     },
     "52": {
-      "cohort": null,
+      "cohort": "latest tracked immutable Freshie run receipt",
       "dimension": "Inventory header versus rows",
-      "reason_code": "MISSING_COMMITTED_INVENTORY_RUN_ROWS",
       "reproduce": "pnpm run measure:e1 --row=52 --stdout",
-      "required_inputs": [
-        "versioned discovery-run headers and row aggregates from the same database snapshot"
+      "source": [
+        "freshie/reports/run-delta-14.json",
+        "freshie/scripts/dolt-sync.py",
+        "freshie/scripts/run-delta.py"
       ],
-      "source": [],
-      "status": "not_reproducible",
-      "values": null
+      "status": "target_met",
+      "values": {
+        "dolt_commit": "2ljhn79ge74uj1kd7q2chqgo9ne0tulb",
+        "header_total_skills": 3053,
+        "run_id": 14,
+        "skill_row_delta": 0,
+        "skill_rows": 3053,
+        "target_skill_row_delta": 0
+      }
     },
     "53": {
-      "cohort": null,
+      "cohort": "tracked grade exports against the latest immutable Freshie run receipt",
       "dimension": "Tracked export lag",
-      "reason_code": "MISSING_COMMITTED_LIVE_INVENTORY_HEAD",
       "reproduce": "pnpm run measure:e1 --row=53 --stdout",
-      "required_inputs": ["versioned latest database run ID", "versioned latest export run ID"],
-      "source": [],
-      "status": "not_reproducible",
-      "values": null
+      "source": [
+        "freshie/grade-histogram.json",
+        "freshie/grades.csv",
+        "freshie/reports/run-delta-14.json"
+      ],
+      "status": "target_met",
+      "values": {
+        "compliance_rows": 3630,
+        "export_dolt_commit": "2ljhn79ge74uj1kd7q2chqgo9ne0tulb",
+        "export_run_id": 14,
+        "grades_csv_rows": 3630,
+        "grades_csv_sha256": "72fbb289e8451d9a4bbe95cae0b9a1797588c0197589f94ddd1cde48241e4ef0",
+        "histogram_grades": {
+          "A": 1872,
+          "B": 1117,
+          "C": 479,
+          "D": 157,
+          "F": 5
+        },
+        "histogram_total": 3630,
+        "immutable_grade_counts": {
+          "A": 1872,
+          "B": 1117,
+          "C": 479,
+          "D": 157,
+          "F": 5
+        },
+        "inventory_dolt_commit": "2ljhn79ge74uj1kd7q2chqgo9ne0tulb",
+        "inventory_run_id": 14,
+        "target_lag_runs": 0
+      }
     },
     "54": {
-      "cohort": null,
+      "cohort": "tag-bound forge-proof ledger snapshot and legacy demotion receipt",
       "dimension": "Forge proofs",
-      "reason_code": "MISSING_COMMITTED_FORGE_PROOF_LEDGER",
       "reproduce": "pnpm run measure:e1 --row=54 --stdout",
-      "required_inputs": [
-        "versioned forge_proofs rows",
-        "proof schema with class, hash, and foreign key"
+      "source": [
+        "freshie/reports/legacy-forge-proofs-demotion.json",
+        "freshie/reports/run-delta-14.json",
+        "freshie/scripts/dolt-sync.py",
+        "freshie/scripts/run-delta.py",
+        "scripts/record-jrig-proofs.mjs"
       ],
-      "source": [],
-      "status": "not_reproducible",
-      "values": null
+      "status": "target_met",
+      "values": {
+        "class_counts": {
+          "E0": 3,
+          "E1": 0,
+          "E2": 0,
+          "E3": 0
+        },
+        "invalid_identities": 0,
+        "legacy_e0_records": 3,
+        "retained_e2_e3": 0,
+        "source_dolt_commit": "2ljhn79ge74uj1kd7q2chqgo9ne0tulb",
+        "source_run_id": 14,
+        "source_tag": "run-14",
+        "target_legacy_e0_records": 3,
+        "target_unclassified": 0,
+        "total_e2_e3": 0,
+        "total_records": 3,
+        "unclassified": 0
+      }
     },
     "55": {
-      "cohort": null,
+      "cohort": "tag-bound evidence-class snapshot and canonical retention standard",
       "dimension": "Retained primary evaluation artifacts",
-      "reason_code": "MISSING_RETAINED_PRIMARY_EVAL_ARTIFACTS",
       "reproduce": "pnpm run measure:e1 --row=55 --stdout",
-      "required_inputs": [
-        "versioned E2/E3 proof denominator",
-        "hash-linked retained primary artifacts"
+      "source": [
+        "000-docs/807-DR-STND-evaluation-evidence.md",
+        "freshie/reports/legacy-forge-proofs-demotion.json",
+        "freshie/reports/run-delta-14.json",
+        "freshie/scripts/dolt-sync.py",
+        "freshie/scripts/run-delta.py"
       ],
-      "source": [],
-      "status": "not_reproducible",
-      "values": null
+      "status": "measured",
+      "values": {
+        "legacy_e0_records": 3,
+        "no_e2_e3_claims": true,
+        "retained_e2_e3": 0,
+        "retention_percent": null,
+        "target_retention_percent": 100,
+        "total_e2_e3": 0
+      }
     },
     "56": {
       "cohort": "legacy JRig marketplace verification projection",
@@ -1986,16 +2046,21 @@
       }
     },
     "58": {
-      "cohort": "tracked Freshie tests",
+      "cohort": "tracked Freshie hermetic-cycle test and blocking Python CI lane",
       "dimension": "Freshie test shape",
-      "reason_code": "MISSING_HERMETIC_E2E_TEST_CONTRACT",
       "reproduce": "pnpm run measure:e1 --row=58 --stdout",
-      "required_inputs": [
-        "registered scratch-database end-to-end scenario and its expected lifecycle assertions"
-      ],
-      "source": [],
-      "status": "not_reproducible",
-      "values": null
+      "source": [".github/workflows/validate-plugins.yml", "tests/test_freshie_hermetic_cycle.py"],
+      "status": "target_met",
+      "values": {
+        "blocking_ci_registration": true,
+        "dependencies_fail_closed": true,
+        "fake_remote_push": true,
+        "full_cycle": true,
+        "pinned_dolt": true,
+        "scratch_state": true,
+        "server_refusal": true,
+        "target_all_checks": true
+      }
     },
     "59": {
       "cohort": "tracked Dolt sync writer and its focused tests",

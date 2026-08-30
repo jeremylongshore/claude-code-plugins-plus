@@ -1,30 +1,38 @@
 {
-  "schema_version": "forge-proof-demotion/v1",
-  "status": "published-demotion",
-  "source": "000-docs/727-AT-ARCH-master-modernization-blueprint.md §9 S3/S9",
-  "reason_code": "E0-PRIMARY-ARTIFACT-UNRETAINED",
-  "summary": "These legacy behavioral rows are assertions, not retained behavioral evidence. They must not light a public verification badge.",
+  "schema_version": "forge-proof-demotion/v2",
+  "status": "immutable-ledger-snapshot",
+  "source": "freshie/reports/run-delta-<N>.json forge_proofs snapshot",
+  "source_run_id": 14,
+  "source_tag": "run-14",
+  "source_dolt_commit": "2ljhn79ge74uj1kd7q2chqgo9ne0tulb",
+  "records_sha256": "e51e838c989df95d206994831befc7821b594d25bec9b09d699c5792456c787b",
   "records": [
     {
       "plugin_name": "databricks-pack",
       "jrig_run_id": 2,
+      "discovery_run_id": null,
       "evidence_class": "E0",
       "artifact_uri": null,
-      "artifact_sha256": null
+      "artifact_sha256": null,
+      "baseline_delta": null
     },
     {
       "plugin_name": "databricks-pack",
       "jrig_run_id": 4,
+      "discovery_run_id": null,
       "evidence_class": "E0",
       "artifact_uri": null,
-      "artifact_sha256": null
+      "artifact_sha256": null,
+      "baseline_delta": null
     },
     {
       "plugin_name": "databricks-pack",
       "jrig_run_id": 5,
+      "discovery_run_id": null,
       "evidence_class": "E0",
       "artifact_uri": null,
-      "artifact_sha256": null
+      "artifact_sha256": null,
+      "baseline_delta": null
     }
   ],
   "rendering": {
