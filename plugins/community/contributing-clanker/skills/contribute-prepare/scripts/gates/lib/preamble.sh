@@ -31,15 +31,15 @@ trap '_gate_err_trap $LINENO' ERR
 
 # Emit a verdict and exit. Use these — never raw echo.
 #
-# Reason / fix_hint are JSON-escaped via jq -nc. Earlier versions used
+# Reason / fix_hint are JSON-escaped via jq long-form flags. Earlier versions used
 # printf '%s' which dropped raw text into the JSON body and produced
 # invalid output whenever any message contained a literal `"`. Caught by
 # the e02-ai-strike-track unit tests on 2026-05-03.
-gate_pass()   { jq -nc --arg g "$_GATE_ID" --arg r "${1:-ok}" '{severity:"PASS",gate:$g,reason:$r}'; exit 0; }
-gate_warn()   { jq -nc --arg g "$_GATE_ID" --arg r "${1:-warning}" --arg f "${2:-}" '{severity:"WARN",gate:$g,reason:$r,fix_hint:$f}'; exit 0; }
-gate_block()  { jq -nc --arg g "$_GATE_ID" --arg r "${1:-blocked}" --arg f "${2:-}" '{severity:"BLOCK",gate:$g,reason:$r,fix_hint:$f}'; exit 0; }
-gate_inform() { jq -nc --arg g "$_GATE_ID" --arg r "${1:-noted}" '{severity:"INFORM",gate:$g,reason:$r}'; exit 0; }
-gate_skip()   { jq -nc --arg g "$_GATE_ID" --arg r "${1:-not applicable}" '{severity:"SKIP",gate:$g,reason:$r}'; exit 0; }
+gate_pass()   { jq --null-input --compact-output --arg g "$_GATE_ID" --arg r "${1:-ok}" '{severity:"PASS",gate:$g,reason:$r}'; exit 0; }
+gate_warn()   { jq --null-input --compact-output --arg g "$_GATE_ID" --arg r "${1:-warning}" --arg f "${2:-}" '{severity:"WARN",gate:$g,reason:$r,fix_hint:$f}'; exit 0; }
+gate_block()  { jq --null-input --compact-output --arg g "$_GATE_ID" --arg r "${1:-blocked}" --arg f "${2:-}" '{severity:"BLOCK",gate:$g,reason:$r,fix_hint:$f}'; exit 0; }
+gate_inform() { jq --null-input --compact-output --arg g "$_GATE_ID" --arg r "${1:-noted}" '{severity:"INFORM",gate:$g,reason:$r}'; exit 0; }
+gate_skip()   { jq --null-input --compact-output --arg g "$_GATE_ID" --arg r "${1:-not applicable}" '{severity:"SKIP",gate:$g,reason:$r}'; exit 0; }
 
 # Read stdin JSON contract. Sets:
 #   GATE_CANDIDATE_PATH — path to candidate .md file
@@ -98,7 +98,7 @@ gh_safe() {
 # Helper: log a gate run for observability. Append-only.
 gate_log_run() {
   local verdict="$1"
-  /usr/bin/printf '%s\n' "$(jq -nc \
+  /usr/bin/printf '%s\n' "$(jq --null-input --compact-output \
     --arg ts "$(/usr/bin/date -u +%Y-%m-%dT%H:%M:%SZ)" \
     --arg gate "$_GATE_ID" \
     --arg action "$GATE_ACTION" \

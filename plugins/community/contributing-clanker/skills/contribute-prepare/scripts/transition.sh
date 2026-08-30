@@ -171,7 +171,7 @@ PYEOF
       OG="${OVERRIDES_NEW[$i]}"
       OR="${OVERRIDES_NEW[$((i+1))]}"
       i=$((i+2))
-      jq -nc --arg ts "$NOW" --arg gate "$OG" --arg reason "$OR" --arg cand "$CANDIDATE" \
+      jq --null-input --compact-output --arg ts "$NOW" --arg gate "$OG" --arg reason "$OR" --arg cand "$CANDIDATE" \
         '{ts: $ts, event: "gate_override", details: {gate: $gate, reason: $reason, candidate: $cand}}' >> "$LOG"
     done
   fi
@@ -214,7 +214,7 @@ if [[ "${#MISSING_SECTIONS[@]}" -gt 0 ]]; then
   /usr/bin/printf '[transition]    backfilled candidates legitimately skip early-stage sections)\n' >&2
   # Log it so audits can see the pattern frequency
   MISSING_JSON=$(/usr/bin/printf '%s\n' "${MISSING_SECTIONS[@]}" | jq -Rsc 'split("\n") | map(select(. != ""))')
-  jq -nc --arg ts "$NOW" --arg cand "$CANDIDATE" --arg target "$TARGET_STATUS" \
+  jq --null-input --compact-output --arg ts "$NOW" --arg cand "$CANDIDATE" --arg target "$TARGET_STATUS" \
         --argjson missing "$MISSING_JSON" \
     '{ts: $ts, event: "transition_section_warn",
       details: {candidate: $cand, target_status: $target, missing_sections: $missing}}' \
@@ -237,7 +237,7 @@ set -e
 echo "$GATE_VERDICT"
 
 # Log the transition attempt
-jq -nc --arg ts "$NOW" --arg action "$ACTION" --arg cand "$CANDIDATE" --arg exit "$GATE_EXIT" --arg verdict "$GATE_VERDICT" \
+jq --null-input --compact-output --arg ts "$NOW" --arg action "$ACTION" --arg cand "$CANDIDATE" --arg exit "$GATE_EXIT" --arg verdict "$GATE_VERDICT" \
   '{ts: $ts, event: "transition_attempt", details: {action: $action, candidate: $cand, gate_exit: $exit | tonumber, gate_verdict: ($verdict | fromjson? // {raw: $verdict})}}' >> "$LOG" 2>/dev/null || true
 
 if [[ "$GATE_EXIT" -ne 0 ]]; then
@@ -256,7 +256,7 @@ if [[ "$DRY_RUN" -eq 0 ]]; then
     /usr/bin/printf '[transition] candidate status → %s\n\n' "$NEW_STATE" >&2
 
     # Log success
-    jq -nc --arg ts "$NOW" --arg action "$ACTION" --arg cand "$CANDIDATE" --arg new_state "$NEW_STATE" \
+    jq --null-input --compact-output --arg ts "$NOW" --arg action "$ACTION" --arg cand "$CANDIDATE" --arg new_state "$NEW_STATE" \
       '{ts: $ts, event: "transition_committed", details: {action: $action, candidate: $cand, new_state: $new_state}}' >> "$LOG" 2>/dev/null || true
   fi
 fi

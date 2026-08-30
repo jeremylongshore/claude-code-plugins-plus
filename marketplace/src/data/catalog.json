@@ -6,7 +6,7 @@
   },
   "stats": {
     "totalPlugins": 442,
-    "totalSkills": 3067,
+    "totalSkills": 3069,
     "totalCommands": 85,
     "pluginsWithSkills": 410,
     "byCategory": {
@@ -8650,8 +8650,8 @@
       "slug": "contributing-clanker",
       "name": "contributing-clanker",
       "displayName": "contributing clanker",
-      "description": "Local-only OSS contribution command center with 41 deterministic gates against AI-slop failure modes. Helps maintainers triage contributor PRs, check for typical AI-generated patterns (over-engineering, false claims, fabricated tests, license violations), and approve / request-changes from a single dashboard.",
-      "version": "0.8.0",
+      "description": "Portable OSS contribution workflow with separate read-only audit, explicitly scoped local preparation, and human-approved publishing skills.",
+      "version": "0.9.0",
       "category": "community",
       "keywords": [
         "oss",
@@ -8662,7 +8662,7 @@
         "open-source"
       ],
       "hasSkills": true,
-      "skillCount": 1,
+      "skillCount": 3,
       "commandCount": 0,
       "installCommand": "/plugin install contributing-clanker",
       "sourcePath": "./plugins/community/contributing-clanker",

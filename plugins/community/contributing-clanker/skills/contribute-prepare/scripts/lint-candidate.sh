@@ -96,7 +96,7 @@ evaluate_one() {
     missing_json=$(/usr/bin/printf '%s\n' "${missing[@]}" | jq -Rsc 'split("\n") | map(select(. != ""))')
   fi
 
-  jq -nc --arg cand "$basename" --arg status "$status" --argjson missing "$missing_json" \
+  jq --null-input --compact-output --arg cand "$basename" --arg status "$status" --argjson missing "$missing_json" \
     '{candidate: $cand, status: $status, missing: $missing, missing_count: ($missing | length)}'
 }
 

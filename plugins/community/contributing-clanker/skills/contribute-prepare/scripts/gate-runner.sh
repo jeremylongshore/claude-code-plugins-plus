@@ -69,7 +69,7 @@ REPO=$(/usr/bin/awk '/^---$/{fm=!fm?1:2;next} fm==1 && /^repo:/{sub(/^repo:[[:sp
 BRANCH=$(/usr/bin/awk '/^---$/{fm=!fm?1:2;next} fm==1 && /^branch:/{sub(/^branch:[[:space:]]*/,""); print; exit}' "$CANDIDATE" 2>/dev/null || /usr/bin/echo "")
 
 # Build the input JSON once (passed to every gate)
-INPUT_JSON=$(jq -nc \
+INPUT_JSON=$(jq --null-input --compact-output \
   --arg candidate "$CANDIDATE" \
   --arg dossier "$DOSSIER" \
   --arg action "$ACTION" \
@@ -128,12 +128,12 @@ for GATE in "${GATES[@]}" ; do
   if VERDICT_JSON=$(/usr/bin/timeout 10 bash -c "/usr/bin/printf '%s' '$INPUT_JSON' | '$GATE'" 2>/dev/null); then
     : # ok, parse verdict
   else
-    VERDICT_JSON=$(jq -nc --arg gid "$GATE_ID" '{severity:"BLOCK", gate:$gid, reason:"gate timed out or crashed (>10s or non-zero exit) — fail-closed", fix_hint:"check the gate script for bugs; preamble.sh should have caught it"}')
+    VERDICT_JSON=$(jq --null-input --compact-output --arg gid "$GATE_ID" '{severity:"BLOCK", gate:$gid, reason:"gate timed out or crashed (>10s or non-zero exit) — fail-closed", fix_hint:"check the gate script for bugs; preamble.sh should have caught it"}')
   fi
 
   # Defensive parse: if the gate returned malformed JSON, treat as BLOCK
   if ! /usr/bin/printf '%s' "$VERDICT_JSON" | jq -e . >/dev/null 2>&1; then
-    VERDICT_JSON=$(jq -nc --arg gid "$GATE_ID" --arg raw "$VERDICT_JSON" '{severity:"BLOCK", gate:$gid, reason:"gate returned malformed JSON — fail-closed", fix_hint:("raw stdout: " + ($raw | tostring))}')
+    VERDICT_JSON=$(jq --null-input --compact-output --arg gid "$GATE_ID" --arg raw "$VERDICT_JSON" '{severity:"BLOCK", gate:$gid, reason:"gate returned malformed JSON — fail-closed", fix_hint:("raw stdout: " + ($raw | tostring))}')
   fi
 
   SEV=$(/usr/bin/printf '%s' "$VERDICT_JSON" | jq -r '.severity')
@@ -150,7 +150,7 @@ for GATE in "${GATES[@]}" ; do
   esac
 
   # Append run to log
-  /usr/bin/printf '%s\n' "$(jq -nc \
+  /usr/bin/printf '%s\n' "$(jq --null-input --compact-output \
     --arg ts "$NOW" \
     --arg gate "$GATE_ID" \
     --arg action "$ACTION" \
@@ -188,9 +188,9 @@ EFFECTIVE_BLOCK_COUNT=${#EFFECTIVE_BLOCKS[@]}
   "$TOTAL" "$PASS_COUNT" "$WARN_COUNT" "$BLOCK_COUNT" "$EFFECTIVE_BLOCK_COUNT" "$INFORM_COUNT" "$SKIP_COUNT" >&2
 
 if [[ "$EFFECTIVE_BLOCK_COUNT" -gt 0 ]]; then
-  /usr/bin/echo "$(jq -nc --argjson b "$(printf '%s\n' "${EFFECTIVE_BLOCKS[@]}" | jq -R . | jq -s .)" --argjson w "$(printf '%s\n' "${WARNINGS[@]}" | jq -R . | jq -s .)" --argjson n "$EFFECTIVE_BLOCK_COUNT" '{verdict: "BLOCK", effective_blocks: $n, blockers: $b, warnings: $w}')"
+  /usr/bin/echo "$(jq --null-input --compact-output --argjson b "$(printf '%s\n' "${EFFECTIVE_BLOCKS[@]}" | jq -R . | jq -s .)" --argjson w "$(printf '%s\n' "${WARNINGS[@]}" | jq -R . | jq -s .)" --argjson n "$EFFECTIVE_BLOCK_COUNT" '{verdict: "BLOCK", effective_blocks: $n, blockers: $b, warnings: $w}')"
   exit 1
 else
-  /usr/bin/echo "$(jq -nc --argjson w "$(printf '%s\n' "${WARNINGS[@]}" | jq -R . | jq -s .)" --argjson p "$PASS_COUNT" '{verdict: "PASS", gates_passed: $p, warnings: $w}')"
+  /usr/bin/echo "$(jq --null-input --compact-output --argjson w "$(printf '%s\n' "${WARNINGS[@]}" | jq -R . | jq -s .)" --argjson p "$PASS_COUNT" '{verdict: "PASS", gates_passed: $p, warnings: $w}')"
   exit 0
 fi
