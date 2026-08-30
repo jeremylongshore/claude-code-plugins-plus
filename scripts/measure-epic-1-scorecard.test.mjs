@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, symlinkSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { mkdtempSync, mkdirSync, readFileSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
 
 import { DEAD_DOMAIN } from './dead-domain-policy.mjs';
 import { buildExtendedScorecardRows } from './measure-epic-1-scorecard.mjs';
+import { inspectFreshieHermeticTest } from './measure-epic-1.mjs';
 
 const EXPECTED_ROWS = [
   5, 6, 7, 8, 9, 10, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
@@ -19,13 +21,37 @@ function put(root, path, value = '') {
   writeFileSync(target, value);
 }
 
+function canonicalJson(value) {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
+  if (value !== null && typeof value === 'object') {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`)
+      .join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
 function fixture() {
   const root = mkdtempSync(join(tmpdir(), 'epic-1-scorecard-'));
+  const doltCommit = 'a'.repeat(32);
+  const gradesCsv = 'skill_path,grade,score\none,A,90\ntwo,B,80\n';
+  const gradesHash = createHash('sha256').update(gradesCsv).digest('hex');
+  const forgeRecords = [2, 4, 5].map((jrig_run_id) => ({
+    plugin_name: 'databricks-pack',
+    jrig_run_id,
+    discovery_run_id: null,
+    evidence_class: 'E0',
+    artifact_uri: null,
+    artifact_sha256: null,
+    baseline_delta: null,
+  }));
+  const forgeHash = createHash('sha256').update(canonicalJson(forgeRecords)).digest('hex');
   const files = {
     '.github/dependabot.yml': 'version: 2\nupdates: []\n',
     '.github/workflows/publish-changed-packages.yml': `on:\n  workflow_run:\n    workflows: ['Validate Plugins']\njobs:\n  preflight:\n    steps:\n      - run: node scripts/npm-publication-preflight.mjs\n  publish:\n    environment: npm-production\n    steps:\n      - run: node scripts/publish-candidate-report.mjs && npm publish\n`,
     '.github/workflows/emit-evidence.yml': `permissions:\n  id-token: write\njobs:\n  sign:\n    steps:\n      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803\n`,
-    '.github/workflows/validate-plugins.yml': `on:\n  pull_request:\n  push:\n    branches: [main]\njobs:\n  validate:\n    steps:\n      - run: python3 scripts/validate-skills-schema.py --marketplace\n      - run: python3 -m unittest tests.test_prose_anchors\n  ci-required:\n    needs:\n      - validate\n`,
+    '.github/workflows/validate-plugins.yml': `on:\n  pull_request:\n  push:\n    branches: [main]\njobs:\n  validate:\n    steps:\n      - run: python3 scripts/validate-skills-schema.py --marketplace\n      - run: python3 -m unittest tests.test_prose_anchors\n  test:\n    needs: validate\n    strategy:\n      matrix:\n        test-type: [mcp-plugins, python-tests, validation-scripts]\n    steps:\n      - name: Install pinned Dolt for Freshie integration tests\n        if: matrix.test-type == 'python-tests'\n        run: |\n          readonly dolt_version='2.3.1'\n          readonly dolt_sha256='0a2a318f27c5e1088a2883038573c2054e00f356dc9752e74bca934f8321959a'\n          printf '%s  %s\\n' "$dolt_sha256" dolt.tar.gz | sha256sum --check --strict\n          sudo install -m 0755 dolt /usr/local/bin/dolt\n          dolt version\n      - name: Run Freshie hermetic publication cycle\n        if: matrix.test-type == 'python-tests'\n        run: python3 -m unittest tests.test_freshie_hermetic_cycle -v\n  ci-required:\n    needs:\n      - validate\n      - test\n`,
     '.gitleaks.toml': "[allowlist]\npaths = ['''(?i).*/README\\.md$''']\nregexes = []\n",
     '.claude-plugin/marketplace.extended.json': JSON.stringify({
       plugins: [
@@ -38,7 +64,50 @@ function fixture() {
     'CLAUDE.md': 'Validator (schema 4.0.0 — governed)\n',
     'STANDARDS.md':
       '## Canonical documents\n\n| Topic | Document |\n| --- | --- |\n| Fixture | [canonical](000-docs/canonical.md) |\n',
-    'freshie/grade-histogram.json': JSON.stringify({ total: 2 }),
+    '000-docs/807-DR-STND-evaluation-evidence.md': '# Evidence standard\n',
+    'freshie/grade-histogram.json': JSON.stringify({
+      run_id: 9,
+      total: 2,
+      grades: { A: 1, B: 1 },
+      dolt_commit: doltCommit,
+      grades_csv_sha256: gradesHash,
+    }),
+    'freshie/grades.csv': gradesCsv,
+    'freshie/reports/legacy-forge-proofs-demotion.json': JSON.stringify({
+      schema_version: 'forge-proof-demotion/v2',
+      source_run_id: 9,
+      source_tag: 'run-9',
+      source_dolt_commit: doltCommit,
+      records_sha256: forgeHash,
+      records: forgeRecords,
+    }),
+    'freshie/reports/run-delta-9.json': JSON.stringify({
+      schema_version: 'freshie-run-delta/v3',
+      run_id: 9,
+      from_tag: 'run-8',
+      to_tag: 'run-9',
+      dolt_commit: doltCommit,
+      run_coherence: {
+        discovery_run_id: 9,
+        header_total_skills: 2,
+        skill_rows: 2,
+        skill_row_delta: 0,
+        skill_compliance_rows: 2,
+      },
+      grade_export: {
+        row_count: 2,
+        csv_sha256: gradesHash,
+        grade_counts: { A: 1, B: 1 },
+      },
+      forge_proofs: {
+        row_count: 3,
+        records_sha256: forgeHash,
+        class_counts: { E0: 3, E1: 0, E2: 0, E3: 0 },
+        retained_e2_e3: 0,
+        total_e2_e3: 0,
+        records: forgeRecords,
+      },
+    }),
     'freshie/scripts/dolt-sync.py':
       'def acquire_lock():\n fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)\ndef refuse_if_server_running():\n return ".dolt/sql-server.lock"\n',
     'marketplace/scripts/generate-alpha.mjs':
@@ -59,6 +128,7 @@ function fixture() {
     'plugins/example/skills/one/SKILL.md': `---\nname: one\nallowed-tools: Read\ncompatibility: Harness A\n---\nhttps://docs.anthropic.com\n`,
     'plugins/local/skills/two/SKILL.md': `---\nname: two\nallowed-tools: >-\n  Read Write\ncompatibility: Harness B\n---\n${DEAD_DOMAIN}\n`,
     'scripts/npm-publication-preflight.mjs': 'export const required = true;\n',
+    'scripts/record-jrig-proofs.mjs': 'export const evidence = true;\n',
     'scripts/plugin-provenance.mjs':
       "export const SOURCE_FILE = '.source.json';\nexport function resolvePluginProvenance() {}\n",
     'scripts/publish-candidate-report.mjs':
@@ -69,7 +139,55 @@ function fixture() {
     'sources.lock.json': JSON.stringify({ sources: { example: {} } }),
     'sources.yaml': 'sources:\n  - name: example\n',
     'tests/test_dolt_sync.py': 'def test_single_writer_lock():\n pass\n',
+    'tests/test_freshie_hermetic_cycle.py': readFileSync(
+      new URL('../tests/test_freshie_hermetic_cycle.py', import.meta.url),
+      'utf8',
+    ),
   };
+  const workflowPath = '.github/workflows/validate-plugins.yml';
+  files[workflowPath] = files[workflowPath].replace(
+    `          printf '%s  %s\\n' "$dolt_sha256" dolt.tar.gz | sha256sum --check --strict
+          sudo install -m 0755 dolt /usr/local/bin/dolt
+          dolt version`,
+    `          readonly dolt_archive="/tmp/dolt-linux-amd64-v\${dolt_version}.tar.gz"
+          readonly dolt_extract="/tmp/dolt-extract"
+          printf '%s  %s\\n' "$dolt_sha256" "$dolt_archive" | sha256sum --check --strict
+          tar -xzf "$dolt_archive" -C "$dolt_extract"
+          sudo install -m 0755 "$dolt_extract/dolt-linux-amd64/bin/dolt" /usr/local/bin/dolt
+          installed_dolt_version="$(dolt version | awk '{print $3}')"
+          readonly installed_dolt_version
+          test "$installed_dolt_version" = "$dolt_version"`,
+  );
+  files[workflowPath] = files[workflowPath].replace(
+    '        run: python3 -m unittest tests.test_freshie_hermetic_cycle -v',
+    `        run: |
+          python3 - <<'PY'
+          import unittest
+          from tests.test_freshie_hermetic_cycle import HermeticFreshieCycleTests
+
+          method_name = "test_full_cycle_uses_only_scratch_state_and_refuses_live_server"
+          original_method = HermeticFreshieCycleTests.__dict__[method_name]
+          invocations = []
+
+          def guarded_method(self):
+              invocations.append(1)
+              return original_method(self)
+
+          setattr(HermeticFreshieCycleTests, method_name, guarded_method)
+          suite = unittest.TestSuite([HermeticFreshieCycleTests(method_name)])
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          valid = (
+              result.wasSuccessful()
+              and result.testsRun == 1
+              and not result.skipped
+              and not result.expectedFailures
+              and not result.unexpectedSuccesses
+              and len(invocations) == 1
+              and HermeticFreshieCycleTests.__dict__.get(method_name) is guarded_method
+          )
+          raise SystemExit(0 if valid else 1)
+          PY`,
+  );
   for (const [path, value] of Object.entries(files)) put(root, path, value);
   return { root, paths: Object.keys(files).sort() };
 }
@@ -78,6 +196,7 @@ function input(fixtureValue) {
   return {
     ...fixtureValue,
     agentSummary: { agents: 1, compliance_percent: 100, errors: 0 },
+    hermeticTestContract: inspectFreshieHermeticTest(fixtureValue.root),
     marketplaceSummary: { errors: 1 },
     skillRows: [
       {
@@ -269,7 +388,7 @@ test('measures the merged provenance boundary, ci-required needs, and STANDARDS 
   assert.deepEqual(rows[31].values.mirror_capable_publishers, [
     '.github/workflows/publish-changed-packages.yml',
   ]);
-  assert.deepEqual(rows[41].values.actual_needs, ['validate']);
+  assert.deepEqual(rows[41].values.actual_needs, ['validate', 'test']);
   assert.equal(rows[43].values.declared, 1);
   assert.deepEqual(rows[43].values.authority_links, ['000-docs/canonical.md']);
 });
@@ -328,13 +447,246 @@ test('link instrumentation stays excluded while domain instrumentation cannot by
 
 test('unresolved rows fail closed with null values rather than fabricated zeroes', () => {
   const rows = buildExtendedScorecardRows(input(fixture()));
-  for (const number of [
-    7, 8, 9, 15, 16, 17, 18, 19, 23, 29, 49, 50, 51, 52, 53, 54, 55, 58, 60, 61, 62,
-  ]) {
+  for (const number of [7, 8, 9, 15, 16, 17, 18, 19, 23, 29, 49, 50, 51, 60, 61, 62]) {
     assert.equal(rows[number].values, null, `row ${number}`);
     assert.match(rows[number].reason_code, /^[A-Z][A-Z0-9_]+$/);
     assert.ok(rows[number].required_inputs.length > 0);
   }
+});
+
+test('Freshie exit rows use tracked receipts and fail closed on planted drift', () => {
+  let base = fixture();
+  let rows = buildExtendedScorecardRows(input(base));
+  for (const number of [52, 53, 54, 58]) assert.equal(rows[number].status, 'target_met');
+  assert.equal(rows[55].status, 'target_met');
+  assert.equal(rows[55].values.retention_percent, null);
+  assert.equal(rows[55].values.no_e2_e3_claims, true);
+  assert.equal(rows[55].values.unretained_e2_e3, 0);
+
+  const runPath = 'freshie/reports/run-delta-9.json';
+  let driftedRun = JSON.parse(readFileSync(join(base.root, runPath), 'utf8'));
+  driftedRun.run_coherence.header_total_skills = 3;
+  driftedRun.run_coherence.skill_row_delta = -1;
+  put(base.root, runPath, JSON.stringify(driftedRun));
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[52].status, 'partial');
+
+  base = fixture();
+  const histogramPath = 'freshie/grade-histogram.json';
+  let histogram = JSON.parse(readFileSync(join(base.root, histogramPath), 'utf8'));
+  histogram.dolt_commit = 'b'.repeat(32);
+  put(base.root, histogramPath, JSON.stringify(histogram));
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[53].status, 'partial');
+
+  base = fixture();
+  histogram = JSON.parse(readFileSync(join(base.root, histogramPath), 'utf8'));
+  histogram.grades = { A: 2, B: 0 };
+  put(base.root, histogramPath, JSON.stringify(histogram));
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[53].status, 'partial');
+
+  base = fixture();
+  put(base.root, 'freshie/grades.csv', 'skill_path,grade,score\none,B,90\ntwo,A,80\n');
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[53].status, 'partial');
+
+  base = fixture();
+  const proofPath = 'freshie/reports/legacy-forge-proofs-demotion.json';
+  const proof = JSON.parse(readFileSync(join(base.root, proofPath), 'utf8'));
+  proof.records.push({
+    plugin_name: 'missing-artifact',
+    jrig_run_id: 7,
+    evidence_class: 'E2',
+    artifact_uri: null,
+    artifact_sha256: null,
+  });
+  put(base.root, proofPath, JSON.stringify(proof));
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[54].status, 'not_reproducible');
+  assert.equal(rows[55].status, 'not_reproducible');
+
+  base = fixture();
+  const workflowPath = '.github/workflows/validate-plugins.yml';
+  const workflow = readFileSync(join(base.root, workflowPath), 'utf8').replace(
+    '      - test\n',
+    '',
+  );
+  put(base.root, workflowPath, workflow);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+
+  base = fixture();
+  put(
+    base.root,
+    'tests/test_freshie_hermetic_cycle.py',
+    `import unittest
+class HermeticFreshieCycleTests(unittest.TestCase):
+    def setUp(self):
+        self.env = {"HOME": "dolt-home"}
+        self._run(["dolt", "config", "--global", "--add", "user.name", "Test"])
+        self._run(["dolt", "config", "--global", "--add", "user.email", "test@example.invalid"])
+    def _run(self, args, expected=0):
+        if False:
+            self.fail("returncode")
+    def test_full_cycle_uses_only_scratch_state_and_refuses_live_server(self):
+        if False:
+            self._run([str(REBUILD)])
+            self._run([str(VALIDATE)])
+            self._run([str(SYNC)])
+            self._run([str(PROMOTE)])
+            self._run(["dolt", "push", "file://remote"])
+            subprocess.Popen(["dolt", "sql-server"])
+            self._run([str(SYNC)], expected=1)
+            self.assertFalse(self.out / "blocked-grades.csv")
+        pass
+`,
+  );
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+
+  base = fixture();
+  const skippedTest = readFileSync(
+    join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
+    'utf8',
+  ).replace(
+    '    def test_full_cycle_uses_only_scratch_state_and_refuses_live_server(self):\n',
+    '    def test_full_cycle_uses_only_scratch_state_and_refuses_live_server(self):\n        raise unittest.SkipTest("no cycle executed")\n',
+  );
+  put(base.root, 'tests/test_freshie_hermetic_cycle.py', skippedTest);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.full_cycle, false);
+
+  base = fixture();
+  const aliasedMutation = readFileSync(
+    join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
+    'utf8',
+  ).replace(
+    '    def setUpClass(cls):\n',
+    '    def setUpClass(cls):\n        mutator = setattr\n        mutator(cls, "test_full_cycle_uses_only_scratch_state_and_refuses_live_server", lambda self: None)\n',
+  );
+  put(base.root, 'tests/test_freshie_hermetic_cycle.py', aliasedMutation);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.full_cycle, false);
+
+  base = fixture();
+  const replacedMethod = readFileSync(
+    join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
+    'utf8',
+  ).replace(
+    '    def setUpClass(cls):\n',
+    '    def setUpClass(cls):\n        cls.test_full_cycle_uses_only_scratch_state_and_refuses_live_server = lambda self: None\n',
+  );
+  put(base.root, 'tests/test_freshie_hermetic_cycle.py', replacedMethod);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.full_cycle, false);
+
+  base = fixture();
+  const lifecycleSkip = readFileSync(
+    join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
+    'utf8',
+  ).replace(
+    '    def setUpClass(cls):\n',
+    '    def setUpClass(cls):\n        raise unittest.SkipTest("class skipped before cycle")\n',
+  );
+  put(base.root, 'tests/test_freshie_hermetic_cycle.py', lifecycleSkip);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.full_cycle, false);
+
+  base = fixture();
+  const generatorTest = readFileSync(
+    join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
+    'utf8',
+  ).replace(
+    '    def test_full_cycle_uses_only_scratch_state_and_refuses_live_server(self):\n',
+    '    def test_full_cycle_uses_only_scratch_state_and_refuses_live_server(self):\n        yield None\n',
+  );
+  put(base.root, 'tests/test_freshie_hermetic_cycle.py', generatorTest);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.full_cycle, false);
+
+  base = fixture();
+  const unsafeWorkflow = readFileSync(join(base.root, workflowPath), 'utf8').replace(
+    '"$dolt_extract/dolt-linux-amd64/bin/dolt"',
+    '/tmp/unverified/dolt',
+  );
+  put(base.root, workflowPath, unsafeWorkflow);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.pinned_dolt, false);
+
+  base = fixture();
+  const aliasedOverwrite = readFileSync(join(base.root, workflowPath), 'utf8').replace(
+    '      - name: Run Freshie hermetic publication cycle\n',
+    '      - name: Overwrite Dolt through an alias\n        if: matrix.test-type == \'python-tests\'\n        env:\n          DOLT_DEST: /usr/local/bin/dolt\n        run: sudo /usr/bin/install -m 0755 /tmp/unverified/dolt "$DOLT_DEST"\n      - name: Run Freshie hermetic publication cycle\n',
+  );
+  put(base.root, workflowPath, aliasedOverwrite);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.pinned_dolt, false);
+
+  base = fixture();
+  const separateStepOverwrite = readFileSync(join(base.root, workflowPath), 'utf8').replace(
+    '      - name: Run Freshie hermetic publication cycle\n',
+    "      - name: Overwrite Dolt after verification\n        if: matrix.test-type == 'python-tests'\n        run: sudo /usr/bin/install -m 0755 /tmp/unverified/dolt /usr/local/bin/dolt\n      - name: Run Freshie hermetic publication cycle\n",
+  );
+  put(base.root, workflowPath, separateStepOverwrite);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.pinned_dolt, false);
+
+  base = fixture();
+  const alternateOverwriteWorkflow = readFileSync(join(base.root, workflowPath), 'utf8').replace(
+    '          test "$installed_dolt_version" = "$dolt_version"\n',
+    '          test "$installed_dolt_version" = "$dolt_version"\n          sudo /usr/bin/install -m 0755 /tmp/unverified/dolt /usr/local/bin/dolt\n',
+  );
+  put(base.root, workflowPath, alternateOverwriteWorkflow);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.pinned_dolt, false);
+
+  base = fixture();
+  const overwrittenWorkflow = readFileSync(join(base.root, workflowPath), 'utf8').replace(
+    '          test "$installed_dolt_version" = "$dolt_version"\n',
+    '          test "$installed_dolt_version" = "$dolt_version"\n          sudo install -m 0755 /tmp/unverified/dolt /usr/local/bin/dolt\n',
+  );
+  put(base.root, workflowPath, overwrittenWorkflow);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.pinned_dolt, false);
+
+  base = fixture();
+  const emptyGrades = 'skill_path,grade,score\n';
+  const emptyHash = createHash('sha256').update(emptyGrades).digest('hex');
+  put(base.root, 'freshie/grades.csv', emptyGrades);
+  histogram = JSON.parse(readFileSync(join(base.root, histogramPath), 'utf8'));
+  histogram.total = 0;
+  histogram.grades = {};
+  histogram.grades_csv_sha256 = emptyHash;
+  put(base.root, histogramPath, JSON.stringify(histogram));
+  driftedRun = JSON.parse(readFileSync(join(base.root, runPath), 'utf8'));
+  driftedRun.run_coherence.header_total_skills = 0;
+  driftedRun.run_coherence.skill_rows = 0;
+  driftedRun.run_coherence.skill_row_delta = 0;
+  driftedRun.run_coherence.skill_compliance_rows = 0;
+  driftedRun.grade_export.row_count = 0;
+  driftedRun.grade_export.csv_sha256 = emptyHash;
+  driftedRun.grade_export.grade_counts = {};
+  put(base.root, runPath, JSON.stringify(driftedRun));
+  rows = buildExtendedScorecardRows(input(base));
+  assert.notEqual(rows[52].status, 'target_met');
+  assert.notEqual(rows[53].status, 'target_met');
+
+  base = fixture();
+  put(base.root, runPath, '{not json');
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[52].status, 'not_reproducible');
+  assert.equal(rows[52].values, null);
 });
 
 test('measures privileged workflow action pins and exposes mutable references', () => {

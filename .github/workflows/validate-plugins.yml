@@ -776,6 +776,55 @@ jobs:
           # Install additional testing tools
           pip install pyyaml jsonschema
 
+      - name: Install pinned Dolt for Freshie integration tests
+        if: matrix.test-type == 'python-tests'
+        run: |
+          set -euo pipefail
+          readonly dolt_version='2.3.1'
+          readonly dolt_sha256='0a2a318f27c5e1088a2883038573c2054e00f356dc9752e74bca934f8321959a'
+          readonly dolt_archive="${RUNNER_TEMP}/dolt-linux-amd64-v${dolt_version}.tar.gz"
+          readonly dolt_extract="${RUNNER_TEMP}/dolt-v${dolt_version}"
+          mkdir -p "$dolt_extract"
+          curl --fail --location --silent --show-error \
+            "https://github.com/dolthub/dolt/releases/download/v${dolt_version}/dolt-linux-amd64.tar.gz" \
+            --output "$dolt_archive"
+          printf '%s  %s\n' "$dolt_sha256" "$dolt_archive" | sha256sum --check --strict
+          tar -xzf "$dolt_archive" -C "$dolt_extract"
+          sudo install -m 0755 "$dolt_extract/dolt-linux-amd64/bin/dolt" /usr/local/bin/dolt
+          installed_dolt_version="$(dolt version | awk '{print $3}')"
+          readonly installed_dolt_version
+          test "$installed_dolt_version" = "$dolt_version"
+
+      - name: Run Freshie hermetic publication cycle
+        if: matrix.test-type == 'python-tests'
+        run: |
+          python3 - <<'PY'
+          import unittest
+          from tests.test_freshie_hermetic_cycle import HermeticFreshieCycleTests
+
+          method_name = "test_full_cycle_uses_only_scratch_state_and_refuses_live_server"
+          original_method = HermeticFreshieCycleTests.__dict__[method_name]
+          invocations = []
+
+          def guarded_method(self):
+              invocations.append(1)
+              return original_method(self)
+
+          setattr(HermeticFreshieCycleTests, method_name, guarded_method)
+          suite = unittest.TestSuite([HermeticFreshieCycleTests(method_name)])
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          valid = (
+              result.wasSuccessful()
+              and result.testsRun == 1
+              and not result.skipped
+              and not result.expectedFailures
+              and not result.unexpectedSuccesses
+              and len(invocations) == 1
+              and HermeticFreshieCycleTests.__dict__.get(method_name) is guarded_method
+          )
+          raise SystemExit(0 if valid else 1)
+          PY
+
       - name: Run Python tests
         if: matrix.test-type == 'python-tests'
         run: |

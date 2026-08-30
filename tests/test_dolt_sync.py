@@ -70,9 +70,7 @@ class BuildCreateTableTests(unittest.TestCase):
         return dolt_sync.build_create_table(table, schema[table])
 
     def test_autoincrement_is_stripped(self):
-        ddl = self.ddl_for(
-            "CREATE TABLE t (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);", "t"
-        )
+        ddl = self.ddl_for("CREATE TABLE t (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);", "t")
         self.assertNotIn("AUTOINCREMENT", ddl.upper().replace("_", ""))
         self.assertIn("`id` BIGINT", ddl)
         self.assertIn("PRIMARY KEY (`id`)", ddl)
@@ -89,15 +87,13 @@ class BuildCreateTableTests(unittest.TestCase):
 
     def test_current_timestamp_default_gets_precision(self):
         ddl = self.ddl_for(
-            "CREATE TABLE t (id INTEGER PRIMARY KEY, "
-            "validated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);", "t"
+            "CREATE TABLE t (id INTEGER PRIMARY KEY, validated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);", "t"
         )
         self.assertIn("`validated_at` DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6)", ddl)
 
     def test_unique_constraint_renamed_and_kept_longtext(self):
         ddl = self.ddl_for(
-            "CREATE TABLE t (id INTEGER PRIMARY KEY, skill_path TEXT, run_id INTEGER, "
-            "UNIQUE(skill_path, run_id));", "t"
+            "CREATE TABLE t (id INTEGER PRIMARY KEY, skill_path TEXT, run_id INTEGER, UNIQUE(skill_path, run_id));", "t"
         )
         self.assertIn("UNIQUE KEY `uniq_t_1` (`skill_path`, `run_id`)", ddl)
         self.assertIn("`skill_path` LONGTEXT", ddl)
@@ -114,9 +110,7 @@ class BuildCreateTableTests(unittest.TestCase):
         self.assertIn("KEY `idx_forge_proofs_passed` (`passed`)", ddl)
 
     def test_composite_text_pk_all_varchar(self):
-        ddl = self.ddl_for(
-            "CREATE TABLE t (a TEXT, b TEXT, PRIMARY KEY (a, b));", "t"
-        )
+        ddl = self.ddl_for("CREATE TABLE t (a TEXT, b TEXT, PRIMARY KEY (a, b));", "t")
         self.assertIn("`a` VARCHAR(255)", ddl)
         self.assertIn("`b` VARCHAR(255)", ddl)
         self.assertIn("PRIMARY KEY (`a`, `b`)", ddl)
@@ -172,17 +166,14 @@ class DiscoveryTests(unittest.TestCase):
         self.conn.close()
 
     def test_real_columns_discovered(self):
-        self.assertEqual(
-            dolt_sync.real_columns(self.schema), {"a": ["pct"], "b": ["score"]}
-        )
+        self.assertEqual(dolt_sync.real_columns(self.schema), {"a": ["pct"], "b": ["score"]})
 
     def test_text_pk_guards_discovered(self):
         self.assertEqual(dolt_sync.text_pk_guards(self.schema), [("b", "package_name")])
 
     def test_sqlite_sequence_is_skipped(self):
         conn = fixture_conn(
-            "CREATE TABLE t (id INTEGER PRIMARY KEY AUTOINCREMENT, v TEXT);"
-            "INSERT INTO t (v) VALUES ('x');"
+            "CREATE TABLE t (id INTEGER PRIMARY KEY AUTOINCREMENT, v TEXT);INSERT INTO t (v) VALUES ('x');"
         )
         schema = dolt_sync.introspect_schema(conn)
         conn.close()
@@ -195,9 +186,7 @@ class TypeViolationTests(unittest.TestCase):
     Violating non-PK columns must widen to LONGTEXT; PK violations hard-fail."""
 
     def test_text_in_integer_column_widens(self):
-        conn = fixture_conn(
-            "CREATE TABLE t (id INTEGER PRIMARY KEY, fm_max_turns INTEGER DEFAULT 0);"
-        )
+        conn = fixture_conn("CREATE TABLE t (id INTEGER PRIMARY KEY, fm_max_turns INTEGER DEFAULT 0);")
         conn.execute("INSERT INTO t VALUES (1, 10)")
         conn.execute("INSERT INTO t VALUES (2, '10 # yaml comment cruft')")
         schema = dolt_sync.introspect_schema(conn)
@@ -217,15 +206,11 @@ class TypeViolationTests(unittest.TestCase):
         conn.close()
 
     def test_bad_timestamp_widens(self):
-        conn = fixture_conn(
-            "CREATE TABLE t (id INTEGER PRIMARY KEY, at TIMESTAMP);"
-        )
+        conn = fixture_conn("CREATE TABLE t (id INTEGER PRIMARY KEY, at TIMESTAMP);")
         conn.execute("INSERT INTO t VALUES (1, '2026-05-04T00:45:25.457182')")
         conn.execute("INSERT INTO t VALUES (2, 'not a datetime')")
         schema = dolt_sync.introspect_schema(conn)
-        self.assertEqual(
-            dolt_sync.scan_type_violations(conn, schema), {("t", "at"): 1}
-        )
+        self.assertEqual(dolt_sync.scan_type_violations(conn, schema), {("t", "at"): 1})
         conn.close()
 
     def test_pk_violation_hard_fails(self):
@@ -300,9 +285,7 @@ class ForgeProofRetentionGateTests(unittest.TestCase):
     def test_jrig_tables_are_never_allowlisted(self):
         # The two sets must stay disjoint — allowlisting a j-rig runtime
         # table would re-open the exact leak this gate exists to prevent.
-        self.assertEqual(
-            dolt_sync.JRIG_RUNTIME_TABLES & dolt_sync.EXPORT_ALLOWLIST, frozenset()
-        )
+        self.assertEqual(dolt_sync.JRIG_RUNTIME_TABLES & dolt_sync.EXPORT_ALLOWLIST, frozenset())
 
     def test_cli_refuses_leaked_jrig_table_before_creating_dolt_repo(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -376,6 +359,7 @@ class SingleWriterTests(unittest.TestCase):
         self.assertIn("sql-server", result.stdout)
         self.assertIn("stop it before syncing", result.stdout)
 
+
 class GradesExportTests(unittest.TestCase):
     """grades.csv must reflect the CURRENT run only — latest-per-skill across
     all runs kept deleted skills alive as ghost rows (102 of them by run 9)."""
@@ -423,8 +407,7 @@ class GradesExportTests(unittest.TestCase):
 
         conn = fixture_conn(self.DDL)
         conn.execute(
-            "INSERT INTO skill_compliance (skill_path, grade, score, run_id) "
-            "VALUES ('plugins/alive', 'B', 80.0, 1)"
+            "INSERT INTO skill_compliance (skill_path, grade, score, run_id) VALUES ('plugins/alive', 'B', 80.0, 1)"
         )
         with tempfile.TemporaryDirectory() as tmpdir:
             with self.assertRaises(dolt_sync.SyncError):
@@ -447,8 +430,7 @@ class GradesExportTests(unittest.TestCase):
 
         conn = fixture_conn(self.DDL)
         conn.execute(
-            "INSERT INTO skill_compliance (skill_path, grade, score, run_id) "
-            "VALUES ('plugins/alive', 'A', 99.0, 1)"
+            "INSERT INTO skill_compliance (skill_path, grade, score, run_id) VALUES ('plugins/alive', 'A', 99.0, 1)"
         )
         with tempfile.TemporaryDirectory() as tmpdir:
             output = Path(tmpdir) / "isolated" / "exports"
@@ -477,9 +459,7 @@ class GradesExportTests(unittest.TestCase):
             second = root / "clean-two"
             dolt_sync.write_grades_export(conn, 9, first / "grades.csv", first / "grade-histogram.json")
             dolt_sync.write_grades_export(conn, 9, second / "grades.csv", second / "grade-histogram.json")
-            self.assertEqual(
-                (first / "grades.csv").read_bytes(), (second / "grades.csv").read_bytes()
-            )
+            self.assertEqual((first / "grades.csv").read_bytes(), (second / "grades.csv").read_bytes())
             self.assertEqual(
                 (first / "grade-histogram.json").read_bytes(),
                 (second / "grade-histogram.json").read_bytes(),
@@ -505,16 +485,65 @@ class GradesExportTests(unittest.TestCase):
             dolt_sync.write_grades_export(conn, 9, csv_path, histogram_path)
             dolt_sync.gate_tracked_grade_exports(conn, csv_path, histogram_path)
 
-            histogram_path.write_text(
-                '{"run_id": 8, "total": 2, "grades": {"A": 1, "B": 1}}\n'
-            )
+            histogram_path.write_text('{"run_id": 8, "total": 2, "grades": {"A": 1, "B": 1}}\n')
             with self.assertRaisesRegex(dolt_sync.SyncError, "stale.*run_id=8.*=9"):
                 dolt_sync.gate_tracked_grade_exports(conn, csv_path, histogram_path)
 
-            histogram_path.write_text(
-                '{"run_id": 9, "total": 3, "grades": {"A": 1, "B": 1}}\n'
-            )
+            histogram_path.write_text('{"run_id": 9, "total": 3, "grades": {"A": 1, "B": 1}}\n')
             with self.assertRaisesRegex(dolt_sync.SyncError, "row-count mismatch.*2.*=3"):
+                dolt_sync.gate_tracked_grade_exports(conn, csv_path, histogram_path)
+        conn.close()
+
+    def test_same_count_changed_grades_csv_is_refused(self):
+        conn = fixture_conn(
+            self.DDL
+            + "CREATE TABLE discovery_runs (id INTEGER PRIMARY KEY);"
+            + "INSERT INTO discovery_runs (id) VALUES (9);"
+        )
+        conn.executemany(
+            "INSERT INTO skill_compliance (skill_path, grade, score, run_id) VALUES (?,?,?,?)",
+            [("plugins/alpha", "A", 99.5, 9), ("plugins/zeta", "B", 80.0, 9)],
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            csv_path = root / "grades.csv"
+            histogram_path = root / "grade-histogram.json"
+            dolt_sync.write_grades_export(conn, 9, csv_path, histogram_path)
+
+            # Preserve the header and row count while changing the payload. A
+            # cardinality-only gate would accept this stale/mutated artifact.
+            csv_path.write_text(
+                "skill_path,grade,score\nplugins/alpha,B,99.5\nplugins/zeta,A,80.0\n",
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(dolt_sync.SyncError, "CSV content does not match"):
+                dolt_sync.gate_tracked_grade_exports(conn, csv_path, histogram_path)
+        conn.close()
+
+    def test_same_total_changed_histogram_buckets_are_refused(self):
+        conn = fixture_conn(
+            self.DDL
+            + "CREATE TABLE discovery_runs (id INTEGER PRIMARY KEY);"
+            + "INSERT INTO discovery_runs (id) VALUES (9);"
+        )
+        conn.executemany(
+            "INSERT INTO skill_compliance (skill_path, grade, score, run_id) VALUES (?,?,?,?)",
+            [("plugins/alpha", "A", 99.5, 9), ("plugins/zeta", "B", 80.0, 9)],
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            csv_path = root / "grades.csv"
+            histogram_path = root / "grade-histogram.json"
+            dolt_sync.write_grades_export(conn, 9, csv_path, histogram_path)
+
+            # Keep the run id and total valid, but lie about the distribution.
+            histogram_path.write_text(
+                '{"run_id": 9, "total": 2, "grades": {"A": 2}}\n',
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(dolt_sync.SyncError, "histogram buckets"):
                 dolt_sync.gate_tracked_grade_exports(conn, csv_path, histogram_path)
         conn.close()
 
@@ -557,11 +586,15 @@ class StampDoltCommitTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmpdir:
             hist = pathlib.Path(tmpdir) / "grade-histogram.json"
+            grades = pathlib.Path(tmpdir) / "grades.csv"
+            grades_bytes = b"skill_path,grade,score\nplugins/alpha,A,99.5\n"
+            grades.write_bytes(grades_bytes)
             original = {"run_id": 9, "total": 2, "grades": {"A": 1, "B": 1}}
             hist.write_text(json.dumps(original, indent=2) + "\n")
-            dolt_sync.stamp_dolt_commit(hist, "abc123def456")
+            dolt_sync.stamp_dolt_commit(hist, "abc123def456", grades)
             payload = json.loads(hist.read_text())
         self.assertEqual(payload["dolt_commit"], "abc123def456")
+        self.assertEqual(payload["grades_csv_sha256"], hashlib.sha256(grades_bytes).hexdigest())
         for key, val in original.items():
             self.assertEqual(payload[key], val)
 
@@ -572,10 +605,90 @@ class StampDoltCommitTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmpdir:
             hist = pathlib.Path(tmpdir) / "grade-histogram.json"
+            grades = pathlib.Path(tmpdir) / "grades.csv"
+            grades.write_text("skill_path,grade,score\n", encoding="utf-8")
             hist.write_text(json.dumps({"run_id": 9, "dolt_commit": "old"}) + "\n")
-            dolt_sync.stamp_dolt_commit(hist, "new")
+            dolt_sync.stamp_dolt_commit(hist, "new", grades)
             payload = json.loads(hist.read_text())
         self.assertEqual(payload["dolt_commit"], "new")
+
+
+class PostCommitOutputsTests(unittest.TestCase):
+    """Publication must stop before push if either local receipt cannot emit."""
+
+    def test_stamp_failure_is_normalized_and_stops_before_run_receipt(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            with (
+                mock.patch.object(
+                    dolt_sync,
+                    "stamp_dolt_commit",
+                    side_effect=OSError("simulated disk failure"),
+                ),
+                mock.patch.object(dolt_sync, "load_run_delta") as load_run_delta,
+            ):
+                with self.assertRaisesRegex(
+                    dolt_sync.SyncError,
+                    "grade-export receipt failed before push.*simulated disk failure",
+                ):
+                    dolt_sync.post_commit_outputs(
+                        repo=root / "dolt-repo",
+                        run_id=9,
+                        tag="run-9",
+                        head_hash="abc123",
+                        grades_csv_path=root / "grades.csv",
+                        histogram_path=root / "grade-histogram.json",
+                        reports_dir=root / "reports",
+                    )
+
+            load_run_delta.assert_not_called()
+
+    def test_run_receipt_failure_is_normalized_after_successful_stamp(self):
+        import json
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            grades = root / "grades.csv"
+            histogram = root / "grade-histogram.json"
+            grades.write_text(
+                "skill_path,grade,score\nplugins/alpha,A,99.5\n",
+                encoding="utf-8",
+            )
+            histogram.write_text(
+                '{"run_id": 9, "total": 1, "grades": {"A": 1}}\n',
+                encoding="utf-8",
+            )
+            run_delta = mock.Mock()
+            run_delta.emit.side_effect = RuntimeError("simulated receipt failure")
+
+            with mock.patch.object(dolt_sync, "load_run_delta", return_value=run_delta):
+                with self.assertRaisesRegex(
+                    dolt_sync.SyncError,
+                    "run receipt failed before push.*simulated receipt failure",
+                ):
+                    dolt_sync.post_commit_outputs(
+                        repo=root / "dolt-repo",
+                        run_id=9,
+                        tag="run-9",
+                        head_hash="abc123",
+                        grades_csv_path=grades,
+                        histogram_path=histogram,
+                        reports_dir=root / "reports",
+                    )
+
+            stamped = json.loads(histogram.read_text(encoding="utf-8"))
+            self.assertEqual(stamped["dolt_commit"], "abc123")
+            self.assertEqual(
+                stamped["grades_csv_sha256"],
+                hashlib.sha256(grades.read_bytes()).hexdigest(),
+            )
+            run_delta.emit.assert_called_once_with(
+                root / "dolt-repo",
+                9,
+                "abc123",
+                "run-9",
+                reports_dir=root / "reports",
+            )
 
 
 class VarcharGuardTests(unittest.TestCase):
@@ -623,9 +736,7 @@ class RunCompletenessGateTests(unittest.TestCase):
         conn.close()
 
     def test_run_six_shape_with_3000_header_and_19_rows_hard_fails(self):
-        conn = fixture_conn(
-            self.DDL + "INSERT INTO discovery_runs (id, total_skills) VALUES (6, 3000);"
-        )
+        conn = fixture_conn(self.DDL + "INSERT INTO discovery_runs (id, total_skills) VALUES (6, 3000);")
         conn.executemany(
             "INSERT INTO skills (id, name, run_id) VALUES (?, ?, 6)",
             [(index, f"skill-{index}") for index in range(1, 20)],
@@ -642,10 +753,7 @@ class RunCompletenessGateTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             db = Path(tmp) / "inventory.sqlite"
             with sqlite3.connect(db) as conn:
-                conn.executescript(
-                    self.DDL
-                    + "INSERT INTO discovery_runs (id, total_skills) VALUES (6, 3000);"
-                )
+                conn.executescript(self.DDL + "INSERT INTO discovery_runs (id, total_skills) VALUES (6, 3000);")
                 conn.executemany(
                     "INSERT INTO skills (id, name, run_id) VALUES (?, ?, 6)",
                     [(index, f"skill-{index}") for index in range(1, 20)],
@@ -670,8 +778,7 @@ class RunCompletenessGateTests(unittest.TestCase):
 
     def test_legacy_schema_without_totals_does_not_block(self):
         conn = fixture_conn(
-            "CREATE TABLE discovery_runs (id INTEGER PRIMARY KEY);"
-            "INSERT INTO discovery_runs (id) VALUES (1);"
+            "CREATE TABLE discovery_runs (id INTEGER PRIMARY KEY);INSERT INTO discovery_runs (id) VALUES (1);"
         )
         dolt_sync.gate_run_completeness(conn, 1)  # cannot judge — do not block
         conn.close()

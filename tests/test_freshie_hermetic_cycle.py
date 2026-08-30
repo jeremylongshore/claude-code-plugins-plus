@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import shutil
 import socket
 import sqlite3
@@ -29,11 +30,15 @@ SYNC = ROOT / "freshie" / "scripts" / "dolt-sync.py"
 PROMOTE = ROOT / "freshie" / "scripts" / "promote-to-curated.py"
 
 
-@unittest.skipUnless(
-    shutil.which("dolt") and shutil.which("node") and shutil.which("sqlite3"),
-    "requires dolt, node, and sqlite3 for the hermetic integration fixture",
-)
 class HermeticFreshieCycleTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        missing = [name for name in ("dolt", "node", "sqlite3") if not shutil.which(name)]
+        if missing:
+            raise AssertionError(
+                "Freshie hermetic integration is blocking; missing required tools: " + ", ".join(missing)
+            )
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory(prefix="freshie-hermetic-")
         self.root = Path(self.tmp.name) / "repo"
@@ -43,10 +48,15 @@ class HermeticFreshieCycleTests(unittest.TestCase):
         self.out = Path(self.tmp.name) / "out"
         self.curated = Path(self.tmp.name) / "curated"
         self.remote = Path(self.tmp.name) / "remote"
+        self.dolt_home = Path(self.tmp.name) / "dolt-home"
+        self.dolt_home.mkdir()
+        self.env = os.environ.copy()
+        self.env["HOME"] = str(self.dolt_home)
         self.skill_rel = "plugins/testing/example/skills/example-skill/SKILL.md"
         self.skill = self.root / self.skill_rel
-        self.skill.parent.mkdir(parents=True)
-        self.skill.write_text(self._graded_fixture_skill(), encoding="utf-8")
+        source = self._graded_fixture_source()
+        self.skill.parent.parent.mkdir(parents=True)
+        shutil.copytree(source.parent, self.skill.parent)
         self.resolver = Path(self.tmp.name) / "resolver.mjs"
         self.resolver.write_text(
             "#!/usr/bin/env node\n"
@@ -59,11 +69,13 @@ class HermeticFreshieCycleTests(unittest.TestCase):
         self._run(["git", "config", "user.email", "freshie@example.invalid"], cwd=self.root)
         self._run(["git", "add", "."], cwd=self.root)
         self._run(["git", "commit", "-qm", "fixture"], cwd=self.root)
+        self._run(["dolt", "config", "--global", "--add", "user.name", "Freshie Test"])
+        self._run(["dolt", "config", "--global", "--add", "user.email", "freshie@example.invalid"])
 
     def tearDown(self):
         self.tmp.cleanup()
 
-    def _graded_fixture_skill(self) -> str:
+    def _graded_fixture_source(self) -> Path:
         """Use an actual current A/B source so promotion tests its real threshold."""
         grades = ROOT / "freshie" / "grades.csv"
         with grades.open(newline="", encoding="utf-8") as handle:
@@ -75,11 +87,18 @@ class HermeticFreshieCycleTests(unittest.TestCase):
                     continue
                 if any((parent / ".source.json").exists() for parent in source.parents):
                     continue
-                return source.read_text(encoding="utf-8")
+                return source
         self.fail("no current first-party A/B SKILL.md is available for the integration fixture")
 
     def _run(self, args, *, cwd=None, expected=0):
-        result = subprocess.run(args, cwd=cwd, capture_output=True, text=True, check=False)
+        result = subprocess.run(
+            args,
+            cwd=cwd,
+            env=self.env,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
         expected_codes = (expected,) if isinstance(expected, int) else tuple(expected)
         if result.returncode not in expected_codes:
             self.fail(
@@ -99,29 +118,40 @@ class HermeticFreshieCycleTests(unittest.TestCase):
 
     def test_full_cycle_uses_only_scratch_state_and_refuses_live_server(self):
         self._run([sys.executable, str(REBUILD), "--repo-root", str(self.root), "--db", str(self.db), "--run-id", "1"])
-        self._run([
-            sys.executable, str(VALIDATE), "--marketplace", "--repo-root", str(self.root),
-            "--populate-db", str(self.db),
-        ], expected=(0, 1))
+        self._run(
+            [
+                sys.executable,
+                str(VALIDATE),
+                "--marketplace",
+                "--repo-root",
+                str(self.root),
+                "--populate-db",
+                str(self.db),
+            ]
+        )
         with sqlite3.connect(self.db) as conn:
-            self.assertEqual(
-                conn.execute("SELECT COUNT(*) FROM skill_compliance WHERE run_id=1").fetchone()[0], 1
-            )
-            # The source was A/B in its complete production plugin, but this
-            # one-file fixture deliberately omits that surrounding context.
-            # Calibrate only the scratch row so promotion exercises its
-            # non-empty path; production grades remain validator-owned.
-            conn.execute(
-                "UPDATE skill_compliance SET skill_path=?, grade='A', score=100 WHERE run_id=1",
-                (self.skill_rel.removesuffix("/SKILL.md"),),
-            )
-            conn.commit()
-        self._run([
-            sys.executable, str(SYNC), "--db", str(self.db), "--dolt-dir", str(self.dolt_dir),
-            "--grades-csv", str(self.out / "grades.csv"),
-            "--grade-histogram", str(self.out / "grade-histogram.json"),
-            "--reports-dir", str(self.out / "reports"), "--no-push",
-        ])
+            self.assertEqual(conn.execute("SELECT COUNT(*) FROM skill_compliance WHERE run_id=1").fetchone()[0], 1)
+            grade = conn.execute("SELECT grade FROM skill_compliance WHERE run_id=1").fetchone()[0]
+            self.assertIn(grade, {"A", "B"})
+        self._run(
+            [
+                sys.executable,
+                str(SYNC),
+                "--db",
+                str(self.db),
+                "--repo-root",
+                str(self.root),
+                "--dolt-dir",
+                str(self.dolt_dir),
+                "--grades-csv",
+                str(self.out / "grades.csv"),
+                "--grade-histogram",
+                str(self.out / "grade-histogram.json"),
+                "--reports-dir",
+                str(self.out / "reports"),
+                "--no-push",
+            ]
+        )
 
         self.assertTrue((self.out / "grades.csv").is_file())
         self.assertTrue((self.out / "reports" / "run-delta-1.json").is_file())
@@ -136,13 +166,24 @@ class HermeticFreshieCycleTests(unittest.TestCase):
         # `dolt log` is not a reliable view of the pushed ref.
         self._run(["dolt", "push", "fixture", "main"], cwd=self.dolt_dir)
 
-        self._run([
-            sys.executable, str(PROMOTE), "--repo-root", str(self.root),
-            "--grades-csv", str(self.out / "grades.csv"),
-            "--grade-histogram", str(self.out / "grade-histogram.json"),
-            "--curated-dir", str(self.curated), "--corpus-resolver", str(self.resolver),
-            "--no-validate", "--quiet",
-        ])
+        self._run(
+            [
+                sys.executable,
+                str(PROMOTE),
+                "--repo-root",
+                str(self.root),
+                "--grades-csv",
+                str(self.out / "grades.csv"),
+                "--grade-histogram",
+                str(self.out / "grade-histogram.json"),
+                "--curated-dir",
+                str(self.curated),
+                "--corpus-resolver",
+                str(self.resolver),
+                "--no-validate",
+                "--quiet",
+            ]
+        )
         manifest = json.loads((self.curated / "MANIFEST.json").read_text())
         self.assertEqual(manifest["run_id"], 1)
         self.assertEqual(manifest["count"], 1)
@@ -150,16 +191,30 @@ class HermeticFreshieCycleTests(unittest.TestCase):
         server = subprocess.Popen(
             ["dolt", "sql-server", "--port", "3308"],
             cwd=self.dolt_dir,
+            env=self.env,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
         try:
             self._wait_for_port(3308)
-            refusal = self._run([
-                sys.executable, str(SYNC), "--db", str(self.db), "--dolt-dir", str(self.dolt_dir),
-                "--grades-csv", str(self.out / "blocked-grades.csv"),
-                "--grade-histogram", str(self.out / "blocked-histogram.json"), "--no-push",
-            ], expected=1)
+            refusal = self._run(
+                [
+                    sys.executable,
+                    str(SYNC),
+                    "--db",
+                    str(self.db),
+                    "--repo-root",
+                    str(self.root),
+                    "--dolt-dir",
+                    str(self.dolt_dir),
+                    "--grades-csv",
+                    str(self.out / "blocked-grades.csv"),
+                    "--grade-histogram",
+                    str(self.out / "blocked-histogram.json"),
+                    "--no-push",
+                ],
+                expected=1,
+            )
             self.assertIn("sql-server", refusal.stdout)
             self.assertFalse((self.out / "blocked-grades.csv").exists())
         finally:
