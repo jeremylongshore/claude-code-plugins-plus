@@ -1,0 +1,18 @@
+{
+  "$comment": "E8 structural-ratchet baseline. Regenerate ONLY via `node scripts/check-structural-ratchet.mjs --write` in the PR that shrinks editable first-party debt. Mirror records are never edited; the gate requires their ledger disposition to remain QUARANTINE.",
+  "pinned_at": "2026-08-30",
+  "schema_version": "4.1.0",
+  "historical_reconciliation": {
+    "blueprint_base": "478aaf17731714fed9b1779284de6a5b3729ef6e",
+    "missing_required_frontmatter_records": 728,
+    "first_party_records": 1,
+    "mirror_records": 727
+  },
+  "classes": {
+    "first_party_missing_required_frontmatter": {
+      "count": 0,
+      "set_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "members": []
+    }
+  }
+}

@@ -112,6 +112,14 @@ jobs:
           python3 -c "import yaml" 2>/dev/null || python3 -m pip install --quiet pyyaml
           pnpm run validate:safety-ratchet
 
+      # Blueprint 727 E8.8: missing-required-frontmatter remediation stops at
+      # a .source.json boundary. The canonical validator reports editable
+      # first-party and upstream mirror records separately; first-party debt is
+      # pinned at zero with count + set-hash + members, while every mirror row
+      # must remain QUARANTINE in the disposition ledger. No waiver path exists.
+      - name: Enforce the structural remediation ratchet
+        run: pnpm run validate:structural-ratchet
+
       # Blueprint 727 E8.1: Freshie's graded cohort is the authority for the
       # disposition ledger. Regenerate-and-compare proves each current graded
       # artifact has exactly one first-match-wins outcome; missing/stale rows

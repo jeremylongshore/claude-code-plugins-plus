@@ -32,6 +32,7 @@
     "validate:mcp-destructive-policy": "node --test scripts/check-mcp-destructive-policy.test.mjs && node scripts/check-mcp-destructive-policy.mjs",
     "validate:denylist-degradation": "node --test scripts/check-denylist-degradation.test.mjs && node scripts/check-denylist-degradation.mjs",
     "validate:safety-ratchet": "node --test scripts/check-safety-ratchet.test.mjs && node scripts/check-safety-ratchet.mjs",
+    "validate:structural-ratchet": "node --test scripts/check-structural-ratchet.test.mjs && node scripts/check-structural-ratchet.mjs",
     "validate:doc-fact-assertions": "node --test scripts/check-doc-fact-assertions.test.mjs && node scripts/check-doc-fact-assertions.mjs",
     "evaluate:certification": "node scripts/evaluate-certification.mjs",
     "generate:disposition-ledger": "node scripts/generate-disposition-ledger.mjs",
