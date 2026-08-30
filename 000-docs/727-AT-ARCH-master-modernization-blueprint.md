@@ -22,7 +22,7 @@ The owner **conditionally ratified** this blueprint on 2026-08-13 and returned n
 | 3   | Correct the disputed compliance figures             | **§ 3.1** (re-measurement, embedded) + scorecard rows 4 and 6 + § 1, § 2, § 13 E8, § 14 row 27   |
 | 4   | Repair the benchmark licensing rule                 | `728 § 4` binding preamble + annotations on rows A2, A4, A5, A6, B4, B7, D1                      |
 | 5   | Remove the Mission 01 / Epic 1 ambiguity            | **§ 13 EPIC 1** → "Mission 01 is NOT Epic 1" (delivery table + per-bead disposition)             |
-| 6   | Preserve progressive epic activation                | **§ 13** + **§ 15.1** historical launch control; amended execution authority recorded in § 5     |
+| 6   | Preserve progressive epic activation                | **§ 13** + **§ 15.1** historical launch control; amended execution authority recorded in § 13    |
 | 7   | Record the npm-token resolution (do NOT perform it) | **§ 18.9** (+ sequencing note in § 18.4)                                                         |
 | 8   | Preserve honest independent review                  | **§ 18.5** (rewritten) + Epic 10 independence precondition                                       |
 | 9   | Draft contributor wording (do NOT post it)          | `000-docs/709-DR-GUID-reviewing-external-prs.md` § 8 — **drafted, not posted**                   |
@@ -1078,8 +1078,9 @@ evidence-backed closure, independent review, and explicit escalation for externa
    closure record, rollback, and read-back. External registry, credential, organization, and Tailnet
    mutations remain owner/external actions unless separately authorized.
 
-The six original launch rules are retained below in historical form so the initial decision is not
-rewritten after the fact:
+**Historical launch rules — superseded as activation authority on 2026-08-26. Live authority is the
+current execution authority in § 13 above.** The six original launch rules are retained below in
+historical form so the initial decision is not rewritten after the fact:
 
 1. **Beads/Dolt is the task authority.** GitHub Issues and Plane are **projections**. A projection is never the record; drift is reconciled toward beads, never away from it.
 2. At ratification, the ~151 proposed records were not to be instantiated in one uncontrolled batch.
