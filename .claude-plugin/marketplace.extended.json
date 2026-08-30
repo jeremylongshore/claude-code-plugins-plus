@@ -8997,7 +8997,8 @@
         "name": "Skyvern-AI",
         "url": "https://github.com/Skyvern-AI"
       },
-      "license": "AGPL-3.0"
+      "license": "AGPL-3.0",
+      "publication": "quarantined"
     },
     {
       "name": "tonone",
@@ -9083,7 +9084,8 @@
       },
       "homepage": "https://github.com/Mohammed-Abdelhady/hyperflow",
       "repository": "https://github.com/Mohammed-Abdelhady/hyperflow",
-      "license": "MIT"
+      "license": "MIT",
+      "publication": "quarantined"
     },
     {
       "name": "claudebase",

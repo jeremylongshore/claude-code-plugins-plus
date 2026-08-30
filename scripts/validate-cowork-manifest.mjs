@@ -41,11 +41,14 @@
  */
 
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
+const require = createRequire(import.meta.url);
+const { publishedPlugins } = require('./publication-policy.cjs');
 
 const EXTENDED_JSON = join(ROOT, '.claude-plugin', 'marketplace.extended.json');
 const MANIFEST_JSON = join(ROOT, 'marketplace', 'src', 'data', 'cowork-manifest.json');
@@ -81,7 +84,7 @@ if (!existsSync(MANIFEST_JSON)) {
 const catalog = JSON.parse(readFileSync(EXTENDED_JSON, 'utf-8'));
 const manifest = JSON.parse(readFileSync(MANIFEST_JSON, 'utf-8'));
 
-const catalogPlugins = (catalog.plugins || []).filter(
+const catalogPlugins = publishedPlugins(catalog.plugins || [], 'extended catalog').filter(
   (p) => !SKIP_CATEGORIES.has(catalogCategory(p)),
 );
 const catalogNames = new Set(catalogPlugins.map((p) => p.name));

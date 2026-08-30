@@ -40,19 +40,26 @@ test('graded-corpus parity refuses omitted and stale grade rows', () => {
   );
 });
 
-test('G0 shell substitution wins before all later facts', () => {
+test('G0 canonical shell-substitution diagnostics win before all later facts', () => {
   const root = mkdtempSync(path.join(os.tmpdir(), 'ledger-'));
   mkdirSync(path.join(root, 'plugins/example/skill'), { recursive: true });
-  writeFileSync(
-    path.join(root, 'plugins/example/skill/SKILL.md'),
-    '---\nname: x\nvalue: $(whoami)\n---\nbody\n',
-  );
-  const result = classifyArtifact({
-    root,
-    row: { path: 'plugins/example/skill/SKILL.md', grade: 'A', score: 99 },
-    validation: { errors: 0, error_details: [] },
-  });
-  assert.deepEqual([result.gate, result.disposition], ['G0', 'QUARANTINE']);
+  writeFileSync(path.join(root, 'plugins/example/skill/SKILL.md'), '---\nname: x\n---\nbody\n');
+  for (const value of ['$(whoami)', '`whoami`', '${UNGUARDED}']) {
+    const result = classifyArtifact({
+      root,
+      row: { path: 'plugins/example/skill/SKILL.md', grade: 'A', score: 99 },
+      validation: {
+        errors: 1,
+        error_details: [
+          `[security] YAML field 'description' contains shell substitution (e.g. $(...), backticks, or \${VAR}) that will not evaluate: '${value}'`,
+        ],
+      },
+    });
+    assert.deepEqual(
+      [result.gate, result.disposition, result.reason_codes],
+      ['G0', 'QUARANTINE', ['SHELL_SUBSTITUTION']],
+    );
+  }
 });
 
 test('structural failures auto-migrate and unknown failures require deep remediation', () => {

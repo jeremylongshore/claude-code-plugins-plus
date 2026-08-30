@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const DIST_DIR = path.join(REPO_ROOT, 'marketplace', 'dist');
-const CATALOG_PATH = path.join(REPO_ROOT, '.claude-plugin', 'marketplace.extended.json');
+const CATALOG_PATH = path.join(REPO_ROOT, '.claude-plugin', 'marketplace.json');
 
 // ANSI color codes for output
 const colors = {

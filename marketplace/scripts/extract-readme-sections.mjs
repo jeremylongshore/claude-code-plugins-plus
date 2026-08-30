@@ -9,9 +9,13 @@
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { createRequire } from 'node:module';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { mdToHtml } from './md-to-html.mjs';
+
+const require = createRequire(import.meta.url);
+const { publishedPlugins } = require('../../scripts/publication-policy.cjs');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = join(__dirname, '..', '..');
@@ -132,7 +136,7 @@ const result = {};
 let found = 0;
 let skipped = 0;
 
-for (const plugin of catalog.plugins) {
+for (const plugin of publishedPlugins(catalog.plugins, 'extended catalog')) {
   const readmePath = join(ROOT_DIR, 'plugins', plugin.category, plugin.name, 'README.md');
 
   if (!existsSync(readmePath)) {

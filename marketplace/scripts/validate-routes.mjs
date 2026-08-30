@@ -18,7 +18,7 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const CATALOG_PATH = join(__dirname, '../../.claude-plugin/marketplace.extended.json');
+const CATALOG_PATH = join(__dirname, '../../.claude-plugin/marketplace.json');
 const DIST_PLUGINS_PATH = join(__dirname, '../dist/plugins');
 
 console.log('🔍 Validating plugin routes...\n');

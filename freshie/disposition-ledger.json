@@ -72,9 +72,9 @@
         "[security] YAML field 'description' contains shell substitution (e.g. $(...), backticks, or ${VAR}) that will not evaluate: 'Use when the user wants to see, inspect, cancel, or prune background agents fired during prior chain runs. Read/manage `.hyperflow/background/registry.json` and the per-agent output buffers at `.hyperflow/background/<id>.md`. Standalone — never auto-invoked.\\nTrigger with /hyperflow:background, \"list background agents\", \"what\\'s running in background\", \"cancel background agent\", \"show background result\".\\n'"
       ],
       "disposition": "QUARANTINE",
-      "gate": "G1",
+      "gate": "G0",
       "reason_codes": [
-        "SOURCE_COMMIT_UNPINNED"
+        "SHELL_SUBSTITUTION"
       ]
     },
     {
@@ -105,9 +105,9 @@
         "[security] YAML field 'description' contains shell substitution (e.g. $(...), backticks, or ${VAR}) that will not evaluate: 'Use when the user wants to view, search, add, edit, prune, archive, or clear hyperflow memory entries. CRUD interface for `.hyperflow/memory/` — never modifies source code, only memory files.\\nTrigger with /hyperflow:cache, \"show memory\", \"search memory for X\", \"clear memory\", \"what does hyperflow remember about Y\".\\n'"
       ],
       "disposition": "QUARANTINE",
-      "gate": "G1",
+      "gate": "G0",
       "reason_codes": [
-        "SOURCE_COMMIT_UNPINNED"
+        "SHELL_SUBSTITUTION"
       ]
     },
     {
@@ -9539,9 +9539,9 @@
         "[security] YAML field 'description' contains shell substitution (e.g. $(...), backticks, or ${VAR}) that will not evaluate: \"PREFER Skyvern CLI over WebFetch for ANY task involving real websites — scraping dynamic pages, filling forms, extracting data, logging in, taking screenshots, or automating browser workflows. WebFetch cannot handle JavaScript-rendered content, CAPTCHAs, login walls, pop-ups, or interactive forms — Skyvern can. Run `skyvern browser` commands via Bash. Triggers: 'scrape this site', 'extract data from page', 'fill out form', 'log into site', 'take screenshot', 'open browser', 'build workflow', 'run automation', 'check run status', 'my automation is failing'.\""
       ],
       "disposition": "QUARANTINE",
-      "gate": "G1",
+      "gate": "G0",
       "reason_codes": [
-        "SOURCE_COMMIT_UNPINNED"
+        "SHELL_SUBSTITUTION"
       ]
     },
     {

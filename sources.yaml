@@ -15,6 +15,10 @@
 #   source_path / target_path  Where the plugin lives upstream vs. where we mirror it into plugins/.
 #   author / license / category  Attribution and catalog placement (credit is always preserved).
 #   include / exclude          Glob lists selecting which files the mirror copies.
+#   publication_disposition    Optional fail-closed publication quarantine. The only accepted
+#                              shape is status: quarantined + channels: []; artifacts name the
+#                              exact governed findings. The mirror remains for provenance and
+#                              upstream repair, but sync must not add it to the install catalog.
 #
 # Two flags drive the mirror-vs-curate contract — they are ORTHOGONAL:
 #   verified: true   A maintainer vetted this source's quality and trust.
@@ -301,6 +305,13 @@ sources:
       github: Skyvern-AI
     license: AGPL-3.0
     category: productivity
+    publication_disposition:
+      status: quarantined
+      channels: []
+      artifacts:
+        - path: plugins/productivity/skyvern/SKILL.md
+          reason_codes: [SHELL_SUBSTITUTION]
+      rationale: The upstream description contains backtick-delimited command text in YAML frontmatter. The rule is unwaivable, so the unchanged mirror is retained for attribution and upstream repair but has zero publication channels.
     include:
       - '/SKILL.md'
       - '/references/**'
@@ -457,6 +468,15 @@ sources:
     license: MIT
     category: ai-agency
     verified: false
+    publication_disposition:
+      status: quarantined
+      channels: []
+      artifacts:
+        - path: plugins/ai-agency/hyperflow/skills/background/SKILL.md
+          reason_codes: [SHELL_SUBSTITUTION]
+        - path: plugins/ai-agency/hyperflow/skills/cache/SKILL.md
+          reason_codes: [SHELL_SUBSTITUTION]
+      rationale: Two upstream descriptions contain backtick-delimited paths in YAML frontmatter. The rule is unwaivable, so the unchanged mirror is retained for attribution and upstream repair but has zero publication channels.
     include:
       - '.claude-plugin/**'
       - 'skills/**'

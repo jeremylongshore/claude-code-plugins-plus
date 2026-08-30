@@ -6,6 +6,7 @@
  */
 
 import { readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { dirname, isAbsolute, join, posix } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -13,6 +14,9 @@ import {
   assertGeneratedContentCurrent,
 } from '../../scripts/check-generated-artifacts.mjs';
 import { normalizeDeadDomainValue } from '../../scripts/dead-domain-policy.mjs';
+
+const require = createRequire(import.meta.url);
+const { publishedPlugins } = require('../../scripts/publication-policy.cjs');
 
 const SCRIPT_PATH = fileURLToPath(import.meta.url);
 const DEFAULT_ROOT = join(dirname(SCRIPT_PATH), '..', '..');
@@ -95,7 +99,7 @@ export function renderCatalog(extendedCatalog, skillsCatalog) {
   const slugs = new Set();
   const canonicalSources = new Set();
 
-  for (const [index, rawPlugin] of extended.plugins.entries()) {
+  for (const [index, rawPlugin] of publishedPlugins(extended.plugins, 'extended catalog').entries()) {
     const plugin = requireObject(rawPlugin, `extended plugin ${index}`);
     const name = requireString(plugin.name, `extended plugin ${index} name`);
     const identity = normalizedIdentity(name, `extended plugin ${index} name`);

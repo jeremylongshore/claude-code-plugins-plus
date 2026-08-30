@@ -215,17 +215,70 @@ function walkFiles(baseDir, relPrefix = '') {
 export { matchesPattern } from './sync-lockfile.mjs';
 
 /**
- * Read marketplace.extended.json and check whether a plugin entry
- * already exists by name.
+ * Read marketplace.extended.json and return the unique plugin entry by name.
+ * Malformed or duplicate catalog state fails closed instead of being treated
+ * as a missing row that the sync may append around.
  */
-function catalogHasEntry(pluginName) {
-  if (!fs.existsSync(CATALOG_FILE)) return false;
-  try {
-    const data = JSON.parse(fs.readFileSync(CATALOG_FILE, 'utf8'));
-    return (data.plugins || []).some((p) => p.name === pluginName);
-  } catch {
-    return false;
+function catalogEntry(pluginName, catalogFile = CATALOG_FILE) {
+  if (!fs.existsSync(catalogFile)) return null;
+  const data = JSON.parse(fs.readFileSync(catalogFile, 'utf8'));
+  if (!Array.isArray(data?.plugins)) throw new Error('marketplace catalog has no plugins array');
+  const matches = data.plugins.filter((plugin) => plugin?.name === pluginName);
+  if (matches.length > 1) throw new Error(`${pluginName}: duplicate marketplace catalog entries`);
+  return matches[0] ?? null;
+}
+
+/**
+ * Return whether a mirrored source may be projected into publication catalogs.
+ * A quarantine is deliberately retained in sources.yaml and on disk for
+ * provenance/upstream repair, but it has no publication channel. Unknown or
+ * malformed disposition shapes fail closed instead of silently publishing.
+ */
+export function sourceAllowsPublication(source) {
+  const dispositions = [
+    ['publication_disposition', source?.publication_disposition],
+    ['copyleft_disposition', source?.copyleft_disposition],
+  ].filter(([, value]) => value !== undefined);
+  if (dispositions.length === 0) return true;
+  if (dispositions.length > 1) {
+    throw new Error(`${source?.name ?? '<unnamed source>'}: multiple publication dispositions`);
   }
+  const [field, disposition] = dispositions[0];
+  if (
+    !disposition ||
+    typeof disposition !== 'object' ||
+    disposition.status !== 'quarantined' ||
+    !Array.isArray(disposition.channels) ||
+    disposition.channels.length !== 0
+  ) {
+    throw new Error(
+      `${source?.name ?? '<unnamed source>'}: ${field} must be ` +
+        '`status: quarantined` with an empty `channels` list',
+    );
+  }
+  return false;
+}
+
+/** Require an existing catalog row to agree exactly with its source disposition. */
+export function assertCatalogPublicationParity(source, plugin) {
+  const publishable = sourceAllowsPublication(source);
+  if (plugin === null || plugin === undefined) return publishable;
+  if (!plugin || typeof plugin !== 'object' || Array.isArray(plugin)) {
+    throw new Error(`${source?.name ?? '<unnamed source>'}: catalog entry must be an object`);
+  }
+  if (plugin.publication !== undefined && plugin.publication !== 'quarantined') {
+    throw new Error(
+      `${source?.name ?? '<unnamed source>'}: unknown catalog publication state ` +
+        `${String(plugin.publication)}`,
+    );
+  }
+  const catalogPublishable = plugin.publication === undefined;
+  if (catalogPublishable !== publishable) {
+    throw new Error(
+      `${source?.name ?? '<unnamed source>'}: source disposition and catalog publication state disagree`,
+    );
+  }
+  return publishable;
 }
 
 /**
@@ -409,13 +462,18 @@ ${source.license ? `  \n**License:** ${source.license}` : ''}
  * Returns true if an entry was added, false if catalog already had one
  * or if dry-run mode.
  */
-function ensureCatalogEntry(source) {
-  if (catalogHasEntry(source.name)) {
+export function ensureCatalogEntry(
+  source,
+  { root = ROOT_DIR, catalogFile = CATALOG_FILE, dryRun = options.dryRun } = {},
+) {
+  const existing = catalogEntry(source.name, catalogFile);
+  const publishable = assertCatalogPublicationParity(source, existing);
+  if (existing) {
     return false; // already present, no action
   }
 
   // Pull version + license from the synced plugin.json if available.
-  const pluginJsonPath = path.join(ROOT_DIR, source.target_path, '.claude-plugin', 'plugin.json');
+  const pluginJsonPath = path.join(root, source.target_path, '.claude-plugin', 'plugin.json');
   let pluginJson = {};
   if (fs.existsSync(pluginJsonPath)) {
     try {
@@ -440,6 +498,7 @@ function ensureCatalogEntry(source) {
     version: pluginJson.version || '0.1.0',
     category: categoryFromTargetPath(source.target_path, source.category),
   };
+  if (!publishable) entry.publication = 'quarantined';
 
   // Keywords: prefer plugin.json, fall back to sources.yaml, else infer from category
   if (Array.isArray(pluginJson.keywords) && pluginJson.keywords.length > 0) {
@@ -496,7 +555,7 @@ function ensureCatalogEntry(source) {
     entry.license = pluginJson.license || source.license;
   }
 
-  if (options.dryRun) {
+  if (dryRun) {
     log(`   📋 Would add catalog entry: ${source.name}`, colors.yellow);
     return false;
   }
@@ -504,7 +563,7 @@ function ensureCatalogEntry(source) {
   // Insert the entry. Append at the end of the plugins array, before the
   // closing brace. We avoid full JSON.stringify of the whole file because
   // that reformats every existing entry and trips check-catalog-format.
-  const text = fs.readFileSync(CATALOG_FILE, 'utf8');
+  const text = fs.readFileSync(catalogFile, 'utf8');
   const entryJson = JSON.stringify(entry, null, 2)
     .split('\n')
     .map((line, i) => (i === 0 ? `    ${line}` : `    ${line}`))
@@ -525,7 +584,7 @@ function ensureCatalogEntry(source) {
   // jamming them onto one line as `},    {`, which the catalog-format gate flags.
   const updated = `${before}${lastEntryClose.replace(/}(\s*)$/, '},')}\n${entryJson}${arrayClose}`;
 
-  fs.writeFileSync(CATALOG_FILE, updated);
+  fs.writeFileSync(catalogFile, updated);
   log(`   📋 Added catalog entry: ${source.name}`, colors.green);
   return true;
 }

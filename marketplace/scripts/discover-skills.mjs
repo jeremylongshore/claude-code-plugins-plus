@@ -48,6 +48,7 @@
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { createRequire } from 'node:module';
 import { join, dirname, relative } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import {
@@ -56,6 +57,9 @@ import {
 } from '../../scripts/check-generated-artifacts.mjs';
 import { resolveCorpus } from '../../scripts/corpus-resolver.mjs';
 import { mdToHtml } from './md-to-html.mjs';
+
+const require = createRequire(import.meta.url);
+const { publishedPlugins } = require('../../scripts/publication-policy.cjs');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -471,7 +475,9 @@ function main() {
   let marketplacePluginNames = new Set();
   try {
     const marketplaceCatalog = JSON.parse(readFileSync(MARKETPLACE_CATALOG, 'utf-8'));
-    marketplacePluginNames = new Set(marketplaceCatalog.plugins.map(p => p.name));
+    marketplacePluginNames = new Set(
+      publishedPlugins(marketplaceCatalog.plugins, 'extended catalog').map((p) => p.name),
+    );
     console.log(`📦 Loaded marketplace catalog: ${marketplacePluginNames.size} plugins\n`);
   } catch (error) {
     if (CHECK) throw new Error(`cannot load marketplace catalog in check mode: ${error.message}`);

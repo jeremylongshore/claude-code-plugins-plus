@@ -27,9 +27,13 @@
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
 import prettier from 'prettier';
 import { resolveCorpus } from './corpus-resolver.mjs';
+
+const require = createRequire(import.meta.url);
+const { publishedPlugins } = require('./publication-policy.cjs');
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 const EXTENDED = join(ROOT, '.claude-plugin', 'marketplace.extended.json');
@@ -42,7 +46,7 @@ const README = join(ROOT, 'README.md');
 // NOT the working directory, so a local-only/untracked SKILL.md can't skew the
 // number and the result is byte-identical between a dev machine and CI's clean
 // checkout (which is what `--check` compares against):
-//   - plugins: catalog length (marketplace.extended.json)
+//   - plugins: publishable catalog rows (quarantined extended records excluded)
 //   - skills:  every tracked SKILL.md under plugins/ or skills/
 //   - agents:  every tracked *.md inside an agents/ dir under plugins/
 function trackedFiles() {
@@ -55,7 +59,7 @@ function trackedFiles() {
 }
 
 function computeStats(catalog) {
-  const plugins = (catalog.plugins || []).length;
+  const plugins = publishedPlugins(catalog.plugins || [], 'extended catalog').length;
   const files = trackedFiles();
   // The skills badge links to https://tonsofskills.com/skills, so it uses the
   // canonical marketplace-visible cohort rather than a second local walker:
@@ -167,7 +171,7 @@ function truncate(text, max = 120) {
 }
 
 function buildBlock(catalog) {
-  const plugins = catalog.plugins || [];
+  const plugins = publishedPlugins(catalog.plugins || [], 'extended catalog');
   const byCategory = new Map();
   for (const p of plugins) {
     const cat = p.category || 'uncategorized';
@@ -380,8 +384,11 @@ async function main() {
   const catalog = JSON.parse(readFileSync(EXTENDED, 'utf-8'));
   const block = buildBlock(catalog);
   const stats = computeStats(catalog);
-  const categoryCount = new Set((catalog.plugins || []).map((p) => p.category || 'uncategorized'))
-    .size;
+  const categoryCount = new Set(
+    publishedPlugins(catalog.plugins || [], 'extended catalog').map(
+      (p) => p.category || 'uncategorized',
+    ),
+  ).size;
   const current = readFileSync(README, 'utf-8');
   let spliced = replaceBlock(current, block);
   spliced = spliceBlock(spliced, SCALE_START, SCALE_END, buildScaleBlock(stats, categoryCount));
