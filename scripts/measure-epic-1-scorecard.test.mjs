@@ -158,6 +158,26 @@ function fixture() {
           readonly installed_dolt_version
           test "$installed_dolt_version" = "$dolt_version"`,
   );
+  files[workflowPath] = files[workflowPath].replace(
+    '        run: python3 -m unittest tests.test_freshie_hermetic_cycle -v',
+    `        run: |
+          python3 - <<'PY'
+          import unittest
+
+          suite = unittest.defaultTestLoader.loadTestsFromName(
+              "tests.test_freshie_hermetic_cycle.HermeticFreshieCycleTests.test_full_cycle_uses_only_scratch_state_and_refuses_live_server"
+          )
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          valid = (
+              result.wasSuccessful()
+              and result.testsRun == 1
+              and not result.skipped
+              and not result.expectedFailures
+              and not result.unexpectedSuccesses
+          )
+          raise SystemExit(0 if valid else 1)
+          PY`,
+  );
   for (const [path, value] of Object.entries(files)) put(root, path, value);
   return { root, paths: Object.keys(files).sort() };
 }
@@ -529,6 +549,19 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   assert.equal(rows[58].values.full_cycle, false);
 
   base = fixture();
+  const lifecycleSkip = readFileSync(
+    join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
+    'utf8',
+  ).replace(
+    '    def setUpClass(cls):\n',
+    '    def setUpClass(cls):\n        raise unittest.SkipTest("class skipped before cycle")\n',
+  );
+  put(base.root, 'tests/test_freshie_hermetic_cycle.py', lifecycleSkip);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.full_cycle, false);
+
+  base = fixture();
   const generatorTest = readFileSync(
     join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
     'utf8',
@@ -547,6 +580,16 @@ class HermeticFreshieCycleTests(unittest.TestCase):
     '/tmp/unverified/dolt',
   );
   put(base.root, workflowPath, unsafeWorkflow);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.pinned_dolt, false);
+
+  base = fixture();
+  const separateStepOverwrite = readFileSync(join(base.root, workflowPath), 'utf8').replace(
+    '      - name: Run Freshie hermetic publication cycle\n',
+    "      - name: Overwrite Dolt after verification\n        if: matrix.test-type == 'python-tests'\n        run: sudo /usr/bin/install -m 0755 /tmp/unverified/dolt /usr/local/bin/dolt\n      - name: Run Freshie hermetic publication cycle\n",
+  );
+  put(base.root, workflowPath, separateStepOverwrite);
   rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[58].status, 'partial');
   assert.equal(rows[58].values.pinned_dolt, false);

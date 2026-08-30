@@ -797,7 +797,23 @@ jobs:
 
       - name: Run Freshie hermetic publication cycle
         if: matrix.test-type == 'python-tests'
-        run: python3 -m unittest tests.test_freshie_hermetic_cycle -v
+        run: |
+          python3 - <<'PY'
+          import unittest
+
+          suite = unittest.defaultTestLoader.loadTestsFromName(
+              "tests.test_freshie_hermetic_cycle.HermeticFreshieCycleTests.test_full_cycle_uses_only_scratch_state_and_refuses_live_server"
+          )
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          valid = (
+              result.wasSuccessful()
+              and result.testsRun == 1
+              and not result.skipped
+              and not result.expectedFailures
+              and not result.unexpectedSuccesses
+          )
+          raise SystemExit(0 if valid else 1)
+          PY
 
       - name: Run Python tests
         if: matrix.test-type == 'python-tests'

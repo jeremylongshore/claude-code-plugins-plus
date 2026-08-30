@@ -233,7 +233,27 @@ try:
         isinstance(node, ast.Call) and call_name(node).lower().startswith("skip")
         for node in ast.walk(test)
     )
-    result["no_dead_code"] = synchronous_methods and not forbidden and not skipped
+    lifecycle_skip = any(
+        (
+            isinstance(node, ast.Call)
+            and call_name(node).lower().startswith("skip")
+        )
+        or (
+            isinstance(node, (ast.Name, ast.Attribute))
+            and (
+                (node.id if isinstance(node, ast.Name) else node.attr).lower()
+                in {"skiptest", "__unittest_skip__"}
+            )
+        )
+        or (
+            isinstance(node, ast.Constant)
+            and node.value == "__unittest_skip__"
+        )
+        for node in ast.walk(tree)
+    )
+    result["no_dead_code"] = (
+        synchronous_methods and not forbidden and not skipped and not lifecycle_skip
+    )
     result["reachable_full_cycle"] = ordered and len(stages["SYNC"]) >= 2
 
     result["reachable_fake_remote_push"] = any(

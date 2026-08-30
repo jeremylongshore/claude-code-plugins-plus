@@ -1212,6 +1212,22 @@ function freshieHermeticContract(reader, executionShape = {}) {
   const ciNeedsRaw = parsed?.jobs?.['ci-required']?.needs;
   const ciNeeds = typeof ciNeedsRaw === 'string' ? [ciNeedsRaw] : ciNeedsRaw;
   const doltRun = typeof doltStep?.run === 'string' ? doltStep.run : '';
+  const canonicalHermeticRun = `python3 - <<'PY'
+import unittest
+
+suite = unittest.defaultTestLoader.loadTestsFromName(
+    "tests.test_freshie_hermetic_cycle.HermeticFreshieCycleTests.test_full_cycle_uses_only_scratch_state_and_refuses_live_server"
+)
+result = unittest.TextTestRunner(verbosity=2).run(suite)
+valid = (
+    result.wasSuccessful()
+    and result.testsRun == 1
+    and not result.skipped
+    and not result.expectedFailures
+    and not result.unexpectedSuccesses
+)
+raise SystemExit(0 if valid else 1)
+PY`;
   const doltLines = doltRun
     .split(/\r?\n/)
     .map((line) => line.trim())
@@ -1220,6 +1236,14 @@ function freshieHermeticContract(reader, executionShape = {}) {
     'sudo install -m 0755 "$dolt_extract/dolt-linux-amd64/bin/dolt" /usr/local/bin/dolt';
   const doltDestinationReferences = doltLines.filter((line) =>
     line.includes('/usr/local/bin/dolt'),
+  );
+  const jobDoltDestinationReferences = steps.flatMap((step) =>
+    typeof step?.run === 'string'
+      ? step.run
+          .split(/\r?\n/)
+          .map((line) => line.trim())
+          .filter((line) => line.includes('/usr/local/bin/dolt'))
+      : [],
   );
   const allowedPinnedDoltLines = [
     /^set -euo pipefail$/,
@@ -1249,7 +1273,7 @@ function freshieHermeticContract(reader, executionShape = {}) {
       ciNeeds.includes('test') &&
       pythonIf(hermeticStep) &&
       hermeticStep?.['continue-on-error'] !== true &&
-      hermeticStep?.run?.trim() === 'python3 -m unittest tests.test_freshie_hermetic_cycle -v',
+      hermeticStep?.run?.trim() === canonicalHermeticRun,
     dependencies_fail_closed:
       !/@unittest\.skipUnless/.test(source) &&
       /def setUpClass\(cls\):/.test(source) &&
@@ -1267,6 +1291,8 @@ function freshieHermeticContract(reader, executionShape = {}) {
       onlyPinnedDoltCommands &&
       doltDestinationReferences.length === 1 &&
       doltDestinationReferences[0] === canonicalDoltInstall &&
+      jobDoltDestinationReferences.length === 1 &&
+      jobDoltDestinationReferences[0] === canonicalDoltInstall &&
       /readonly dolt_version='[^']+'/.test(doltRun) &&
       /readonly dolt_sha256='[a-f0-9]{64}'/.test(doltRun) &&
       /printf[^\n]+"\$dolt_sha256"[^\n]+"\$dolt_archive"[^\n]+sha256sum --check --strict/.test(
