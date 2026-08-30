@@ -16,19 +16,19 @@
     "values": {
       "a_error_total": 64,
       "a_failing": 30,
-      "ab_error_total": 680,
-      "ab_failing": 328,
-      "b_failing": 298,
-      "error_files": 820,
-      "error_total": 3964,
+      "ab_error_total": 679,
+      "ab_failing": 327,
+      "b_failing": 297,
+      "error_files": 819,
+      "error_total": 3963,
       "grade_distribution": {
-        "A": 1869,
-        "B": 1118,
+        "A": 1872,
+        "B": 1117,
         "C": 479,
         "D": 157,
         "F": 5
       },
-      "rows": 3628
+      "rows": 3630
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3128,
-        "tracked_files": 23185
+        "raw_tracked_plugin_skill_files": 3130,
+        "tracked_files": 23128
       }
     },
     "2": {
@@ -90,35 +90,35 @@
           "validator_reported_mixed_denominator_percent": 80.8
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 4201,
-          "fully_compliant_surfaces": 1135,
+          "error_total_all_validated_surfaces": 4200,
+          "fully_compliant_surfaces": 1138,
           "terminal_denominator": {
             "agents": 357,
             "commands": 373,
-            "files": 4951,
+            "files": 4953,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
             "plugin_manifests": 593,
-            "skills": 3628
+            "skills": 3630
           },
           "validated_plugin_manifests": 601,
-          "validator_reported_mixed_denominator_percent": 22.9
+          "validator_reported_mixed_denominator_percent": 23
         },
         "skill_rows": {
           "a_error_total": 64,
           "a_failing": 30,
-          "ab_error_total": 680,
-          "ab_failing": 328,
-          "b_failing": 298,
-          "error_files": 820,
-          "error_total": 3964,
+          "ab_error_total": 679,
+          "ab_failing": 327,
+          "b_failing": 297,
+          "error_files": 819,
+          "error_total": 3963,
           "grade_distribution": {
-            "A": 1869,
-            "B": 1118,
+            "A": 1872,
+            "B": 1117,
             "C": 479,
             "D": 157,
             "F": 5
           },
-          "rows": 3628
+          "rows": 3630
         }
       }
     },
@@ -131,20 +131,20 @@
       "values": {
         "average_score": 87.2,
         "grade_distribution": {
-          "A": 1869,
-          "B": 1118,
+          "A": 1872,
+          "B": 1117,
           "C": 479,
           "D": 157,
           "F": 5
         },
         "grade_percentages": {
-          "A": 51.5,
+          "A": 51.6,
           "B": 30.8,
           "C": 13.2,
           "D": 4.3,
           "F": 0.1
         },
-        "rows": 3628
+        "rows": 3630
       }
     },
     "6": {
@@ -156,12 +156,12 @@
       "values": {
         "a_error_total": 64,
         "a_failing": 30,
-        "ab_error_total": 680,
-        "ab_failing": 328,
-        "b_error_total": 616,
-        "b_failing": 298,
+        "ab_error_total": 679,
+        "ab_failing": 327,
+        "b_error_total": 615,
+        "b_failing": 297,
         "certified_target": 0,
-        "skill_summary_rows": 3628
+        "skill_summary_rows": 3630
       }
     },
     "7": {
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3617,
+        "declared": 3619,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 11,
-        "rows": 3628,
+        "rows": 3630,
         "target_malformed": 0
       }
     },
@@ -286,7 +286,7 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "distinct_values": 43,
+        "distinct_values": 45,
         "invalid_or_empty": 0,
         "target_free_text_values": 0,
         "values": [
@@ -384,10 +384,6 @@
           },
           {
             "count": 1,
-            "value": "Designed for Claude Code; requires gh CLI and jq on PATH"
-          },
-          {
-            "count": 1,
             "value": "Designed for Claude Code; requires mcp__plane MCP server configured (PLANE_API_KEY, PLANE_WORKSPACE_SLUG, PLANE_API_HOST_URL env vars)"
           },
           {
@@ -409,6 +405,18 @@
           {
             "count": 1,
             "value": "Designed for Claude Code; the same MCP server also works in Claude Desktop, Cursor, Windsurf, and OpenAI Codex CLI. Requires the mnemos binary on PATH — run mnemos init to wire the MCP server and mnemos doctor to verify."
+          },
+          {
+            "count": 1,
+            "value": "Model-agnostic; requires explicit state/workspace paths, git, jq, Bash, and an authenticated GitHub CLI"
+          },
+          {
+            "count": 1,
+            "value": "Model-agnostic; requires git and an authenticated GitHub CLI with permission for the approved action"
+          },
+          {
+            "count": 1,
+            "value": "Model-agnostic; requires git, jq, and an authenticated GitHub CLI for live GitHub reads"
           },
           {
             "count": 1,
@@ -1120,15 +1128,15 @@
           },
           {
             "cohort": "first-party",
-            "value": 2784
+            "value": 2786
           },
           {
             "cohort": "graded",
-            "value": 3628
+            "value": 3630
           },
           {
             "cohort": "marketplace-visible",
-            "value": 3067
+            "value": 3069
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1780,7 +1788,7 @@
         "invalid_patterns": 0,
         "invisible_files": 21,
         "target_invisible_files": 0,
-        "tracked_files": 23185
+        "tracked_files": 23128
       }
     },
     "47": {
@@ -1962,7 +1970,7 @@
       "values": {
         "adoption_percent": 0.45,
         "curated_copies": 14,
-        "plugin_skill_rows": 3128,
+        "plugin_skill_rows": 3130,
         "source_eval_specs": 14,
         "tracked_eval_specs": 28
       }
