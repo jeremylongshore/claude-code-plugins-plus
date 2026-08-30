@@ -15,6 +15,7 @@ The blog pipeline runs unattended every morning at 04:00, on the same working tr
 It refused to run on ANY uncommitted tracked file. Full stop. A legitimate edit left unsaved overnight took down the entire cron job.
 
 This happened three times:
+
 - 2026-08-13: persona files
 - 2026-08-18: a lost image-push race condition that left the tree diverged
 - 2026-08-29: uncommitted 68-insertion doc update to `000-docs/002-REF-omarchy-plugin-promotion-reference.md`
@@ -62,6 +63,7 @@ fi
 ```
 
 The verification: a harness over four cases on a throwaway repo. It exercises two of the four write-set paths directly; the other two share the same match arm.
+
 - Benign `000-docs` edit: passes the dirty check, logged as "ignoring, will not be touched"
 - `content/posts/` edit: FATAL
 - `decisions.jsonl` edit: FATAL
