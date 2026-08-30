@@ -13,6 +13,7 @@ The reason is this: `[[ -f ]]` resolves the path, `stat` resolves it again, and 
 ## The defect class: a symlink race in local state
 
 Five Omarchy plugin submissions hit this defect simultaneously (marketplace issues #2899 through #2903). Each plugin's shell helper:
+
 - created `~/.local/state/<plugin>/` under the default umask, so it was group/world readable during creation
 - wrote to a state file via `> "$file"` or `>> "$file"`, which follows a pre-existing symlink
 - read the whole mutable file into jq with no regular-file check, no byte ceiling, and no timeout

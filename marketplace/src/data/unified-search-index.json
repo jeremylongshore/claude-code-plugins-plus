@@ -6,9 +6,9 @@
   },
   "stats": {
     "totalPlugins": 442,
-    "totalSkills": 3067,
+    "totalSkills": 3069,
     "totalDocs": 24,
-    "totalItems": 3533,
+    "totalItems": 3535,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -84,7 +84,6 @@
       "Bash(aws:s3:*)",
       "Bash(az:*)",
       "Bash(bandit:*)",
-      "Bash(base64:*)",
       "Bash(bash \"${CLAUDE_PLUGIN_ROOT}/scripts/*\")",
       "Bash(bash:*)",
       "Bash(bc:*)",
@@ -1714,9 +1713,9 @@
       "zod"
     ],
     "totalAgents": 347,
-    "totalHooks": 29,
+    "totalHooks": 27,
     "pluginsWithAgents": 90,
-    "pluginsWithHooks": 20,
+    "pluginsWithHooks": 19,
     "officialPlugins": 389,
     "communityPlugins": 53,
     "communityContributors": 42
@@ -11494,7 +11493,7 @@
       "slug": "contributing-clanker",
       "name": "contributing-clanker",
       "displayName": "contributing clanker",
-      "description": "Local-only OSS contribution command center with 41 deterministic gates against AI-slop failure modes. Helps maintainers triage contributor PRs, check for typical AI-generated patterns (over-engineering, false claims, fabricated tests, license violations), and approve / request-changes from a single dashboard.",
+      "description": "Portable OSS contribution workflow with separate read-only audit, explicitly scoped local preparation, and human-approved publishing skills.",
       "category": "community",
       "keywords": [
         "oss",
@@ -11509,12 +11508,12 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "0.8.0",
+      "version": "0.9.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
-      "skillCount": 1,
-      "searchText": "contributing clanker local-only oss contribution command center with 41 deterministic gates against ai-slop failure modes. helps maintainers triage contributor prs, check for typical ai-generated patterns (over-engineering, false claims, fabricated tests, license violations), and approve / request-changes from a single dashboard. community oss contributions github ai-slop-prevention code-review open-source"
+      "skillCount": 3,
+      "searchText": "contributing clanker portable oss contribution workflow with separate read-only audit, explicitly scoped local preparation, and human-approved publishing skills. community oss contributions github ai-slop-prevention code-review open-source"
     },
     {
       "type": "plugin",
@@ -29634,37 +29633,75 @@
       "id": "contribute",
       "slug": "contribute",
       "name": "contribute",
-      "description": "Local-only OSS contribution command center. Auto-refreshes the user's in-flight PR and issue state on invoke so conversations start with full context — no need to brief Claude on what's in flight. Helps the user find issues to contribute to on GitHub, builds per-repo dossiers of what each upstream expects (CLA, DCO, branch convention, AI policy, draft-first, review bots, issue templates), runs deterministic gates before any external action so AI-assisted contributions don't reach maintainers as slop. State is markdown-only: candidate files at ~/.contribute-system/candidates/, repo dossiers at ~/.contribute-system/research/, append-only event log at ~/.contribute-system/log.jsonl. No database, no cloud calls. Use when the user asks about their PRs / issues / contributions, wants to find new work to take on, claim an issue, build/refresh a repo's dossier, or draft a Design Issue or PR. Trigger with \"/contribute\", \"what's my PR status\", \"find a contribution\", \"claim issue X\", \"draft a Design Issue for Y\", \"refresh dossier for Z\".",
+      "description": "Read-only OSS contribution audit and routing skill. Inspects public GitHub issues, pull requests, repository policy, duplicate work, and contribution readiness without creating files or changing GitHub state. Use when a user asks what is in flight, whether an issue is suitable, or wants a safe first look before preparing or publishing a contribution. Trigger with \"/contribute\", \"audit my contributions\", or \"qualify this issue\".",
+      "category": "community",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep",
+        "Bash(gh:*)",
+        "Bash(git:*)",
+        "Bash(jq:*)"
+      ],
+      "compatibleWith": [],
+      "version": "\"0.9.0\"",
+      "parentPlugin": {
+        "name": "contributing-clanker",
+        "category": "community"
+      },
+      "searchText": "contribute read-only oss contribution audit and routing skill. inspects public github issues, pull requests, repository policy, duplicate work, and contribution readiness without creating files or changing github state. use when a user asks what is in flight, whether an issue is suitable, or wants a safe first look before preparing or publishing a contribution. trigger with \"/contribute\", \"audit my contributions\", or \"qualify this issue\". community read glob grep bash(gh:*) bash(git:*) bash(jq:*) "
+    },
+    {
+      "type": "skill",
+      "id": "contribute-prepare",
+      "slug": "contribute-prepare",
+      "name": "contribute-prepare",
+      "description": "Prepare an OSS contribution locally after a read-only contribution audit. Creates explicitly scoped candidate records, repository dossiers, worktrees, test evidence, and gate results, but never publishes to GitHub. Use when the user has selected an issue and asks to set up, research, implement, test, or draft the contribution. Trigger with \"/contribute-prepare\" or \"prepare this contribution locally\".",
       "category": "community",
       "allowedTools": [
         "Read",
         "Write",
         "Edit",
-        "Glob",
-        "Grep",
-        "AskUserQuestion",
-        "Task",
         "Bash(gh:*)",
         "Bash(git:*)",
+        "Bash(bash:*)",
+        "Bash(jq:*)",
         "Bash(node:*)",
+        "Bash(npm:*)",
         "Bash(pnpm:*)",
         "Bash(yarn:*)",
-        "Bash(npm:*)",
-        "Bash(cargo:*)",
         "Bash(pytest:*)",
         "Bash(python:*)",
         "Bash(python3:*)",
-        "Bash(bash:*)",
-        "Bash(jq:*)",
-        "Bash(base64:*)"
+        "Bash(cargo:*)"
       ],
       "compatibleWith": [],
-      "version": "\"0.8.0\"",
+      "version": "\"0.9.0\"",
       "parentPlugin": {
         "name": "contributing-clanker",
         "category": "community"
       },
-      "searchText": "contribute local-only oss contribution command center. auto-refreshes the user's in-flight pr and issue state on invoke so conversations start with full context — no need to brief claude on what's in flight. helps the user find issues to contribute to on github, builds per-repo dossiers of what each upstream expects (cla, dco, branch convention, ai policy, draft-first, review bots, issue templates), runs deterministic gates before any external action so ai-assisted contributions don't reach maintainers as slop. state is markdown-only: candidate files at ~/.contribute-system/candidates/, repo dossiers at ~/.contribute-system/research/, append-only event log at ~/.contribute-system/log.jsonl. no database, no cloud calls. use when the user asks about their prs / issues / contributions, wants to find new work to take on, claim an issue, build/refresh a repo's dossier, or draft a design issue or pr. trigger with \"/contribute\", \"what's my pr status\", \"find a contribution\", \"claim issue x\", \"draft a design issue for y\", \"refresh dossier for z\". community read write edit glob grep askuserquestion task bash(gh:*) bash(git:*) bash(node:*) bash(pnpm:*) bash(yarn:*) bash(npm:*) bash(cargo:*) bash(pytest:*) bash(python:*) bash(python3:*) bash(bash:*) bash(jq:*) bash(base64:*) "
+      "searchText": "contribute-prepare prepare an oss contribution locally after a read-only contribution audit. creates explicitly scoped candidate records, repository dossiers, worktrees, test evidence, and gate results, but never publishes to github. use when the user has selected an issue and asks to set up, research, implement, test, or draft the contribution. trigger with \"/contribute-prepare\" or \"prepare this contribution locally\". community read write edit bash(gh:*) bash(git:*) bash(bash:*) bash(jq:*) bash(node:*) bash(npm:*) bash(pnpm:*) bash(yarn:*) bash(pytest:*) bash(python:*) bash(python3:*) bash(cargo:*) "
+    },
+    {
+      "type": "skill",
+      "id": "contribute-publish",
+      "slug": "contribute-publish",
+      "name": "contribute-publish",
+      "description": "Publish one prepared OSS contribution action to GitHub after a fresh human approval boundary. Shows the exact target, content, command, commit, and test evidence before any mutation. Use when local preparation is complete and the user explicitly asks to post a claim, create a Design Issue, comment, push a branch, or open a pull request. Trigger with \"/contribute-publish\" or \"publish this prepared contribution\".",
+      "category": "community",
+      "allowedTools": [
+        "Read",
+        "Bash(gh:*)",
+        "Bash(git:*)"
+      ],
+      "compatibleWith": [],
+      "version": "\"0.9.0\"",
+      "parentPlugin": {
+        "name": "contributing-clanker",
+        "category": "community"
+      },
+      "searchText": "contribute-publish publish one prepared oss contribution action to github after a fresh human approval boundary. shows the exact target, content, command, commit, and test evidence before any mutation. use when local preparation is complete and the user explicitly asks to post a claim, create a design issue, comment, push a branch, or open a pull request. trigger with \"/contribute-publish\" or \"publish this prepared contribution\". community read bash(gh:*) bash(git:*) "
     },
     {
       "type": "skill",
