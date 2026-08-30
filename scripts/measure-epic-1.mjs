@@ -175,25 +175,31 @@ try:
     runner = methods["_run"]
     setup = methods["setUp"]
 
-    parents = {}
-    for parent in ast.walk(test):
-        for child in ast.iter_child_nodes(parent):
-            parents[child] = parent
-
     conditional = (ast.If, ast.For, ast.AsyncFor, ast.While, ast.Match, ast.comprehension)
-    def reachable(node):
+    def parent_map(method):
+        parents = {}
+        for parent in ast.walk(method):
+            for child in ast.iter_child_nodes(parent):
+                parents[child] = parent
+        return parents
+
+    def reachable(method, node, parents):
         current = node
-        while current is not test:
+        while current is not method:
             current = parents.get(current)
             if current is None:
                 return False
             if isinstance(current, conditional):
                 return False
-            if isinstance(current, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)) and current is not test:
+            if isinstance(current, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)) and current is not method:
                 return False
         return True
 
-    calls = [node for node in ast.walk(test) if isinstance(node, ast.Call) and reachable(node)]
+    test_parents = parent_map(test)
+    calls = [
+        node for node in ast.walk(test)
+        if isinstance(node, ast.Call) and reachable(test, node, test_parents)
+    ]
     stages = {name: [] for name in ("REBUILD", "VALIDATE", "SYNC", "PROMOTE")}
     for call in calls:
         if call_name(call) == "_run":
@@ -210,16 +216,18 @@ try:
             < stages["PROMOTE"][0].lineno
         )
     forbidden = any(
-        isinstance(node, (ast.Pass, ast.Return))
-        or (
+        isinstance(node, (ast.Pass, ast.Return, ast.Raise))
+        for node in ast.walk(test)
+    ) or any(
+        (
             isinstance(node, ast.If)
             and isinstance(node.test, ast.Constant)
             and not bool(node.test.value)
         )
-        for node in ast.walk(test)
+        for method in (test, setup, runner) for node in ast.walk(method)
     )
     skipped = bool(test.decorator_list) or any(
-        isinstance(node, ast.Call) and call_name(node).startswith("skip")
+        isinstance(node, ast.Call) and call_name(node).lower().startswith("skip")
         for node in ast.walk(test)
     )
     result["no_dead_code"] = not forbidden and not skipped
@@ -265,11 +273,19 @@ try:
             isinstance(part, ast.Call) and call_name(part) == "fail"
             for statement in node.body for part in ast.walk(statement)
         )
-        for node in ast.walk(runner)
+        for node in runner.body
     )
 
-    setup_tokens = [token for node in ast.walk(setup) for token in text_tokens(node)]
-    setup_calls = [node for node in ast.walk(setup) if isinstance(node, ast.Call)]
+    setup_parents = parent_map(setup)
+    setup_calls = [
+        node for node in ast.walk(setup)
+        if isinstance(node, ast.Call) and reachable(setup, node, setup_parents)
+    ]
+    setup_nodes = [
+        node for node in ast.walk(setup)
+        if reachable(setup, node, setup_parents)
+    ]
+    setup_tokens = [token for node in setup_nodes for token in text_tokens(node)]
     result["isolated_dolt_identity"] = (
         "HOME" in setup_tokens
         and "dolt-home" in setup_tokens

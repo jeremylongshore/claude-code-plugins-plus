@@ -516,11 +516,34 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   assert.equal(rows[58].status, 'partial');
 
   base = fixture();
+  const skippedTest = readFileSync(
+    join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
+    'utf8',
+  ).replace(
+    '    def test_full_cycle_uses_only_scratch_state_and_refuses_live_server(self):\n',
+    '    def test_full_cycle_uses_only_scratch_state_and_refuses_live_server(self):\n        raise unittest.SkipTest("no cycle executed")\n',
+  );
+  put(base.root, 'tests/test_freshie_hermetic_cycle.py', skippedTest);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.full_cycle, false);
+
+  base = fixture();
   const unsafeWorkflow = readFileSync(join(base.root, workflowPath), 'utf8').replace(
     '"$dolt_extract/dolt-linux-amd64/bin/dolt"',
     '/tmp/unverified/dolt',
   );
   put(base.root, workflowPath, unsafeWorkflow);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.pinned_dolt, false);
+
+  base = fixture();
+  const overwrittenWorkflow = readFileSync(join(base.root, workflowPath), 'utf8').replace(
+    '          test "$installed_dolt_version" = "$dolt_version"\n',
+    '          test "$installed_dolt_version" = "$dolt_version"\n          sudo install -m 0755 /tmp/unverified/dolt /usr/local/bin/dolt\n',
+  );
+  put(base.root, workflowPath, overwrittenWorkflow);
   rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[58].status, 'partial');
   assert.equal(rows[58].values.pinned_dolt, false);

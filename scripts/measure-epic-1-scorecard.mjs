@@ -1212,6 +1212,13 @@ function freshieHermeticContract(reader, executionShape = {}) {
   const ciNeedsRaw = parsed?.jobs?.['ci-required']?.needs;
   const ciNeeds = typeof ciNeedsRaw === 'string' ? [ciNeedsRaw] : ciNeedsRaw;
   const doltRun = typeof doltStep?.run === 'string' ? doltStep.run : '';
+  const doltInstallWriters = doltRun
+    .split(/\r?\n/)
+    .filter((line) =>
+      /(?:^|\s)(?:(?:sudo\s+)?(?:install|cp|mv|ln)|tee)\b[^\n]*\/usr\/local\/bin\/dolt|>\s*\/usr\/local\/bin\/dolt/.test(
+        line,
+      ),
+    );
   const checks = {
     blocking_ci_registration:
       Array.isArray(matrixTypes) &&
@@ -1235,6 +1242,7 @@ function freshieHermeticContract(reader, executionShape = {}) {
       !/UPDATE skill_compliance/.test(source),
     pinned_dolt:
       pythonIf(doltStep) &&
+      doltInstallWriters.length === 1 &&
       /readonly dolt_version='[^']+'/.test(doltRun) &&
       /readonly dolt_sha256='[a-f0-9]{64}'/.test(doltRun) &&
       /printf[^\n]+"\$dolt_sha256"[^\n]+"\$dolt_archive"[^\n]+sha256sum --check --strict/.test(
