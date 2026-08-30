@@ -498,6 +498,22 @@ class BuildForgeProofReceiptTests(unittest.TestCase):
         )
 
 
+class EmitBindingTests(unittest.TestCase):
+    def test_emit_rejects_commit_not_bound_to_tag_before_writing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            reports = Path(tmp) / "reports"
+            with patch.object(run_delta, "commit_of_tag", return_value="actualhash"):
+                with self.assertRaisesRegex(run_delta.DeltaError, "is not bound to 'run-14'"):
+                    run_delta.emit(
+                        Path(tmp),
+                        14,
+                        "forgedhash",
+                        "run-14",
+                        reports,
+                    )
+            self.assertFalse(reports.exists())
+
+
 class SummaryLineTests(unittest.TestCase):
     def test_normal_line_carries_the_signal_numbers(self):
         report = run_delta.build_report(

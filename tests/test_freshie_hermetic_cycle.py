@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import shutil
 import socket
 import sqlite3
@@ -47,6 +48,10 @@ class HermeticFreshieCycleTests(unittest.TestCase):
         self.out = Path(self.tmp.name) / "out"
         self.curated = Path(self.tmp.name) / "curated"
         self.remote = Path(self.tmp.name) / "remote"
+        self.dolt_home = Path(self.tmp.name) / "dolt-home"
+        self.dolt_home.mkdir()
+        self.env = os.environ.copy()
+        self.env["HOME"] = str(self.dolt_home)
         self.skill_rel = "plugins/testing/example/skills/example-skill/SKILL.md"
         self.skill = self.root / self.skill_rel
         source = self._graded_fixture_source()
@@ -64,6 +69,8 @@ class HermeticFreshieCycleTests(unittest.TestCase):
         self._run(["git", "config", "user.email", "freshie@example.invalid"], cwd=self.root)
         self._run(["git", "add", "."], cwd=self.root)
         self._run(["git", "commit", "-qm", "fixture"], cwd=self.root)
+        self._run(["dolt", "config", "--global", "--add", "user.name", "Freshie Test"])
+        self._run(["dolt", "config", "--global", "--add", "user.email", "freshie@example.invalid"])
 
     def tearDown(self):
         self.tmp.cleanup()
@@ -84,7 +91,14 @@ class HermeticFreshieCycleTests(unittest.TestCase):
         self.fail("no current first-party A/B SKILL.md is available for the integration fixture")
 
     def _run(self, args, *, cwd=None, expected=0):
-        result = subprocess.run(args, cwd=cwd, capture_output=True, text=True, check=False)
+        result = subprocess.run(
+            args,
+            cwd=cwd,
+            env=self.env,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
         expected_codes = (expected,) if isinstance(expected, int) else tuple(expected)
         if result.returncode not in expected_codes:
             self.fail(
@@ -177,6 +191,7 @@ class HermeticFreshieCycleTests(unittest.TestCase):
         server = subprocess.Popen(
             ["dolt", "sql-server", "--port", "3308"],
             cwd=self.dolt_dir,
+            env=self.env,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )

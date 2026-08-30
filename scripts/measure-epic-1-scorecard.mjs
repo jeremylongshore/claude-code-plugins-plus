@@ -1076,9 +1076,12 @@ function latestFreshieRunReceipt(reader) {
     /^[a-z0-9]{20,64}$/i.test(report.dolt_commit) &&
     coherence?.discovery_run_id === latest.runId &&
     headerTotal !== null &&
+    headerTotal > 0 &&
     skillRows !== null &&
+    skillRows > 0 &&
     skillDelta === skillRows - headerTotal &&
     complianceRows !== null &&
+    complianceRows > 0 &&
     gradeExportRows === complianceRows &&
     typeof gradeExport?.csv_sha256 === 'string' &&
     /^[a-f0-9]{64}$/.test(gradeExport.csv_sha256) &&
@@ -1185,7 +1188,7 @@ function forgeProofReceipt(reader, freshieRun) {
   };
 }
 
-function freshieHermeticContract(reader) {
+function freshieHermeticContract(reader, executionShape = {}) {
   const testPath = 'tests/test_freshie_hermetic_cycle.py';
   const workflowPath = '.github/workflows/validate-plugins.yml';
   const source = reader.text(testPath) ?? '';
@@ -1222,43 +1225,50 @@ function freshieHermeticContract(reader) {
       !/@unittest\.skipUnless/.test(source) &&
       /def setUpClass\(cls\):/.test(source) &&
       /missing required tools/.test(source) &&
-      /raise AssertionError/.test(source),
+      /raise AssertionError/.test(source) &&
+      executionShape.runner_fail_closed === true,
     full_cycle:
-      /class HermeticFreshieCycleTests\(unittest\.TestCase\):/.test(source) &&
-      /def test_full_cycle_uses_only_scratch_state_and_refuses_live_server\(self\):/.test(source) &&
-      /str\(REBUILD\)/.test(source) &&
-      /str\(VALIDATE\)/.test(source) &&
-      /str\(SYNC\)/.test(source) &&
-      /str\(PROMOTE\)/.test(source) &&
+      executionShape.parsed === true &&
+      executionShape.no_dead_code === true &&
+      executionShape.reachable_full_cycle === true &&
       !/expected=\(0, 1\)/.test(source) &&
       !/UPDATE skill_compliance/.test(source),
     pinned_dolt:
       pythonIf(doltStep) &&
       /readonly dolt_version='[^']+'/.test(doltRun) &&
       /readonly dolt_sha256='[a-f0-9]{64}'/.test(doltRun) &&
-      /sha256sum --check --strict/.test(doltRun) &&
-      /sudo install -m 0755/.test(doltRun) &&
-      /dolt version/.test(doltRun),
+      /printf[^\n]+"\$dolt_sha256"[^\n]+"\$dolt_archive"[^\n]+sha256sum --check --strict/.test(
+        doltRun,
+      ) &&
+      /tar -xzf "\$dolt_archive" -C "\$dolt_extract"/.test(doltRun) &&
+      /sudo install -m 0755 "\$dolt_extract\/dolt-linux-amd64\/bin\/dolt" \/usr\/local\/bin\/dolt/.test(
+        doltRun,
+      ) &&
+      /installed_dolt_version="\$\(dolt version \| awk '\{print \$3\}'\)"\s+readonly installed_dolt_version/.test(
+        doltRun,
+      ) &&
+      /test "\$installed_dolt_version" = "\$dolt_version"/.test(doltRun),
     scratch_state:
       /TemporaryDirectory\(prefix=["']freshie-hermetic-/.test(source) &&
       /--dolt-dir/.test(source) &&
       /--grades-csv/.test(source) &&
-      /--curated-dir/.test(source),
-    server_refusal:
-      /dolt["'], ["']sql-server/.test(source) &&
-      /assertIn\(["']sql-server/.test(source) &&
-      /assertFalse\(\(self\.out \/ ["']blocked-grades\.csv/.test(source),
-    fake_remote_push: /file:\/\//.test(source) && /["']dolt["'], ["']push["']/.test(source),
+      /--curated-dir/.test(source) &&
+      executionShape.isolated_dolt_identity === true,
+    server_refusal: executionShape.reachable_server_refusal === true,
+    fake_remote_push: executionShape.reachable_fake_remote_push === true,
   };
   return {
     checks,
-    sources: [testPath, workflowPath].filter((path) => reader.pathSet.has(path)),
+    sources: [testPath, workflowPath, 'scripts/measure-epic-1.mjs'].filter((path) =>
+      reader.pathSet.has(path),
+    ),
     targetMet: Object.values(checks).every(Boolean),
   };
 }
 
 /** Build every numbered row not owned by the core rows 1-4, 11, and 12. */
 export function buildExtendedScorecardRows({
+  hermeticTestContract,
   root,
   paths,
   skillRows,
@@ -1901,7 +1911,7 @@ export function buildExtendedScorecardRows({
     const hasClaims = proofs.values.total_e2_e3 > 0;
     output[55] = baseRow(
       55,
-      retained && legacyDemoted ? (hasClaims ? 'target_met' : 'measured') : 'partial',
+      retained && legacyDemoted ? 'target_met' : 'partial',
       'tag-bound evidence-class snapshot and canonical retention standard',
       [
         proofs.path,
@@ -1919,6 +1929,14 @@ export function buildExtendedScorecardRows({
           : Number(((proofs.values.retained_e2_e3 * 100) / proofs.values.total_e2_e3).toFixed(2)),
         target_retention_percent: 100,
         total_e2_e3: proofs.values.total_e2_e3,
+        unretained_e2_e3: proofs.values.total_e2_e3 - proofs.values.retained_e2_e3,
+      },
+      {
+        limitations: hasClaims
+          ? []
+          : [
+              'zero E2/E3 claims satisfies the safety target of zero unretained claims; retention_percent remains null rather than fabricating 100%',
+            ],
       },
     );
   } else {
@@ -1971,7 +1989,7 @@ export function buildExtendedScorecardRows({
       tracked_eval_specs: sourceEvalSpecs.length + curatedEvalSpecs.length,
     },
   );
-  const hermetic = freshieHermeticContract(reader);
+  const hermetic = freshieHermeticContract(reader, hermeticTestContract);
   output[58] = baseRow(
     58,
     hermetic.targetMet ? 'target_met' : 'partial',

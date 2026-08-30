@@ -454,6 +454,11 @@ def emit(
     Raises DeltaError on failure — dolt-sync treats this as a publication
     blocker before push; the standalone CLI exits 1.
     """
+    tagged_commit = commit_of_tag(repo, to_tag)
+    if tagged_commit != dolt_commit:
+        raise DeltaError(
+            f"receipt commit {dolt_commit!r} is not bound to {to_tag!r} (tag resolves to {tagged_commit!r})"
+        )
     tags = local_tags(repo)
     from_tag = pick_previous_tag(tags, to_tag)
 

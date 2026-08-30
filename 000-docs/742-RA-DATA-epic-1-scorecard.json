@@ -1968,6 +1968,9 @@
     "55": {
       "cohort": "tag-bound evidence-class snapshot and canonical retention standard",
       "dimension": "Retained primary evaluation artifacts",
+      "limitations": [
+        "zero E2/E3 claims satisfies the safety target of zero unretained claims; retention_percent remains null rather than fabricating 100%"
+      ],
       "reproduce": "pnpm run measure:e1 --row=55 --stdout",
       "source": [
         "000-docs/807-DR-STND-evaluation-evidence.md",
@@ -1976,14 +1979,15 @@
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py"
       ],
-      "status": "measured",
+      "status": "target_met",
       "values": {
         "legacy_e0_records": 3,
         "no_e2_e3_claims": true,
         "retained_e2_e3": 0,
         "retention_percent": null,
         "target_retention_percent": 100,
-        "total_e2_e3": 0
+        "total_e2_e3": 0,
+        "unretained_e2_e3": 0
       }
     },
     "56": {
@@ -2049,7 +2053,11 @@
       "cohort": "tracked Freshie hermetic-cycle test and blocking Python CI lane",
       "dimension": "Freshie test shape",
       "reproduce": "pnpm run measure:e1 --row=58 --stdout",
-      "source": [".github/workflows/validate-plugins.yml", "tests/test_freshie_hermetic_cycle.py"],
+      "source": [
+        ".github/workflows/validate-plugins.yml",
+        "scripts/measure-epic-1.mjs",
+        "tests/test_freshie_hermetic_cycle.py"
+      ],
       "status": "target_met",
       "values": {
         "blocking_ci_registration": true,

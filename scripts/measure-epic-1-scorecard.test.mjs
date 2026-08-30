@@ -7,6 +7,7 @@ import test from 'node:test';
 
 import { DEAD_DOMAIN } from './dead-domain-policy.mjs';
 import { buildExtendedScorecardRows } from './measure-epic-1-scorecard.mjs';
+import { inspectFreshieHermeticTest } from './measure-epic-1.mjs';
 
 const EXPECTED_ROWS = [
   5, 6, 7, 8, 9, 10, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
@@ -143,6 +144,20 @@ function fixture() {
       'utf8',
     ),
   };
+  const workflowPath = '.github/workflows/validate-plugins.yml';
+  files[workflowPath] = files[workflowPath].replace(
+    `          printf '%s  %s\\n' "$dolt_sha256" dolt.tar.gz | sha256sum --check --strict
+          sudo install -m 0755 dolt /usr/local/bin/dolt
+          dolt version`,
+    `          readonly dolt_archive="/tmp/dolt.tar.gz"
+          readonly dolt_extract="/tmp/dolt-extract"
+          printf '%s  %s\\n' "$dolt_sha256" "$dolt_archive" | sha256sum --check --strict
+          tar -xzf "$dolt_archive" -C "$dolt_extract"
+          sudo install -m 0755 "$dolt_extract/dolt-linux-amd64/bin/dolt" /usr/local/bin/dolt
+          installed_dolt_version="$(dolt version | awk '{print $3}')"
+          readonly installed_dolt_version
+          test "$installed_dolt_version" = "$dolt_version"`,
+  );
   for (const [path, value] of Object.entries(files)) put(root, path, value);
   return { root, paths: Object.keys(files).sort() };
 }
@@ -151,6 +166,7 @@ function input(fixtureValue) {
   return {
     ...fixtureValue,
     agentSummary: { agents: 1, compliance_percent: 100, errors: 0 },
+    hermeticTestContract: inspectFreshieHermeticTest(fixtureValue.root),
     marketplaceSummary: { errors: 1 },
     skillRows: [
       {
@@ -412,9 +428,10 @@ test('Freshie exit rows use tracked receipts and fail closed on planted drift', 
   let base = fixture();
   let rows = buildExtendedScorecardRows(input(base));
   for (const number of [52, 53, 54, 58]) assert.equal(rows[number].status, 'target_met');
-  assert.equal(rows[55].status, 'measured');
+  assert.equal(rows[55].status, 'target_met');
   assert.equal(rows[55].values.retention_percent, null);
   assert.equal(rows[55].values.no_e2_e3_claims, true);
+  assert.equal(rows[55].values.unretained_e2_e3, 0);
 
   const runPath = 'freshie/reports/run-delta-9.json';
   let driftedRun = JSON.parse(readFileSync(join(base.root, runPath), 'utf8'));
@@ -473,10 +490,62 @@ test('Freshie exit rows use tracked receipts and fail closed on planted drift', 
   put(
     base.root,
     'tests/test_freshie_hermetic_cycle.py',
-    'str(REBUILD); str(VALIDATE); str(SYNC); str(PROMOTE); file://; dolt push; dolt sql-server',
+    `import unittest
+class HermeticFreshieCycleTests(unittest.TestCase):
+    def setUp(self):
+        self.env = {"HOME": "dolt-home"}
+        self._run(["dolt", "config", "--global", "--add", "user.name", "Test"])
+        self._run(["dolt", "config", "--global", "--add", "user.email", "test@example.invalid"])
+    def _run(self, args, expected=0):
+        if False:
+            self.fail("returncode")
+    def test_full_cycle_uses_only_scratch_state_and_refuses_live_server(self):
+        if False:
+            self._run([str(REBUILD)])
+            self._run([str(VALIDATE)])
+            self._run([str(SYNC)])
+            self._run([str(PROMOTE)])
+            self._run(["dolt", "push", "file://remote"])
+            subprocess.Popen(["dolt", "sql-server"])
+            self._run([str(SYNC)], expected=1)
+            self.assertFalse(self.out / "blocked-grades.csv")
+        pass
+`,
   );
   rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[58].status, 'partial');
+
+  base = fixture();
+  const unsafeWorkflow = readFileSync(join(base.root, workflowPath), 'utf8').replace(
+    '"$dolt_extract/dolt-linux-amd64/bin/dolt"',
+    '/tmp/unverified/dolt',
+  );
+  put(base.root, workflowPath, unsafeWorkflow);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.pinned_dolt, false);
+
+  base = fixture();
+  const emptyGrades = 'skill_path,grade,score\n';
+  const emptyHash = createHash('sha256').update(emptyGrades).digest('hex');
+  put(base.root, 'freshie/grades.csv', emptyGrades);
+  histogram = JSON.parse(readFileSync(join(base.root, histogramPath), 'utf8'));
+  histogram.total = 0;
+  histogram.grades = {};
+  histogram.grades_csv_sha256 = emptyHash;
+  put(base.root, histogramPath, JSON.stringify(histogram));
+  driftedRun = JSON.parse(readFileSync(join(base.root, runPath), 'utf8'));
+  driftedRun.run_coherence.header_total_skills = 0;
+  driftedRun.run_coherence.skill_rows = 0;
+  driftedRun.run_coherence.skill_row_delta = 0;
+  driftedRun.run_coherence.skill_compliance_rows = 0;
+  driftedRun.grade_export.row_count = 0;
+  driftedRun.grade_export.csv_sha256 = emptyHash;
+  driftedRun.grade_export.grade_counts = {};
+  put(base.root, runPath, JSON.stringify(driftedRun));
+  rows = buildExtendedScorecardRows(input(base));
+  assert.notEqual(rows[52].status, 'target_met');
+  assert.notEqual(rows[53].status, 'target_met');
 
   base = fixture();
   put(base.root, runPath, '{not json');

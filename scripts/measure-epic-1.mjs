@@ -22,6 +22,7 @@
  */
 
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path';
@@ -97,6 +98,207 @@ function run(root, command, args) {
     maxBuffer: 64 * 1024 * 1024,
   });
   if (result.error) fail(`${command} failed to start: ${result.error.message}`);
+  return result;
+}
+
+const HERMETIC_CONTRACT_CACHE = new Map();
+
+export function inspectFreshieHermeticTest(root) {
+  const testPath = file(resolve(root), 'tests/test_freshie_hermetic_cycle.py');
+  if (!existsSync(testPath)) {
+    return {
+      isolated_dolt_identity: false,
+      no_dead_code: false,
+      parsed: false,
+      reachable_fake_remote_push: false,
+      reachable_full_cycle: false,
+      reachable_server_refusal: false,
+      runner_fail_closed: false,
+    };
+  }
+  const source = readFileSync(testPath, 'utf8');
+  const digest = createHash('sha256').update(source).digest('hex');
+  if (HERMETIC_CONTRACT_CACHE.has(digest)) return HERMETIC_CONTRACT_CACHE.get(digest);
+  const probe = String.raw`
+import ast
+import json
+import sys
+
+result = {
+    "parsed": False,
+    "no_dead_code": False,
+    "reachable_full_cycle": False,
+    "reachable_fake_remote_push": False,
+    "reachable_server_refusal": False,
+    "runner_fail_closed": False,
+    "isolated_dolt_identity": False,
+}
+
+def call_name(call):
+    func = call.func
+    if isinstance(func, ast.Attribute):
+        return func.attr
+    return func.id if isinstance(func, ast.Name) else ""
+
+def text_tokens(node):
+    values = []
+    for item in ast.walk(node):
+        if isinstance(item, ast.Constant) and isinstance(item.value, str):
+            values.append(item.value)
+        elif isinstance(item, ast.Name):
+            values.append(item.id)
+    return values
+
+def required_name(call, name):
+    return any(
+        isinstance(item, ast.Call)
+        and isinstance(item.func, ast.Name)
+        and item.func.id == "str"
+        and item.args
+        and isinstance(item.args[0], ast.Name)
+        and item.args[0].id == name
+        for item in ast.walk(call)
+    )
+
+try:
+    tree = ast.parse(sys.stdin.read())
+    result["parsed"] = True
+    klass = next(
+        node for node in tree.body
+        if isinstance(node, ast.ClassDef) and node.name == "HermeticFreshieCycleTests"
+    )
+    methods = {
+        node.name: node for node in klass.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    test = methods["test_full_cycle_uses_only_scratch_state_and_refuses_live_server"]
+    runner = methods["_run"]
+    setup = methods["setUp"]
+
+    parents = {}
+    for parent in ast.walk(test):
+        for child in ast.iter_child_nodes(parent):
+            parents[child] = parent
+
+    conditional = (ast.If, ast.For, ast.AsyncFor, ast.While, ast.Match, ast.comprehension)
+    def reachable(node):
+        current = node
+        while current is not test:
+            current = parents.get(current)
+            if current is None:
+                return False
+            if isinstance(current, conditional):
+                return False
+            if isinstance(current, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)) and current is not test:
+                return False
+        return True
+
+    calls = [node for node in ast.walk(test) if isinstance(node, ast.Call) and reachable(node)]
+    stages = {name: [] for name in ("REBUILD", "VALIDATE", "SYNC", "PROMOTE")}
+    for call in calls:
+        if call_name(call) == "_run":
+            for name in stages:
+                if required_name(call, name):
+                    stages[name].append(call)
+
+    ordered = all(stages[name] for name in stages)
+    if ordered:
+        ordered = (
+            stages["REBUILD"][0].lineno
+            < stages["VALIDATE"][0].lineno
+            < stages["SYNC"][0].lineno
+            < stages["PROMOTE"][0].lineno
+        )
+    forbidden = any(
+        isinstance(node, (ast.Pass, ast.Return))
+        or (
+            isinstance(node, ast.If)
+            and isinstance(node.test, ast.Constant)
+            and not bool(node.test.value)
+        )
+        for node in ast.walk(test)
+    )
+    skipped = bool(test.decorator_list) or any(
+        isinstance(node, ast.Call) and call_name(node).startswith("skip")
+        for node in ast.walk(test)
+    )
+    result["no_dead_code"] = not forbidden and not skipped
+    result["reachable_full_cycle"] = ordered and len(stages["SYNC"]) >= 2
+
+    result["reachable_fake_remote_push"] = any(
+        call_name(call) == "_run"
+        and {"dolt", "push"}.issubset(set(text_tokens(call)))
+        for call in calls
+    ) and any("file://" in token for call in calls for token in text_tokens(call))
+
+    refusal_calls = [
+        call for call in stages["SYNC"]
+        if any(
+            keyword.arg == "expected"
+            and isinstance(keyword.value, ast.Constant)
+            and keyword.value.value == 1
+            for keyword in call.keywords
+        )
+    ]
+    server_calls = [
+        call for call in calls
+        if call_name(call) == "Popen"
+        and {"dolt", "sql-server"}.issubset(set(text_tokens(call)))
+    ]
+    blocked_assertions = [
+        call for call in calls
+        if call_name(call) == "assertFalse"
+        and "blocked-grades.csv" in text_tokens(call)
+    ]
+    result["reachable_server_refusal"] = bool(
+        refusal_calls and server_calls and blocked_assertions
+        and server_calls[0].lineno < refusal_calls[0].lineno < blocked_assertions[0].lineno
+    )
+
+    result["runner_fail_closed"] = any(
+        isinstance(node, ast.If)
+        and any(
+            isinstance(part, ast.Attribute) and part.attr == "returncode"
+            for part in ast.walk(node.test)
+        )
+        and any(
+            isinstance(part, ast.Call) and call_name(part) == "fail"
+            for statement in node.body for part in ast.walk(statement)
+        )
+        for node in ast.walk(runner)
+    )
+
+    setup_tokens = [token for node in ast.walk(setup) for token in text_tokens(node)]
+    setup_calls = [node for node in ast.walk(setup) if isinstance(node, ast.Call)]
+    result["isolated_dolt_identity"] = (
+        "HOME" in setup_tokens
+        and "dolt-home" in setup_tokens
+        and sum(
+            1 for call in setup_calls
+            if {"dolt", "config", "--global", "--add"}.issubset(set(text_tokens(call)))
+        ) >= 2
+    )
+except (SyntaxError, StopIteration, KeyError):
+    pass
+
+print(json.dumps(result, sort_keys=True))
+`;
+  const observed = spawnSync('python3', ['-c', probe], {
+    cwd: resolve(root),
+    encoding: 'utf8',
+    input: source,
+    maxBuffer: 1024 * 1024,
+  });
+  if (observed.error || observed.status !== 0) {
+    fail(`Freshie hermetic contract probe failed: ${observed.error?.message ?? observed.stderr}`);
+  }
+  let result;
+  try {
+    result = JSON.parse(observed.stdout);
+  } catch (error) {
+    fail(`Freshie hermetic contract probe returned malformed JSON: ${error.message}`);
+  }
+  HERMETIC_CONTRACT_CACHE.set(digest, result);
   return result;
 }
 
@@ -532,6 +734,7 @@ export function buildReport(root, suppliedEvidence, suppliedPaths) {
   const catalog = catalogMeasurement(repository, paths);
   const assets = binaryAssets(repository, paths);
   const detector = promotionDetector(repository, assets.mismatches);
+  const hermeticTestContract = inspectFreshieHermeticTest(repository);
   const extendedRows = buildExtendedScorecardRows({
     agentSummary: {
       agents: agents.terminal_denominator.agents,
@@ -543,6 +746,7 @@ export function buildReport(root, suppliedEvidence, suppliedPaths) {
     },
     paths,
     root: repository,
+    hermeticTestContract,
     skillRows: evidence.skills.filter((entry) => entry && typeof entry.path === 'string'),
     skillSummary: skills,
   });
