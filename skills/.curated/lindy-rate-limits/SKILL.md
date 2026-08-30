@@ -12,7 +12,7 @@ description: 'Manage Lindy AI credits, rate limits, and usage optimization.
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.18.0
+version: 1.19.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
