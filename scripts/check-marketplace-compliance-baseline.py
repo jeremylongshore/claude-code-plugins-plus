@@ -103,14 +103,9 @@ def metric_drift(baseline: dict[str, Any], current: dict[str, Any]) -> list[str]
             errors.append(f"totals.{key} must be non-negative")
             continue
         if key == "errors" and current_value > baseline_value:
-            errors.append(
-                f"totals.errors increased: baseline={baseline_value:g}, live={current_value:g}"
-            )
+            errors.append(f"totals.errors increased: baseline={baseline_value:g}, live={current_value:g}")
         elif key == "grade_A_plus_B_pct" and current_value < baseline_value:
-            errors.append(
-                "totals.grade_A_plus_B_pct fell: "
-                f"baseline={baseline_value:g}, live={current_value:g}"
-            )
+            errors.append(f"totals.grade_A_plus_B_pct fell: baseline={baseline_value:g}, live={current_value:g}")
     return errors
 
 
