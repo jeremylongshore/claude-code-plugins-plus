@@ -6,6 +6,7 @@
  * consults a clock, or queries mutable external state.
  */
 
+import { createHash } from 'node:crypto';
 import { lstatSync, readFileSync, realpathSync } from 'node:fs';
 import { dirname, extname, isAbsolute, normalize, relative, resolve, sep } from 'node:path';
 import yaml from 'js-yaml';
@@ -1009,6 +1010,253 @@ function rowSources(...paths) {
   return paths.flat().filter(Boolean);
 }
 
+function latestFreshieRunReceipt(reader) {
+  const candidates = reader.paths
+    .map((path) => ({ match: /^freshie\/reports\/run-delta-(\d+)\.json$/.exec(path), path }))
+    .filter((entry) => entry.match)
+    .map((entry) => ({ path: entry.path, runId: Number(entry.match[1]) }))
+    .sort((left, right) => left.runId - right.runId);
+  if (candidates.length === 0) return null;
+
+  const latest = candidates.at(-1);
+  const report = reader.json(latest.path);
+  const coherence = report?.run_coherence;
+  const headerTotal = finiteCount(coherence?.header_total_skills);
+  const skillRows = finiteCount(coherence?.skill_rows);
+  const skillDelta = Number.isSafeInteger(coherence?.skill_row_delta)
+    ? coherence.skill_row_delta
+    : null;
+  const complianceRows = finiteCount(coherence?.skill_compliance_rows);
+  const gradeExport = report?.grade_export;
+  const gradeExportRows = finiteCount(gradeExport?.row_count);
+  const gradeCounts = gradeExport?.grade_counts;
+  const forgeProofs = report?.forge_proofs;
+  const forgeProofRows = finiteCount(forgeProofs?.row_count);
+  const forgeProofRecords = Array.isArray(forgeProofs?.records) ? forgeProofs.records : null;
+  const forgeProofHash =
+    forgeProofRecords === null
+      ? null
+      : createHash('sha256').update(canonicalJson(forgeProofRecords)).digest('hex');
+  const forgeIdentities = new Set();
+  const forgeClassCounts = { E0: 0, E1: 0, E2: 0, E3: 0 };
+  let forgeRecordsValid = forgeProofRecords !== null;
+  let computedE2E3 = 0;
+  for (const record of forgeProofRecords ?? []) {
+    const identity = `${record?.plugin_name ?? ''}:${record?.jrig_run_id ?? ''}`;
+    if (
+      typeof record?.plugin_name !== 'string' ||
+      record.plugin_name.length === 0 ||
+      finiteCount(record?.jrig_run_id) === null ||
+      forgeIdentities.has(identity) ||
+      !Object.hasOwn(forgeClassCounts, record?.evidence_class)
+    ) {
+      forgeRecordsValid = false;
+      continue;
+    }
+    forgeIdentities.add(identity);
+    forgeClassCounts[record.evidence_class] += 1;
+    if (record.evidence_class === 'E2' || record.evidence_class === 'E3') {
+      computedE2E3 += 1;
+      if (
+        typeof record.artifact_uri !== 'string' ||
+        record.artifact_uri.length === 0 ||
+        typeof record.artifact_sha256 !== 'string' ||
+        !/^[a-f0-9]{64}$/.test(record.artifact_sha256) ||
+        (record.evidence_class === 'E3' && typeof record.baseline_delta !== 'number')
+      ) {
+        forgeRecordsValid = false;
+      }
+    }
+  }
+  const valid =
+    report?.schema_version === 'freshie-run-delta/v3' &&
+    report?.run_id === latest.runId &&
+    new RegExp(`^run-${latest.runId}(?:\\.\\d+)?$`).test(report?.to_tag ?? '') &&
+    typeof report?.dolt_commit === 'string' &&
+    /^[a-z0-9]{20,64}$/i.test(report.dolt_commit) &&
+    coherence?.discovery_run_id === latest.runId &&
+    headerTotal !== null &&
+    skillRows !== null &&
+    skillDelta === skillRows - headerTotal &&
+    complianceRows !== null &&
+    gradeExportRows === complianceRows &&
+    typeof gradeExport?.csv_sha256 === 'string' &&
+    /^[a-f0-9]{64}$/.test(gradeExport.csv_sha256) &&
+    gradeCounts !== null &&
+    typeof gradeCounts === 'object' &&
+    !Array.isArray(gradeCounts) &&
+    Object.values(gradeCounts).every((count) => finiteCount(count) !== null) &&
+    Object.values(gradeCounts).reduce((total, count) => total + count, 0) === gradeExportRows &&
+    forgeProofRows !== null &&
+    forgeProofRecords !== null &&
+    forgeProofRows === forgeProofRecords.length &&
+    forgeProofHash === forgeProofs?.records_sha256 &&
+    forgeRecordsValid &&
+    canonicalJson(forgeClassCounts) === canonicalJson(forgeProofs?.class_counts) &&
+    finiteCount(forgeProofs?.total_e2_e3) === computedE2E3 &&
+    finiteCount(forgeProofs?.retained_e2_e3) === computedE2E3;
+  return {
+    ...latest,
+    report,
+    coherence: { headerTotal, skillRows, skillDelta, complianceRows },
+    valid,
+  };
+}
+
+function canonicalJson(value) {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
+  if (value !== null && typeof value === 'object') {
+    return `{${Object.keys(value)
+      .sort(compareText)
+      .map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`)
+      .join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function forgeProofReceipt(reader, freshieRun) {
+  const path = 'freshie/reports/legacy-forge-proofs-demotion.json';
+  const payload = reader.json(path);
+  const snapshot = freshieRun?.report?.forge_proofs;
+  if (
+    !freshieRun?.valid ||
+    payload?.schema_version !== 'forge-proof-demotion/v2' ||
+    !Array.isArray(payload.records) ||
+    !Array.isArray(snapshot?.records)
+  ) {
+    return { path, valid: false };
+  }
+  const identities = new Set();
+  const classCounts = { E0: 0, E1: 0, E2: 0, E3: 0 };
+  let invalidIdentities = 0;
+  let unclassified = 0;
+  for (const record of payload.records) {
+    const identity = `${record?.plugin_name ?? ''}:${record?.jrig_run_id ?? ''}`;
+    if (
+      typeof record?.plugin_name !== 'string' ||
+      record.plugin_name.length === 0 ||
+      finiteCount(record?.jrig_run_id) === null ||
+      identities.has(identity)
+    ) {
+      invalidIdentities += 1;
+    }
+    identities.add(identity);
+    if (!Object.hasOwn(classCounts, record?.evidence_class)) {
+      unclassified += 1;
+      continue;
+    }
+    classCounts[record.evidence_class] += 1;
+  }
+  const legacyKeys = new Set(['databricks-pack:2', 'databricks-pack:4', 'databricks-pack:5']);
+  const legacyE0 = payload.records.filter(
+    (record) =>
+      legacyKeys.has(`${record?.plugin_name ?? ''}:${record?.jrig_run_id ?? ''}`) &&
+      record?.evidence_class === 'E0' &&
+      record?.artifact_uri === null &&
+      record?.artifact_sha256 === null,
+  ).length;
+  const recordsHash = createHash('sha256').update(canonicalJson(payload.records)).digest('hex');
+  const linked =
+    payload.source_run_id === freshieRun.runId &&
+    payload.source_tag === freshieRun.report.to_tag &&
+    payload.source_dolt_commit === freshieRun.report.dolt_commit &&
+    payload.records_sha256 === snapshot.records_sha256 &&
+    recordsHash === snapshot.records_sha256 &&
+    canonicalJson(payload.records) === canonicalJson(snapshot.records);
+  return {
+    path,
+    valid:
+      linked &&
+      payload.records.length === snapshot.row_count &&
+      payload.records.length > 0 &&
+      invalidIdentities === 0,
+    values: {
+      class_counts: classCounts,
+      invalid_identities: invalidIdentities,
+      legacy_e0_records: legacyE0,
+      retained_e2_e3: snapshot.retained_e2_e3,
+      source_dolt_commit: payload.source_dolt_commit,
+      source_run_id: payload.source_run_id,
+      source_tag: payload.source_tag,
+      total_e2_e3: snapshot.total_e2_e3,
+      total_records: payload.records.length,
+      unclassified,
+    },
+  };
+}
+
+function freshieHermeticContract(reader) {
+  const testPath = 'tests/test_freshie_hermetic_cycle.py';
+  const workflowPath = '.github/workflows/validate-plugins.yml';
+  const source = reader.text(testPath) ?? '';
+  const workflow = reader.text(workflowPath) ?? '';
+  let parsed = null;
+  try {
+    parsed = yaml.load(workflow);
+  } catch {
+    // A malformed workflow cannot prove registration.
+  }
+  const testJob = parsed?.jobs?.test;
+  const steps = Array.isArray(testJob?.steps) ? testJob.steps : [];
+  const pythonIf = (step) => step?.if === "matrix.test-type == 'python-tests'";
+  const doltStep = steps.find(
+    (step) => step?.name === 'Install pinned Dolt for Freshie integration tests',
+  );
+  const hermeticStep = steps.find(
+    (step) => step?.name === 'Run Freshie hermetic publication cycle',
+  );
+  const matrixTypes = testJob?.strategy?.matrix?.['test-type'];
+  const ciNeedsRaw = parsed?.jobs?.['ci-required']?.needs;
+  const ciNeeds = typeof ciNeedsRaw === 'string' ? [ciNeedsRaw] : ciNeedsRaw;
+  const doltRun = typeof doltStep?.run === 'string' ? doltStep.run : '';
+  const checks = {
+    blocking_ci_registration:
+      Array.isArray(matrixTypes) &&
+      matrixTypes.includes('python-tests') &&
+      Array.isArray(ciNeeds) &&
+      ciNeeds.includes('test') &&
+      pythonIf(hermeticStep) &&
+      hermeticStep?.['continue-on-error'] !== true &&
+      hermeticStep?.run?.trim() === 'python3 -m unittest tests.test_freshie_hermetic_cycle -v',
+    dependencies_fail_closed:
+      !/@unittest\.skipUnless/.test(source) &&
+      /def setUpClass\(cls\):/.test(source) &&
+      /missing required tools/.test(source) &&
+      /raise AssertionError/.test(source),
+    full_cycle:
+      /class HermeticFreshieCycleTests\(unittest\.TestCase\):/.test(source) &&
+      /def test_full_cycle_uses_only_scratch_state_and_refuses_live_server\(self\):/.test(source) &&
+      /str\(REBUILD\)/.test(source) &&
+      /str\(VALIDATE\)/.test(source) &&
+      /str\(SYNC\)/.test(source) &&
+      /str\(PROMOTE\)/.test(source) &&
+      !/expected=\(0, 1\)/.test(source) &&
+      !/UPDATE skill_compliance/.test(source),
+    pinned_dolt:
+      pythonIf(doltStep) &&
+      /readonly dolt_version='[^']+'/.test(doltRun) &&
+      /readonly dolt_sha256='[a-f0-9]{64}'/.test(doltRun) &&
+      /sha256sum --check --strict/.test(doltRun) &&
+      /sudo install -m 0755/.test(doltRun) &&
+      /dolt version/.test(doltRun),
+    scratch_state:
+      /TemporaryDirectory\(prefix=["']freshie-hermetic-/.test(source) &&
+      /--dolt-dir/.test(source) &&
+      /--grades-csv/.test(source) &&
+      /--curated-dir/.test(source),
+    server_refusal:
+      /dolt["'], ["']sql-server/.test(source) &&
+      /assertIn\(["']sql-server/.test(source) &&
+      /assertFalse\(\(self\.out \/ ["']blocked-grades\.csv/.test(source),
+    fake_remote_push: /file:\/\//.test(source) && /["']dolt["'], ["']push["']/.test(source),
+  };
+  return {
+    checks,
+    sources: [testPath, workflowPath].filter((path) => reader.pathSet.has(path)),
+    targetMet: Object.values(checks).every(Boolean),
+  };
+}
+
 /** Build every numbered row not owned by the core rows 1-4, 11, and 12. */
 export function buildExtendedScorecardRows({
   root,
@@ -1557,7 +1805,126 @@ export function buildExtendedScorecardRows({
       ],
     },
   );
-  for (const number of [49, 50, 51, 52, 53, 54, 55]) output[number] = unresolved(number);
+  for (const number of [49, 50, 51]) output[number] = unresolved(number);
+  const freshieRun = latestFreshieRunReceipt(reader);
+  output[52] = freshieRun?.valid
+    ? baseRow(
+        52,
+        freshieRun.coherence.skillDelta === 0 ? 'target_met' : 'partial',
+        'latest tracked immutable Freshie run receipt',
+        [freshieRun.path, 'freshie/scripts/dolt-sync.py', 'freshie/scripts/run-delta.py'],
+        {
+          dolt_commit: freshieRun.report.dolt_commit,
+          header_total_skills: freshieRun.coherence.headerTotal,
+          run_id: freshieRun.runId,
+          skill_row_delta: freshieRun.coherence.skillDelta,
+          skill_rows: freshieRun.coherence.skillRows,
+          target_skill_row_delta: 0,
+        },
+      )
+    : unresolved(52, 'latest tracked immutable Freshie run receipt', freshieRun?.path ?? []);
+
+  const histogramPath = 'freshie/grade-histogram.json';
+  const gradesPath = 'freshie/grades.csv';
+  const histogram = reader.json(histogramPath);
+  const gradesText = reader.text(gradesPath);
+  const gradesSha256 =
+    gradesText === null ? null : createHash('sha256').update(gradesText).digest('hex');
+  if (
+    freshieRun?.valid &&
+    finiteCount(histogram?.run_id) !== null &&
+    finiteCount(histogram?.total) !== null &&
+    gradesSha256 !== null
+  ) {
+    const immutableExport = freshieRun.report.grade_export;
+    const current =
+      histogram.run_id === freshieRun.runId &&
+      histogram.dolt_commit === freshieRun.report.dolt_commit &&
+      histogram.grades_csv_sha256 === gradesSha256 &&
+      gradesSha256 === immutableExport.csv_sha256 &&
+      histogram.total === immutableExport.row_count &&
+      immutableExport.row_count === freshieRun.coherence.complianceRows &&
+      canonicalJson(histogram.grades) === canonicalJson(immutableExport.grade_counts);
+    output[53] = baseRow(
+      53,
+      current ? 'target_met' : 'partial',
+      'tracked grade exports against the latest immutable Freshie run receipt',
+      [freshieRun.path, histogramPath, gradesPath],
+      {
+        compliance_rows: freshieRun.coherence.complianceRows,
+        export_dolt_commit: histogram.dolt_commit ?? null,
+        export_run_id: histogram.run_id,
+        grades_csv_rows: immutableExport.row_count,
+        grades_csv_sha256: gradesSha256,
+        histogram_grades: histogram.grades ?? null,
+        histogram_total: histogram.total,
+        immutable_grade_counts: immutableExport.grade_counts,
+        inventory_run_id: freshieRun.runId,
+        inventory_dolt_commit: freshieRun.report.dolt_commit,
+        target_lag_runs: 0,
+      },
+      current
+        ? {}
+        : {
+            reason_code: 'FRESHIE_GRADE_EXPORT_DRIFT',
+            required_inputs: ['a same-run grade export and immutable Freshie receipt'],
+          },
+    );
+  } else {
+    output[53] = unresolved(
+      53,
+      'tracked grade exports against the latest immutable Freshie run receipt',
+      rowSources(freshieRun?.path, histogramPath, gradesPath).filter((path) =>
+        reader.pathSet.has(path),
+      ),
+    );
+  }
+
+  const proofs = forgeProofReceipt(reader, freshieRun);
+  if (proofs.valid) {
+    const allClassified = proofs.values.unclassified === 0;
+    const legacyDemoted = proofs.values.legacy_e0_records === 3;
+    output[54] = baseRow(
+      54,
+      allClassified && legacyDemoted ? 'target_met' : 'partial',
+      'tag-bound forge-proof ledger snapshot and legacy demotion receipt',
+      [
+        proofs.path,
+        freshieRun.path,
+        'freshie/scripts/dolt-sync.py',
+        'freshie/scripts/run-delta.py',
+        'scripts/record-jrig-proofs.mjs',
+      ],
+      { ...proofs.values, target_legacy_e0_records: 3, target_unclassified: 0 },
+    );
+    const retained = proofs.values.retained_e2_e3 === proofs.values.total_e2_e3;
+    const hasClaims = proofs.values.total_e2_e3 > 0;
+    output[55] = baseRow(
+      55,
+      retained && legacyDemoted ? (hasClaims ? 'target_met' : 'measured') : 'partial',
+      'tag-bound evidence-class snapshot and canonical retention standard',
+      [
+        proofs.path,
+        freshieRun.path,
+        '000-docs/807-DR-STND-evaluation-evidence.md',
+        'freshie/scripts/dolt-sync.py',
+        'freshie/scripts/run-delta.py',
+      ],
+      {
+        legacy_e0_records: proofs.values.legacy_e0_records,
+        no_e2_e3_claims: !hasClaims,
+        retained_e2_e3: proofs.values.retained_e2_e3,
+        retention_percent: !hasClaims
+          ? null
+          : Number(((proofs.values.retained_e2_e3 * 100) / proofs.values.total_e2_e3).toFixed(2)),
+        target_retention_percent: 100,
+        total_e2_e3: proofs.values.total_e2_e3,
+      },
+    );
+  } else {
+    output[54] = unresolved(54, 'tracked legacy forge-proof demotion receipt', [proofs.path]);
+    output[55] = unresolved(55, 'tracked evidence-class receipt', [proofs.path]);
+  }
   const jrigPath = 'marketplace/src/data/jrig-data.json';
   const projectionPresent = reader.pathSet.has(jrigPath);
   const claims = verifiedClaims(reader.json(jrigPath));
@@ -1604,7 +1971,20 @@ export function buildExtendedScorecardRows({
       tracked_eval_specs: sourceEvalSpecs.length + curatedEvalSpecs.length,
     },
   );
-  output[58] = unresolved(58, 'tracked Freshie tests');
+  const hermetic = freshieHermeticContract(reader);
+  output[58] = baseRow(
+    58,
+    hermetic.targetMet ? 'target_met' : 'partial',
+    'tracked Freshie hermetic-cycle test and blocking Python CI lane',
+    hermetic.sources,
+    { ...hermetic.checks, target_all_checks: true },
+    hermetic.targetMet
+      ? {}
+      : {
+          reason_code: 'FRESHIE_HERMETIC_CYCLE_NOT_BLOCKING',
+          required_inputs: ['an unskipped scratch-database full cycle in blocking CI'],
+        },
+  );
   const doltSource = reader.text('freshie/scripts/dolt-sync.py') ?? '';
   const doltTests = reader.text('tests/test_dolt_sync.py') ?? '';
   output[59] = baseRow(

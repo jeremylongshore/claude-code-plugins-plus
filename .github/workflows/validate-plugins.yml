@@ -756,6 +756,23 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install pinned Dolt for Freshie integration tests
+        if: matrix.test-type == 'python-tests'
+        run: |
+          set -euo pipefail
+          readonly dolt_version='2.3.1'
+          readonly dolt_sha256='0a2a318f27c5e1088a2883038573c2054e00f356dc9752e74bca934f8321959a'
+          readonly dolt_archive="${RUNNER_TEMP}/dolt-linux-amd64-v${dolt_version}.tar.gz"
+          readonly dolt_extract="${RUNNER_TEMP}/dolt-v${dolt_version}"
+          mkdir -p "$dolt_extract"
+          curl --fail --location --silent --show-error \
+            "https://github.com/dolthub/dolt/releases/download/v${dolt_version}/dolt-linux-amd64.tar.gz" \
+            --output "$dolt_archive"
+          printf '%s  %s\n' "$dolt_sha256" "$dolt_archive" | sha256sum --check --strict
+          tar -xzf "$dolt_archive" -C "$dolt_extract"
+          sudo install -m 0755 "$dolt_extract/dolt-linux-amd64/bin/dolt" /usr/local/bin/dolt
+          dolt version
+
       - name: Install Python test dependencies
         if: matrix.test-type == 'python-tests'
         run: |
@@ -775,6 +792,10 @@ jobs:
 
           # Install additional testing tools
           pip install pyyaml jsonschema
+
+      - name: Run Freshie hermetic publication cycle
+        if: matrix.test-type == 'python-tests'
+        run: python3 -m unittest tests.test_freshie_hermetic_cycle -v
 
       - name: Run Python tests
         if: matrix.test-type == 'python-tests'

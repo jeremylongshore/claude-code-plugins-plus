@@ -46,13 +46,15 @@ What one sync does:
      history queries against Dolt are `WHERE run_id = N` / `AS OF 'run-N'`.
   7. Commits (`--skip-empty`), tags run-<N> (N = MAX(discovery_runs.id))
      only when the tag would sit on a commit that actually carries run N.
-  8. Runs the NON-FATAL post-commit step (same loud-skip discipline as gc —
-     the commit already succeeded): stamps the Dolt commit hash into
+  8. Runs the fail-closed post-commit receipt step before any remote push:
+     stamps the Dolt commit hash and exact grades.csv digest into
      grade-histogram.json (artifact → immutable-revision traceability) and
      emits freshie/reports/run-delta-<N>.json via run-delta.py
      (DOLT_DIFF_SUMMARY/DOLT_DIFF_STAT schema-vs-data classification per
-     table + run-over-run grade regressions), printing a one-line summary
-     a GitHub-Actions step can consume. Default inert beyond the report;
+     table + run-over-run grade regressions + immutable export/evidence
+     snapshots), printing a one-line summary a GitHub-Actions step can
+     consume. Receipt failure blocks publication; the local Dolt commit
+     remains recoverable. Default inert beyond the report;
      --alert-on-regression makes an otherwise-successful sync exit 4 when
      grades regressed.
   9. Pushes main AND the tag (tags do not ride along on a branch push)
@@ -915,12 +917,12 @@ def gate_varchar_lengths(conn: sqlite3.Connection, guards: list[tuple[str, str]]
 # ---------------------------------------------------------------------------
 
 
-def normalize_grade_export_path(skill_path: str) -> str:
+def normalize_grade_export_path(skill_path: str, repo_root: Path = REPO_ROOT) -> str:
     """Return the portable repository-relative form required by grades.csv."""
     candidate = Path(skill_path)
     if candidate.is_absolute():
         try:
-            candidate = candidate.relative_to(REPO_ROOT)
+            candidate = candidate.relative_to(repo_root.resolve())
         except ValueError as exc:
             raise SyncError(
                 f"skill_compliance path escapes repository and cannot be exported: {skill_path}"
@@ -933,7 +935,8 @@ def normalize_grade_export_path(skill_path: str) -> str:
 
 def write_grades_export(conn: sqlite3.Connection, run_id: int,
                         csv_path: Path = GRADES_CSV,
-                        histogram_path: Path = GRADE_HISTOGRAM) -> None:
+                        histogram_path: Path = GRADE_HISTOGRAM,
+                        repo_root: Path = REPO_ROOT) -> None:
     # No run_id column in the CSV rows on purpose: it would change on every
     # row every sync, drowning the grade-movement diff this file exists to
     # tell. The current run_id lives in grade-histogram.json.
@@ -962,7 +965,7 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
                 f"before syncing."
             )
     rows = [
-        (normalize_grade_export_path(skill_path), grade, score)
+        (normalize_grade_export_path(skill_path, repo_root), grade, score)
         for skill_path, grade, score in db_rows
     ]
     if len({skill_path for skill_path, _, _ in rows}) != len(rows):
@@ -992,7 +995,8 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
 
 
 def gate_tracked_grade_exports(conn: sqlite3.Connection, csv_path: Path,
-                               histogram_path: Path) -> None:
+                               histogram_path: Path,
+                               repo_root: Path = REPO_ROOT) -> None:
     """Refuse a grade-export pair that does not describe the latest run.
 
     ``grades.csv`` deliberately omits a per-row run id so its git diff exposes
@@ -1028,17 +1032,29 @@ def gate_tracked_grade_exports(conn: sqlite3.Connection, csv_path: Path,
             f"MAX(discovery_runs.id)={latest_run_id}"
         )
 
+    source_rows = conn.execute(
+        "SELECT skill_path, grade, score FROM skill_compliance WHERE run_id = ?",
+        (latest_run_id,),
+    ).fetchall()
+    expected_rows = sorted(
+        (normalize_grade_export_path(path, repo_root), grade, score)
+        for path, grade, score in source_rows
+    )
+    if len({row[0] for row in expected_rows}) != len(expected_rows):
+        raise SyncError("cannot verify tracked grade exports: source paths are not unique")
+    expected_csv = io.StringIO(newline="")
+    writer = csv.writer(expected_csv, lineterminator="\n")
+    writer.writerow(["skill_path", "grade", "score"])
+    writer.writerows(expected_rows)
     try:
-        with csv_path.open(newline="", encoding="utf-8") as fh:
-            reader = csv.reader(fh)
-            header = next(reader, None)
-            if header != ["skill_path", "grade", "score"]:
-                raise SyncError(
-                    f"tracked grades CSV {csv_path} has unexpected header {header!r}"
-                )
-            row_count = sum(1 for _ in reader)
+        actual_csv = csv_path.read_text(encoding="utf-8")
     except OSError as exc:
         raise SyncError(f"cannot read tracked grades CSV {csv_path}: {exc}") from exc
+    if actual_csv != expected_csv.getvalue():
+        raise SyncError(
+            "tracked grades CSV content does not match the latest skill_compliance run"
+        )
+    row_count = len(expected_rows)
 
     histogram_total = payload.get("total")
     if isinstance(histogram_total, bool) or not isinstance(histogram_total, int):
@@ -1050,6 +1066,16 @@ def gate_tracked_grade_exports(conn: sqlite3.Connection, csv_path: Path,
             "tracked grade export row-count mismatch: "
             f"grades.csv has {row_count} data rows but "
             f"grade-histogram.json.total={histogram_total}"
+        )
+    expected_grades: dict[str, int] = {}
+    for _, grade, _ in expected_rows:
+        key = grade if grade else "ungraded"
+        expected_grades[key] = expected_grades.get(key, 0) + 1
+    if payload.get("grades") != {
+        key: expected_grades[key] for key in sorted(expected_grades)
+    }:
+        raise SyncError(
+            "tracked grade histogram buckets do not match the latest skill_compliance run"
         )
     log(
         "gate: tracked grade exports current "
@@ -1122,11 +1148,12 @@ def commit_and_tag(repo: Path, run_id: int, source_sha: str) -> tuple[bool, str 
 
 
 # ---------------------------------------------------------------------------
-# Post-commit structured output (NON-FATAL — the commit already succeeded)
+# Post-commit structured output (FAIL-CLOSED before remote publication)
 # ---------------------------------------------------------------------------
 
 
-def stamp_dolt_commit(histogram_path: Path, commit_hash: str) -> None:
+def stamp_dolt_commit(histogram_path: Path, commit_hash: str,
+                      grades_csv_path: Path = GRADES_CSV) -> None:
     """Add the Dolt commit hash to the already-written grade histogram.
 
     Stamped AFTER commit_and_tag because the hash does not exist when
@@ -1136,6 +1163,7 @@ def stamp_dolt_commit(histogram_path: Path, commit_hash: str) -> None:
     """
     payload = json.loads(histogram_path.read_text())
     payload["dolt_commit"] = commit_hash
+    payload["grades_csv_sha256"] = hashlib.sha256(grades_csv_path.read_bytes()).hexdigest()
     histogram_path.write_text(json.dumps(payload, indent=2) + "\n")
 
 
@@ -1150,14 +1178,14 @@ def load_run_delta():
 
 
 def post_commit_outputs(repo: Path, run_id: int, tag: str | None,
-                        head_hash: str, histogram_path: Path = GRADE_HISTOGRAM,
+                        head_hash: str, grades_csv_path: Path = GRADES_CSV,
+                        histogram_path: Path = GRADE_HISTOGRAM,
                         reports_dir: Path | None = None) -> bool:
     """Stamp the histogram + emit the run-delta report. Returns True when
     grade regressions were found (the --alert-on-regression signal).
 
-    Never raises: a failure here must not fail a sync whose commit (and, by
-    exit-code contract, whose push) is the actual product — same loud-skip
-    discipline as maybe_gc.
+    The outputs are part of the publication contract. A failure raises
+    SyncError before any remote push; the local commit remains recoverable.
     """
     regressions_found = False
     if tag is None:
@@ -1170,21 +1198,23 @@ def post_commit_outputs(repo: Path, run_id: int, tag: str | None,
             "and run-delta report")
         return regressions_found
     try:
-        stamp_dolt_commit(histogram_path, head_hash)
+        stamp_dolt_commit(histogram_path, head_hash, grades_csv_path)
         log(f"stamped dolt_commit {head_hash} into {histogram_path.name}")
     except (OSError, json.JSONDecodeError) as exc:
-        log(f"WARNING: could not stamp dolt_commit into "
-            f"{histogram_path.name} ({exc}) — the sync itself succeeded")
+        raise SyncError(
+            f"post-commit grade-export receipt failed before push: {exc}"
+        ) from exc
     try:
         run_delta = load_run_delta()
         kwargs = {"reports_dir": reports_dir} if reports_dir is not None else {}
         out_path, report = run_delta.emit(repo, run_id, head_hash, tag, **kwargs)
         log(run_delta.summary_line(report, out_path))
         regressions_found = bool(report["grade_regressions"])
-    except Exception as exc:  # noqa: BLE001 — deliberately non-fatal
-        log(f"WARNING: run-delta report failed ({exc}) — the sync itself "
-            f"succeeded; regenerate with: python3 "
-            f"freshie/scripts/run-delta.py --run-id {run_id}")
+    except Exception as exc:  # noqa: BLE001 — normalize sibling-module errors
+        raise SyncError(
+            f"post-commit run receipt failed before push: {exc}; regenerate with "
+            f"python3 freshie/scripts/run-delta.py --run-id {run_id}"
+        ) from exc
     return regressions_found
 
 
@@ -1370,14 +1400,17 @@ def maybe_gc(repo: Path, state_path: Path, force: bool) -> None:
 # ---------------------------------------------------------------------------
 
 
-def source_git_sha() -> str:
-    proc = run(["git", "-C", str(REPO_ROOT), "rev-parse", "--short", "HEAD"], check=False)
+def source_git_sha(repo_root: Path = REPO_ROOT) -> str:
+    proc = run(["git", "-C", str(repo_root), "rev-parse", "--short", "HEAD"], check=False)
     return proc.stdout.strip() if proc.returncode == 0 else "unknown"
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[1])
     parser.add_argument("--db", type=Path, default=DB_DEFAULT)
+    parser.add_argument("--repo-root", type=Path, default=REPO_ROOT,
+                        help="repository root used to normalize absolute skill paths "
+                             "and stamp the source Git SHA")
     parser.add_argument("--dolt-dir", type=Path, default=DOLT_PARENT / DOLT_DB_NAME)
     parser.add_argument("--grades-csv", type=Path, default=GRADES_CSV,
                         help="write the current-run grades CSV here (default: freshie/grades.csv)")
@@ -1409,7 +1442,9 @@ def main() -> int:
         conn = sqlite3.connect(f"file:{args.db}?mode=ro", uri=True)
         try:
             try:
-                gate_tracked_grade_exports(conn, args.grades_csv, args.grade_histogram)
+                gate_tracked_grade_exports(
+                    conn, args.grades_csv, args.grade_histogram, args.repo_root
+                )
             except SyncError as exc:
                 log(f"FAILED: {exc}")
                 return 1
@@ -1549,17 +1584,24 @@ def main() -> int:
         gate_real_checksums(conn, repo, reals)
         gate_json_checksums(conn, repo, schema)
 
-        write_grades_export(conn, run_id, args.grades_csv, args.grade_histogram)
-        gate_tracked_grade_exports(conn, args.grades_csv, args.grade_histogram)
+        write_grades_export(
+            conn, run_id, args.grades_csv, args.grade_histogram, args.repo_root
+        )
+        gate_tracked_grade_exports(
+            conn, args.grades_csv, args.grade_histogram, args.repo_root
+        )
         conn.close()
 
-        committed, tag, head_hash = commit_and_tag(repo, run_id, source_git_sha())
+        committed, tag, head_hash = commit_and_tag(
+            repo, run_id, source_git_sha(args.repo_root)
+        )
         log(f"commit created: {committed}; tag: {tag or '(none)'}")
 
-        # Non-fatal by contract; runs BEFORE push so the report exists even
-        # when a push fails (exit 3) — the local commit it describes does.
+        # Fail closed before push: the immutable receipt is part of the
+        # publication product, not optional observability.
         regressions_found = post_commit_outputs(
-            repo, run_id, tag, head_hash, args.grade_histogram, args.reports_dir
+            repo, run_id, tag, head_hash, args.grades_csv,
+            args.grade_histogram, args.reports_dir
         )
 
         if args.no_push:

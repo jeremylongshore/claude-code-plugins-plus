@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, symlinkSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { mkdtempSync, mkdirSync, readFileSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
@@ -19,13 +20,37 @@ function put(root, path, value = '') {
   writeFileSync(target, value);
 }
 
+function canonicalJson(value) {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
+  if (value !== null && typeof value === 'object') {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`)
+      .join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
 function fixture() {
   const root = mkdtempSync(join(tmpdir(), 'epic-1-scorecard-'));
+  const doltCommit = 'a'.repeat(32);
+  const gradesCsv = 'skill_path,grade,score\none,A,90\ntwo,B,80\n';
+  const gradesHash = createHash('sha256').update(gradesCsv).digest('hex');
+  const forgeRecords = [2, 4, 5].map((jrig_run_id) => ({
+    plugin_name: 'databricks-pack',
+    jrig_run_id,
+    discovery_run_id: null,
+    evidence_class: 'E0',
+    artifact_uri: null,
+    artifact_sha256: null,
+    baseline_delta: null,
+  }));
+  const forgeHash = createHash('sha256').update(canonicalJson(forgeRecords)).digest('hex');
   const files = {
     '.github/dependabot.yml': 'version: 2\nupdates: []\n',
     '.github/workflows/publish-changed-packages.yml': `on:\n  workflow_run:\n    workflows: ['Validate Plugins']\njobs:\n  preflight:\n    steps:\n      - run: node scripts/npm-publication-preflight.mjs\n  publish:\n    environment: npm-production\n    steps:\n      - run: node scripts/publish-candidate-report.mjs && npm publish\n`,
     '.github/workflows/emit-evidence.yml': `permissions:\n  id-token: write\njobs:\n  sign:\n    steps:\n      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803\n`,
-    '.github/workflows/validate-plugins.yml': `on:\n  pull_request:\n  push:\n    branches: [main]\njobs:\n  validate:\n    steps:\n      - run: python3 scripts/validate-skills-schema.py --marketplace\n      - run: python3 -m unittest tests.test_prose_anchors\n  ci-required:\n    needs:\n      - validate\n`,
+    '.github/workflows/validate-plugins.yml': `on:\n  pull_request:\n  push:\n    branches: [main]\njobs:\n  validate:\n    steps:\n      - run: python3 scripts/validate-skills-schema.py --marketplace\n      - run: python3 -m unittest tests.test_prose_anchors\n  test:\n    needs: validate\n    strategy:\n      matrix:\n        test-type: [mcp-plugins, python-tests, validation-scripts]\n    steps:\n      - name: Install pinned Dolt for Freshie integration tests\n        if: matrix.test-type == 'python-tests'\n        run: |\n          readonly dolt_version='2.3.1'\n          readonly dolt_sha256='0a2a318f27c5e1088a2883038573c2054e00f356dc9752e74bca934f8321959a'\n          printf '%s  %s\\n' "$dolt_sha256" dolt.tar.gz | sha256sum --check --strict\n          sudo install -m 0755 dolt /usr/local/bin/dolt\n          dolt version\n      - name: Run Freshie hermetic publication cycle\n        if: matrix.test-type == 'python-tests'\n        run: python3 -m unittest tests.test_freshie_hermetic_cycle -v\n  ci-required:\n    needs:\n      - validate\n      - test\n`,
     '.gitleaks.toml': "[allowlist]\npaths = ['''(?i).*/README\\.md$''']\nregexes = []\n",
     '.claude-plugin/marketplace.extended.json': JSON.stringify({
       plugins: [
@@ -38,7 +63,50 @@ function fixture() {
     'CLAUDE.md': 'Validator (schema 4.0.0 — governed)\n',
     'STANDARDS.md':
       '## Canonical documents\n\n| Topic | Document |\n| --- | --- |\n| Fixture | [canonical](000-docs/canonical.md) |\n',
-    'freshie/grade-histogram.json': JSON.stringify({ total: 2 }),
+    '000-docs/807-DR-STND-evaluation-evidence.md': '# Evidence standard\n',
+    'freshie/grade-histogram.json': JSON.stringify({
+      run_id: 9,
+      total: 2,
+      grades: { A: 1, B: 1 },
+      dolt_commit: doltCommit,
+      grades_csv_sha256: gradesHash,
+    }),
+    'freshie/grades.csv': gradesCsv,
+    'freshie/reports/legacy-forge-proofs-demotion.json': JSON.stringify({
+      schema_version: 'forge-proof-demotion/v2',
+      source_run_id: 9,
+      source_tag: 'run-9',
+      source_dolt_commit: doltCommit,
+      records_sha256: forgeHash,
+      records: forgeRecords,
+    }),
+    'freshie/reports/run-delta-9.json': JSON.stringify({
+      schema_version: 'freshie-run-delta/v3',
+      run_id: 9,
+      from_tag: 'run-8',
+      to_tag: 'run-9',
+      dolt_commit: doltCommit,
+      run_coherence: {
+        discovery_run_id: 9,
+        header_total_skills: 2,
+        skill_rows: 2,
+        skill_row_delta: 0,
+        skill_compliance_rows: 2,
+      },
+      grade_export: {
+        row_count: 2,
+        csv_sha256: gradesHash,
+        grade_counts: { A: 1, B: 1 },
+      },
+      forge_proofs: {
+        row_count: 3,
+        records_sha256: forgeHash,
+        class_counts: { E0: 3, E1: 0, E2: 0, E3: 0 },
+        retained_e2_e3: 0,
+        total_e2_e3: 0,
+        records: forgeRecords,
+      },
+    }),
     'freshie/scripts/dolt-sync.py':
       'def acquire_lock():\n fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)\ndef refuse_if_server_running():\n return ".dolt/sql-server.lock"\n',
     'marketplace/scripts/generate-alpha.mjs':
@@ -59,6 +127,7 @@ function fixture() {
     'plugins/example/skills/one/SKILL.md': `---\nname: one\nallowed-tools: Read\ncompatibility: Harness A\n---\nhttps://docs.anthropic.com\n`,
     'plugins/local/skills/two/SKILL.md': `---\nname: two\nallowed-tools: >-\n  Read Write\ncompatibility: Harness B\n---\n${DEAD_DOMAIN}\n`,
     'scripts/npm-publication-preflight.mjs': 'export const required = true;\n',
+    'scripts/record-jrig-proofs.mjs': 'export const evidence = true;\n',
     'scripts/plugin-provenance.mjs':
       "export const SOURCE_FILE = '.source.json';\nexport function resolvePluginProvenance() {}\n",
     'scripts/publish-candidate-report.mjs':
@@ -69,6 +138,10 @@ function fixture() {
     'sources.lock.json': JSON.stringify({ sources: { example: {} } }),
     'sources.yaml': 'sources:\n  - name: example\n',
     'tests/test_dolt_sync.py': 'def test_single_writer_lock():\n pass\n',
+    'tests/test_freshie_hermetic_cycle.py': readFileSync(
+      new URL('../tests/test_freshie_hermetic_cycle.py', import.meta.url),
+      'utf8',
+    ),
   };
   for (const [path, value] of Object.entries(files)) put(root, path, value);
   return { root, paths: Object.keys(files).sort() };
@@ -269,7 +342,7 @@ test('measures the merged provenance boundary, ci-required needs, and STANDARDS 
   assert.deepEqual(rows[31].values.mirror_capable_publishers, [
     '.github/workflows/publish-changed-packages.yml',
   ]);
-  assert.deepEqual(rows[41].values.actual_needs, ['validate']);
+  assert.deepEqual(rows[41].values.actual_needs, ['validate', 'test']);
   assert.equal(rows[43].values.declared, 1);
   assert.deepEqual(rows[43].values.authority_links, ['000-docs/canonical.md']);
 });
@@ -328,13 +401,88 @@ test('link instrumentation stays excluded while domain instrumentation cannot by
 
 test('unresolved rows fail closed with null values rather than fabricated zeroes', () => {
   const rows = buildExtendedScorecardRows(input(fixture()));
-  for (const number of [
-    7, 8, 9, 15, 16, 17, 18, 19, 23, 29, 49, 50, 51, 52, 53, 54, 55, 58, 60, 61, 62,
-  ]) {
+  for (const number of [7, 8, 9, 15, 16, 17, 18, 19, 23, 29, 49, 50, 51, 60, 61, 62]) {
     assert.equal(rows[number].values, null, `row ${number}`);
     assert.match(rows[number].reason_code, /^[A-Z][A-Z0-9_]+$/);
     assert.ok(rows[number].required_inputs.length > 0);
   }
+});
+
+test('Freshie exit rows use tracked receipts and fail closed on planted drift', () => {
+  let base = fixture();
+  let rows = buildExtendedScorecardRows(input(base));
+  for (const number of [52, 53, 54, 58]) assert.equal(rows[number].status, 'target_met');
+  assert.equal(rows[55].status, 'measured');
+  assert.equal(rows[55].values.retention_percent, null);
+  assert.equal(rows[55].values.no_e2_e3_claims, true);
+
+  const runPath = 'freshie/reports/run-delta-9.json';
+  let driftedRun = JSON.parse(readFileSync(join(base.root, runPath), 'utf8'));
+  driftedRun.run_coherence.header_total_skills = 3;
+  driftedRun.run_coherence.skill_row_delta = -1;
+  put(base.root, runPath, JSON.stringify(driftedRun));
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[52].status, 'partial');
+
+  base = fixture();
+  const histogramPath = 'freshie/grade-histogram.json';
+  let histogram = JSON.parse(readFileSync(join(base.root, histogramPath), 'utf8'));
+  histogram.dolt_commit = 'b'.repeat(32);
+  put(base.root, histogramPath, JSON.stringify(histogram));
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[53].status, 'partial');
+
+  base = fixture();
+  histogram = JSON.parse(readFileSync(join(base.root, histogramPath), 'utf8'));
+  histogram.grades = { A: 2, B: 0 };
+  put(base.root, histogramPath, JSON.stringify(histogram));
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[53].status, 'partial');
+
+  base = fixture();
+  put(base.root, 'freshie/grades.csv', 'skill_path,grade,score\none,B,90\ntwo,A,80\n');
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[53].status, 'partial');
+
+  base = fixture();
+  const proofPath = 'freshie/reports/legacy-forge-proofs-demotion.json';
+  const proof = JSON.parse(readFileSync(join(base.root, proofPath), 'utf8'));
+  proof.records.push({
+    plugin_name: 'missing-artifact',
+    jrig_run_id: 7,
+    evidence_class: 'E2',
+    artifact_uri: null,
+    artifact_sha256: null,
+  });
+  put(base.root, proofPath, JSON.stringify(proof));
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[54].status, 'not_reproducible');
+  assert.equal(rows[55].status, 'not_reproducible');
+
+  base = fixture();
+  const workflowPath = '.github/workflows/validate-plugins.yml';
+  const workflow = readFileSync(join(base.root, workflowPath), 'utf8').replace(
+    '      - test\n',
+    '',
+  );
+  put(base.root, workflowPath, workflow);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+
+  base = fixture();
+  put(
+    base.root,
+    'tests/test_freshie_hermetic_cycle.py',
+    'str(REBUILD); str(VALIDATE); str(SYNC); str(PROMOTE); file://; dolt push; dolt sql-server',
+  );
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+
+  base = fixture();
+  put(base.root, runPath, '{not json');
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[52].status, 'not_reproducible');
+  assert.equal(rows[52].values, null);
 });
 
 test('measures privileged workflow action pins and exposes mutable references', () => {
