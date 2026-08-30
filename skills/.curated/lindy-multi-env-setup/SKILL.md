@@ -12,7 +12,7 @@ description: 'Configure Lindy AI across development, staging, and production env
 
   '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
-version: 1.17.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -195,6 +195,22 @@ jobs:
       - run: npm run deploy:prod
       - run: npm run test:lindy:smoke
 ```
+
+## Output
+
+Produce an environment register listing each workspace, public callback host,
+credential reference, integration owner, promotion source, last smoke-test
+result, and rollback target. Record only secret identifiers and redacted URL
+forms; never copy credential values, private webhook paths, customer data, or
+production connection exports between environments.
+
+## Examples
+
+Promote a tested development template into staging, reconnect every integration
+with staging-only accounts, replace callback configuration, and record a
+synthetic smoke-test task ID. Before production promotion, prove the staging
+register contains no production secret reference. If that isolation check fails,
+stop promotion, rotate the exposed credential, and correct the environment map.
 
 ## Error Handling
 

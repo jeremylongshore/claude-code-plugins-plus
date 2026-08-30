@@ -12,7 +12,7 @@ description: 'Reference architectures for Lindy AI agent integrations.
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.17.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

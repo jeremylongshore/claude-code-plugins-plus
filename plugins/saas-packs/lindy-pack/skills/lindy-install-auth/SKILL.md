@@ -1,18 +1,18 @@
 ---
 name: lindy-install-auth
-description: 'Set up Lindy AI account, API access, and webhook authentication.
+description: 'Set up a Lindy account and authenticated webhook trigger.
 
-  Use when onboarding to Lindy, configuring API keys for webhook triggers,
+  Use when onboarding to Lindy, configuring bearer authentication for webhook triggers,
 
   or connecting Lindy agents to your application.
 
   Trigger with phrases like "install lindy", "setup lindy",
 
-  "lindy auth", "configure lindy API key", "lindy webhook secret".
+  "lindy auth", "configure lindy webhook", "lindy webhook secret".
 
   '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
-version: 1.17.0
+allowed-tools: Read, Write, Edit, Bash(curl:*)
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,128 +26,107 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Lindy AI is a no-code/low-code AI agent platform. Agents ("Lindies") are built in the
-web dashboard at . External integration uses webhook endpoints,
-the HTTP Request action, and optional Node.js/Python SDKs for programmatic access.
+Lindy AI is a no-code/low-code AI agent platform. Agents ("Lindies") are built in
+its web dashboard. This setup uses Lindy's documented webhook trigger: Lindy
+provides the trigger URL, and the caller authenticates with a bearer secret.
 
 ## Prerequisites
 
-- Lindy account at  (Free tier: 400 credits/month)
-- For SDK access: Node.js 18+ or Python 3.10+
-- For webhook receivers: HTTPS endpoint in your application
+- Lindy account with permission to create or edit an agent
+- A secret manager for the trigger credential
+- `curl` or another HTTP client for a synthetic connectivity check
+- A non-production test payload that contains no customer data
 
 ## Instructions
 
-### Step 1: Obtain API Key
+### Step 1: Create the Webhook Trigger
 
-1. Log in at
-2. Navigate to **Settings > API Keys**
-3. Click **Generate New Key** — copy immediately (shown only once)
-4. Store securely:
+1. Open the target agent in the Lindy dashboard.
+2. Add a webhook trigger and copy its generated URL.
+3. Store the complete URL as a secret because its unique path identifies the trigger.
+4. Record only the host and a redacted path in setup receipts.
 
-```bash
-# Environment variable
-export LINDY_API_KEY="lnd_live_xxxxxxxxxxxxxxxxxxxx"
+### Step 2: Configure Bearer Authentication
 
-# Or .env file (add .env to .gitignore)
-echo 'LINDY_API_KEY=lnd_live_xxxxxxxxxxxxxxxxxxxx' >> .env
-```
-
-### Step 2: Install SDK (Optional)
+In the webhook trigger's authentication controls, click **Generate Secret** and
+copy the Lindy-generated value into your secret manager. Store it separately
+from any credential used by an HTTP Request action to call your application.
 
 ```bash
-# Node.js SDK
-npm install lindy-ai
-
-# Python SDK
-pip install lindy-ai
+# Load the copied Lindy URL and generated secret from a secret manager.
+export LINDY_TRIGGER_URL="https://public.lindy.ai/api/v1/webhooks/YOUR_WEBHOOK_ID"
+export LINDY_TRIGGER_SECRET="replace-with-the-lindy-generated-secret"
 ```
 
-### Step 3: Initialize Client
+Callers must include that generated value as bearer authentication in every
+request.
 
-```typescript
-// Node.js
-import { Lindy } from 'lindy-ai';
-
-const lindy = new Lindy({
-  apiKey: process.env.LINDY_API_KEY,
-});
-
-// Verify connection
-const agents = await lindy.agents.list();
-console.log(`Connected: ${agents.length} agents found`);
-```
-
-```python
-# Python
-import os
-from lindy import Lindy
-
-client = Lindy(api_key=os.environ["LINDY_API_KEY"])
-
-# Verify connection
-agents = client.agents.list()
-print(f"Connected: {len(agents)} agents found")
-```
-
-### Step 4: Configure Webhook Authentication
-
-When creating a webhook trigger in the Lindy dashboard, generate a secret key.
-Callers must include this in every request:
-
-```
-Authorization: Bearer <your-webhook-secret>
-```
-
-Your webhook endpoint URL follows the pattern:
-
-```
-https://public.lindy.ai/api/v1/webhooks/<unique-id>
-```
-
-### Step 5: Verify Webhook Connectivity
+### Step 3: Verify Authorized Connectivity
 
 ```bash
-# Test your webhook trigger
-curl -X POST "https://public.lindy.ai/api/v1/webhooks/YOUR_WEBHOOK_ID" \
-  -H "Authorization: Bearer YOUR_SECRET" \
+curl --fail-with-body -X POST "$LINDY_TRIGGER_URL" \
+  -H "Authorization: Bearer $LINDY_TRIGGER_SECRET" \
   -H "Content-Type: application/json" \
-  -d '{"test": true, "message": "hello from setup"}'
+  -d '{"event":"setup.verify","fixture":"synthetic"}'
 ```
 
-## Lindy Plans & Credits
+Confirm that exactly one task is created and retain its task ID.
 
-| Plan | Price | Credits/mo | Tasks | Extras |
-|------|-------|-----------|-------|--------|
-| Free | $0 | 400 | ~40 | Basic models |
-| Pro | $49.99/mo | 5,000 | ~1,500 | +$19.99/seat, phone calls |
-| Business | $299.99/mo | 30,000 | ~3,000 | 100 phone calls, 50M KB chars |
-| Enterprise | Custom | Custom | Custom | SSO, SCIM, RBAC, audit logs |
+### Step 4: Verify Rejection Without Authentication
 
-Credit consumption: 1-3 credits on basic models, ~10 on large models per task.
+```bash
+status="$(curl -sS -o /dev/null -w '%{http_code}' \
+  -X POST "$LINDY_TRIGGER_URL" \
+  -H "Content-Type: application/json" \
+  -d '{"event":"setup.reject","fixture":"synthetic"}')"
+case "$status" in
+  2??)
+    echo "unauthenticated request unexpectedly succeeded with HTTP $status" >&2
+    exit 1
+    ;;
+  *) echo "unauthenticated request rejected with HTTP $status" ;;
+esac
+```
+
+Any non-2xx response proves only transport rejection. Also inspect task history;
+do not continue if the unauthenticated request created a task.
+
+## Output
+
+Deliver a sanitized setup receipt naming the target workspace and environment,
+the secret-manager references used for the trigger and callback credentials,
+the webhook host with its unique path redacted, and the results of one
+authorized and one unauthorized connectivity check. Never place credential
+values or a complete private webhook URL in the receipt.
+
+## Examples
+
+Store the webhook credential under a development-only secret reference, send a
+minimal test payload, and record the resulting task ID and HTTP status. Then
+repeat the request without authorization and confirm it is rejected. A setup
+that accepts both requests, uses a production credential in development, or
+requires copying a secret into source code is incomplete.
 
 ## Error Handling
 
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `401 Unauthorized` | Invalid or expired API key | Regenerate key in Settings > API Keys |
-| `403 Forbidden` | Key lacks required scope | Check plan tier supports API access |
-| `429 Too Many Requests` | Credit limit exceeded | Upgrade plan or wait for monthly reset |
-| `Webhook 401` | Missing/wrong Bearer token | Verify secret matches dashboard value |
-| `ECONNREFUSED` | Lindy API unreachable | Check https://status.lindy.ai |
+| Authorized request returns `401` | Trigger secret differs from caller secret | Replace the caller value from the correct secret reference |
+| Unauthenticated request creates a task | Authentication is absent or misconfigured | Stop testing and require bearer authentication on the trigger |
+| No task is created | Wrong URL, inactive agent, or trigger filter | Re-copy the trigger URL and inspect the agent's task history |
+| Request times out | Network or Lindy service problem | Stop retries with real data and check the Lindy status page |
 
 ## Security Checklist
 
-- [ ] API key stored in env var or secret manager — never in source code
-- [ ] `.env` added to `.gitignore`
-- [ ] Webhook secret generated and stored securely
-- [ ] HTTPS enforced on all webhook receiver endpoints
-- [ ] API key scoped to minimum required permissions
+- [ ] Complete trigger URL and bearer secret stored in a secret manager
+- [ ] Trigger and callback credentials are distinct
+- [ ] `.env` files ignored and limited to development fixtures
+- [ ] HTTPS used for trigger and callback traffic
+- [ ] Authorized request creates one task; unauthenticated request creates none
 
 ## Resources
 
 - [Lindy Documentation](https://docs.lindy.ai)
-- Lindy Dashboard
 - [Lindy Academy](https://www.lindy.ai/academy-lessons/getting-started-101)
 - [Lindy Status](https://status.lindy.ai)
 

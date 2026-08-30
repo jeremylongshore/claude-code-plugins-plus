@@ -12,7 +12,7 @@ description: 'Advanced migration strategies for moving to Lindy AI from other pl
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.17.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -197,6 +197,23 @@ echo "Check: Credit consumption within budget"
 - [ ] Source automations paused (not deleted)
 - [ ] 7-day post-cutover monitoring complete
 - [ ] Source automations decommissioned
+
+## Output
+
+Create a migration record that maps each source automation to its proposed
+Lindy workflow, risk tier, owner, test corpus, success measures, rollback
+trigger, and disposition. For every customer-facing cutover, retain the
+parallel-run comparison and the evidence used to pause, proceed, or roll back;
+do not treat a configured agent as proof of behavioral equivalence.
+
+## Examples
+
+For a support-triage workflow, replay a sanitized fixed case set through both
+systems, compare routing and escalation outcomes, then shadow a bounded slice of
+live traffic without allowing duplicate customer actions. Increase traffic only
+after the recorded thresholds pass. If escalation recall falls below the agreed
+floor, route all traffic back to the source automation and preserve the failed
+comparison for prompt and condition redesign.
 
 ## Error Handling
 
