@@ -1740,6 +1740,11 @@ VALID_DIFFICULTIES = ["beginner", "intermediate", "advanced", "expert"]
 def check_yaml_shell_substitution(fm: Dict[str, Any]) -> List[str]:
     """Flag shell substitutions ($(...), backticks, unguarded ${VAR}) in YAML string values.
 
+    YAML frontmatter values are data, not Markdown: backticks do not provide
+    code formatting there. They are intentionally refused as command-
+    substitution-shaped text. Put commands and code-formatted paths in the
+    Markdown body; keep frontmatter descriptions plain prose.
+
     Known-safe template vars (CLAUDE_SKILL_DIR, $ARGUMENTS, positional params)
     are allow-listed. Anything else is treated as a likely unevaluated template
     left in frontmatter by mistake — the class of bug NLPM surfaced in 2026-04.

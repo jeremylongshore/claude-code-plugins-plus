@@ -223,9 +223,11 @@ test('every install and download projection consumes the canonical publication p
     'scripts/build-cowork-zips.mjs',
     'scripts/validate-cowork-manifest.mjs',
     'scripts/generate-readme-toc.mjs',
+    'scripts/check-routes.mjs',
     'marketplace/scripts/sync-catalog.mjs',
     'marketplace/scripts/discover-skills.mjs',
     'marketplace/scripts/extract-readme-sections.mjs',
+    'marketplace/scripts/validate-routes.mjs',
   ]) {
     const source = fs.readFileSync(path.join(root, relativePath), 'utf8');
     assert.match(source, /publication-policy\.cjs/);

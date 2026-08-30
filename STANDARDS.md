@@ -75,6 +75,11 @@ blocks a merge. Promotion to a blocking gate is a separate, later cutover step.
 runs it automatically when the extended catalog is staged, and CI fails if any
 derived file drifts. Authoring workflow: [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
+Skill frontmatter is YAML data, not Markdown. Keep `description` and other YAML
+strings in plain prose: backticks, `$()`, and unguarded `${VAR}` are deliberately
+refused as shell-substitution-shaped text. Put code-formatted commands and paths in
+the Markdown body instead.
+
 ## External plugins: mirror by default
 
 Externally-synced plugins (registered in `sources.yaml`, a small minority of the

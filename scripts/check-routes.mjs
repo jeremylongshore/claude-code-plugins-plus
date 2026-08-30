@@ -5,15 +5,19 @@
 // Exit codes: 0 = All routes found, 1 = Missing routes detected
 
 import fs from 'fs';
+import { createRequire } from 'node:module';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
+const require = createRequire(import.meta.url);
+const { publishedPlugins } = require('./publication-policy.cjs');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const DIST_DIR = path.join(REPO_ROOT, 'marketplace', 'dist');
-const CATALOG_PATH = path.join(REPO_ROOT, '.claude-plugin', 'marketplace.json');
+const CATALOG_PATH = path.join(REPO_ROOT, '.claude-plugin', 'marketplace.extended.json');
 
 // ANSI color codes for output
 const colors = {
@@ -96,7 +100,11 @@ function generateExpectedRoutes() {
     process.exit(1);
   }
 
-  const catalog = JSON.parse(fs.readFileSync(CATALOG_PATH, 'utf-8'));
+  const extendedCatalog = JSON.parse(fs.readFileSync(CATALOG_PATH, 'utf-8'));
+  const catalog = {
+    ...extendedCatalog,
+    plugins: publishedPlugins(extendedCatalog.plugins, 'extended catalog'),
+  };
 
   // Plugin detail pages
   for (const plugin of catalog.plugins) {

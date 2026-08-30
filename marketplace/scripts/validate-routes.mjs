@@ -11,14 +11,18 @@
  */
 
 import { readFileSync, readdirSync, existsSync } from 'fs';
+import { createRequire } from 'node:module';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
+const require = createRequire(import.meta.url);
+const { publishedPlugins } = require('../../scripts/publication-policy.cjs');
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const CATALOG_PATH = join(__dirname, '../../.claude-plugin/marketplace.json');
+const CATALOG_PATH = join(__dirname, '../../.claude-plugin/marketplace.extended.json');
 const DIST_PLUGINS_PATH = join(__dirname, '../dist/plugins');
 
 console.log('🔍 Validating plugin routes...\n');
@@ -26,7 +30,11 @@ console.log('🔍 Validating plugin routes...\n');
 // Load catalog
 let catalog;
 try {
-  catalog = JSON.parse(readFileSync(CATALOG_PATH, 'utf-8'));
+  const extendedCatalog = JSON.parse(readFileSync(CATALOG_PATH, 'utf-8'));
+  catalog = {
+    ...extendedCatalog,
+    plugins: publishedPlugins(extendedCatalog.plugins, 'extended catalog'),
+  };
 } catch (error) {
   console.error('❌ Failed to load catalog:', error.message);
   process.exit(1);

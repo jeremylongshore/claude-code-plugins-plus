@@ -7,6 +7,16 @@
  * this script normalizes that boundary, verifies every row still exists, and
  * refuses stale or ambiguous input rather than emitting a partial ledger.
  *
+ * First-match-wins gate order (Blueprint 727 §8):
+ *   G0 SECURITY          -> QUARANTINE
+ *   G1 LEGAL/PROVENANCE -> QUARANTINE
+ *   G2 TRUTHFULNESS     -> QUARANTINE
+ *   G3 OWNERSHIP        -> CERTIFY-UPSTREAM or QUARANTINE
+ *   G4 UNSAFE-BY-DESIGN -> DEEP-REMEDIATE
+ *   G5 STRUCTURAL-ONLY  -> AUTO-MIGRATE
+ *   G6 CLEAN + PROVEN   -> CERTIFY (emitted only by the retained-evidence evaluator)
+ *   G7 CLEAN, NO EVIDENCE -> CERTIFY-PENDING-EVIDENCE
+ *
  * Usage:
  *   node scripts/generate-disposition-ledger.mjs
  *   node scripts/generate-disposition-ledger.mjs --check
