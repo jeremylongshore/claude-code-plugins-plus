@@ -1,122 +1,279 @@
-# Lindy Rate Limits -- Implementation Details
+# Lindy Webhook Worker -- Secure Reference Pattern
 
-## Rate Limit Architecture
+This TypeScript pattern demonstrates application-owned validation, idempotency,
+shared admission control, and bounded delivery to a documented Lindy webhook
+trigger. Adapt interfaces to production infrastructure and test them under
+contention and failure. Numeric bounds below are local example policy, not Lindy
+service limits.
 
-Lindy enforces rate limits at two levels:
+## Configuration Boundary
 
-1. **API rate limits** -- requests per minute/hour to the Lindy REST API
-2. **Agent execution limits** -- concurrent runs per workspace
+Validate the destination before loading or using the trigger secret:
 
-## Advanced Patterns
+```typescript
+type TriggerConfig = {
+  url: URL;
+  secret: string;
+};
 
-### Exponential Backoff with Jitter
+function loadTriggerConfig(env: NodeJS.ProcessEnv): TriggerConfig {
+  const url = new URL(env.LINDY_TRIGGER_URL ?? '');
+  if (
+    url.protocol !== 'https:' ||
+    url.hostname !== 'public.lindy.ai' ||
+    url.username !== '' ||
+    url.password !== '' ||
+    !url.pathname.startsWith('/api/v1/webhooks/')
+  ) {
+    throw new Error('LINDY_TRIGGER_URL is not an approved Lindy webhook URL');
+  }
 
-```python
-import time
-import random
-import requests
-import os
-from typing import Callable, TypeVar
-
-T = TypeVar("T")
-
-def with_exponential_backoff(
-    fn: Callable[[], T],
-    max_retries: int = 5,
-    base_delay: float = 1.0,
-    max_delay: float = 60.0,
-) -> T:
-    """Execute a function with exponential backoff on rate limit errors."""
-    for attempt in range(max_retries):
-        try:
-            return fn()
-        except requests.HTTPError as e:
-            status = e.response.status_code if e.response else 0
-            if status in (429, 502, 503) and attempt < max_retries - 1:
-                retry_after = e.response.headers.get("Retry-After") if e.response else None
-                delay = float(retry_after) if retry_after else min(base_delay * (2 ** attempt), max_delay)
-                delay = random.uniform(0, delay)  # Full jitter
-                print(f"[{status}] Retry {attempt + 1}/{max_retries} in {delay:.1f}s")
-                time.sleep(delay)
-            else:
-                raise
-    raise RuntimeError("Max retries exceeded")
-
-
-LINDY_API_BASE = "https://api.lindy.ai/v1"
-HEADERS = {"Authorization": f"Bearer {os.environ['LINDY_API_KEY']}"}
-
-def trigger_with_backoff(agent_id: str, inputs: dict) -> dict:
-    def _trigger():
-        resp = requests.post(
-            f"{LINDY_API_BASE}/agents/{agent_id}/runs",
-            headers={**HEADERS, "Content-Type": "application/json"},
-            json={"inputs": inputs}, timeout=30,
-        )
-        resp.raise_for_status()
-        return resp.json()
-    return with_exponential_backoff(_trigger)
+  const secret = env.LINDY_TRIGGER_SECRET ?? '';
+  if (secret.length === 0) throw new Error('LINDY_TRIGGER_SECRET is required');
+  return { url, secret };
+}
 ```
 
-### Rate Limit Aware Queue
+Keep `LINDY_CALLBACK_SECRET` separate. It authenticates calls in the opposite
+direction and must never be passed to `loadTriggerConfig`.
 
-```python
-import time
-import threading
+## Closed Event Schema
 
-class RateLimitedQueue:
-    """Execute tasks at a controlled rate to stay within API limits."""
+This is an application-owned example contract:
 
-    def __init__(self, requests_per_second: float = 10.0):
-        self.min_interval = 1.0 / requests_per_second
-        self._lock = threading.Lock()
-        self._last_request_time = 0.0
+```typescript
+type TriggerEvent = {
+  requestId: string;
+  kind: 'customer_created' | 'ticket_updated';
+  subjectId: string;
+  occurredAt: string;
+};
 
-    def _wait_if_needed(self) -> None:
-        now = time.monotonic()
-        elapsed = now - self._last_request_time
-        if elapsed < self.min_interval:
-            time.sleep(self.min_interval - elapsed)
-        self._last_request_time = time.monotonic()
+const MAX_PAYLOAD_BYTES = 16 * 1024; // local example policy; tune and document it
 
-    def submit(self, fn, *args, **kwargs):
-        with self._lock:
-            self._wait_if_needed()
-            return fn(*args, **kwargs)
+function validateEvent(value: unknown): TriggerEvent {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    throw new Error('event must be an object');
+  }
+  const record = value as Record<string, unknown>;
+  const allowed = new Set(['requestId', 'kind', 'subjectId', 'occurredAt']);
+  if (Object.keys(record).some((key) => !allowed.has(key))) {
+    throw new Error('event contains an unknown field');
+  }
+  if (
+    typeof record.requestId !== 'string' ||
+    !/^[A-Za-z0-9._:-]{1,128}$/.test(record.requestId)
+  ) {
+    throw new Error('invalid requestId');
+  }
+  if (record.kind !== 'customer_created' && record.kind !== 'ticket_updated') {
+    throw new Error('invalid kind');
+  }
+  if (typeof record.subjectId !== 'string' || record.subjectId.length > 128) {
+    throw new Error('invalid subjectId');
+  }
+  if (
+    typeof record.occurredAt !== 'string' ||
+    !Number.isFinite(Date.parse(record.occurredAt))
+  ) {
+    throw new Error('invalid occurredAt');
+  }
 
-    def submit_batch(self, tasks: list[tuple]) -> list:
-        results = []
-        for fn, args, kwargs in tasks:
-            try:
-                result = self.submit(fn, *args, **kwargs)
-                results.append({"status": "ok", "result": result})
-            except Exception as e:
-                results.append({"status": "error", "error": str(e)})
-        return results
-
-
-queue = RateLimitedQueue(requests_per_second=5.0)
-
-leads = [{"email": f"user{i}@example.com"} for i in range(100)]
-tasks = [(trigger_with_backoff, ("agent-abc123", lead), {}) for lead in leads]
-results = queue.submit_batch(tasks)
-print(f"Processed {len(results)} leads")
+  const event = record as TriggerEvent;
+  if (Buffer.byteLength(JSON.stringify(event), 'utf8') > MAX_PAYLOAD_BYTES) {
+    throw new Error('event exceeds local payload policy');
+  }
+  return event;
+}
 ```
 
-## Troubleshooting
+Enforce an HTTP request-byte limit before parsing if these events arrive through
+an inbound server. Never log the full event by default.
 
-### Hitting Rate Limits Despite Low Volume
+## Durable Admission Interfaces
 
-1. Multiple processes sharing the same API key -- aggregate limits apply per key
-2. Retry storms -- retries without backoff re-hit rate limits immediately
-3. Scheduled agents all firing at the same time (top of hour)
-4. Check for webhook duplicate events from Slack/email integrations
+The implementations behind these interfaces must be shared and atomic:
 
-### Rate Limits in Production But Not Staging
+```typescript
+type TriggerJob = {
+  requestId: string;
+  event: TriggerEvent;
+  attempt: number;
+  firstAttemptAt: string;
+};
 
-1. Production has more traffic -- check actual request volume in dashboard
-2. Staging uses a separate API key with its own rate limit bucket
-3. Look for cron jobs that spike at top-of-hour in production
+interface DurableJobs {
+  // Couple the idempotency claim and durable enqueue in one transaction.
+  enqueueOnce(event: TriggerEvent): Promise<'created' | 'duplicate'>;
+  reschedule(job: TriggerJob, delayMs: number): Promise<void>;
+  deadLetter(job: TriggerJob, reason: string): Promise<void>;
+}
 
----
-*[Tons of Skills](https://tonsofskills.com) by [Intent Solutions](https://intentsolutions.io) | [jeremylongshore.com](https://jeremylongshore.com)*
+interface SharedAdmissionControl {
+  // The implementation performs one atomic mutation in a shared store.
+  acquire(key: string): Promise<{ admitted: boolean; retryAfterMs: number }>;
+}
+
+interface OutcomeLedger {
+  record(input: {
+    requestId: string;
+    attempt: number;
+    disposition: string;
+    httpStatus?: number;
+    latencyMs?: number;
+  }): Promise<void>;
+}
+```
+
+Do not implement these contracts with module-level maps or arrays in a scaled
+deployment. If the idempotency claim and enqueue cannot share a transaction, use
+a recoverable lease plus a sweeper for stranded reservations.
+
+## One Bounded Attempt
+
+```typescript
+type AttemptResult =
+  | { kind: 'accepted'; status: number; latencyMs: number }
+  | { kind: 'permanent'; status: number; latencyMs: number }
+  | { kind: 'transient'; status?: number; retryAfterMs?: number; latencyMs: number };
+
+const REQUEST_TIMEOUT_MS = 30_000; // local example policy
+const MAX_RETRY_DELAY_MS = 60_000; // local example policy
+
+function boundedRetryAfter(value: string | null): number | undefined {
+  if (!value) return undefined;
+  const seconds = Number(value);
+  const requestedMs = Number.isFinite(seconds)
+    ? Math.max(0, seconds * 1000)
+    : Math.max(0, Date.parse(value) - Date.now());
+  return Number.isFinite(requestedMs)
+    ? Math.min(requestedMs, MAX_RETRY_DELAY_MS)
+    : undefined;
+}
+
+async function postOnce(config: TriggerConfig, event: TriggerEvent): Promise<AttemptResult> {
+  const started = Date.now();
+  try {
+    const response = await fetch(config.url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${config.secret}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    });
+    const latencyMs = Date.now() - started;
+    await response.body?.cancel();
+
+    if (response.status >= 200 && response.status < 300) {
+      return { kind: 'accepted', status: response.status, latencyMs };
+    }
+    if (response.status === 408 || response.status === 429 || response.status >= 500) {
+      return {
+        kind: 'transient',
+        status: response.status,
+        retryAfterMs: boundedRetryAfter(response.headers.get('Retry-After')),
+        latencyMs,
+      };
+    }
+    return { kind: 'permanent', status: response.status, latencyMs };
+  } catch {
+    // A timeout is ambiguous: the remote service may have accepted the request.
+    return { kind: 'transient', latencyMs: Date.now() - started };
+  }
+}
+```
+
+Do not treat the body as a stable API contract. A 2xx result remains accepted but
+unverified until a matching task or authenticated callback is observed.
+
+## Bounded Worker
+
+```typescript
+const MAX_ATTEMPTS = 4; // local example policy
+const BASE_DELAY_MS = 1_000;
+
+function fullJitter(attempt: number): number {
+  const cap = Math.min(BASE_DELAY_MS * 2 ** attempt, MAX_RETRY_DELAY_MS);
+  return Math.floor(Math.random() * cap);
+}
+
+async function runTriggerJob(
+  job: TriggerJob,
+  agentKey: string,
+  config: TriggerConfig,
+  jobs: DurableJobs,
+  limiter: SharedAdmissionControl,
+  ledger: OutcomeLedger,
+): Promise<void> {
+  if (!/^[A-Za-z0-9._:-]{1,128}$/.test(agentKey)) {
+    throw new Error('invalid internal agent key');
+  }
+  const admission = await limiter.acquire(`agent:${agentKey}`);
+  if (!admission.admitted) {
+    await jobs.reschedule(job, Math.min(admission.retryAfterMs, MAX_RETRY_DELAY_MS));
+    return;
+  }
+
+  const result = await postOnce(config, job.event);
+  await ledger.record({
+    requestId: job.requestId,
+    attempt: job.attempt,
+    disposition: result.kind,
+    httpStatus: result.status,
+    latencyMs: result.latencyMs,
+  });
+
+  if (result.kind === 'accepted') return;
+  if (result.kind === 'permanent') {
+    await jobs.deadLetter(job, `permanent HTTP ${result.status}`);
+    return;
+  }
+  if (job.attempt + 1 >= MAX_ATTEMPTS) {
+    await jobs.deadLetter(job, 'transient attempts exhausted');
+    return;
+  }
+
+  const delay = result.retryAfterMs ?? fullJitter(job.attempt);
+  await jobs.reschedule({ ...job, attempt: job.attempt + 1 }, delay);
+}
+```
+
+Map the generated webhook path to a sanitized internal `agentKey`; do not place
+the full path in telemetry or shared-store keys. The worker must also apply a
+total job-age deadline so repeated queue deferrals cannot continue indefinitely.
+
+## Completion Reconciliation
+
+Maintain these distinct states:
+
+```text
+queued -> admitted -> accepted_unverified -> completed | failed | unknown
+                       \-> permanent_failure
+                       \-> retry_scheduled -> dead_letter
+```
+
+Move `accepted_unverified` to a terminal task state only after correlating the
+stable request ID with Lindy's Tasks view or an authenticated callback. Alert on
+records that remain unverified beyond the local reconciliation deadline.
+
+## Security and Failure Tests
+
+1. Supply a lookalike host, an HTTP URL, embedded credentials, and an unexpected
+   path; configuration must fail before an Authorization header is constructed.
+2. Start without `LINDY_TRIGGER_SECRET`; startup must fail.
+3. Race the same request ID through multiple producers; `enqueueOnce` creates one
+   job.
+4. Race multiple workers at the shared policy boundary; aggregate admissions stay
+   within the local policy.
+5. Inject 401, 429, 503, timeout, and malformed input outcomes; verify the exact
+   permanent, bounded-retry, ambiguous, and rejection dispositions.
+6. Terminate a worker after dequeue and after remote acceptance; verify queue
+   recovery and reconciliation without claiming exactly-once remote execution.
+7. Inspect logs and alerts for secrets, generated URLs, and full payloads.
+
+## Official References
+
+- [Lindy webhook triggers](https://docs.lindy.ai/skills/by-lindy/webhooks)
+- [Lindy HTTP Request actions](https://docs.lindy.ai/skills/by-lindy/http-request)

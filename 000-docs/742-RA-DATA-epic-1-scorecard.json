@@ -14,13 +14,13 @@
     "source": "scripts/validate-skills-schema.py --marketplace --skills-only --json",
     "status": "measured",
     "values": {
-      "a_error_total": 54,
-      "a_failing": 26,
-      "ab_error_total": 667,
-      "ab_failing": 322,
+      "a_error_total": 41,
+      "a_failing": 21,
+      "ab_error_total": 654,
+      "ab_failing": 317,
       "b_failing": 296,
-      "error_files": 814,
-      "error_total": 3951,
+      "error_files": 809,
+      "error_total": 3938,
       "grade_distribution": {
         "A": 1873,
         "B": 1116,
@@ -90,7 +90,7 @@
           "validator_reported_mixed_denominator_percent": 80.8
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 4188,
+          "error_total_all_validated_surfaces": 4175,
           "fully_compliant_surfaces": 1138,
           "terminal_denominator": {
             "agents": 357,
@@ -104,13 +104,13 @@
           "validator_reported_mixed_denominator_percent": 23
         },
         "skill_rows": {
-          "a_error_total": 54,
-          "a_failing": 26,
-          "ab_error_total": 667,
-          "ab_failing": 322,
+          "a_error_total": 41,
+          "a_failing": 21,
+          "ab_error_total": 654,
+          "ab_failing": 317,
           "b_failing": 296,
-          "error_files": 814,
-          "error_total": 3951,
+          "error_files": 809,
+          "error_total": 3938,
           "grade_distribution": {
             "A": 1873,
             "B": 1116,
@@ -154,10 +154,10 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "a_error_total": 54,
-        "a_failing": 26,
-        "ab_error_total": 667,
-        "ab_failing": 322,
+        "a_error_total": 41,
+        "a_failing": 21,
+        "ab_error_total": 654,
+        "ab_failing": 317,
         "b_error_total": 613,
         "b_failing": 296,
         "certified_target": 0,
@@ -286,7 +286,7 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "distinct_values": 45,
+        "distinct_values": 50,
         "invalid_or_empty": 0,
         "target_free_text_values": 0,
         "values": [
@@ -324,10 +324,26 @@
           },
           {
             "count": 1,
+            "value": "Compatible with AI coding agents that can read Markdown and analyze workflow measurements"
+          },
+          {
+            "count": 1,
+            "value": "Compatible with AI coding agents that can read Markdown and review application code"
+          },
+          {
+            "count": 1,
+            "value": "Compatible with AI coding agents that can read Markdown and review monitoring configurations"
+          },
+          {
+            "count": 1,
+            "value": "Compatible with AI coding agents that can read Markdown; optional verification probes require a shell with curl"
+          },
+          {
+            "count": 1,
             "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18, a persistent local filesystem (the observe-decide-act loop passes state through local turn files), and ~/.kobiton/.credentials written by /automate:setup — scripts/appium.js reads that file directly and never calls the MCP getCredential tool, so it is required, not a fallback. An authenticated Kobiton MCP connection is additionally useful for device selection."
           },
           {
-            "count": 3321,
+            "count": 3316,
             "value": "Designed for Claude Code"
           },
           {
@@ -421,6 +437,10 @@
           {
             "count": 1,
             "value": "Portable doctrine — Claude Code, Codex App/CLI, OpenCode, Antigravity, Cursor, Grok"
+          },
+          {
+            "count": 1,
+            "value": "Portable instructions for agent harnesses that can read Markdown and edit architecture documents"
           },
           {
             "count": 1,
