@@ -163,10 +163,18 @@ function fixture() {
     `        run: |
           python3 - <<'PY'
           import unittest
+          from tests.test_freshie_hermetic_cycle import HermeticFreshieCycleTests
 
-          suite = unittest.defaultTestLoader.loadTestsFromName(
-              "tests.test_freshie_hermetic_cycle.HermeticFreshieCycleTests.test_full_cycle_uses_only_scratch_state_and_refuses_live_server"
-          )
+          method_name = "test_full_cycle_uses_only_scratch_state_and_refuses_live_server"
+          original_method = HermeticFreshieCycleTests.__dict__[method_name]
+          invocations = []
+
+          def guarded_method(self):
+              invocations.append(1)
+              return original_method(self)
+
+          setattr(HermeticFreshieCycleTests, method_name, guarded_method)
+          suite = unittest.TestSuite([HermeticFreshieCycleTests(method_name)])
           result = unittest.TextTestRunner(verbosity=2).run(suite)
           valid = (
               result.wasSuccessful()
@@ -174,6 +182,8 @@ function fixture() {
               and not result.skipped
               and not result.expectedFailures
               and not result.unexpectedSuccesses
+              and len(invocations) == 1
+              and HermeticFreshieCycleTests.__dict__.get(method_name) is guarded_method
           )
           raise SystemExit(0 if valid else 1)
           PY`,
@@ -544,6 +554,19 @@ class HermeticFreshieCycleTests(unittest.TestCase):
     '    def test_full_cycle_uses_only_scratch_state_and_refuses_live_server(self):\n        raise unittest.SkipTest("no cycle executed")\n',
   );
   put(base.root, 'tests/test_freshie_hermetic_cycle.py', skippedTest);
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[58].status, 'partial');
+  assert.equal(rows[58].values.full_cycle, false);
+
+  base = fixture();
+  const aliasedMutation = readFileSync(
+    join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
+    'utf8',
+  ).replace(
+    '    def setUpClass(cls):\n',
+    '    def setUpClass(cls):\n        mutator = setattr\n        mutator(cls, "test_full_cycle_uses_only_scratch_state_and_refuses_live_server", lambda self: None)\n',
+  );
+  put(base.root, 'tests/test_freshie_hermetic_cycle.py', aliasedMutation);
   rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[58].status, 'partial');
   assert.equal(rows[58].values.full_cycle, false);

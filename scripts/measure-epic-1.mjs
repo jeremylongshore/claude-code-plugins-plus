@@ -299,6 +299,13 @@ try:
             or call_name(node).lower() in {"setattr", "__setattr__", "delattr", "__delattr__"}
         )
         for node in ast.walk(tree)
+    ) or any(
+        isinstance(node, ast.Call)
+        and any(
+            isinstance(item, ast.Constant) and item.value in governed_methods
+            for item in ast.walk(node)
+        )
+        for node in ast.walk(tree)
     )
     result["no_dead_code"] = (
         synchronous_methods
