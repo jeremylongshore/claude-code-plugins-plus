@@ -1698,38 +1698,110 @@ export function buildExtendedScorecardRows({
     present: dependabot.length === 1,
     target_present: true,
   });
-  output[38] = baseRow(
-    38,
-    'partial',
-    'locally pinned root package dependencies',
-    reader.pathSet.has('package.json') ? ['package.json'] : [],
-    { pins, published_latest_versions: null },
-    {
-      reason_code: 'EXTERNAL_PACKAGE_REGISTRY_STATE_NOT_COMMITTED',
-      required_inputs: ['versioned package-registry metadata snapshot'],
-      limitations: [
-        'local exactness is measured; latest versions and staleness are not inferred without a registry or clock',
-      ],
-    },
+  const epic9EvidencePath = '000-docs/810-RA-DATA-epic-9-boundary-evidence.json';
+  const epic9Evidence = reader.json(epic9EvidencePath);
+  const registryPackages = epic9Evidence?.package_registry?.packages ?? null;
+  const pinNames = [
+    '@intentsolutions/audit-harness',
+    '@intentsolutions/core',
+    '@intentsolutions/jrig-cli',
+  ];
+  const registryMatchesPins =
+    registryPackages != null &&
+    pinNames.every(
+      (name) =>
+        pins[name]?.exact === true &&
+        typeof registryPackages[name]?.version === 'string' &&
+        registryPackages[name].version === pins[name].version,
+    );
+  let couplingSteps = [];
+  try {
+    const couplingWorkflow = yaml.load(
+      reader.text('.github/workflows/kernel-vendor-hash.yml') ?? '',
+    );
+    couplingSteps = couplingWorkflow?.jobs?.['kernel-vendor-hash']?.steps ?? [];
+  } catch {
+    couplingSteps = [];
+  }
+  const orderingStep = couplingSteps.find((step) =>
+    String(step?.name ?? '').includes('Version-ordering invariant test corpus'),
   );
-  const shadowPath = 'scripts/.kernel-shadow/report.json';
-  const shadow = reader.json(shadowPath);
+  const alertStep = couplingSteps.find((step) =>
+    String(step?.name ?? '').includes('Alert Slack on kernel coupling violation'),
+  );
+  const orderingTestBlocking =
+    orderingStep != null &&
+    orderingStep['continue-on-error'] !== true &&
+    String(orderingStep.run ?? '').includes('kernel-vendor-hash.test.mjs');
+  const stalenessAlertRouted =
+    alertStep != null &&
+    String(alertStep.if ?? '').includes("steps.vendor-hash.outputs.violation == 'true'") &&
+    String(alertStep.run ?? '').includes('curl');
+  const singleResolvedCore =
+    Array.isArray(epic9Evidence?.package_registry?.resolved_core_versions) &&
+    epic9Evidence.package_registry.resolved_core_versions.length === 1 &&
+    epic9Evidence.package_registry.resolved_core_versions[0] ===
+      pins['@intentsolutions/core'].version;
+  const pinsAtTarget =
+    registryMatchesPins && orderingTestBlocking && stalenessAlertRouted && singleResolvedCore;
+  output[38] = epic9Evidence
+    ? baseRow(
+        38,
+        pinsAtTarget ? 'target_met' : 'partial',
+        'exact root pins, retained npm registry observation, and coupling workflow',
+        [
+          'package.json',
+          'pnpm-lock.yaml',
+          '.github/workflows/kernel-vendor-hash.yml',
+          epic9EvidencePath,
+        ].filter((path) => reader.pathSet.has(path)),
+        {
+          pins,
+          published_latest_versions: Object.fromEntries(
+            pinNames.map((name) => [name, registryPackages?.[name]?.version ?? null]),
+          ),
+          registry_matches_pins: registryMatchesPins,
+          one_resolved_core_version: singleResolvedCore,
+          ordering_test_blocking: orderingTestBlocking,
+          staleness_alert_routed: stalenessAlertRouted,
+          target_met: pinsAtTarget,
+        },
+        pinsAtTarget
+          ? {}
+          : {
+              limitations: [
+                'target requires exact pins matching the retained registry observation, one resolved kernel version, a blocking ordering-test corpus, and a routed staleness alert',
+              ],
+            },
+      )
+    : baseRow(38, 'not_reproducible', 'kernel, eval CLI, and harness pins', [], null, {
+        reason_code: 'PACKAGE_REGISTRY_SNAPSHOT_NOT_TRACKED',
+        required_inputs: ['versioned package-registry metadata snapshot'],
+      });
+  const shadowPath = epic9EvidencePath;
+  const shadow = epic9Evidence?.kernel_shadow ?? null;
+  const shadowHasBothLanes =
+    shadow?.lanes?.['authoring/v1'] != null &&
+    shadow?.lanes?.['authoring/v2']?.decision_relevant_metric === 'existing-PASS / kernel-FAIL' &&
+    Number.isInteger(shadow?.lanes?.['authoring/v2']?.existing_pass_kernel_fail);
+  const shadowCurrent =
+    shadowHasBothLanes &&
+    shadow.kernel_version === pins['@intentsolutions/core'].version &&
+    shadow.kernel_pin === pins['@intentsolutions/core'].version;
   output[39] = shadow
     ? baseRow(
         39,
-        shadow.kernelVersion && pins['@intentsolutions/core'].version !== shadow.kernelVersion
-          ? 'stale_evidence'
-          : 'partial',
-        'tracked kernel-shadow report',
+        shadowCurrent ? 'target_met' : 'stale_evidence',
+        'retained exact-head kernel-shadow boundary report',
         [shadowPath, 'package.json'],
         { report: shadow, root_kernel_pin: pins['@intentsolutions/core'].version },
         {
           limitations: [
-            'report freshness is evaluated only by committed pin equality; no clock is consulted',
+            'this is a point-in-time exact-head closure receipt; the advisory workflow remains the live recurring observation lane',
           ],
         },
       )
-    : baseRow(39, 'not_reproducible', 'kernel shadow output', [], null, {
+    : baseRow(39, 'not_reproducible', 'kernel shadow boundary output', [], null, {
         reason_code: 'KERNEL_SHADOW_REPORT_NOT_TRACKED',
         required_inputs: [
           'deterministic tracked shadow report generated at the current kernel pin',
