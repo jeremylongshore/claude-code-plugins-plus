@@ -24,6 +24,7 @@ const EXAMPLES = new Map([
   ['marketplace-public-data', 'marketplace/public/data/catalog.json'],
   ['cowork-downloads', 'marketplace/public/downloads/example.zip'],
   ['freshie-run-snapshots', 'freshie/exports/run-1/plugin_values.json'],
+  ['epic-9-boundary-evidence', '000-docs/810-RA-DATA-epic-9-boundary-evidence.json'],
   ['frozen-prose-anchor-manifest', 'tests/fixtures/prose-anchors/expected-output.json'],
 ]);
 

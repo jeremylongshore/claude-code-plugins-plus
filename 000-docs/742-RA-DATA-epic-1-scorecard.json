@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3130,
-        "tracked_files": 23133
+        "tracked_files": 23136
       }
     },
     "2": {
@@ -1582,17 +1582,19 @@
       }
     },
     "38": {
-      "cohort": "locally pinned root package dependencies",
+      "cohort": "exact root pins, retained npm registry observation, and coupling workflow",
       "dimension": "Kernel, eval CLI, and harness pins",
-      "limitations": [
-        "local exactness is measured; latest versions and staleness are not inferred without a registry or clock"
-      ],
-      "reason_code": "EXTERNAL_PACKAGE_REGISTRY_STATE_NOT_COMMITTED",
       "reproduce": "pnpm run measure:e1 --row=38 --stdout",
-      "required_inputs": ["versioned package-registry metadata snapshot"],
-      "source": ["package.json"],
-      "status": "partial",
+      "source": [
+        ".github/workflows/kernel-vendor-hash.yml",
+        "000-docs/810-RA-DATA-epic-9-boundary-evidence.json",
+        "package.json",
+        "pnpm-lock.yaml"
+      ],
+      "status": "target_met",
       "values": {
+        "one_resolved_core_version": true,
+        "ordering_test_blocking": true,
         "pins": {
           "@intentsolutions/audit-harness": {
             "exact": true,
@@ -1607,20 +1609,62 @@
             "version": "0.2.0"
           }
         },
-        "published_latest_versions": null
+        "published_latest_versions": {
+          "@intentsolutions/audit-harness": "1.3.1",
+          "@intentsolutions/core": "0.10.0",
+          "@intentsolutions/jrig-cli": "0.2.0"
+        },
+        "registry_matches_pins": true,
+        "staleness_alert_routed": true,
+        "target_met": true
       }
     },
     "39": {
-      "cohort": "kernel shadow output",
+      "cohort": "retained exact-head kernel-shadow boundary report",
       "dimension": "Kernel shadow report",
-      "reason_code": "KERNEL_SHADOW_REPORT_NOT_TRACKED",
-      "reproduce": "pnpm run measure:e1 --row=39 --stdout",
-      "required_inputs": [
-        "deterministic tracked shadow report generated at the current kernel pin"
+      "limitations": [
+        "this is a point-in-time exact-head closure receipt; the advisory workflow remains the live recurring observation lane"
       ],
-      "source": [],
-      "status": "not_reproducible",
-      "values": null
+      "reproduce": "pnpm run measure:e1 --row=39 --stdout",
+      "source": ["000-docs/810-RA-DATA-epic-9-boundary-evidence.json", "package.json"],
+      "status": "target_met",
+      "values": {
+        "report": {
+          "command": "node scripts/kernel-shadow-validation.mjs",
+          "corpus_files": 3630,
+          "frontmatter_deviations": [
+            "plugins/community/claude-reflect/SKILL.md",
+            "plugins/community/llm-box/skills/setup/SKILL.md",
+            "plugins/productivity/publishing-skills/skills/blog-editorial-calendar/SKILL.md",
+            "plugins/productivity/publishing-skills/skills/blog-topic-research/SKILL.md",
+            "plugins/saas-packs/podium-pack/skills/podium-rate-limit-survival/SKILL.md",
+            "plugins/testing/kobiton-automate/skills/run-automation-suite/SKILL.md"
+          ],
+          "full_report_sha256": "045be75e4110a4c2e05e722c3e4122b8a1999f6abb474c419bab2af81692a15d",
+          "kernel_package": "@intentsolutions/core",
+          "kernel_pin": "0.10.0",
+          "kernel_version": "0.10.0",
+          "lanes": {
+            "authoring/v1": {
+              "body_scope_only": 544,
+              "existing_fail_kernel_pass": 550,
+              "existing_pass_kernel_fail": 0,
+              "frontmatter_agree": 3624,
+              "frontmatter_deviation_percent": 0.17,
+              "frontmatter_disagree": 6
+            },
+            "authoring/v2": {
+              "decision_relevant_metric": "existing-PASS / kernel-FAIL",
+              "existing_fail_kernel_pass": 546,
+              "existing_pass_kernel_fail": 0,
+              "existing_pass_kernel_fail_percent": 0,
+              "kernel_unparseable_frontmatter": 0,
+              "strict": true
+            }
+          }
+        },
+        "root_kernel_pin": "0.10.0"
+      }
     },
     "40": {
       "cohort": "tracked workflow command lines invoking the canonical validator with --marketplace",
@@ -1769,10 +1813,10 @@
       ],
       "status": "measured",
       "values": {
-        "index_entries": 250,
+        "index_entries": 252,
         "missing_from_index": [],
         "target_equal": true,
-        "tracked_documents": 250,
+        "tracked_documents": 252,
         "untracked_index_entries": []
       }
     },
@@ -1798,7 +1842,7 @@
         "invalid_patterns": 0,
         "invisible_files": 21,
         "target_invisible_files": 0,
-        "tracked_files": 23133
+        "tracked_files": 23136
       }
     },
     "47": {

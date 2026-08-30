@@ -170,6 +170,16 @@ export const GENERATED_ARTIFACT_REGISTRY = [
     why: 'point-in-time discovery evidence; preserve observed values byte-for-byte',
   },
   {
+    id: 'epic-9-boundary-evidence',
+    kind: 'historical_snapshot',
+    tracking: 'tracked',
+    pattern: /^000-docs\/810-RA-DATA-epic-9-boundary-evidence\.json$/,
+    canonical:
+      'the exact-head npm registry, package graph, kernel-shadow, and DR-049 observations recorded for Epic 9 closure',
+    regenerate: null,
+    why: 'retained point-in-time evidence for the Epic 9 authority boundary and scorecard read-back',
+  },
+  {
     id: 'frozen-prose-anchor-manifest',
     kind: 'frozen_projection',
     tracking: 'tracked',

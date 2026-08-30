@@ -1,0 +1,111 @@
+{
+  "schema_version": "epic-9-boundary-evidence/v1",
+  "captured_at": "2026-08-30T10:29:17Z",
+  "source": {
+    "repository": "jeremylongshore/tons-of-skills-marketplace",
+    "head_sha": "597105886aa5ee2c39ef638cb72781c4e678c53b",
+    "tree_sha": "d5e89e072ed3c916fa4ef0fc69b488cf5f93b6fd"
+  },
+  "package_registry": {
+    "command": "npm view <package> version time.modified dist.integrity --json",
+    "packages": {
+      "@intentsolutions/audit-harness": {
+        "version": "1.3.1",
+        "time_modified": "2026-07-23T00:04:40.301Z",
+        "integrity": "sha512-GcgotqECIiIdfQLGhqJ8VxLG7UCtJdrRXTMia0VefL/njRxS02cTFXxeqde/Qb5sn5LcCAPmJcSazIPA6a2YhA=="
+      },
+      "@intentsolutions/core": {
+        "version": "0.10.0",
+        "time_modified": "2026-07-09T06:50:17.410Z",
+        "integrity": "sha512-6IF/A5qqrUdA/L4HB6YLd2/7+T3fA/1gY7rX1izkIhrx1E5+4XL/O3MIXvJafobQztPnm6ItYHbHLV1EpLnYOg=="
+      },
+      "@intentsolutions/jrig-cli": {
+        "version": "0.2.0",
+        "time_modified": "2026-07-10T21:46:48.016Z",
+        "integrity": "sha512-lgJoWeJW7/H705jdub02tuXYN0yM7WwJ9m7d1nM+C4x7uEUkp8oBul3vZ0jwmoDktmVZlenh3LcZR9P9ruUxkQ==",
+        "published_core_dependency": "0.9.0"
+      }
+    },
+    "resolved_root_versions": {
+      "@intentsolutions/audit-harness": "1.3.1",
+      "@intentsolutions/core": "0.10.0",
+      "@intentsolutions/jrig-cli": "0.2.0"
+    },
+    "resolved_core_versions": ["0.10.0"]
+  },
+  "kernel_shadow": {
+    "command": "node scripts/kernel-shadow-validation.mjs",
+    "full_report_sha256": "045be75e4110a4c2e05e722c3e4122b8a1999f6abb474c419bab2af81692a15d",
+    "kernel_package": "@intentsolutions/core",
+    "kernel_version": "0.10.0",
+    "kernel_pin": "0.10.0",
+    "corpus_files": 3630,
+    "lanes": {
+      "authoring/v1": {
+        "frontmatter_agree": 3624,
+        "frontmatter_disagree": 6,
+        "frontmatter_deviation_percent": 0.17,
+        "existing_pass_kernel_fail": 0,
+        "existing_fail_kernel_pass": 550,
+        "body_scope_only": 544
+      },
+      "authoring/v2": {
+        "strict": true,
+        "decision_relevant_metric": "existing-PASS / kernel-FAIL",
+        "existing_pass_kernel_fail": 0,
+        "existing_pass_kernel_fail_percent": 0,
+        "existing_fail_kernel_pass": 546,
+        "kernel_unparseable_frontmatter": 0
+      }
+    },
+    "frontmatter_deviations": [
+      "plugins/community/claude-reflect/SKILL.md",
+      "plugins/community/llm-box/skills/setup/SKILL.md",
+      "plugins/productivity/publishing-skills/skills/blog-editorial-calendar/SKILL.md",
+      "plugins/productivity/publishing-skills/skills/blog-topic-research/SKILL.md",
+      "plugins/saas-packs/podium-pack/skills/podium-rate-limit-survival/SKILL.md",
+      "plugins/testing/kobiton-automate/skills/run-automation-suite/SKILL.md"
+    ]
+  },
+  "dr_049": {
+    "authority_flipped": false,
+    "conditions": [
+      {
+        "condition": "at least 99.5 percent corpus agreement and 100 percent deterministic folds",
+        "met": false,
+        "reason": "The v1 frontmatter rate is 99.83 percent, but six frontmatter disagreements remain and 100 percent deterministic-fold agreement is not proven for the v2 flip target."
+      },
+      {
+        "condition": "at least 30 days of advisory soak",
+        "met": false,
+        "reason": "The core 0.10.0 and dual-lane re-baseline began on 2026-08-27."
+      },
+      {
+        "condition": "zero open P0 blockers",
+        "met": false,
+        "reason": "Blueprint P0 work remains open outside Epic 9."
+      },
+      {
+        "condition": "tested Rekor superseding-event rollback",
+        "met": false,
+        "reason": "No retained test receipt proves the complete superseding-event rollback protocol."
+      },
+      {
+        "condition": "CTO, CISO, and VP DevRel sign-off",
+        "met": false,
+        "reason": "The required role-based sign-off receipt has not been filed."
+      },
+      {
+        "condition": "at least 14 days of public deprecation notice",
+        "met": false,
+        "reason": "No completed public notice window has been filed."
+      }
+    ]
+  },
+  "verification": {
+    "jrig_db_boundary": "8 tests passed; 10,718 first-party surfaces checked; 890 provenance mirrors skipped",
+    "recorder": "11 tests passed, including self-approval and real-ledger refusal",
+    "freshie": "61 tests passed across Dolt sync and the hermetic Freshie cycle",
+    "kernel_vendor": "26 tests passed; V=0.10.0, C=0.10.0, K=0.10.0; ordering and staleness clean"
+  }
+}

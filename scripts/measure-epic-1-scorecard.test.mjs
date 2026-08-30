@@ -51,6 +51,7 @@ function fixture() {
     '.github/dependabot.yml': 'version: 2\nupdates: []\n',
     '.github/workflows/publish-changed-packages.yml': `on:\n  workflow_run:\n    workflows: ['Validate Plugins']\njobs:\n  preflight:\n    steps:\n      - run: node scripts/npm-publication-preflight.mjs\n  publish:\n    environment: npm-production\n    steps:\n      - run: node scripts/publish-candidate-report.mjs && npm publish\n`,
     '.github/workflows/emit-evidence.yml': `permissions:\n  id-token: write\njobs:\n  sign:\n    steps:\n      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803\n`,
+    '.github/workflows/kernel-vendor-hash.yml': `jobs:\n  kernel-vendor-hash:\n    steps:\n      - name: Version-ordering invariant test corpus (blocking)\n        run: node --test scripts/kernel-vendor-hash.test.mjs\n      - name: Alert Slack on kernel coupling violation\n        if: steps.vendor-hash.outputs.violation == 'true'\n        run: curl --fail "$WEBHOOK"\n`,
     '.github/workflows/validate-plugins.yml': `on:\n  pull_request:\n  push:\n    branches: [main]\njobs:\n  validate:\n    steps:\n      - run: python3 scripts/validate-skills-schema.py --marketplace\n      - run: python3 -m unittest tests.test_prose_anchors\n  test:\n    needs: validate\n    strategy:\n      matrix:\n        test-type: [mcp-plugins, python-tests, validation-scripts]\n    steps:\n      - name: Install pinned Dolt for Freshie integration tests\n        if: matrix.test-type == 'python-tests'\n        run: |\n          readonly dolt_version='2.3.1'\n          readonly dolt_sha256='0a2a318f27c5e1088a2883038573c2054e00f356dc9752e74bca934f8321959a'\n          printf '%s  %s\\n' "$dolt_sha256" dolt.tar.gz | sha256sum --check --strict\n          sudo install -m 0755 dolt /usr/local/bin/dolt\n          dolt version\n      - name: Run Freshie hermetic publication cycle\n        if: matrix.test-type == 'python-tests'\n        run: python3 -m unittest tests.test_freshie_hermetic_cycle -v\n  ci-required:\n    needs:\n      - validate\n      - test\n`,
     '.gitleaks.toml': "[allowlist]\npaths = ['''(?i).*/README\\.md$''']\nregexes = []\n",
     '.claude-plugin/marketplace.extended.json': JSON.stringify({
@@ -65,6 +66,27 @@ function fixture() {
     'STANDARDS.md':
       '## Canonical documents\n\n| Topic | Document |\n| --- | --- |\n| Fixture | [canonical](000-docs/canonical.md) |\n',
     '000-docs/807-DR-STND-evaluation-evidence.md': '# Evidence standard\n',
+    '000-docs/810-RA-DATA-epic-9-boundary-evidence.json': JSON.stringify({
+      package_registry: {
+        packages: {
+          '@intentsolutions/audit-harness': { version: '1.0.0' },
+          '@intentsolutions/core': { version: '1.0.0' },
+          '@intentsolutions/jrig-cli': { version: '1.0.0' },
+        },
+        resolved_core_versions: ['1.0.0'],
+      },
+      kernel_shadow: {
+        kernel_version: '1.0.0',
+        kernel_pin: '1.0.0',
+        lanes: {
+          'authoring/v1': { frontmatter_agree: 2, frontmatter_disagree: 0 },
+          'authoring/v2': {
+            decision_relevant_metric: 'existing-PASS / kernel-FAIL',
+            existing_pass_kernel_fail: 0,
+          },
+        },
+      },
+    }),
     'freshie/grade-histogram.json': JSON.stringify({
       run_id: 9,
       total: 2,
@@ -115,7 +137,7 @@ function fixture() {
     'marketplace/src/data/alpha.json': '{}',
     'package.json': JSON.stringify({
       devDependencies: {
-        '@intentsolutions/audit-harness': '^1.0.0',
+        '@intentsolutions/audit-harness': '1.0.0',
         '@intentsolutions/core': '1.0.0',
         '@intentsolutions/jrig-cli': '1.0.0',
       },
@@ -452,6 +474,29 @@ test('unresolved rows fail closed with null values rather than fabricated zeroes
     assert.match(rows[number].reason_code, /^[A-Z][A-Z0-9_]+$/);
     assert.ok(rows[number].required_inputs.length > 0);
   }
+});
+
+test('Epic 9 pin and shadow rows require retained matching boundary evidence', () => {
+  let base = fixture();
+  let rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[38].status, 'target_met');
+  assert.equal(rows[38].values.registry_matches_pins, true);
+  assert.equal(rows[38].values.one_resolved_core_version, true);
+  assert.equal(rows[38].values.ordering_test_blocking, true);
+  assert.equal(rows[38].values.staleness_alert_routed, true);
+  assert.equal(rows[39].status, 'target_met');
+  assert.equal(rows[39].values.report.lanes['authoring/v2'].existing_pass_kernel_fail, 0);
+
+  base = fixture();
+  const evidencePath = '000-docs/810-RA-DATA-epic-9-boundary-evidence.json';
+  const evidence = JSON.parse(readFileSync(join(base.root, evidencePath), 'utf8'));
+  evidence.package_registry.packages['@intentsolutions/core'].version = '2.0.0';
+  evidence.kernel_shadow.kernel_version = '2.0.0';
+  put(base.root, evidencePath, JSON.stringify(evidence));
+  rows = buildExtendedScorecardRows(input(base));
+  assert.equal(rows[38].status, 'partial');
+  assert.equal(rows[38].values.target_met, false);
+  assert.equal(rows[39].status, 'stale_evidence');
 });
 
 test('Freshie exit rows use tracked receipts and fail closed on planted drift', () => {
