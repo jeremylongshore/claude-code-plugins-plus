@@ -20117,7 +20117,7 @@
     {
       "slug": "lindy-install-auth",
       "name": "lindy-install-auth",
-      "description": "'Set up Lindy AI account, API access, and webhook authentication.",
+      "description": "'Set up a Lindy account and authenticated webhook trigger.",
       "version": "1.17.0",
       "category": "saas-packs",
       "parentPlugin": "lindy-pack",
@@ -36472,7 +36472,7 @@
     }
   ],
   "count": 3039,
-  "generatedAt": "2026-08-30T13:43:59.714Z",
+  "generatedAt": "2026-08-30T16:03:49.685Z",
   "categories": [
     "ai-agency",
     "ai-ml",

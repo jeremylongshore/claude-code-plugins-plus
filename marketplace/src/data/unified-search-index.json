@@ -51728,16 +51728,13 @@
       "id": "lindy-install-auth",
       "slug": "lindy-install-auth",
       "name": "lindy-install-auth",
-      "description": "'Set up Lindy AI account, API access, and webhook authentication.",
+      "description": "'Set up a Lindy account and authenticated webhook trigger.",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
         "Edit",
-        "Bash(npm:*)",
-        "Bash(pip:*)",
-        "Bash(curl:*)",
-        "Grep"
+        "Bash(curl:*)"
       ],
       "compatibleWith": [],
       "version": "1.17.0",
@@ -51745,7 +51742,7 @@
         "name": "lindy-pack",
         "category": "saas-packs"
       },
-      "searchText": "lindy-install-auth 'set up lindy ai account, api access, and webhook authentication. saas-packs read write edit bash(npm:*) bash(pip:*) bash(curl:*) grep "
+      "searchText": "lindy-install-auth 'set up a lindy account and authenticated webhook trigger. saas-packs read write edit bash(curl:*) "
     },
     {
       "type": "skill",

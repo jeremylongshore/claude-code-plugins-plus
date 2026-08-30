@@ -51,12 +51,15 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-const WEBHOOK_SECRET = process.env.LINDY_WEBHOOK_SECRET;
+const CALLBACK_SECRET = process.env.LINDY_CALLBACK_SECRET;
+if (!CALLBACK_SECRET) {
+  throw new Error('LINDY_CALLBACK_SECRET is required');
+}
 
 // Verify Lindy webhook authenticity
 function verifyWebhook(req: express.Request): boolean {
   const auth = req.headers.authorization;
-  return auth === `Bearer ${WEBHOOK_SECRET}`;
+  return auth === `Bearer ${CALLBACK_SECRET}`;
 }
 
 // Receive Lindy agent callbacks
@@ -66,10 +69,8 @@ app.post('/lindy/callback', (req, res) => {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  console.log('Lindy callback received:', JSON.stringify(req.body, null, 2));
-
-  // Process the agent's output
-  const { taskId, result, status } = req.body;
+  // Correlate the callback without logging its result or customer payload.
+  const { taskId, status } = req.body;
   console.log(`Task ${taskId}: ${status}`);
 
   res.json({ received: true });
@@ -84,8 +85,7 @@ app.listen(3000, () => console.log('Webhook receiver running on :3000'));
 ### Step 2: Expose Local Server via Tunnel
 
 ```bash
-# Install and start ngrok
-npm install -g ngrok
+# Install an HTTPS tunnel with your approved package-management policy, then run it.
 ngrok http 3000
 
 # Output: https://abc123.ngrok.io -> http://localhost:3000
@@ -98,18 +98,18 @@ In the Lindy dashboard, add an **HTTP Request** action to your agent:
 
 - **Method**: POST
 - **URL**: `https://abc123.ngrok.io/lindy/callback`
-- **Headers**: `Content-Type: application/json`
+- **Headers**:
+  - `Content-Type: application/json`
+  - `Authorization: Bearer <development callback secret>`
 - **Body** (AI Prompt mode):
 
   ```
   Send the task result as JSON with fields: taskId, result, status
   ```
 
-Or configure a webhook trigger pointing to your tunnel URL:
-
-```
-https://abc123.ngrok.io/lindy/webhook
-```
+The tunnel is the destination of the agent's **HTTP Request action**. A webhook
+trigger is the opposite direction: it uses the Lindy-hosted trigger URL to start
+the agent and must not be replaced with the tunnel URL.
 
 ### Step 4: Create Test Harness
 
@@ -118,13 +118,21 @@ https://abc123.ngrok.io/lindy/webhook
 import fetch from 'node-fetch';
 
 async function triggerAgent() {
-  const WEBHOOK_URL = process.env.LINDY_WEBHOOK_URL!;
-  const SECRET = process.env.LINDY_WEBHOOK_SECRET!;
+  const rawWebhookUrl = process.env.LINDY_WEBHOOK_URL;
+  const TRIGGER_SECRET = process.env.LINDY_TRIGGER_SECRET;
+  if (!rawWebhookUrl || !TRIGGER_SECRET) {
+    throw new Error('LINDY_WEBHOOK_URL and LINDY_TRIGGER_SECRET are required');
+  }
 
-  const response = await fetch(WEBHOOK_URL, {
+  const webhookUrl = new URL(rawWebhookUrl);
+  if (webhookUrl.protocol !== 'https:' || webhookUrl.hostname !== 'public.lindy.ai') {
+    throw new Error('Refusing to send LINDY_TRIGGER_SECRET outside public.lindy.ai');
+  }
+
+  const response = await fetch(webhookUrl, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${SECRET}`,
+      'Authorization': `Bearer ${TRIGGER_SECRET}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -168,9 +176,9 @@ npm run test:trigger
 
 ```bash
 # .env
-LINDY_API_KEY=lnd_live_xxxxxxxxxxxx
-LINDY_WEBHOOK_SECRET=whsec_xxxxxxxxxxxx
 LINDY_WEBHOOK_URL=https://public.lindy.ai/api/v1/webhooks/YOUR_ID
+LINDY_TRIGGER_SECRET=replace-with-development-trigger-secret
+LINDY_CALLBACK_SECRET=replace-with-different-callback-secret
 NODE_ENV=development
 ```
 
@@ -185,6 +193,21 @@ NODE_ENV=development
                           ↓
 [Review logs] → [Iterate]
 ```
+
+## Output
+
+Produce a local-test receipt containing the callback route, redacted tunnel
+origin, test payload fixture, authenticated and unauthenticated HTTP outcomes,
+Lindy task ID, callback status, and log timestamp. The receipt must not contain
+the tunnel's private path, either bearer credential, or any customer payload.
+
+## Examples
+
+Start the receiver and tunnel, send a synthetic event with the development
+credential, and confirm one callback is accepted and correlated to the recorded
+task ID. Send the same fixture without authorization and confirm a 401 response.
+If the tunnel changes, update only the development configuration and rerun both
+checks before continuing iteration.
 
 ## Error Handling
 

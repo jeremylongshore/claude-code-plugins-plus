@@ -29,6 +29,26 @@ Incident response procedures for Lindy AI agent failures. Covers platform outage
 individual agent failures, integration breakdowns, credit exhaustion, and webhook
 endpoint failures.
 
+## Prerequisites
+
+- Access to the affected Lindy workspace and task history
+- Ownership and escalation contacts for each affected integration
+- Read access to the receiving application's health checks and sanitized logs
+- A queue, manual route, or other documented fallback for critical events
+- An approved location for incident receipts that excludes secrets and payloads
+
+## Instructions
+
+1. Declare severity from customer impact and record the UTC detection time.
+2. Bound the failure to the platform, one agent, an integration, credits, or the
+   receiving endpoint before changing configuration.
+3. Preserve sanitized task IDs and error evidence, then activate the smallest
+   safe fallback that stops additional loss or duplicate actions.
+4. Apply the matching playbook below and verify recovery with fresh synthetic
+   work rather than by retrying customer data blindly.
+5. Monitor the recovery window, document the outcome, and assign prevention
+   work before resolving the incident.
+
 ## Incident Severity Levels
 
 | Severity | Description | Response Time | Examples |
@@ -218,6 +238,22 @@ async function triggerLindyWithFallback(payload: any) {
 - [ ] [Action item 2]
 - [ ] [Action item 3]
 ```
+
+## Output
+
+Produce an incident receipt that records the severity, UTC start and recovery
+times, affected agents and integrations, sanitized task IDs, the confirmed
+failure boundary, mitigation, recovery checks, and follow-up owners. Keep
+credentials, webhook secrets, customer payloads, and complete private endpoint
+URLs out of the receipt.
+
+## Examples
+
+For an expired integration, record the failing action and task ID, preserve the
+original error text without its token, re-authorize the connection, and verify
+five subsequent tasks before resolving the incident. For a platform outage,
+record the status-page confirmation, queue or fallback activation time, replay
+count after recovery, and the check that proved normal processing resumed.
 
 ## Error Handling
 
