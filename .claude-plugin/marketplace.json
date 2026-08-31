@@ -5691,7 +5691,7 @@
       "name": "lindy-pack",
       "source": "./plugins/saas-packs/lindy-pack",
       "description": "Complete Lindy integration skill pack with 24 skills covering AI assistants, task automation, workflows, and intelligent automation. Flagship tier vendor pack.",
-      "version": "1.18.0",
+      "version": "1.19.0",
       "category": "saas-packs",
       "keywords": [
         "lindy",

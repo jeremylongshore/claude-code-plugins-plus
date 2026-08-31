@@ -1,144 +1,60 @@
-# Lindy Observability -- Implementation Details
+# Lindy Observability -- Data and Security Contract
 
-## Structured Logging
+## Minimal Event Schema
 
-```python
-import os
-import json
-import time
-import logging
-from datetime import datetime, timezone
+The monitoring workflow may export only:
 
-class StructuredFormatter(logging.Formatter):
-    def format(self, record: logging.LogRecord) -> str:
-        log_data = {
-            "ts": datetime.now(timezone.utc).isoformat(),
-            "level": record.levelname,
-            "message": record.getMessage(),
-            "service": "lindy-integration",
-            "env": os.environ.get("LINDY_ENVIRONMENT", "development"),
-        }
-        if hasattr(record, "extra"):
-            log_data.update(record.extra)
-        if record.exc_info:
-            log_data["exception"] = self.formatException(record.exc_info)
-        return json.dumps(log_data)
-
-handler = logging.StreamHandler()
-handler.setFormatter(StructuredFormatter())
-logger = logging.getLogger("lindy")
-logger.addHandler(handler)
-logger.setLevel(logging.INFO)
-
-
-class LindyLogger:
-    def __init__(self, agent_id: str, run_id: str | None = None):
-        self.agent_id = agent_id
-        self.run_id = run_id
-        self._start = time.perf_counter()
-
-    def _extra(self, **kwargs) -> dict:
-        return {"agent_id": self.agent_id, "run_id": self.run_id, **kwargs}
-
-    def info(self, msg: str, **kwargs):
-        record = logger.makeRecord("lindy", logging.INFO, "", 0, msg, (), None)
-        record.extra = self._extra(**kwargs)
-        logger.handle(record)
-
-    def timing(self, event: str) -> float:
-        elapsed = (time.perf_counter() - self._start) * 1000
-        self.info(f"{event} completed", latency_ms=round(elapsed, 1))
-        return elapsed
-
-
-log = LindyLogger(agent_id="agent-abc123", run_id="run-xyz789")
-log.info("Agent triggered", trigger_type="webhook")
-log.timing("agent_execution")
+```json
+{
+  "agent": "support-bot",
+  "status": "succeeded",
+  "durationSeconds": 12.4
+}
 ```
 
-## Advanced Patterns
+The receiver owns the allowlist for `agent` and `status`, rejects extra keys, and
+bounds duration and body size. Task IDs may appear in a short-lived operator alert
+link but not as metric labels. Never export or log task titles, prompts, messages,
+block inputs/outputs, email addresses, customer identifiers, authorization headers,
+or error bodies.
 
-### Metrics Collection
+## Secret Boundaries
 
-```python
-from dataclasses import dataclass, field
+Use three separate concepts:
 
-@dataclass
-class AgentMetrics:
-    agent_id: str
-    total_runs: int = 0
-    successful_runs: int = 0
-    failed_runs: int = 0
-    _latencies: list = field(default_factory=list, repr=False)
+| Secret | Purpose | Must not be reused for |
+|---|---|---|
+| Lindy-generated webhook secret | Authenticate callers to an inbound Webhook Received trigger | Metrics callbacks |
+| `LINDY_CALLBACK_SECRET` | Authenticate Lindy's outbound HTTP Request to the collector | Inbound trigger calls |
+| Metrics scrape credential | Authenticate the monitoring system to the collector | Either Lindy direction |
 
-    def record_run(self, success: bool, latency_ms: float) -> None:
-        self.total_runs += 1
-        self._latencies.append(latency_ms)
-        if success:
-            self.successful_runs += 1
-        else:
-            self.failed_runs += 1
+Fail receiver startup when the callback secret is missing or empty. Rotate it by
+briefly accepting old/new values, update Lindy's protected header, verify a test
+event, then retire the old value. Never print either value during diagnostics.
 
-    @property
-    def success_rate(self) -> float:
-        return self.successful_runs / max(1, self.total_runs)
+## Cardinality Budget
 
-    @property
-    def avg_latency_ms(self) -> float:
-        return sum(self._latencies) / max(1, len(self._latencies))
+Metric labels are limited to a deployment-owned agent key and a three-value terminal
+status enum. Put environment identity in deployment configuration or a separately
+bounded label only when multiple environments share one registry. Do not derive any
+label from task content. A new agent key requires configuration review and a bounded
+allowlist update.
 
-    def summary(self) -> dict:
-        return {
-            "agent_id": self.agent_id,
-            "total_runs": self.total_runs,
-            "success_rate": f"{self.success_rate:.1%}",
-            "avg_latency_ms": round(self.avg_latency_ms, 1),
-        }
+## Failure Investigation
 
+1. Use the alert's authorized task link to open Tasks inside Lindy.
+2. Review Get Task Details or the chronological task view there.
+3. Record only the failing block name and an internal incident category externally.
+4. Redact customer content from tickets and chat. If an exact excerpt is essential,
+   use the approved restricted incident system and its retention policy.
+5. Confirm remediation against a sanitized fixture before reactivating the workflow.
 
-_metrics: dict[str, AgentMetrics] = {}
+## Unsupported API Warning
 
-def record_agent_run(agent_id: str, success: bool, latency_ms: float) -> None:
-    if agent_id not in _metrics:
-        _metrics[agent_id] = AgentMetrics(agent_id=agent_id)
-    _metrics[agent_id].record_run(success, latency_ms)
-```
-
-### Health Check Endpoint
-
-```python
-import requests
-import os
-import time
-from flask import Flask, jsonify
-
-app = Flask(__name__)
-
-@app.get("/health/lindy")
-def lindy_health():
-    try:
-        start = time.perf_counter()
-        resp = requests.get(
-            "https://api.lindy.ai/v1/agents",
-            headers={"Authorization": f"Bearer {os.environ['LINDY_API_KEY']}"},
-            timeout=5, params={"limit": 1},
-        )
-        latency_ms = round((time.perf_counter() - start) * 1000, 1)
-        if resp.status_code == 200:
-            return jsonify({"status": "ok", "latency_ms": latency_ms}), 200
-        return jsonify({"status": "degraded", "code": resp.status_code}), 503
-    except Exception as e:
-        return jsonify({"status": "error", "error": str(e)}), 503
-```
-
-## Troubleshooting
-
-### Dashboard Shows No Activity Despite Active Runs
-
-1. Verify you are in the correct Lindy workspace
-2. Confirm agent IDs in logs match agents in your workspace
-3. Check the date range filter in the dashboard
-4. Look for shadow agents with duplicate names
+Do not copy older examples that poll unofficial agent/run endpoints, register
+callbacks through an undocumented REST surface, or request a generic workspace API
+key. Follow Lindy's current Tasks, Agent Task Change, Get Task Details, and HTTP
+Request documentation instead.
 
 ---
 *[Tons of Skills](https://tonsofskills.com) by [Intent Solutions](https://intentsolutions.io) | [jeremylongshore.com](https://jeremylongshore.com)*

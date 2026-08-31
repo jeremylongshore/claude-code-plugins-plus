@@ -12,7 +12,7 @@ description: 'Production readiness checklist for Lindy AI agent deployments.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.18.0
+version: 1.19.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -20,152 +20,178 @@ tags:
 - lindy
 - deployment
 - audit
-compatibility: Designed for Claude Code
+compatibility: Compatible with AI coding agents that can read Markdown; optional verification probes require a shell with curl
 ---
 # Lindy Production Checklist
 
 ## Overview
 
-Comprehensive go-live checklist for Lindy AI agents entering production. Covers
-agent configuration, security, monitoring, error handling, and operational readiness.
+Create an evidence-backed go/no-go decision for a Lindy agent. Treat the Lindy
+dashboard and the organization's current contract, workspace configuration, and
+runbooks as the authorities. Do not infer product entitlements, prices, quotas,
+security features, support terms, or compliance commitments from this skill.
+
+Use **Read** to inspect configuration and evidence, **Write** or **Edit** to
+maintain the readiness record, and `Bash(curl:*)` only for an approved synthetic
+webhook probe. Never place a secret in the record or command output.
 
 ## Prerequisites
 
-- Agents tested in development/staging environment
-- Production Lindy workspace configured
-- Team members assigned appropriate roles
-- Credit budget approved for production usage
+- Access to the target Lindy workspace and its **Tasks** view.
+- An exported webhook-trigger URL and its nonempty Lindy-generated trigger secret.
+- A separate, nonempty callback secret when a Lindy HTTP Request action calls your
+  application. Never reuse the trigger secret as the callback secret.
+- A synthetic test case with no production personal or confidential data and a
+  unique correlation ID.
+- Access to current contract/workspace evidence for any claim about pricing,
+  credits, thresholds, secret rotation, SSO, SCIM, support, or a BAA.
+- A durable queue when callback work cannot be completed safely within the
+  receiver's synchronous response window.
 
-## Production Checklist
+## Instructions
 
-### Authentication & Security
+### 1. Open an evidence record
 
-- [ ] Production API keys generated (separate from dev/staging)
-- [ ] API keys stored in secret manager (not environment files)
-- [ ] Webhook secrets generated for all webhook triggers
-- [ ] Webhook receivers verify Bearer token on every request
-- [ ] `.env` files excluded from version control
-- [ ] Key rotation schedule documented (90-day max)
-- [ ] Enterprise: SSO enabled, SCIM configured
+Record the workspace, agent, reviewer, date, release identifier, and links to
+artifacts. Give every check one of three verdicts: `PASS`, `FAIL`, or
+`NOT VERIFIED`. A missing entitlement or policy document is `NOT VERIFIED`, not
+an assumed pass.
 
-### Agent Configuration
+### 2. Verify the two authentication boundaries
 
-- [ ] Agent prompt reviewed for production quality
-  - [ ] Clear identity and role definition
-  - [ ] Numbered step-by-step instructions
-  - [ ] Explicit constraints (no unauthorized promises, data limits)
-  - [ ] Error handling instructions in prompt
-  - [ ] Few-shot examples for consistent output format
-- [ ] Model selection appropriate for each step:
-  - [ ] Gemini Flash for simple routing/classification
-  - [ ] Claude Sonnet/GPT-4o-mini for standard tasks
-  - [ ] GPT-4/Claude Opus only where complex reasoning required
-- [ ] Exit conditions defined with primary + fallback criteria
-- [ ] Trigger filters configured to prevent over-firing
-- [ ] Knowledge base sources current and synced
+For an application calling a Lindy webhook trigger:
 
-### Integration Health
+- Confirm the URL uses HTTPS and its hostname is exactly `public.lindy.ai`.
+- Confirm the authorization value is the secret generated for that trigger.
+- Keep the URL and trigger secret in an approved secret manager; redact both from
+  screenshots, logs, tickets, and readiness reports.
 
-- [ ] All integration OAuth tokens current (not expired)
-- [ ] Gmail: correct account authorized, label filters set
-- [ ] Slack: bot invited to required channels
-- [ ] Webhooks: endpoint URLs use production domains (not ngrok/dev)
-- [ ] HTTP Request actions: target URLs are production endpoints
-- [ ] Phone numbers: provisioned and tested ($10/month each)
+For a Lindy HTTP Request action calling your application:
 
-### Error Handling
+- Generate and store an independent `LINDY_CALLBACK_SECRET` in your application.
+- Configure the action to send `Authorization: Bearer <callback-secret>`.
+- Reject a missing or mismatched value before accepting or acting on the body.
+- Apply a bounded schema and payload-size limit before enqueueing work.
 
-- [ ] Agents have fallback behavior for common failures:
-  - [ ] Integration auth expired -> notify admin
-  - [ ] KB returns no results -> graceful fallback response
-  - [ ] Condition matching fails -> default "other" branch
-  - [ ] Agent step loops -> reasonable exit conditions
-- [ ] Webhook receivers return 200 quickly (process async)
-- [ ] HTTP Request action targets have health checks
-- [ ] Credit usage alerts configured (50%, 80%, 95% thresholds)
+Lindy documents the trigger-side generated secret and configurable headers for
+HTTP Request actions. It does not make one secret interchangeable across both
+directions.
 
-### Monitoring & Observability
+### 3. Prove a real synthetic task is created
 
-- [ ] Regular review of agent Tasks tab scheduled
-- [ ] Failed task alerts configured (email or Slack)
-- [ ] Credit consumption tracked per agent
-- [ ] Task completion rate monitored (failures should be <5%)
-- [ ] Response time baseline established for each agent
-
-### Operational Readiness
-
-- [ ] Runbook documented for common agent failures
-- [ ] Escalation path defined (L1 -> L2 -> Lindy support)
-- [ ] On-call schedule if agents are customer-facing
-- [ ] Agent sharing configured (Edit/User/Template access)
-- [ ] Team credit allocation set for team members ($19.99/seat on Pro)
-
-### Compliance & Documentation
-
-- [ ] Data handling practices documented per agent
-- [ ] Agent prompts include PII redaction instructions
-- [ ] Knowledge base content reviewed for accuracy
-- [ ] HIPAA: BAA in place if handling healthcare data
-- [ ] GDPR: data retention policies defined
-- [ ] Agent purpose and scope documented for team reference
-
-## Pre-Launch Validation Script
+Run a probe only after the URL and secret checks pass:
 
 ```bash
-#!/bin/bash
-echo "=== Lindy Production Validation ==="
+set -euo pipefail
 
-# 1. API connectivity
-echo "[1/4] Testing API connectivity..."
-API_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-  -H "Authorization: Bearer $LINDY_API_KEY" \
-  "https://public.lindy.ai/api/v1/webhooks/health" 2>/dev/null || echo "000")
-[ "$API_STATUS" = "000" ] && echo "  WARN: Could not reach Lindy API" || echo "  OK: API reachable"
+: "${LINDY_TRIGGER_URL:?LINDY_TRIGGER_URL is required}"
+: "${LINDY_TRIGGER_SECRET:?LINDY_TRIGGER_SECRET is required}"
 
-# 2. Webhook endpoint health
-echo "[2/4] Testing webhook receiver..."
-ENDPOINT_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-  "https://your-app.com/health" 2>/dev/null || echo "000")
-[ "$ENDPOINT_STATUS" = "200" ] && echo "  OK: Webhook receiver healthy" || echo "  FAIL: Receiver returned $ENDPOINT_STATUS"
+case "$LINDY_TRIGGER_URL" in
+  https://public.lindy.ai/api/v1/webhooks/*) ;;
+  *) echo "Refusing to send the trigger secret to a non-Lindy host" >&2; exit 1 ;;
+esac
 
-# 3. Environment variables
-echo "[3/4] Checking environment..."
-[ -n "$LINDY_API_KEY" ] && echo "  OK: LINDY_API_KEY set" || echo "  FAIL: LINDY_API_KEY missing"
-[ -n "$LINDY_WEBHOOK_SECRET" ] && echo "  OK: LINDY_WEBHOOK_SECRET set" || echo "  FAIL: LINDY_WEBHOOK_SECRET missing"
+CORRELATION_ID="prod-readiness-REPLACE_WITH_UNIQUE_ID"
+HTTP_STATUS=$(curl --silent --show-error --output /dev/null \
+  --write-out '%{http_code}' --max-time 30 \
+  --request POST "$LINDY_TRIGGER_URL" \
+  --header "Authorization: Bearer $LINDY_TRIGGER_SECRET" \
+  --header 'Content-Type: application/json' \
+  --data "{\"correlationId\":\"$CORRELATION_ID\",\"kind\":\"readiness_probe\"}")
 
-# 4. Credit balance check
-echo "[4/4] Credit status: Check at settings/billing"
-
-echo "=== Validation Complete ==="
+case "$HTTP_STATUS" in
+  2??) echo "Transport accepted; verify the task separately: $CORRELATION_ID" ;;
+  *) echo "Trigger rejected with HTTP $HTTP_STATUS" >&2; exit 1 ;;
+esac
 ```
 
-## Go/No-Go Criteria
+The 2xx response proves only transport acceptance. Find a task with the unique
+correlation ID in Lindy's Tasks view, then verify its expected actions and final
+state. If authentication is intentionally broken, require a non-2xx response and
+also verify that no task was created. Do not capture the response body in the
+evidence record.
 
-| Category | Go | No-Go |
-|----------|-----|-------|
-| Security | All keys in secret manager | Any hardcoded credentials |
-| Auth | All integrations authorized | Any expired OAuth tokens |
-| Prompt | Reviewed with constraints | Generic/placeholder prompt |
-| Monitoring | Alerts configured | No failure notification |
-| Credits | Budget approved | No credit plan |
-| Testing | Agent tested end-to-end | Untested workflow paths |
+### 4. Qualify callback durability
+
+A callback receiver passes only if it authenticates first, validates a bounded
+schema, and persists accepted work to a durable queue before returning success.
+An in-memory promise, timer, or process-local queue is not durable enqueue. Test:
+
+1. valid callback -> one durable job and a 2xx response;
+2. wrong or missing callback secret -> non-2xx and no job;
+3. malformed or oversized payload -> non-2xx and no job;
+4. duplicate correlation ID -> no duplicate side effect; and
+5. worker interruption after enqueue -> the job remains recoverable.
+
+### 5. Complete the operational gate
+
+- Exercise the happy path and each material failure path with synthetic data.
+- Confirm OAuth integrations and target resources using the workspace UI.
+- Establish an observed latency and task-success baseline; choose alert thresholds
+  from the organization's risk appetite and actual workload.
+- Link the incident runbook, owner, escalation path, rollback or disable procedure,
+  data-retention decision, and monitoring evidence.
+- Verify pricing, credit budget, secret-rotation cadence, SSO, SCIM, BAA, and other
+  compliance statements only from current contract or workspace evidence. Mark
+  unavailable or inapplicable features explicitly.
+
+### 6. Make the decision
+
+Block launch for any failed authentication boundary, unverified task creation,
+unauthenticated callback, nondurable accepted work, missing rollback path, or
+unresolved high-severity finding. The accountable owner must accept any remaining
+lower-severity risk in the evidence record.
+
+## Output
+
+Produce a readiness record containing:
+
+- release, workspace, agent, owner, reviewer, and review timestamp;
+- per-check `PASS` / `FAIL` / `NOT VERIFIED` verdicts with evidence links;
+- synthetic correlation IDs and task identifiers, without payloads or secrets;
+- callback rejection, deduplication, and durable-enqueue test results;
+- contract-dependent claims with their current source and applicability;
+- unresolved risks, accountable owners, and due dates; and
+- a final `GO` or `NO-GO` decision with the approving owner.
+
+## Examples
+
+### Minimal go/no-go summary
+
+```markdown
+# Release r42 readiness
+
+- Trigger auth: PASS -- synthetic task task-123 matched correlation prod-readiness-42
+- Callback auth: PASS -- wrong secret rejected; zero jobs created
+- Durable enqueue: PASS -- job survived worker restart and completed once
+- SSO/SCIM: NOT VERIFIED -- not required for this release; contract owner recorded
+- Rollback: PASS -- agent disable procedure tested by operator
+- Open risks: none above accepted severity
+
+Decision: GO
+Approver: release owner
+```
+
+### Correct no-go outcome
+
+If the webhook returns 2xx but no corresponding task appears, record
+`Task creation: NOT VERIFIED` and choose `NO-GO`. Do not substitute a public-host
+reachability check for task-level proof.
 
 ## Error Handling
 
-| Check Failure | Severity | Action |
-|--------------|----------|--------|
-| API key invalid | Critical | Block launch, regenerate key |
-| Integration expired | High | Re-authorize before launch |
-| No trigger filters | Medium | Add filters to prevent credit waste |
-| No monitoring | Medium | Set up alerts before launch |
-| Missing documentation | Low | Document within first week |
+| Failure | Required response |
+|---|---|
+| Trigger URL is not HTTPS on exact `public.lindy.ai` host | Do not attach the trigger secret; block the probe |
+| Missing or reused secret | Generate distinct secrets, store them correctly, and repeat the tests |
+| 2xx without a matching task | Treat as unverified; inspect the Tasks view and agent trigger configuration |
+| Rejected request creates a task | Block launch and escalate the authentication failure |
+| Callback acknowledges before durable enqueue | Change the receiver contract and repeat interruption testing |
+| Contract-dependent feature cannot be proven | Mark `NOT VERIFIED`; do not advertise or depend on it |
 
 ## Resources
 
-- [Lindy Documentation](https://docs.lindy.ai)
-- [Lindy Pricing](https://www.lindy.ai/pricing)
-- [Lindy Security](https://www.lindy.ai/security)
-
-## Next Steps
-
-Proceed to `lindy-upgrade-migration` for version management.
+- [Lindy webhook trigger documentation](https://docs.lindy.ai/skills/by-lindy/webhooks)
+- [Lindy HTTP Request action documentation](https://docs.lindy.ai/skills/by-lindy/http-request)
+- [Detailed evidence and receiver patterns](references/implementation-guide.md)

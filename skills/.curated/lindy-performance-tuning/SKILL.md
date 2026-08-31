@@ -12,179 +12,209 @@ description: 'Optimize Lindy AI agent execution speed, reliability, and cost eff
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.18.0
+version: 1.19.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
 - saas
 - lindy
 - performance
-compatibility: Designed for Claude Code
+compatibility: Compatible with AI coding agents that can read Markdown and analyze workflow measurements
 ---
 # Lindy Performance Tuning
 
 ## Overview
 
-Lindy agents execute as multi-step workflows where each step (LLM call, action
-execution, API call, condition evaluation) adds latency and credit cost. Optimization
-targets: fewer steps, smaller models, faster actions, tighter prompts.
+Improve a Lindy workflow through controlled, workspace-specific experiments. Measure
+the current workflow in Tasks, preserve approval and security boundaries, change one
+variable, run the same sanitized fixture/eval cohort, and keep the change only when
+predeclared latency, quality, reliability, and cost criteria pass.
 
 ## Prerequisites
 
 - Lindy workspace with active agents
 - Access to agent Tasks tab (view step-by-step execution history)
-- Understanding of agent workflow structure
+- A representative, data-minimized fixture set and offline eval cohort
+- Permission to inspect Tasks and restore a saved version
+- An owner-approved list of invariants: confirmations, authorization, redaction,
+  retention, and side-effect limits
 
 ## Instructions
 
-### Step 1: Profile Agent Execution
+### Step 1: Define the Experiment Contract
 
-In the Tasks tab, open a completed task and review:
+Before editing, record:
 
-- **Total task duration**: Baseline for improvement
-- **Per-step timing**: Identify the slowest steps
-- **Credit consumption**: Which steps cost the most
-- **Step count**: Total actions executed per task
+- one workflow class and representative sanitized fixtures;
+- the exact variable to change and why it should help;
+- baseline sample window and sample count;
+- duration median/p95, outcome ratio, eval score, and workspace-reported usage/cost;
+- acceptance and rollback thresholds; and
+- security/approval invariants that must remain unchanged.
 
-Common bottlenecks:
+Use the Tasks view and Get Task Details to identify the slowest or least reliable
+block. Do not infer universal latency or credit values from this skill.
+
+### Step 2: Save a Rollback Point
+
+Open Version History and identify the last known-good version. Record its timestamp
+or label. Restoring a version creates a new editable version; it does not erase the
+current history. Keep production activation and side-effecting actions unchanged
+until the candidate passes the evaluation lane.
+
+### Step 3: Choose One Variable
+
+Prioritize the measured bottleneck:
 
 | Bottleneck | Symptom | Fix |
 |-----------|---------|-----|
-| Large model on simple task | High credit cost, slow | Switch to Gemini Flash |
-| Too many LLM steps | Long total duration | Consolidate into fewer steps |
-| Agent Step with many skills | Unpredictable path | Reduce to 2-4 focused skills |
-| Knowledge Base over-querying | Multiple KB searches | Increase Max Results per query |
-| Sequential when parallel possible | Unnecessary waiting | Use loop with Max Concurrent > 1 |
+| AI step dominates duration/usage | One step is the measured hotspot | Compare one available model/configuration while holding prompt/tools fixed |
+| Repeated reasoning steps | Same context is processed repeatedly | Test a single structured step while preserving required checks |
+| Broad autonomous scope | Variable paths or tool calls | Narrow skills and define measurable exit conditions |
+| Knowledge retrieval dominates | Too many/large results | Reduce result scope while measuring answer quality |
+| Independent list work is sequential | Per-item waiting dominates | Test a bounded loop and respect downstream rate limits |
+| Trigger volume is noisy | Many irrelevant tasks | Add a precise trigger filter and verify recall |
 
-### Step 2: Right-Size Model Selection
+Do not remove confirmation, authorization, validation, redaction, audit, or fallback
+steps merely to improve speed. Model availability, behavior, and pricing change; use
+the models currently offered in the workspace and compare them on the same cohort.
 
-The single biggest performance lever. Match model to task complexity:
+### Step 4: Make the Candidate Change
 
-| Task | Recommended Model | Speed | Credits |
-|------|-------------------|-------|---------|
-| Route email to category | Gemini Flash | Fast | ~1 |
-| Extract fields from text | GPT-4o-mini | Fast | ~2 |
-| Draft short response | Claude Sonnet | Medium | ~3 |
-| Complex multi-step analysis | GPT-4 / Claude Opus | Slow | ~10 |
-| Simple phone call | Gemini Flash | Fast | ~20/min |
-| Complex phone conversation | Claude Sonnet | Medium | ~20/min |
+Example: consolidate repeated reasoning without exposing customer data.
 
-**Rule of thumb**: Start with the smallest model. Only upgrade if output quality
-is insufficient. Most classification and routing tasks work fine with Gemini Flash.
-
-### Step 3: Consolidate LLM Steps
-
-Before (3 LLM calls, ~9 credits):
+Before:
 
 ```
-Step 1: Classify email (LLM)
-Step 2: Extract key entities (LLM)
-Step 3: Generate response (LLM)
+Step 1: Classify a sanitized support fixture
+Step 2: Extract approved routing fields
+Step 3: Draft an internal response recommendation
 ```
 
-After (1 LLM call, ~3 credits):
+Candidate:
 
 ```
-Step 1: Classify, extract entities, and generate response (single LLM prompt)
+Step 1: Return validated JSON containing classification, approved routing fields,
+        and an internal response recommendation
 ```
 
-Consolidated prompt:
+Use placeholders or synthetic data in fixtures:
 
+```json
+{
+  "classification": "technical",
+  "productCode": "PRODUCT-A",
+  "issueType": "access",
+  "recommendation": "Send the approved access troubleshooting guide."
+}
 ```
-Analyze this email and return JSON with:
-1. "classification": one of [billing, technical, general]
-2. "entities": {customer_name, product, issue_type}
-3. "draft_response": professional reply under 150 words
 
-Email: {{email_received.body}}
-```
+Exclude names, email addresses, full messages, account numbers, credentials, and
+unnecessary conversation history. Keep any external communication in draft or Ask
+for Confirmation mode while testing.
 
-### Step 4: Use Deterministic Actions Where Possible
+### Step 5: Run the Same Evaluation Lane
+
+1. Run offline evals against the same selected historical/reference tasks. Lindy
+   documents these evals as simulation that does not execute real actions.
+2. Use the Test Panel only with test data and sandbox/test integrations. Lindy
+   documents Test Panel actions as real, including API calls and side effects.
+3. Inspect candidate Tasks/Get Task Details for duration and failures.
+4. Compare the same metrics and cohort definition to baseline.
+5. Reject the candidate immediately if any security/approval invariant changed.
+
+### Step 6: Decide and Roll Out
+
+Accept only when every predeclared criterion passes. Example decision policy:
+
+| Gate | Example criterion selected before the run |
+|---|---|
+| Quality | Eval score is no lower than baseline |
+| Reliability | Failure ratio does not exceed the agreed tolerance |
+| Performance | Candidate p95 improves by the agreed minimum |
+| Cost | Workspace-reported usage/cost does not regress beyond tolerance |
+| Safety | Confirmation, permissions, redaction, and audit evidence are unchanged |
+
+Roll out gradually, watch Tasks against the same thresholds, and restore the saved
+version if a rollback criterion fires. Then change the next variable in a new
+experiment; never combine results from several simultaneous edits.
+
+## Optimization Patterns
+
+### Prefer Deterministic Actions for Predictable Fields
 
 Replace AI-powered fields with **Set Manually** mode when values are predictable:
 
 | Field | Instead of AI Prompt | Use Set Manually |
 |-------|---------------------|------------------|
 | Slack channel | "Post to the support channel" | `#support-triage` |
-| Email subject | "Create an appropriate subject" | `[Ticket] {{email_received.subject}}` |
+| Internal category | "Choose an appropriate queue" | `support-triage` |
 | Sheet column | "Determine the right column" | Column A |
 
-Each Set Manually field saves one LLM inference (~1 credit).
+Measure the actual change; do not attach a fixed credit saving to it.
 
-### Step 5: Optimize Knowledge Base Queries
+### Bound Knowledge Base Queries
 
-- **Max Results**: Set to the minimum needed (default 4, max 10)
-- **Search Fuzziness**: Keep at 100 (semantic) unless precision matching needed
-- **Query mode**: Use AI Prompt with specific instructions:
+- Select the smallest result set that still passes the eval cohort.
+- Use specific product/issue placeholders rather than full customer messages.
+- Change result count, query text, or retrieval configuration one at a time.
 
-  ```
-  Search for the customer's specific product issue.
-  Focus on: {{extracted_entities.product}} {{extracted_entities.issue_type}}
-  ```
+### Filter Triggers
 
-  Not: "Search for relevant information" (too vague, wastes results)
+Add a filter based on business-owned metadata, then test both included and excluded
+fixtures. Confirm that filtering reduces irrelevant tasks without dropping required
+work. Do not claim a percentage saving until the workspace task history proves it.
 
-### Step 6: Optimize Trigger Filters
+### Bound Agent Steps and Loops
 
-Prevent wasted runs with precise trigger filters:
-
-```
-Before: Email Received (all emails) → 200 runs/day → 600 credits
-After:  Email Received (label: "support" AND NOT from: "noreply@")
-        → 30 runs/day → 90 credits (85% savings)
-```
-
-### Step 7: Use Agent Steps Judiciously
-
-Agent Steps (autonomous mode) are powerful but expensive — the agent may take
-unpredictable paths and use more actions than a deterministic workflow.
-
-**Use Agent Steps when**: Next steps are genuinely uncertain (complex research,
-multi-source investigation, adaptive problem-solving)
-
-**Use deterministic actions when**: Steps are predictable (classify -> route -> respond)
-
-**When using Agent Steps**:
-
-- Limit available skills to 2-4
-- Set clear, measurable exit conditions
-- Include a fallback exit condition to prevent infinite loops
-- Monitor credit consumption of first 10 runs to establish baseline
-
-### Step 8: Loop Optimization
-
-For batch processing, configure loops for efficiency:
-
-- **Max Concurrent**: Increase for independent items (parallel execution)
-- **Max Cycles**: Always set a cap to prevent runaway processing
-- Only pass essential data as loop output (not full context)
-
-## Performance Baseline Reference
-
-| Agent Type | Expected Duration | Expected Credits |
-|-----------|------------------|-----------------|
-| Simple router (1 LLM + 1 action) | 2-5 seconds | 1-2 |
-| Email triage (classify + respond) | 5-15 seconds | 3-5 |
-| Research agent (search + analyze) | 15-60 seconds | 5-15 |
-| Multi-agent pipeline | 30-120 seconds | 10-30 |
-| Phone call | Real-time | ~20/min |
+Use an Agent Step only when the next action genuinely requires adaptive reasoning.
+Keep a focused skill set, measurable exit conditions, and a fallback. For lists, set
+Max Cycles from the expected bounded input plus a small safety margin. Set Max
+Concurrent according to dependency and third-party rate limits; use `1` when order or
+shared state requires serialization.
 
 ## Error Handling
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Agent timeout | Too many sequential steps | Consolidate steps, reduce skill count |
-| High credit burn | Large model + many steps | Downgrade model, merge LLM calls |
-| Inconsistent output | Agent Step choosing different paths | Switch to deterministic workflow |
-| KB search slow | Large knowledge base | Reduce fuzziness, increase specificity |
-| Loop runs too long | High max cycles, low concurrency | Increase Max Concurrent, lower Max Cycles |
+| Candidate appears faster but quality drops | Metric optimized in isolation | Reject using the predeclared eval gate |
+| Test sends a real message/update | Test Panel used with production integration | Stop, restore affected state, use sandbox data and confirmation |
+| Cost comparison is unclear | Cohorts/windows differ | Re-run with the same fixtures and workspace billing source |
+| Loop overloads an integration | Concurrency exceeds dependency limit | Roll back and lower Max Concurrent |
+| Change removes an approval step | Safety treated as latency overhead | Reject and restore the known-good version |
+
+## Output
+
+Return a performance experiment record containing:
+
+- workflow, sanitized cohort, sample count, and measurement window;
+- baseline median/p95 duration, outcome ratio, eval score, and workspace usage/cost;
+- one changed variable, hypothesis, and version rollback point;
+- acceptance/rollback thresholds and unchanged security/approval invariants;
+- candidate measurements using the same cohort; and
+- a decision of accept, reject, or insufficient evidence, with a gradual rollout plan.
+
+## Examples
+
+An email-routing workflow shows one reasoning block as the p95 hotspot. Save the
+known-good version, replace only three repeated reasoning steps with one
+schema-constrained step, and test the same redacted fixtures. Keep Ask for
+Confirmation on outbound email. Accept only if the chosen p95 target is met, offline
+eval quality does not regress, failure tolerance passes, and workspace-reported cost
+does not exceed the declared threshold; otherwise restore the saved version.
 
 ## Resources
 
 - [Lindy Prompt Guide](https://docs.lindy.ai/fundamentals/lindy-101/prompt-guide)
 - [Agent Steps](https://docs.lindy.ai/fundamentals/lindy-101/ai-agents)
-- [Lindy Documentation](https://docs.lindy.ai)
+- [Monitor Your Agents](https://docs.lindy.ai/testing/monitoring-your-agents)
+- [Test Panel](https://docs.lindy.ai/testing/test-panel)
+- [Evals](https://docs.lindy.ai/fundamentals/lindy-101/evals)
+- [Human in Loop](https://docs.lindy.ai/testing/human-in-the-loop)
+- [Version History](https://docs.lindy.ai/testing/version-history)
+- [Looping](https://docs.lindy.ai/fundamentals/lindy-101/looping)
 
 ## Next Steps
 
-Proceed to `lindy-cost-tuning` for budget optimization.
+Use the accepted experiment receipt as the measured input to `lindy-cost-tuning`;
+do not substitute generic model, latency, or credit assumptions.

@@ -10867,7 +10867,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.18.0",
+      "version": "1.19.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -51505,7 +51505,7 @@
         "Bash(npm:*)"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51527,7 +51527,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51548,7 +51548,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51569,7 +51569,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51589,7 +51589,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51609,7 +51609,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51631,7 +51631,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51654,7 +51654,7 @@
         "Bash(npm:*)"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51674,7 +51674,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51695,7 +51695,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51716,7 +51716,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51737,7 +51737,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51760,7 +51760,7 @@
         "Bash(npx:*)"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51781,7 +51781,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51804,7 +51804,7 @@
         "Bash(vault:*)"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51821,16 +51821,15 @@
       "allowedTools": [
         "Read",
         "Write",
-        "Edit",
-        "Bash(curl:*)"
+        "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
       },
-      "searchText": "lindy-observability 'monitor lindy ai agent health, task success rates, and credit consumption. saas-packs read write edit bash(curl:*) "
+      "searchText": "lindy-observability 'monitor lindy ai agent health, task success rates, and credit consumption. saas-packs read write edit "
     },
     {
       "type": "skill",
@@ -51845,7 +51844,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51866,7 +51865,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51883,16 +51882,15 @@
       "allowedTools": [
         "Read",
         "Write",
-        "Edit",
-        "Bash(curl:*)"
+        "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
       },
-      "searchText": "lindy-rate-limits 'manage lindy ai credits, rate limits, and usage optimization. saas-packs read write edit bash(curl:*) "
+      "searchText": "lindy-rate-limits 'manage lindy ai credits, rate limits, and usage optimization. saas-packs read write edit "
     },
     {
       "type": "skill",
@@ -51907,7 +51905,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51928,7 +51926,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51949,7 +51947,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51970,7 +51968,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
@@ -51991,7 +51989,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.18.0",
+      "version": "1.19.0",
       "parentPlugin": {
         "name": "lindy-pack",
         "category": "saas-packs"
