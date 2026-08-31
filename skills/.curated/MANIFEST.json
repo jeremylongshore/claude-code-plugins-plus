@@ -4,7 +4,7 @@
   "run_id": 17,
   "threshold": "AB",
   "validated": true,
-  "count": 2040,
+  "count": 2055,
   "skills": [
     {
       "curated_name": "abridge-debug-bundle",
@@ -7364,9 +7364,9 @@
       "source_path": "plugins/saas-packs/documenso-pack/skills/documenso-ci-integration",
       "category": "saas-packs",
       "plugin": "documenso-pack",
-      "recorded_grade": "B",
+      "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7379,7 +7379,7 @@
       "plugin": "documenso-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7390,9 +7390,9 @@
       "source_path": "plugins/saas-packs/documenso-pack/skills/documenso-core-workflow-a",
       "category": "saas-packs",
       "plugin": "documenso-pack",
-      "recorded_grade": "B",
+      "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7405,7 +7405,7 @@
       "plugin": "documenso-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7418,7 +7418,7 @@
       "plugin": "documenso-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7429,9 +7429,9 @@
       "source_path": "plugins/saas-packs/documenso-pack/skills/documenso-data-handling",
       "category": "saas-packs",
       "plugin": "documenso-pack",
-      "recorded_grade": "B",
+      "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7444,7 +7444,7 @@
       "plugin": "documenso-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7455,9 +7455,9 @@
       "source_path": "plugins/saas-packs/documenso-pack/skills/documenso-deploy-integration",
       "category": "saas-packs",
       "plugin": "documenso-pack",
-      "recorded_grade": "B",
+      "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7470,7 +7470,7 @@
       "plugin": "documenso-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7481,9 +7481,9 @@
       "source_path": "plugins/saas-packs/documenso-pack/skills/documenso-hello-world",
       "category": "saas-packs",
       "plugin": "documenso-pack",
-      "recorded_grade": "B",
+      "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7496,7 +7496,7 @@
       "plugin": "documenso-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7509,7 +7509,7 @@
       "plugin": "documenso-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7520,9 +7520,9 @@
       "source_path": "plugins/saas-packs/documenso-pack/skills/documenso-local-dev-loop",
       "category": "saas-packs",
       "plugin": "documenso-pack",
-      "recorded_grade": "B",
+      "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7535,7 +7535,7 @@
       "plugin": "documenso-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7546,9 +7546,9 @@
       "source_path": "plugins/saas-packs/documenso-pack/skills/documenso-multi-env-setup",
       "category": "saas-packs",
       "plugin": "documenso-pack",
-      "recorded_grade": "B",
+      "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7559,9 +7559,9 @@
       "source_path": "plugins/saas-packs/documenso-pack/skills/documenso-observability",
       "category": "saas-packs",
       "plugin": "documenso-pack",
-      "recorded_grade": "B",
+      "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7572,9 +7572,9 @@
       "source_path": "plugins/saas-packs/documenso-pack/skills/documenso-performance-tuning",
       "category": "saas-packs",
       "plugin": "documenso-pack",
-      "recorded_grade": "B",
+      "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7587,7 +7587,7 @@
       "plugin": "documenso-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7598,9 +7598,9 @@
       "source_path": "plugins/saas-packs/documenso-pack/skills/documenso-rate-limits",
       "category": "saas-packs",
       "plugin": "documenso-pack",
-      "recorded_grade": "B",
+      "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7611,9 +7611,9 @@
       "source_path": "plugins/saas-packs/documenso-pack/skills/documenso-reference-architecture",
       "category": "saas-packs",
       "plugin": "documenso-pack",
-      "recorded_grade": "B",
+      "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7626,7 +7626,7 @@
       "plugin": "documenso-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md",
@@ -7638,9 +7638,9 @@
       "source_path": "plugins/saas-packs/documenso-pack/skills/documenso-security-basics",
       "category": "saas-packs",
       "plugin": "documenso-pack",
-      "recorded_grade": "B",
+      "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7651,9 +7651,9 @@
       "source_path": "plugins/saas-packs/documenso-pack/skills/documenso-upgrade-migration",
       "category": "saas-packs",
       "plugin": "documenso-pack",
-      "recorded_grade": "B",
+      "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -7664,9 +7664,9 @@
       "source_path": "plugins/saas-packs/documenso-pack/skills/documenso-webhooks-events",
       "category": "saas-packs",
       "plugin": "documenso-pack",
-      "recorded_grade": "B",
+      "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
       "files": [
         "SKILL.md",
         "references/implementation-guide.md"
@@ -9820,13 +9820,133 @@
       ]
     },
     {
+      "curated_name": "flyio-ci-integration",
+      "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-ci-integration",
+      "category": "saas-packs",
+      "plugin": "flyio-pack",
+      "recorded_grade": "A",
+      "fresh_grade": "A",
+      "run_id": 17,
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "curated_name": "flyio-common-errors",
+      "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-common-errors",
+      "category": "saas-packs",
+      "plugin": "flyio-pack",
+      "recorded_grade": "B",
+      "fresh_grade": "B",
+      "run_id": 17,
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "curated_name": "flyio-core-workflow-a",
+      "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-core-workflow-a",
+      "category": "saas-packs",
+      "plugin": "flyio-pack",
+      "recorded_grade": "B",
+      "fresh_grade": "B",
+      "run_id": 17,
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "curated_name": "flyio-core-workflow-b",
+      "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-core-workflow-b",
+      "category": "saas-packs",
+      "plugin": "flyio-pack",
+      "recorded_grade": "B",
+      "fresh_grade": "B",
+      "run_id": 17,
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "curated_name": "flyio-cost-tuning",
+      "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-cost-tuning",
+      "category": "saas-packs",
+      "plugin": "flyio-pack",
+      "recorded_grade": "B",
+      "fresh_grade": "B",
+      "run_id": 17,
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "curated_name": "flyio-debug-bundle",
+      "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-debug-bundle",
+      "category": "saas-packs",
+      "plugin": "flyio-pack",
+      "recorded_grade": "B",
+      "fresh_grade": "B",
+      "run_id": 17,
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "curated_name": "flyio-deploy-integration",
+      "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-deploy-integration",
+      "category": "saas-packs",
+      "plugin": "flyio-pack",
+      "recorded_grade": "B",
+      "fresh_grade": "B",
+      "run_id": 17,
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "curated_name": "flyio-hello-world",
+      "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-hello-world",
+      "category": "saas-packs",
+      "plugin": "flyio-pack",
+      "recorded_grade": "B",
+      "fresh_grade": "B",
+      "run_id": 17,
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
       "curated_name": "flyio-install-auth",
       "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-install-auth",
       "category": "saas-packs",
       "plugin": "flyio-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 17,
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "curated_name": "flyio-local-dev-loop",
+      "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-local-dev-loop",
+      "category": "saas-packs",
+      "plugin": "flyio-pack",
+      "recorded_grade": "B",
+      "fresh_grade": "B",
+      "run_id": 17,
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "curated_name": "flyio-performance-tuning",
+      "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-performance-tuning",
+      "category": "saas-packs",
+      "plugin": "flyio-pack",
+      "recorded_grade": "B",
+      "fresh_grade": "B",
+      "run_id": 17,
       "files": [
         "SKILL.md"
       ]
@@ -9838,7 +9958,43 @@
       "plugin": "flyio-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 17,
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "curated_name": "flyio-rate-limits",
+      "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-rate-limits",
+      "category": "saas-packs",
+      "plugin": "flyio-pack",
+      "recorded_grade": "B",
+      "fresh_grade": "B",
+      "run_id": 17,
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "curated_name": "flyio-reference-architecture",
+      "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-reference-architecture",
+      "category": "saas-packs",
+      "plugin": "flyio-pack",
+      "recorded_grade": "B",
+      "fresh_grade": "B",
+      "run_id": 17,
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "curated_name": "flyio-sdk-patterns",
+      "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-sdk-patterns",
+      "category": "saas-packs",
+      "plugin": "flyio-pack",
+      "recorded_grade": "B",
+      "fresh_grade": "B",
+      "run_id": 17,
       "files": [
         "SKILL.md"
       ]
@@ -9848,9 +10004,33 @@
       "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-security-basics",
       "category": "saas-packs",
       "plugin": "flyio-pack",
-      "recorded_grade": "B",
+      "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 17,
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "curated_name": "flyio-upgrade-migration",
+      "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-upgrade-migration",
+      "category": "saas-packs",
+      "plugin": "flyio-pack",
+      "recorded_grade": "B",
+      "fresh_grade": "B",
+      "run_id": 17,
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
+      "curated_name": "flyio-webhooks-events",
+      "source_path": "plugins/saas-packs/flyio-pack/skills/flyio-webhooks-events",
+      "category": "saas-packs",
+      "plugin": "flyio-pack",
+      "recorded_grade": "B",
+      "fresh_grade": "B",
+      "run_id": 17,
       "files": [
         "SKILL.md"
       ]
