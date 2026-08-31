@@ -3,7 +3,7 @@
   "authority": "Blueprint 727 §8; Freshie graded export",
   "source": {
     "path": "freshie/grades.csv",
-    "sha256": "61a191db270b94bb061f52aff10ffba7fa1f4a15913de704436f0acdca2aa90d",
+    "sha256": "1c3804520f6e036fbb8fed212c20aeddb3b03240b91f397dae911536738b6323",
     "artifact_count": 3606
   },
   "rule_order": [
@@ -19403,7 +19403,7 @@
     {
       "path": "plugins/saas-packs/flyio-pack/skills/flyio-core-workflow-b/SKILL.md",
       "grade": "B",
-      "score": 85,
+      "score": 86,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -19480,7 +19480,7 @@
     {
       "path": "plugins/saas-packs/flyio-pack/skills/flyio-performance-tuning/SKILL.md",
       "grade": "B",
-      "score": 83,
+      "score": 84,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
