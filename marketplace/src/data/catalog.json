@@ -6,7 +6,7 @@
   },
   "stats": {
     "totalPlugins": 439,
-    "totalSkills": 3015,
+    "totalSkills": 3017,
     "totalCommands": 85,
     "pluginsWithSkills": 407,
     "byCategory": {
@@ -10275,7 +10275,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 6,
+      "skillCount": 8,
       "commandCount": 0,
       "installCommand": "/plugin install snowflake-pack",
       "sourcePath": "./plugins/saas-packs/snowflake-pack",

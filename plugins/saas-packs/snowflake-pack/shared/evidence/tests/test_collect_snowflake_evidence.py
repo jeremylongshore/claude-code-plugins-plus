@@ -17,6 +17,29 @@ SPEC.loader.exec_module(MODULE)
 
 
 class CollectorTests(unittest.TestCase):
+    def test_installed_skills_bundle_the_canonical_collector(self) -> None:
+        canonical = SCRIPT.read_bytes()
+        canonical_sql = {path.name: path.read_bytes() for path in sorted((SCRIPT.parent / "sql").glob("*.sql"))}
+        expected_sql = {
+            "snowflake-access-guardian": "access.sql",
+            "snowflake-cost-leak-hunter": "cost.sql",
+            "snowflake-data-quality-sentinel": "data-quality.sql",
+            "snowflake-deploy-medic": "query.sql",
+            "snowflake-failover-readiness-drill": "replication.sql",
+            "snowflake-pipeline-guardian": "pipeline.sql",
+            "snowflake-query-forensics": "query.sql",
+            "snowflake-strong-auth-migration-pilot": "auth.sql",
+        }
+        skills_dir = SCRIPT.parents[2] / "skills"
+        bundled = sorted(skills_dir.glob("*/scripts/collect_snowflake_evidence.py"))
+        self.assertEqual(len(bundled), 8)
+        for path in bundled:
+            with self.subTest(skill=path.parents[1].name):
+                self.assertEqual(path.read_bytes(), canonical)
+                bundled_sql = {item.name: item.read_bytes() for item in sorted((path.parent / "sql").glob("*.sql"))}
+                filename = expected_sql[path.parents[1].name]
+                self.assertEqual(bundled_sql, {filename: canonical_sql[filename]})
+
     def test_all_tracked_surfaces_pass_read_only_gate(self) -> None:
         for surface in MODULE.SURFACES:
             with self.subTest(surface=surface):
@@ -32,8 +55,13 @@ class CollectorTests(unittest.TestCase):
             "auth": {"DEFAULT_SECONDARY_ROLES"},
             "data-quality": {"EXPECTATION_EVALUATION_ERROR"},
             "replication": {
-                "REPLICATION_GROUP_TYPE", "CREDITS_USED", "BYTES_TRANSFERRED",
-                "SOURCE_ACCOUNT_NAME", "SOURCE_REGION", "TARGET_ACCOUNT_NAME", "TARGET_REGION",
+                "REPLICATION_GROUP_TYPE",
+                "CREDITS_USED",
+                "BYTES_TRANSFERRED",
+                "SOURCE_ACCOUNT_NAME",
+                "SOURCE_REGION",
+                "TARGET_ACCOUNT_NAME",
+                "TARGET_REGION",
             },
         }
         for surface, columns in rejected.items():
@@ -77,9 +105,7 @@ class CollectorTests(unittest.TestCase):
         ):
             with self.subTest(raw=raw), self.assertRaises(MODULE.CollectionError):
                 MODULE.normalize_cli_json(raw)
-        datasets, _ = MODULE.normalize_cli_json(
-            [{"EVIDENCE": {"_dataset": "users", "has_password": True}}]
-        )
+        datasets, _ = MODULE.normalize_cli_json([{"EVIDENCE": {"_dataset": "users", "has_password": True}}])
         self.assertTrue(datasets["users"][0]["has_password"])
 
     def test_relevant_sql_surfaces_are_deterministically_ordered(self) -> None:

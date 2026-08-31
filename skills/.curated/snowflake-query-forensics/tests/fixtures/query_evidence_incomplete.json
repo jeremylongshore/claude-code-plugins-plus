@@ -9,6 +9,7 @@
     "collected_at": "2026-08-30T11:00:00Z"
   },
   "query_history": {
+    "query_id": "01running-example",
     "execution_status": "running",
     "warehouse_name": "ETL_WH",
     "queued_overload_time_ms": 0

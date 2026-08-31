@@ -449,7 +449,13 @@ def analyze(data: Any) -> dict[str, Any]:
     # object set.  Check records are metadata only and must be explicit.
     preflight = data.get("preflight", {}) if isinstance(data.get("preflight", {}), dict) else {}
     check_rows = preflight.get("checks", [])
-    if preflight.get("completed") is not True or not _nonempty(preflight.get("operator")) or _timestamp(preflight.get("checked_at"), "preflight.checked_at") is None or not isinstance(check_rows, list) or not check_rows:
+    if (
+        preflight.get("completed") is not True
+        or not _nonempty(preflight.get("operator"))
+        or _timestamp(preflight.get("checked_at"), "preflight.checked_at") is None
+        or not isinstance(check_rows, list)
+        or not check_rows
+    ):
         findings.append(
             _finding(
                 "PREFLIGHT_INCOMPLETE",
@@ -482,7 +488,11 @@ def analyze(data: Any) -> dict[str, Any]:
             )
 
     state_backup = data.get("state_backup") or data.get("state_backup_receipt") or tf.get("state_backup")
-    if not isinstance(state_backup, dict) or state_backup.get("created") is not True or state_backup.get("verified") is not True:
+    if (
+        not isinstance(state_backup, dict)
+        or state_backup.get("created") is not True
+        or state_backup.get("verified") is not True
+    ):
         findings.append(
             _finding(
                 "STATE_BACKUP_MISSING",

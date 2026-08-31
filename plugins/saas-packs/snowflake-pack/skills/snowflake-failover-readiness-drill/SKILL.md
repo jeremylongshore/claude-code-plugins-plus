@@ -12,7 +12,7 @@ description: |
   or "client redirect validation".
 allowed-tools: Read, Bash(python3:*)
 argument-hint: "[redacted-evidence.json]"
-version: 1.0.0
+version: 2.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection
@@ -56,7 +56,7 @@ distinct from Business Critical account failover/failback.
 2. Collect historical replication evidence with the model-neutral collector:
 
    ```bash
-   python3 "${CLAUDE_SKILL_DIR}/../../shared/evidence/collect_snowflake_evidence.py" \
+   python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
      --surface replication --connection readonly-observer \
      --output ./snowflake-replication-evidence.json
    ```
@@ -109,8 +109,8 @@ a positive readiness claim.
   input schema, status logic, and operator boundary.
 - [`references/source-notes.md`](references/source-notes.md) — primary Snowflake
   sources and freshness/edition constraints to re-check at execution time.
-- `shared/evidence/README.md` in the Snowflake pack root — shared collection and
-  credential boundary.
+- `scripts/collect_snowflake_evidence.py` — bundled read-only collector and
+  receipt implementation; each installed skill carries the executable code.
 
 ## Error Handling
 

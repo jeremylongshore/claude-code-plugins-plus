@@ -89,7 +89,7 @@ For a live, model-neutral collection, use the shared read-only collector with an
 existing Snowflake CLI profile:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/../../shared/evidence/collect_snowflake_evidence.py" \
+python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
   --surface cost --connection <approved-readonly-profile> \
   --output ./snowflake-cost-collector.json
 ```

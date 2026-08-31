@@ -14,7 +14,7 @@ SPEC.loader.exec_module(failover)
 
 
 def clean() -> dict:
-    sql_path = MODULE.parents[3] / "shared" / "evidence" / "sql" / "replication.sql"
+    sql_path = MODULE.parent / "sql" / "replication.sql"
     receipt = {
         "schema_version": "1",
         "surface": "replication",
@@ -36,8 +36,20 @@ def clean() -> dict:
         "mode": "READ_ONLY_PREFLIGHT",
         "edition": "BUSINESS_CRITICAL",
         "objectives": {"rpo_minutes": 60, "rto_minutes": 30},
-        "groups": [{"name": "DR", "kind": "FAILOVER", "role": "SECONDARY", "secondary_present": True, "suspended": False, "refresh_status": "SUCCEEDED", "last_successful_refresh_at": "2026-08-31T17:30:00Z", "scheduled_interval_minutes": 30}],
-        "dependencies": [], "object_checks": [],
+        "groups": [
+            {
+                "name": "DR",
+                "kind": "FAILOVER",
+                "role": "SECONDARY",
+                "secondary_present": True,
+                "suspended": False,
+                "refresh_status": "SUCCEEDED",
+                "last_successful_refresh_at": "2026-08-31T17:30:00Z",
+                "scheduled_interval_minutes": 30,
+            }
+        ],
+        "dependencies": [],
+        "object_checks": [],
         "target_validations": [{"name": "orders", "status": "PASS"}],
         "client_redirect": {"tested": True},
         "privileges": {"observable": True, "missing": []},
@@ -50,9 +62,12 @@ def clean() -> dict:
 def rehash(receipt: dict) -> None:
     unsigned = dict(receipt)
     unsigned.pop("receipt_sha256", None)
-    receipt["receipt_sha256"] = "sha256:" + hashlib.sha256(
-        json.dumps(unsigned, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
-    ).hexdigest()
+    receipt["receipt_sha256"] = (
+        "sha256:"
+        + hashlib.sha256(
+            json.dumps(unsigned, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        ).hexdigest()
+    )
 
 
 class FailoverTests(unittest.TestCase):
@@ -64,20 +79,65 @@ class FailoverTests(unittest.TestCase):
     def test_readiness_defects_are_classified(self):
         data = clean()
         data["edition"] = "STANDARD"
-        data["groups"][0].update({"kind": "REPLICATION", "secondary_present": False, "suspended": True, "refresh_status": "FAILED", "last_successful_refresh_at": "2026-08-31T15:00:00Z", "scheduled_interval_minutes": 120})
+        data["groups"][0].update(
+            {
+                "kind": "REPLICATION",
+                "secondary_present": False,
+                "suspended": True,
+                "refresh_status": "FAILED",
+                "last_successful_refresh_at": "2026-08-31T15:00:00Z",
+                "scheduled_interval_minutes": 120,
+            }
+        )
         data["dependencies"] = [{"from_group": "DR", "to_group": "MISSING", "status": "DANGLING"}]
-        data["object_checks"] = [{"object": "TASK_A", "task_stream_split": True, "task_owner_valid": False, "stream_state": "STALE", "dynamic_table_reinitialize": True}]
+        data["object_checks"] = [
+            {
+                "object": "TASK_A",
+                "task_stream_split": True,
+                "task_owner_valid": False,
+                "stream_state": "STALE",
+                "dynamic_table_reinitialize": True,
+            }
+        ]
         data["target_validations"] = [{"name": "orders", "status": "FAIL"}]
         data["privileges"]["missing"] = ["USAGE:ROLE_DR"]
         codes = {row["code"] for row in failover.analyze(data)["findings"]}
-        self.assertTrue({"EDITION_UNAVAILABLE", "GROUP_NOT_FAILOVER_CAPABLE", "SECONDARY_MISSING", "GROUP_SUSPENDED", "REFRESH_FAILED", "RPO_BREACH", "SCHEDULE_OVERRUN", "DANGLING_REFERENCE", "TASK_STREAM_SPLIT", "TASK_OWNER_INVALID", "STREAM_STALE", "DYNAMIC_TABLE_REINITIALIZATION", "TARGET_VALIDATION_FAILED", "PRIVILEGE_GAP"}.issubset(codes))
+        self.assertTrue(
+            {
+                "EDITION_UNAVAILABLE",
+                "GROUP_NOT_FAILOVER_CAPABLE",
+                "SECONDARY_MISSING",
+                "GROUP_SUSPENDED",
+                "REFRESH_FAILED",
+                "RPO_BREACH",
+                "SCHEDULE_OVERRUN",
+                "DANGLING_REFERENCE",
+                "TASK_STREAM_SPLIT",
+                "TASK_OWNER_INVALID",
+                "STREAM_STALE",
+                "DYNAMIC_TABLE_REINITIALIZATION",
+                "TARGET_VALIDATION_FAILED",
+                "PRIVILEGE_GAP",
+            }.issubset(codes)
+        )
 
     def test_operator_failover_and_failback_receipt(self):
         data = clean()
         data["mode"] = "OPERATOR_EXECUTED_FAILOVER_AND_FAILBACK"
         data["drill_events"] = [
-            {"event": "FAILOVER", "status": "SUCCEEDED", "operator_approved": True, "duration_minutes": 15, "observed_at": "2026-08-31T17:45:00Z"},
-            {"event": "FAILBACK", "status": "SUCCEEDED", "operator_approved": True, "observed_at": "2026-08-31T17:55:00Z"},
+            {
+                "event": "FAILOVER",
+                "status": "SUCCEEDED",
+                "operator_approved": True,
+                "duration_minutes": 15,
+                "observed_at": "2026-08-31T17:45:00Z",
+            },
+            {
+                "event": "FAILBACK",
+                "status": "SUCCEEDED",
+                "operator_approved": True,
+                "observed_at": "2026-08-31T17:55:00Z",
+            },
         ]
         self.assertEqual(failover.analyze(data)["status"], "DRILL_VERIFIED")
 
@@ -92,26 +152,35 @@ class FailoverTests(unittest.TestCase):
         data["target_validations"] = []
         report = failover.analyze(data)
         self.assertEqual(report["status"], "INCONCLUSIVE")
-        self.assertTrue({"RPO_UNEVALUATED", "HISTORY_STALE", "TARGET_VALIDATION_MISSING"}.issubset({x["code"] for x in report["findings"]}))
+        self.assertTrue(
+            {"RPO_UNEVALUATED", "HISTORY_STALE", "TARGET_VALIDATION_MISSING"}.issubset(
+                {x["code"] for x in report["findings"]}
+            )
+        )
 
     def test_sensitive_evidence_is_rejected(self):
         for key, value in (("password", "x"), ("sql_text", "select 1"), ("raw_rows", [])):
-            data = clean(); data[key] = value
+            data = clean()
+            data[key] = value
             with self.assertRaisesRegex(ValueError, "sensitive field"):
                 failover.analyze(data)
-        data = clean(); data["note"] = "https://x.test/file?X-Amz-Signature=abc"
+        data = clean()
+        data["note"] = "https://x.test/file?X-Amz-Signature=abc"
         with self.assertRaisesRegex(ValueError, "presigned URL"):
             failover.analyze(data)
 
-        data = clean(); data["operator_email"] = "operator@example.com"
+        data = clean()
+        data["operator_email"] = "operator@example.com"
         with self.assertRaisesRegex(ValueError, "PII-like value"):
             failover.analyze(data)
 
     def test_future_as_of_and_refresh_receipts_are_rejected(self):
-        data = clean(); data["as_of"] = "2099-01-01T00:00:00Z"
+        data = clean()
+        data["as_of"] = "2099-01-01T00:00:00Z"
         with self.assertRaisesRegex(ValueError, "as_of cannot be in the future"):
             failover.analyze(data)
-        data = clean(); data["groups"][0]["last_successful_refresh_at"] = "2099-01-01T00:00:00Z"
+        data = clean()
+        data["groups"][0]["last_successful_refresh_at"] = "2099-01-01T00:00:00Z"
         with self.assertRaisesRegex(ValueError, "cannot be in the future"):
             failover.analyze(data)
 

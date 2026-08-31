@@ -20,7 +20,7 @@ assert SPEC and SPEC.loader
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
 
-COLLECTOR_SCRIPT = SKILL_DIR.parents[1] / "shared" / "evidence" / "collect_snowflake_evidence.py"
+COLLECTOR_SCRIPT = SKILL_DIR / "scripts" / "collect_snowflake_evidence.py"
 COLLECTOR_SPEC = importlib.util.spec_from_file_location("collect_snowflake_evidence", COLLECTOR_SCRIPT)
 assert COLLECTOR_SPEC and COLLECTOR_SPEC.loader
 COLLECTOR = importlib.util.module_from_spec(COLLECTOR_SPEC)
@@ -187,7 +187,9 @@ class CostEvidenceTests(unittest.TestCase):
         data["collector_receipt"] = receipt
         result = MODULE.analyze(data)
         self.assertTrue(result["completeness_claim_blocked"])
-        self.assertIn("source_views do not match the reviewed cost SQL", result["collector_receipt_assessment"]["issues"])
+        self.assertIn(
+            "source_views do not match the reviewed cost SQL", result["collector_receipt_assessment"]["issues"]
+        )
 
     def test_missing_metric_fields_are_unknown_not_confirmed_zero(self) -> None:
         cases = (
@@ -252,12 +254,35 @@ class CostEvidenceTests(unittest.TestCase):
         data["warehouse_metering"][0]["warehouse_id"] = "wh-1"
         data["warehouse_metering"][1]["warehouse_id"] = "wh-2"
         data["query_attribution"] = [
-            {"query_id": "q1", "query_parameterized_hash": "slow", "warehouse_name": "ETL_WH", "start_time": "2026-08-03T00:00:00Z", "end_time": "2026-08-03T01:00:00Z", "query_tag_present": True, "credits_attributed_compute": "12", "credits_used_query_acceleration": "0", "total_elapsed_time_ms": "3000"},
-            {"query_id": "q2", "query_parameterized_hash": "cheap", "warehouse_name": "BI_WH", "start_time": "2026-08-04T00:00:00Z", "end_time": "2026-08-04T01:00:00Z", "query_tag_present": True, "credits_attributed_compute": "2", "credits_used_query_acceleration": "0", "total_elapsed_time_ms": "1000"},
+            {
+                "query_id": "q1",
+                "query_parameterized_hash": "slow",
+                "warehouse_name": "ETL_WH",
+                "start_time": "2026-08-03T00:00:00Z",
+                "end_time": "2026-08-03T01:00:00Z",
+                "query_tag_present": True,
+                "credits_attributed_compute": "12",
+                "credits_used_query_acceleration": "0",
+                "total_elapsed_time_ms": "3000",
+            },
+            {
+                "query_id": "q2",
+                "query_parameterized_hash": "cheap",
+                "warehouse_name": "BI_WH",
+                "start_time": "2026-08-04T00:00:00Z",
+                "end_time": "2026-08-04T01:00:00Z",
+                "query_tag_present": True,
+                "credits_attributed_compute": "2",
+                "credits_used_query_acceleration": "0",
+                "total_elapsed_time_ms": "1000",
+            },
         ]
         data["metadata"]["right_sizing"] = {
-            "warehouse": "ETL_WH", "current_size": "MEDIUM", "candidate_sizes": ["LARGE"],
-            "max_size_steps": 1, "measurement_window": "same 7-day window",
+            "warehouse": "ETL_WH",
+            "current_size": "MEDIUM",
+            "candidate_sizes": ["LARGE"],
+            "max_size_steps": 1,
+            "measurement_window": "same 7-day window",
             "success_criteria": "p95 latency <= baseline and no queue regression",
         }
         result = MODULE.analyze(data)

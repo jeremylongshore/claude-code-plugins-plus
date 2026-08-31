@@ -89,11 +89,11 @@ def generate_csv(vendor: str, display: str, skills: list, output_dir: str):
             if category == "onboarding":
                 tools = "Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep"
             elif category == "operations":
-                tools = "Read, Grep, Bash(curl:*)"
+                tools = "Read, Grep"
             elif category == "cicd":
-                tools = "Read, Write, Edit, Bash(gh:*), Bash(curl:*)"
+                tools = "Read, Write, Edit, Bash(gh:*)"
             else:  # enterprise
-                tools = "Read, Write, Edit, Bash(kubectl:*), Bash(curl:*)"
+                tools = "Read, Write, Edit, Bash(kubectl:*)"
 
             writer.writerow(
                 [

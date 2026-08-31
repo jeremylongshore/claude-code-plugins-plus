@@ -86,7 +86,7 @@ For bounded live history collection, use the shared read-only collector with an
 approved Snowflake CLI profile:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/../../shared/evidence/collect_snowflake_evidence.py" \
+python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
   --surface query --connection <approved-readonly-profile> \
   --output ./snowflake-query-collector.json
 ```

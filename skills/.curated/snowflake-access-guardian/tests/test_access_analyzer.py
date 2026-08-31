@@ -40,6 +40,30 @@ class AccessAnalyzerFixtureTests(unittest.TestCase):
         self.assertTrue(self.report["boundaries"]["read_only"])
         self.assertRegex(self.report["input_sha256"], r"^[0-9a-f]{64}$")
         self.assertIn("No GRANT", self.report["verification"]["change_packet"])
+        self.assertEqual(self.report["verification"]["positive_proof"]["status"], "PROVEN")
+        self.assertEqual(self.report["verification"]["negative_proof"]["status"], "PROVEN")
+        self.assertEqual(self.report["evidence_scope"]["freshness"]["status"], "FRESH")
+
+    def test_direct_and_ownership_paths_and_schema_precedence_are_explicit(self):
+        direct = self.report["direct_user_paths"]
+        self.assertTrue(any(row["grantee"] == "ALICE" for row in direct))
+        ownership = self.report["ownership_paths"]
+        self.assertTrue(any(row["object"].endswith("OLD_VIEW") for row in ownership))
+        precedence = self.report["future_grant_precedence"]
+        self.assertEqual(precedence[0]["effective_precedence"], "SCHEMA")
+
+    def test_freshness_and_both_proof_receipts_are_required(self):
+        data = json.loads(json.dumps(self.fixture))
+        data.pop("metadata")
+        data.pop("verification")
+        report = analyze(data, "ALICE", "ANALYTICS.CURATED.ORDERS", "SELECT")
+        categories = {item["category"] for item in report["findings"]}
+        self.assertIn("evidence-freshness", categories)
+        self.assertIn("access-proof-missing", categories)
+        self.assertEqual(
+            {item["id"] for item in report["findings"] if item["category"] == "access-proof-missing"},
+            {"positive-access-proof-missing", "negative-access-proof-missing"},
+        )
 
     def test_credential_fields_are_rejected(self):
         for field in (
@@ -56,6 +80,15 @@ class AccessAnalyzerFixtureTests(unittest.TestCase):
             with self.subTest(field=field), self.assertRaises(ValueError):
                 analyze({"users": [{"name": "X", field: "do-not-accept"}]})
 
+    def test_credential_shaped_values_under_neutral_keys_are_rejected(self):
+        for value in (
+            "password=supersecret",
+            "Authorization: Bearer abcdefghijklmnop",
+            "-----BEGIN PRIVATE KEY-----",
+        ):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                analyze({"users": [{"name": "X", "note": value}]})
+
     def test_incomplete_grant_or_request_never_reports_allowed(self):
         data = {
             "users": [{"name": "U", "primary_role": "R"}],
@@ -66,7 +99,7 @@ class AccessAnalyzerFixtureTests(unittest.TestCase):
         self.assertEqual(report["effective_access"]["status"], "INCOMPLETE_REQUEST")
         self.assertIn("incomplete-grant", {item["category"] for item in report["findings"]})
 
-    def test_direct_user_grant_requires_all_secondary_roles_context(self):
+    def test_direct_user_grant_is_independent_of_secondary_roles_context(self):
         base = {
             "users": [{"name": "U", "primary_role": "R"}],
             "roles": [{"name": "R"}],
@@ -79,18 +112,38 @@ class AccessAnalyzerFixtureTests(unittest.TestCase):
                 }
             ],
         }
-        for mode, expected in (
-            ("NONE", "NOT_PROVEN"),
-            ("EXPLICIT", "NOT_PROVEN"),
-            ("ALL", "OBJECT_PRIVILEGE_PATH_PROVEN"),
-        ):
+        for mode in ("NONE", "EXPLICIT", "ALL"):
             data = json.loads(json.dumps(base))
             data["users"][0]["secondary_roles_mode"] = mode
             with self.subTest(mode=mode):
                 self.assertEqual(
                     analyze(data, "U", "DB.S.T", "SELECT")["effective_access"]["status"],
-                    expected,
+                    "OBJECT_PRIVILEGE_PATH_PROVEN",
                 )
+
+    def test_proof_receipts_must_match_requested_context_and_window(self):
+        data = json.loads(json.dumps(self.fixture))
+        data["verification"]["positive"][0]["principal"] = "BOB"
+        data["verification"]["negative"][0]["observed_at"] = "2099-01-01T00:00:00Z"
+        report = analyze(data, "ALICE", "ANALYTICS.CURATED.ORDERS", "SELECT")
+        self.assertEqual(report["verification"]["positive_proof"]["status"], "NOT_PROVEN")
+        self.assertEqual(report["verification"]["negative_proof"]["status"], "NOT_PROVEN")
+        categories = {item["category"] for item in report["findings"]}
+        self.assertIn("access-proof-context", categories)
+        self.assertIn("access-proof-timestamp", categories)
+
+        no_request = analyze(json.loads(json.dumps(self.fixture)))
+        self.assertEqual(no_request["verification"]["positive_proof"]["status"], "NOT_PROVEN")
+        self.assertEqual(no_request["verification"]["negative_proof"]["status"], "NOT_PROVEN")
+
+    def test_future_or_misordered_freshness_never_passes(self):
+        data = json.loads(json.dumps(self.fixture))
+        data["metadata"]["collected_at"] = "2099-01-01T00:00:00Z"
+        data["metadata"]["window_start"] = "2099-01-02T00:00:00Z"
+        data["metadata"]["window_end"] = "2099-01-01T00:00:00Z"
+        data["metadata"]["freshness"]["checked_at"] = "2099-01-03T00:00:00Z"
+        report = analyze(data, "ALICE", "ANALYTICS.CURATED.ORDERS", "SELECT")
+        self.assertIn("evidence-freshness", {item["category"] for item in report["findings"]})
 
     def test_malformed_collection_shapes_are_rejected(self):
         for data in (

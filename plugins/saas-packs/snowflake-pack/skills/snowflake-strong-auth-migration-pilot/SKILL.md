@@ -81,7 +81,7 @@ and verify account, edition, connector, client behavior, and feature availabilit
    shared read-only evidence collector:
 
    ```bash
-   python3 "${CLAUDE_SKILL_DIR}/../../shared/evidence/collect_snowflake_evidence.py" \
+   python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
      --surface auth --connection <existing-readonly-profile> \
      --output ./snowflake-auth-live-evidence.json
    ```

@@ -20,6 +20,15 @@ The guardian is an audit and planning tool. It must not execute `GRANT`,
 - Verify a future object receives the intended privilege and not a conflicting
   database-level or schema-level grant.
 
+## Receipt binding
+
+Every positive and negative receipt must record `observed_at`, `account`,
+`principal`, `object`, `privilege`, `primary_role`, `secondary_roles_mode`, and
+the exact `secondary_roles` array. The timestamp must fall inside the declared
+observation window and no later than collection. A receipt from another account,
+principal, object, privilege, or role context is `NOT_PROVEN`, even if its status
+is `PASS` or `DENIED`.
+
 ## Change and rollback packet
 
 For every proposed change include the exact principal, privilege, object, current

@@ -39,7 +39,7 @@ class DeployAnalyzerTests(unittest.TestCase):
         self.assertTrue(report["zero_change_plan"])
         self.assertEqual(report["release_gate"], "pass")
         self.assertEqual(report["findings"], [])
-        self.assertEqual(len(report["post_deploy_invariants"]), 5)
+        self.assertGreaterEqual(len(report["post_deploy_invariants"]), 7)
         self.assertEqual(report["provider"]["version"], "2.20.0")
         self.assertEqual(report["toolchain"]["snowflake_cli"]["version"], "3.12.0")
         self.assertEqual(report["behavior_change_review"]["id"], "BCR-2026-08")
@@ -97,6 +97,17 @@ class DeployAnalyzerTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             analyzer.analyze(data)
 
+    def test_rejects_credential_shaped_values_under_neutral_keys(self):
+        for value in (
+            "password=supersecret",
+            "Authorization: Bearer abcdefghijklmnop",
+            "-----BEGIN PRIVATE KEY-----",
+        ):
+            data = self.load("clean-preview.json")
+            data["note"] = value
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                analyzer.analyze(data)
+
     def test_malformed_collections_and_blank_rollback_cannot_pass(self):
         for mutate in (
             lambda data: data["terraform"].__setitem__("resources", {"destroy": True}),
@@ -110,6 +121,46 @@ class DeployAnalyzerTests(unittest.TestCase):
         data = self.load("clean-preview.json")
         data["rollback"]["strategy"] = ""
         self.assertEqual(analyzer.analyze(data)["release_gate"], "blocked")
+
+    def test_preflight_backup_affected_objects_and_zero_change_receipt_are_gates(self):
+        data = self.load("clean-preview.json")
+        for field in ("preflight", "state_backup", "affected_objects", "zero_change_receipt"):
+            candidate = json.loads(json.dumps(data))
+            if field == "affected_objects":
+                candidate["affected_objects_verified"] = False
+            else:
+                candidate.pop(field, None)
+            report = analyzer.analyze(candidate)
+            codes = {item["code"] for item in report["findings"]}
+            expected = {
+                "preflight": "PREFLIGHT_INCOMPLETE",
+                "state_backup": "STATE_BACKUP_MISSING",
+                "affected_objects": "AFFECTED_OBJECTS_UNVERIFIED",
+                "zero_change_receipt": "ZERO_CHANGE_RECEIPT_MISSING",
+            }[field]
+            self.assertIn(expected, codes)
+
+    def test_bcr_inventory_requires_disposition_for_affected_change(self):
+        data = self.load("clean-preview.json")
+        data["bcr"]["inventory"] = [{"id": "BCR-1", "source": "release notes", "affected": True}]
+        codes = {item["code"] for item in analyzer.analyze(data)["findings"]}
+        self.assertIn("BCR_AFFECTED_UNRESOLVED-0", codes)
+
+    def test_future_preflight_and_backup_receipts_block_gate(self):
+        for field in ("preflight", "state_backup"):
+            data = self.load("clean-preview.json")
+            data[field]["checked_at" if field == "preflight" else "captured_at"] = "2099-01-01T00:00:00Z"
+            report = analyzer.analyze(data)
+            self.assertEqual(report["release_gate"], "blocked")
+            self.assertIn("EVIDENCE_PROVENANCE_INCOMPLETE", {item["code"] for item in report["findings"]})
+
+    def test_future_zero_change_receipt_is_blocked_and_recovery_is_ordered(self):
+        data = self.load("clean-preview.json")
+        data["zero_change_receipt"]["issued_at"] = "2099-01-01T00:00:00Z"
+        report = analyzer.analyze(data)
+        self.assertEqual(report["release_gate"], "blocked")
+        self.assertIn("ZERO_CHANGE_RECEIPT_MISSING", {item["code"] for item in report["findings"]})
+        self.assertIn("ZERO_CHANGE_RECEIPT_MISSING", {item["for"] for item in report["ordered_recovery"]})
 
 
 if __name__ == "__main__":

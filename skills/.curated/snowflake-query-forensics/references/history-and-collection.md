@@ -36,7 +36,8 @@ Relevant fields include:
 - error code/message, sanitized before sharing.
 
 `QUERY_TEXT` can be truncated and can contain literals or sensitive data. Do not export
-it by default.
+it by default. Do not export raw `USER_NAME` or `QUERY_TAG`; use Snowflake-side
+SHA-256 pseudonyms when grouping is necessary.
 
 ## Bounded discovery shape
 
@@ -45,8 +46,9 @@ SELECT
   query_id,
   query_hash,
   query_parameterized_hash,
-  query_tag,
-  user_name,
+  user_name_sha256,
+  query_tag_sha256,
+  query_tag_present,
   role_name,
   warehouse_name,
   warehouse_size,

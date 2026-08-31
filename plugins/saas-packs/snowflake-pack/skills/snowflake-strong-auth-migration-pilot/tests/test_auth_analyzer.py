@@ -73,7 +73,9 @@ class AuthAnalyzerFixtureTests(unittest.TestCase):
 
     def test_canary_false_boolean_cannot_be_overridden_by_status_alias(self):
         data = json.loads(json.dumps(self.fixture))
-        data["canary"].update({"positive": False, "positive_status": "PASS", "negative": False, "negative_status": "DENIED"})
+        data["canary"].update(
+            {"positive": False, "positive_status": "PASS", "negative": False, "negative_status": "DENIED"}
+        )
         categories = {item["category"] for item in analyze(data)["findings"]}
         self.assertIn("canary-unverified", categories)
 

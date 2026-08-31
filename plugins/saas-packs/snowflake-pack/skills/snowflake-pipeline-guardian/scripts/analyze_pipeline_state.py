@@ -131,7 +131,7 @@ def _collector_receipt_issues(receipt: Any, observed_at: datetime | None) -> lis
     if not isinstance(receipt.get("sql_sha256"), str) or not SHA256_RE.fullmatch(receipt["sql_sha256"]):
         issues.append("collector receipt sql_sha256 is invalid")
     else:
-        sql_path = Path(__file__).resolve().parents[3] / "shared" / "evidence" / "sql" / "pipeline.sql"
+        sql_path = Path(__file__).resolve().parent / "sql" / "pipeline.sql"
         expected_sql_hash = f"sha256:{hashlib.sha256(sql_path.read_bytes()).hexdigest()}"
         if receipt["sql_sha256"] != expected_sql_hash:
             issues.append("collector receipt sql_sha256 does not match the reviewed pipeline SQL")
@@ -155,7 +155,12 @@ def _collector_receipt_issues(receipt: Any, observed_at: datetime | None) -> lis
     truncation = receipt.get("truncation_possible")
     if not isinstance(truncation, bool):
         issues.append("collector receipt truncation_possible must be boolean")
-    elif type(row_count) is int and row_limit is not None and type(row_limit) is int and truncation != row_count >= row_limit:
+    elif (
+        type(row_count) is int
+        and row_limit is not None
+        and type(row_limit) is int
+        and truncation != row_count >= row_limit
+    ):
         issues.append("collector receipt truncation_possible disagrees with row_count and row_limit")
     if truncation is True:
         issues.append("collector receipt is truncated")
@@ -287,7 +292,9 @@ def _collector_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
         if not isinstance(row, dict):
             continue
         node = dict(row)
-        node["id"] = ".".join(str(row.get(field)) for field in ("database_name", "schema_name", "name") if row.get(field)) or str(row.get("name") or "stream")
+        node["id"] = ".".join(
+            str(row.get(field)) for field in ("database_name", "schema_name", "name") if row.get(field)
+        ) or str(row.get("name") or "stream")
         node["kind"] = "STREAM"
         node["status"] = "STALE" if row.get("stale") is True else "OK"
         nodes.append(node)
@@ -331,7 +338,9 @@ def _collector_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
             row_index,
         )
         node["kind"] = "PIPE"
-        node["status"] = "FAILED" if str(row.get("status", "")).upper() not in {"LOADED", "PARTIALLY LOADED", ""} else "OK"
+        node["status"] = (
+            "FAILED" if str(row.get("status", "")).upper() not in {"LOADED", "PARTIALLY LOADED", ""} else "OK"
+        )
         nodes.append(node)
     if not nodes:
         return snapshot
@@ -519,8 +528,12 @@ def classify_node(node: dict[str, Any]) -> list[dict[str, Any]]:
         if node.get("dedup_checked") is None:
             node["dedup_checked"] = idempotency.get("dedup_checked")
     status_text = str(idempotency_status or "").upper()
-    has_key = any(node.get(field) for field in ("delivery_key", "business_key", "dedupe_key", "event_id", "file_identity"))
-    if status_text in {"FAILED", "FALSE", "UNPROVEN", "UNKNOWN"} or (idempotency_status is None and (node.get("idempotency") is not None or node.get("replay_requested") is True)):
+    has_key = any(
+        node.get(field) for field in ("delivery_key", "business_key", "dedupe_key", "event_id", "file_identity")
+    )
+    if status_text in {"FAILED", "FALSE", "UNPROVEN", "UNKNOWN"} or (
+        idempotency_status is None and (node.get("idempotency") is not None or node.get("replay_requested") is True)
+    ):
         findings.append(
             _finding(
                 "IDEMPOTENCY_UNPROVEN",
@@ -595,7 +608,11 @@ def classify_node(node: dict[str, Any]) -> list[dict[str, Any]]:
                 )
             )
         parsed_runs = sorted(
-            ((run, _parse_node_time(run.get("scheduled_time")), _parse_node_time(run.get("completed_time"))) for run in normalized_runs if _parse_node_time(run.get("scheduled_time"))),
+            (
+                (run, _parse_node_time(run.get("scheduled_time")), _parse_node_time(run.get("completed_time")))
+                for run in normalized_runs
+                if _parse_node_time(run.get("scheduled_time"))
+            ),
             key=lambda item: item[1],
         )
         overlaps = []
@@ -850,13 +867,18 @@ def analyze(snapshot: Any) -> dict[str, Any]:
         "edge_count": len(edges),
         "causal_chains": _dependency_chains(nodes, edges, findings),
         "dangling_edges": dangling_edges,
-        "graph_complete": not dangling_edges and len(components) == 1 and not (collector_receipt and not edges) and not receipt_issues,
+        "graph_complete": not dangling_edges
+        and len(components) == 1
+        and not (collector_receipt and not edges)
+        and not receipt_issues,
         "connected_components": [[_safe(node_id) for node_id in group] for group in components],
         "findings": findings,
         "ordered_recovery": recovery,
         "post_fix_invariants": invariants,
         "limitations": limitations,
-        "collector_ingestion": _safe_value(collector_receipt) if collector_receipt else {
+        "collector_ingestion": _safe_value(collector_receipt)
+        if collector_receipt
+        else {
             "status": "not_used",
             "datasets": [],
             "message": "connector-neutral nodes were supplied directly",

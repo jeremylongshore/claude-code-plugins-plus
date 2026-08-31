@@ -17,7 +17,7 @@ class PipelineAnalyzerTests(unittest.TestCase):
         return json.loads((HERE / "fixtures" / name).read_text(encoding="utf-8"))
 
     def collector_receipt(self):
-        sql_path = HERE.parents[2] / "shared" / "evidence" / "sql" / "pipeline.sql"
+        sql_path = HERE / "sql" / "pipeline.sql"
         receipt = {
             "schema_version": "1",
             "surface": "pipeline",
@@ -184,15 +184,28 @@ class PipelineAnalyzerTests(unittest.TestCase):
             {
                 "observed_at": "2026-08-30T12:00:00Z",
                 "evidence_source": "task history export",
-                "nodes": [{
-                    "id": "load_task", "kind": "TASK", "status": "OK",
-                    "idempotency_status": "UNKNOWN", "replay_requested": True,
-                    "replay_window": "2026-08-30T10:00:00Z/2026-08-30T11:00:00Z",
-                    "run_history": [
-                        {"state": "SUCCEEDED", "scheduled_time": "2026-08-30T10:00:00Z", "completed_time": "2026-08-30T10:20:00Z"},
-                        {"state": "SKIPPED", "scheduled_time": "2026-08-30T10:10:00Z", "completed_time": "2026-08-30T10:10:01Z"},
-                    ],
-                }],
+                "nodes": [
+                    {
+                        "id": "load_task",
+                        "kind": "TASK",
+                        "status": "OK",
+                        "idempotency_status": "UNKNOWN",
+                        "replay_requested": True,
+                        "replay_window": "2026-08-30T10:00:00Z/2026-08-30T11:00:00Z",
+                        "run_history": [
+                            {
+                                "state": "SUCCEEDED",
+                                "scheduled_time": "2026-08-30T10:00:00Z",
+                                "completed_time": "2026-08-30T10:20:00Z",
+                            },
+                            {
+                                "state": "SKIPPED",
+                                "scheduled_time": "2026-08-30T10:10:00Z",
+                                "completed_time": "2026-08-30T10:10:01Z",
+                            },
+                        ],
+                    }
+                ],
             }
         )
         codes = {item["code"] for item in report["findings"]}
@@ -202,7 +215,9 @@ class PipelineAnalyzerTests(unittest.TestCase):
         report = analyzer.analyze(
             {
                 "collector_receipt": {
-                    "collected_at": "2026-08-30T12:00:00Z", "status": "collected", "row_count": 1,
+                    "collected_at": "2026-08-30T12:00:00Z",
+                    "status": "collected",
+                    "row_count": 1,
                     "datasets": {"task_history": [{"name": "load_task", "state": "SKIPPED", "run_id": "run-skipped"}]},
                 }
             }

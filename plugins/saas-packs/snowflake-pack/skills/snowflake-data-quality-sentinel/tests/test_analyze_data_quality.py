@@ -90,10 +90,7 @@ class DataQualityAnalyzerTests(unittest.TestCase):
         report = analyzer.analyze(data)
         self.assertEqual(report["quality_status"], "INCONCLUSIVE")
         self.assertNotIn("DQ_EXPECTATION_VIOLATED", self.codes(report))
-        self.assertTrue(
-            {"DQ_OBJECTIVE_MISSING", "DQ_METRIC_OBSERVED_NO_OBJECTIVE"}
-            <= self.codes(report)
-        )
+        self.assertTrue({"DQ_OBJECTIVE_MISSING", "DQ_METRIC_OBSERVED_NO_OBJECTIVE"} <= self.codes(report))
 
     def test_missing_association_and_result_do_not_pass(self):
         data = self.fixture("pass.json")

@@ -27,7 +27,20 @@ EXPECTED_COLLECTOR_SOURCES = [
 ]
 RECEIPT_DATASETS = ("warehouse_metering", "query_attribution", "warehouse_load", "serverless_usage")
 HASH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$")
-SQL_HASH_PREFIXES = {"SELECT", "WITH", "INSERT", "UPDATE", "DELETE", "MERGE", "DROP", "ALTER", "CREATE", "GRANT", "REVOKE", "CALL"}
+SQL_HASH_PREFIXES = {
+    "SELECT",
+    "WITH",
+    "INSERT",
+    "UPDATE",
+    "DELETE",
+    "MERGE",
+    "DROP",
+    "ALTER",
+    "CREATE",
+    "GRANT",
+    "REVOKE",
+    "CALL",
+}
 
 
 def validate_hash(value: Any, field: str) -> str:
@@ -48,9 +61,7 @@ def _rows_match(left: Any, right: Any) -> bool:
     return sorted(_canonical_json(row) for row in left) == sorted(_canonical_json(row) for row in right)
 
 
-def validate_collector_receipt(
-    data: dict[str, Any], warnings: list[str], evaluation_time: datetime
-) -> dict[str, Any]:
+def validate_collector_receipt(data: dict[str, Any], warnings: list[str], evaluation_time: datetime) -> dict[str, Any]:
     receipt = data.get("collector_receipt")
     if receipt is None:
         issue = "collector receipt not supplied; provenance and completeness are not verified"
@@ -78,7 +89,7 @@ def validate_collector_receipt(
         issues.append("collected_at is invalid")
     if receipt.get("source_views") != EXPECTED_COLLECTOR_SOURCES:
         issues.append("source_views do not match the reviewed cost SQL")
-    sql_path = Path(__file__).resolve().parents[3] / "shared" / "evidence" / "sql" / "cost.sql"
+    sql_path = Path(__file__).resolve().parent / "sql" / "cost.sql"
     expected_sql_hash = None
     if sql_path.is_file():
         expected_sql_hash = f"sha256:{hashlib.sha256(sql_path.read_bytes()).hexdigest()}"
@@ -97,7 +108,9 @@ def validate_collector_receipt(
     row_count = receipt.get("row_count")
     if not isinstance(row_count, int) or isinstance(row_count, bool) or row_count < 0:
         issues.append("row_count is invalid")
-    elif row_count != sum(len(datasets.get(name, [])) for name in RECEIPT_DATASETS if isinstance(datasets.get(name, []), list)):
+    elif row_count != sum(
+        len(datasets.get(name, [])) for name in RECEIPT_DATASETS if isinstance(datasets.get(name, []), list)
+    ):
         issues.append("row_count does not match receipt datasets")
     row_limit = receipt.get("row_limit")
     if not isinstance(row_limit, int) or isinstance(row_limit, bool) or row_limit <= 0:
@@ -258,9 +271,7 @@ def _optional_number(value: Any, field: str) -> Decimal | None:
     return decimal_value(value, field)
 
 
-def attribution_completeness(
-    warehouses: list[dict[str, Any]], warnings: list[str]
-) -> list[dict[str, str]]:
+def attribution_completeness(warehouses: list[dict[str, Any]], warnings: list[str]) -> list[dict[str, str]]:
     """Show how much metered compute can be reconciled to query attribution.
 
     A NULL attribution value is an unknown boundary (for example, an adaptive
@@ -271,44 +282,64 @@ def attribution_completeness(
     for index, row in enumerate(warehouses):
         name = safe_text(row.get("warehouse_name") or "<unknown>", f"warehouse_metering[{index}].warehouse_name")
         key = str(row.get("warehouse_id") or name)
-        item = grouped.setdefault(key, {"warehouse_name": name, "compute": Decimal("0"), "attributed": Decimal("0"), "unknown": False})
-        item["compute"] += decimal_value(row.get("credits_used_compute", 0), f"warehouse_metering[{index}].credits_used_compute")
+        item = grouped.setdefault(
+            key, {"warehouse_name": name, "compute": Decimal("0"), "attributed": Decimal("0"), "unknown": False}
+        )
+        item["compute"] += decimal_value(
+            row.get("credits_used_compute", 0), f"warehouse_metering[{index}].credits_used_compute"
+        )
         attributed = row.get("credits_attributed_compute_queries")
         if attributed is None:
             item["unknown"] = True
         else:
-            item["attributed"] += decimal_value(attributed, f"warehouse_metering[{index}].credits_attributed_compute_queries")
+            item["attributed"] += decimal_value(
+                attributed, f"warehouse_metering[{index}].credits_attributed_compute_queries"
+            )
     result: list[dict[str, str]] = []
     for item in grouped.values():
         compute = item["compute"]
         attributed = item["attributed"]
         if item["unknown"]:
-            result.append({
-                "warehouse_name": item["warehouse_name"],
-                "status": "unknown",
-                "compute_credits": as_text(compute),
-                "attributed_query_credits": as_text(attributed),
-                "attribution_fraction": "unknown",
-                "unattributed_credits": "unknown",
-                "reason": "one or more metering rows has NULL query attribution",
-            })
+            result.append(
+                {
+                    "warehouse_name": item["warehouse_name"],
+                    "status": "unknown",
+                    "compute_credits": as_text(compute),
+                    "attributed_query_credits": as_text(attributed),
+                    "attribution_fraction": "unknown",
+                    "unattributed_credits": "unknown",
+                    "reason": "one or more metering rows has NULL query attribution",
+                }
+            )
             continue
         if attributed > compute:
-            warnings.append(f"{item['warehouse_name']}: attributed credits exceed metered compute; completeness is inconclusive")
-            result.append({
-                "warehouse_name": item["warehouse_name"], "status": "inconclusive",
-                "compute_credits": as_text(compute), "attributed_query_credits": as_text(attributed),
-                "attribution_fraction": "inconclusive", "unattributed_credits": "inconclusive",
-                "reason": "attributed credits exceed aligned metering",
-            })
+            warnings.append(
+                f"{item['warehouse_name']}: attributed credits exceed metered compute; completeness is inconclusive"
+            )
+            result.append(
+                {
+                    "warehouse_name": item["warehouse_name"],
+                    "status": "inconclusive",
+                    "compute_credits": as_text(compute),
+                    "attributed_query_credits": as_text(attributed),
+                    "attribution_fraction": "inconclusive",
+                    "unattributed_credits": "inconclusive",
+                    "reason": "attributed credits exceed aligned metering",
+                }
+            )
             continue
         fraction = attributed / compute if compute else Decimal("0")
-        result.append({
-            "warehouse_name": item["warehouse_name"], "status": "measured",
-            "compute_credits": as_text(compute), "attributed_query_credits": as_text(attributed),
-            "attribution_fraction": as_text(fraction), "unattributed_credits": as_text(compute - attributed),
-            "reason": "aligned WAREHOUSE_METERING_HISTORY rows",
-        })
+        result.append(
+            {
+                "warehouse_name": item["warehouse_name"],
+                "status": "measured",
+                "compute_credits": as_text(compute),
+                "attributed_query_credits": as_text(attributed),
+                "attribution_fraction": as_text(fraction),
+                "unattributed_credits": as_text(compute - attributed),
+                "reason": "aligned WAREHOUSE_METERING_HISTORY rows",
+            }
+        )
     return sorted(result, key=lambda item: item["warehouse_name"])
 
 
@@ -317,20 +348,35 @@ def cost_latency_pareto(queries: list[dict[str, Any]], warnings: list[str]) -> l
     groups: dict[tuple[str, str], dict[str, Any]] = {}
     for index, row in enumerate(queries):
         fingerprint = row.get("query_parameterized_hash") or row.get("query_hash") or row.get("query_id")
-        elapsed = _optional_number(row.get("total_elapsed_time_ms"), f"query_attribution[{index}].total_elapsed_time_ms")
-        credits = decimal_value(row.get("credits_attributed_compute", 0), f"query_attribution[{index}].credits_attributed_compute")
+        elapsed = _optional_number(
+            row.get("total_elapsed_time_ms"), f"query_attribution[{index}].total_elapsed_time_ms"
+        )
+        credits = decimal_value(
+            row.get("credits_attributed_compute", 0), f"query_attribution[{index}].credits_attributed_compute"
+        )
         if fingerprint is None or elapsed is None:
             continue
         key = (
             safe_text(row.get("warehouse_name") or "<unknown>", f"query_attribution[{index}].warehouse_name"),
             validate_hash(fingerprint, f"query_attribution[{index}].query_fingerprint"),
         )
-        item = groups.setdefault(key, {"warehouse_name": key[0], "fingerprint": key[1], "credits": Decimal("0"), "elapsed": Decimal("0"), "count": 0})
+        item = groups.setdefault(
+            key,
+            {
+                "warehouse_name": key[0],
+                "fingerprint": key[1],
+                "credits": Decimal("0"),
+                "elapsed": Decimal("0"),
+                "count": 0,
+            },
+        )
         item["credits"] += credits
         item["elapsed"] += elapsed
         item["count"] += 1
     if not groups and queries:
-        warnings.append("cost/latency Pareto unavailable: query attribution rows lack a query fingerprint or elapsed time")
+        warnings.append(
+            "cost/latency Pareto unavailable: query attribution rows lack a query fingerprint or elapsed time"
+        )
     candidates = list(groups.values())
     result: list[dict[str, str | int | bool]] = []
     for candidate in candidates:
@@ -342,20 +388,33 @@ def cost_latency_pareto(queries: list[dict[str, Any]], warnings: list[str]) -> l
             and (other["credits"] < candidate["credits"] or other["elapsed"] / other["count"] < average)
             for other in candidates
         )
-        result.append({
-            "warehouse_name": candidate["warehouse_name"], "fingerprint": candidate["fingerprint"],
-            "query_count": candidate["count"], "credits": as_text(candidate["credits"]),
-            "average_elapsed_time_ms": as_text(average), "pareto_efficient": not dominated,
-        })
-    return sorted(result, key=lambda item: (not bool(item["pareto_efficient"]), str(item["warehouse_name"]), str(item["fingerprint"])))
+        result.append(
+            {
+                "warehouse_name": candidate["warehouse_name"],
+                "fingerprint": candidate["fingerprint"],
+                "query_count": candidate["count"],
+                "credits": as_text(candidate["credits"]),
+                "average_elapsed_time_ms": as_text(average),
+                "pareto_efficient": not dominated,
+            }
+        )
+    return sorted(
+        result,
+        key=lambda item: (not bool(item["pareto_efficient"]), str(item["warehouse_name"]), str(item["fingerprint"])),
+    )
 
 
 def right_sizing_boundary(metadata: dict[str, Any], warnings: list[str]) -> dict[str, Any]:
     request = metadata.get("right_sizing")
     base = {
-        "status": "not_requested", "warehouse": None, "current_size": None,
-        "candidate_sizes": [], "max_size_steps": None, "success_criteria": None,
-        "measurement_window": None, "owner": metadata.get("review_owner"),
+        "status": "not_requested",
+        "warehouse": None,
+        "current_size": None,
+        "candidate_sizes": [],
+        "max_size_steps": None,
+        "success_criteria": None,
+        "measurement_window": None,
+        "owner": metadata.get("review_owner"),
         "approval": metadata.get("approval_boundary"),
         "mutation_executed": False,
     }
@@ -376,11 +435,15 @@ def right_sizing_boundary(metadata: dict[str, Any], warnings: list[str]) -> dict
             raise EvidenceError("metadata.right_sizing.max_size_steps must be an integer")
         base["max_size_steps"] = int(steps)
     if not base["warehouse"] or not base["current_size"] or not base["candidate_sizes"] or not base["success_criteria"]:
-        warnings.append("right-sizing request is bounded only when warehouse, current size, candidate sizes, and success criteria are supplied")
+        warnings.append(
+            "right-sizing request is bounded only when warehouse, current size, candidate sizes, and success criteria are supplied"
+        )
         base["status"] = "incomplete"
     else:
         if base["max_size_steps"] is None:
-            warnings.append("right-sizing candidates supplied without max_size_steps; bounded review requires an explicit step limit")
+            warnings.append(
+                "right-sizing candidates supplied without max_size_steps; bounded review requires an explicit step limit"
+            )
             base["status"] = "incomplete"
         else:
             base["status"] = "bounded_proposal"
@@ -586,16 +649,22 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
         name = safe_text(row.get("warehouse_name") or "<unknown>", f"warehouse_load[{index}].warehouse_name")
         running = decimal_value(row.get("avg_running", 0), f"warehouse_load[{index}].avg_running")
         queued = decimal_value(row.get("avg_queued_load", 0), f"warehouse_load[{index}].avg_queued_load")
-        provisioning = decimal_value(row.get("avg_queued_provisioning", 0), f"warehouse_load[{index}].avg_queued_provisioning")
-        load_summary.append({
-            "warehouse_name": name,
-            "avg_running": as_text(running),
-            "avg_queued_load": as_text(queued),
-            "avg_queued_provisioning": as_text(provisioning),
-            "classification": "confirmed",
-        })
+        provisioning = decimal_value(
+            row.get("avg_queued_provisioning", 0), f"warehouse_load[{index}].avg_queued_provisioning"
+        )
+        load_summary.append(
+            {
+                "warehouse_name": name,
+                "avg_running": as_text(running),
+                "avg_queued_load": as_text(queued),
+                "avg_queued_provisioning": as_text(provisioning),
+                "classification": "confirmed",
+            }
+        )
         if queued > 0 or provisioning > 0:
-            warnings.append(f"{name}: warehouse load evidence shows queue pressure; correlate to query latency before resizing")
+            warnings.append(
+                f"{name}: warehouse load evidence shows queue pressure; correlate to query latency before resizing"
+            )
     for service, credits in sorted(serverless_by_service.items()):
         confirmed.append(
             {
@@ -732,18 +801,45 @@ def render_markdown(result: dict[str, Any]) -> str:
             )
     else:
         lines.append("No at-risk opportunity was derivable from the supplied evidence.")
-    lines.extend(["", "## Attribution completeness", "", "| Warehouse | Status | Metered credits | Attributed credits | Fraction | Unattributed |", "|---|---|---:|---:|---:|---:|"])
+    lines.extend(
+        [
+            "",
+            "## Attribution completeness",
+            "",
+            "| Warehouse | Status | Metered credits | Attributed credits | Fraction | Unattributed |",
+            "|---|---|---:|---:|---:|---:|",
+        ]
+    )
     for item in result["attribution_completeness"]:
-        lines.append(f"| {item['warehouse_name']} | {item['status']} | {item['compute_credits']} | {item['attributed_query_credits']} | {item['attribution_fraction']} | {item['unattributed_credits']} |")
+        lines.append(
+            f"| {item['warehouse_name']} | {item['status']} | {item['compute_credits']} | {item['attributed_query_credits']} | {item['attribution_fraction']} | {item['unattributed_credits']} |"
+        )
     lines.extend(["", "## Cost/latency Pareto", ""])
     if result["cost_latency_pareto"]:
-        lines.extend(["| Warehouse | Fingerprint | Queries | Credits | Avg elapsed ms | Pareto-efficient |", "|---|---|---:|---:|---:|---|"])
+        lines.extend(
+            [
+                "| Warehouse | Fingerprint | Queries | Credits | Avg elapsed ms | Pareto-efficient |",
+                "|---|---|---:|---:|---:|---|",
+            ]
+        )
         for item in result["cost_latency_pareto"]:
-            lines.append(f"| {item['warehouse_name']} | {item['fingerprint']} | {item['query_count']} | {item['credits']} | {item['average_elapsed_time_ms']} | {item['pareto_efficient']} |")
+            lines.append(
+                f"| {item['warehouse_name']} | {item['fingerprint']} | {item['query_count']} | {item['credits']} | {item['average_elapsed_time_ms']} | {item['pareto_efficient']} |"
+            )
     else:
         lines.append("No fingerprinted query rows had both cost and latency; Pareto position is unknown.")
-    lines.extend(["", "## Right-sizing experiment boundary", "", f"Status: `{result['right_sizing_experiment']['status']}`; no mutation executed.", ""])
-    lines.append("Supply an owner-approved bounded candidate set and success criteria before any resize experiment is considered.")
+    lines.extend(
+        [
+            "",
+            "## Right-sizing experiment boundary",
+            "",
+            f"Status: `{result['right_sizing_experiment']['status']}`; no mutation executed.",
+            "",
+        ]
+    )
+    lines.append(
+        "Supply an owner-approved bounded candidate set and success criteria before any resize experiment is considered."
+    )
     lines.extend(["", "## Freshness and warnings", ""])
     for item in result["source_freshness"]:
         lines.append(

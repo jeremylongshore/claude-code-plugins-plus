@@ -89,7 +89,7 @@ before requesting additional access.
 For model-neutral live control-plane evidence, use the shared read-only collector:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/../../shared/evidence/collect_snowflake_evidence.py" \
+python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
   --surface pipeline --connection <approved-readonly-profile> \
   --output ./snowflake-pipeline-collector.json
 ```

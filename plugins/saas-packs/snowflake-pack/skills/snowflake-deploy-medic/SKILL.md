@@ -107,7 +107,7 @@ For live metadata, use the pack's shared bounded collector (never pass
 credentials on its command line):
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/../../shared/evidence/collect_snowflake_evidence.py" \
+python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
   --surface query --connection <existing-readonly-profile> \
   --output ./snowflake-deploy-live-evidence.json
 ```

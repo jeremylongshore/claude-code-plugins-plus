@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -15,6 +16,119 @@ from typing import Any
 
 class EvidenceError(ValueError):
     """Raised when query evidence is malformed or unsafe to interpret."""
+
+
+EXPECTED_COLLECTOR_SOURCES = [
+    "SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY",
+    "SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_LOAD_HISTORY",
+]
+HASH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$")
+SQL_HASH_PREFIXES = {
+    "SELECT",
+    "WITH",
+    "INSERT",
+    "UPDATE",
+    "DELETE",
+    "MERGE",
+    "DROP",
+    "ALTER",
+    "CREATE",
+    "GRANT",
+    "REVOKE",
+    "CALL",
+}
+
+
+def validate_hash(value: Any, field: str) -> str:
+    if not isinstance(value, str) or not HASH_RE.fullmatch(value):
+        raise EvidenceError(f"{field} must be an opaque query hash, not SQL or free-form text")
+    if value.split(".", 1)[0].upper() in SQL_HASH_PREFIXES:
+        raise EvidenceError(f"{field} must be an opaque query hash, not SQL or free-form text")
+    return value
+
+
+def _canonical_json(value: Any) -> bytes:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+
+
+def _rows_match(left: Any, right: Any) -> bool:
+    if not isinstance(left, list) or not isinstance(right, list) or len(left) != len(right):
+        return False
+    return sorted(_canonical_json(row) for row in left) == sorted(_canonical_json(row) for row in right)
+
+
+def validate_collector_receipt(data: dict[str, Any], warnings: list[str], evaluation_time: datetime) -> dict[str, Any]:
+    receipt = data.get("collector_receipt")
+    if receipt is None:
+        issue = "collector receipt not supplied; provenance and completeness are not verified"
+        warnings.append(issue)
+        return {"status": "not_supplied", "complete": False, "issues": [issue]}
+    issues: list[str] = []
+    if not isinstance(receipt, dict):
+        issues.append("collector_receipt is not an object")
+        receipt = {}
+    if receipt.get("schema_version") != "1":
+        issues.append("schema_version is not 1")
+    if receipt.get("surface") != "query":
+        issues.append("surface is not query")
+    if receipt.get("status") != "collected":
+        issues.append(f"status is {receipt.get('status')!r}")
+    if receipt.get("errors"):
+        issues.append("collector reported an error")
+    if not isinstance(receipt.get("connection_profile"), str) or not receipt["connection_profile"].strip():
+        issues.append("connection_profile is missing")
+    try:
+        receipt_time = parse_time(receipt.get("collected_at"), "collector_receipt.collected_at")
+        if receipt_time > evaluation_time or receipt_time > datetime.now(timezone.utc):
+            issues.append("collected_at is after the report evaluation time or in the future")
+    except EvidenceError:
+        issues.append("collected_at is invalid")
+    if receipt.get("source_views") != EXPECTED_COLLECTOR_SOURCES:
+        issues.append("source_views do not match the reviewed query SQL")
+    sql_path = Path(__file__).resolve().parent / "sql" / "query.sql"
+    expected_sql_hash = None
+    if sql_path.is_file():
+        expected_sql_hash = f"sha256:{hashlib.sha256(sql_path.read_bytes()).hexdigest()}"
+    if receipt.get("sql_sha256") != expected_sql_hash:
+        issues.append("sql_sha256 does not match the reviewed query SQL")
+    supplied_receipt_hash = receipt.get("receipt_sha256")
+    body = dict(receipt)
+    body.pop("receipt_sha256", None)
+    expected_receipt_hash = f"sha256:{hashlib.sha256(_canonical_json(body)).hexdigest()}"
+    if supplied_receipt_hash != expected_receipt_hash:
+        issues.append("receipt_sha256 is missing or invalid")
+    datasets = receipt.get("datasets")
+    if not isinstance(datasets, dict):
+        issues.append("datasets is not an object")
+        datasets = {}
+    row_count = receipt.get("row_count")
+    if not isinstance(row_count, int) or isinstance(row_count, bool) or row_count < 0:
+        issues.append("row_count is invalid")
+    elif row_count != sum(len(value) for value in datasets.values() if isinstance(value, list)):
+        issues.append("row_count does not match receipt datasets")
+    row_limit = receipt.get("row_limit")
+    if not isinstance(row_limit, int) or isinstance(row_limit, bool) or row_limit <= 0:
+        issues.append("row_limit is invalid")
+    elif row_count >= row_limit:
+        issues.append("row_count is at or above the SQL cap")
+    if receipt.get("truncation_possible") is not False:
+        issues.append("truncation_possible is not false")
+    for name in ("query_history", "warehouse_load"):
+        supplied = data.get(name, [])
+        supplied_rows = [supplied] if name == "query_history" and isinstance(supplied, dict) else supplied
+        if not _rows_match(supplied_rows, datasets.get(name, [])):
+            issues.append(f"{name} rows do not match collector receipt")
+    for issue in issues:
+        warnings.append(f"collector receipt unverifiable: {issue}")
+    return {
+        "status": "verified" if not issues else "unverifiable",
+        "complete": not issues,
+        "issues": sorted(set(issues)),
+        "surface": receipt.get("surface"),
+        "row_count": receipt.get("row_count"),
+        "row_limit": receipt.get("row_limit"),
+        "truncation_possible": receipt.get("truncation_possible"),
+    }
 
 
 SENSITIVE_KEYS = {
@@ -50,6 +164,8 @@ def reject_secret_fields(value: Any, path: str = "input") -> None:
     if isinstance(value, dict):
         for key, child in value.items():
             normalized = re.sub(r"[^a-z0-9]", "", str(key).casefold())
+            if normalized in {"querytag", "username"}:
+                raise EvidenceError(f"raw identity/tag field is not accepted: {path}.{key}; use a Snowflake-side hash")
             if normalized in SENSITIVE_KEYS or any(
                 fragment in normalized
                 for fragment in (
@@ -113,6 +229,178 @@ def nested_number(container: dict[str, Any], path: tuple[str, ...], field: str) 
     return decimal_value(current, field)
 
 
+def load_summary(
+    rows: Any,
+    warnings: list[str],
+    query_start: datetime,
+    query_end: datetime,
+    query_warehouse: str,
+) -> list[dict[str, str]]:
+    if rows is None:
+        return []
+    if not isinstance(rows, list) or not all(isinstance(item, dict) for item in rows):
+        raise EvidenceError("warehouse_load must be an array of objects")
+    grouped: dict[str, dict[str, Decimal]] = {}
+    excluded = 0
+    for index, row in enumerate(rows):
+        prefix = f"warehouse_load[{index}]"
+        if row.get("start_time") is None or row.get("end_time") is None:
+            raise EvidenceError(f"{prefix}.start_time and end_time are required for query alignment")
+        row_start = parse_time(row["start_time"], f"{prefix}.start_time")
+        row_end = parse_time(row["end_time"], f"{prefix}.end_time")
+        if row_start >= row_end:
+            raise EvidenceError(f"{prefix}.start_time must be before end_time")
+        name = str(row.get("warehouse_name") or "<unknown>")
+        if name != query_warehouse or row_end <= query_start or row_start >= query_end:
+            excluded += 1
+            continue
+        item = grouped.setdefault(
+            name,
+            {
+                "running": Decimal("0"),
+                "queued": Decimal("0"),
+                "provisioning": Decimal("0"),
+                "blocked": Decimal("0"),
+                "rows": Decimal("0"),
+            },
+        )
+        for source, target in (
+            ("avg_running", "running"),
+            ("avg_queued_load", "queued"),
+            ("avg_queued_provisioning", "provisioning"),
+            ("avg_blocked", "blocked"),
+        ):
+            if row.get(source) is not None:
+                item[target] += decimal_value(row[source], f"warehouse_load[{index}].{source}")
+        item["rows"] += 1
+    if excluded:
+        warnings.append(f"warehouse_load: excluded {excluded} row(s) outside the query interval or warehouse")
+    result = []
+    for name, values in grouped.items():
+        result.append(
+            {
+                "warehouse_name": name,
+                "interval_count": as_text(values["rows"]),
+                "avg_running_load_sum": as_text(values["running"]),
+                "avg_queued_load_sum": as_text(values["queued"]),
+                "avg_queued_provisioning_sum": as_text(values["provisioning"]),
+                "avg_blocked_sum": as_text(values["blocked"]),
+                "classification": "confirmed",
+            }
+        )
+        if values["queued"] > 0 or values["provisioning"] > 0:
+            warnings.append(
+                f"{name}: warehouse load shows queue/provisioning pressure; align it with this query's wait timeline"
+            )
+    return sorted(result, key=lambda item: item["warehouse_name"])
+
+
+def hash_comparison(data: dict[str, Any], warnings: list[str]) -> list[dict[str, Any]]:
+    supplied = data.get("query_runs")
+    if supplied is None:
+        supplied = [data["query_history"]]
+    if not isinstance(supplied, list) or not all(isinstance(item, dict) for item in supplied):
+        raise EvidenceError("query_runs must be an array of objects")
+    if len(supplied) > 1:
+        alignment = data.get("comparison_alignment")
+        required = ("warehouse_name", "data_scope", "parameters", "cache_state", "session_parameters")
+        if not isinstance(alignment, dict) or alignment.get("status") != "aligned":
+            warnings.append("query hash comparison unavailable: explicit aligned comparison receipt is missing")
+            return []
+        missing = [field for field in required if field not in alignment or alignment[field] is None]
+        if missing:
+            warnings.append(
+                "query hash comparison unavailable: aligned comparison receipt is missing " + ", ".join(missing)
+            )
+            return []
+        if any(not isinstance(alignment[field], (str, dict, list, bool, int, float)) for field in required):
+            warnings.append("query hash comparison unavailable: aligned comparison receipt contains invalid fields")
+            return []
+    else:
+        alignment = None
+    groups: dict[str, list[tuple[Decimal, str | None]]] = {}
+    invalid = False
+    for index, row in enumerate(supplied):
+        fingerprint = row.get("query_parameterized_hash") or row.get("query_hash")
+        elapsed = row.get("total_elapsed_time_ms")
+        if fingerprint is None or elapsed is None or not row.get("query_id"):
+            warnings.append(f"query_runs[{index}]: fingerprint, elapsed time, and query_id are required for comparison")
+            invalid = True
+            continue
+        fingerprint = validate_hash(fingerprint, f"query_runs[{index}].query_fingerprint")
+        if alignment is not None and row.get("warehouse_name") != alignment.get("warehouse_name"):
+            warnings.append(f"query_runs[{index}]: warehouse does not match aligned comparison receipt")
+            invalid = True
+            continue
+        value = decimal_value(elapsed, f"query_runs[{index}].total_elapsed_time_ms")
+        group_key = str(fingerprint)
+        groups.setdefault(group_key, []).append((value, row.get("query_id")))
+    if invalid:
+        return []
+    if not groups:
+        warnings.append("query hash comparison unavailable: no fingerprinted runs with elapsed time")
+    result = []
+    for fingerprint, runs in groups.items():
+        values = [value for value, _ in runs]
+        result.append(
+            {
+                "fingerprint": safe_text(fingerprint),
+                "sample_count": len(values),
+                "average_elapsed_time_ms": as_text(sum(values, Decimal("0")) / len(values)),
+                "min_elapsed_time_ms": as_text(min(values)),
+                "max_elapsed_time_ms": as_text(max(values)),
+                "query_ids": [safe_text(str(query_id)) for _, query_id in runs if query_id is not None],
+                "classification": "derived",
+            }
+        )
+    return sorted(result, key=lambda item: str(item["fingerprint"]))
+
+
+def search_optimization_roi(data: dict[str, Any], warnings: list[str]) -> list[dict[str, str]]:
+    supplied = data.get("search_optimization")
+    if supplied is None:
+        return []
+    if isinstance(supplied, dict):
+        supplied = [supplied]
+    if not isinstance(supplied, list) or not all(isinstance(item, dict) for item in supplied):
+        raise EvidenceError("search_optimization must be an object or array of objects")
+    result: list[dict[str, str]] = []
+    for index, row in enumerate(supplied):
+        for field in (
+            "credits_used",
+            "query_count",
+            "latency_before_ms",
+            "latency_after_ms",
+            "bytes_scanned_before",
+            "bytes_scanned_after",
+        ):
+            if field in row and row[field] is not None:
+                decimal_value(row[field], f"search_optimization[{index}].{field}")
+        credits = decimal_value(row.get("credits_used", 0), f"search_optimization[{index}].credits_used")
+        before_latency = row.get("latency_before_ms")
+        after_latency = row.get("latency_after_ms")
+        before_bytes = row.get("bytes_scanned_before")
+        after_bytes = row.get("bytes_scanned_after")
+        item: dict[str, str] = {"classification": "derived", "credits_used": as_text(credits)}
+        if before_latency is not None and after_latency is not None:
+            latency_delta = decimal_value(
+                before_latency, f"search_optimization[{index}].latency_before_ms"
+            ) - decimal_value(after_latency, f"search_optimization[{index}].latency_after_ms")
+            item["latency_reduction_ms"] = as_text(latency_delta)
+        if before_bytes is not None and after_bytes is not None:
+            bytes_delta = decimal_value(
+                before_bytes, f"search_optimization[{index}].bytes_scanned_before"
+            ) - decimal_value(after_bytes, f"search_optimization[{index}].bytes_scanned_after")
+            item["bytes_scanned_reduction"] = as_text(bytes_delta)
+        if credits > 0 and "latency_reduction_ms" not in item and "bytes_scanned_reduction" not in item:
+            warnings.append(
+                "search optimization credits supplied without a measured latency or scan baseline; ROI is unknown"
+            )
+        item["decision"] = "review measured benefit against maintenance credits; no SOS change proposed"
+        result.append(item)
+    return result
+
+
 def analyze(data: dict[str, Any]) -> dict[str, Any]:
     reject_secret_fields(data)
     metadata = data.get("metadata")
@@ -124,6 +412,14 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
     query_id = metadata.get("query_id")
     if not isinstance(query_id, str) or not query_id.strip():
         raise EvidenceError("metadata.query_id is required")
+    history_query_id = history.get("query_id")
+    if not isinstance(history_query_id, str) or not history_query_id.strip():
+        raise EvidenceError("query_history.query_id is required")
+    if history_query_id != query_id:
+        raise EvidenceError("metadata.query_id must match query_history.query_id")
+    for field in ("query_hash", "query_parameterized_hash"):
+        if history.get(field) is not None:
+            validate_hash(history[field], f"query_history.{field}")
     for field in ("account", "role", "history_source", "experiment_owner"):
         if not isinstance(metadata.get(field), str) or not metadata[field].strip():
             raise EvidenceError(f"metadata.{field} is required")
@@ -148,7 +444,23 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
     derived: list[dict[str, str]] = []
     hypotheses: list[dict[str, str]] = []
     warnings: list[str] = []
+    collector_receipt = validate_collector_receipt(data, warnings, collected_at)
     experiment_owner = str(metadata["experiment_owner"])
+    query_start = query_end = None
+    if data.get("warehouse_load"):
+        query_start = parse_time(history.get("start_time"), "query_history.start_time")
+        query_end = parse_time(history.get("end_time"), "query_history.end_time")
+        if query_start >= query_end:
+            raise EvidenceError("query_history.start_time must be before end_time")
+    warehouse_load = load_summary(
+        data.get("warehouse_load", []),
+        warnings,
+        query_start or datetime.min.replace(tzinfo=timezone.utc),
+        query_end or datetime.max.replace(tzinfo=timezone.utc),
+        history["warehouse_name"],
+    )
+    hash_comparison_rows = hash_comparison(data, warnings)
+    sos_roi = search_optimization_roi(data, warnings)
 
     status = str(history.get("execution_status") or "unknown").lower()
     operator_evidence_eligible = status in {"success", "fail", "incident"}
@@ -383,8 +695,23 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
         warnings.append(f"execution status is {status}; operator statistics may be unavailable until completion")
     if not operators:
         warnings.append("operator statistics absent; operator-level conditions are unknown, not zero")
+    insight_status = data.get("query_insights_status")
+    if insight_status is not None:
+        if not isinstance(insight_status, dict):
+            raise EvidenceError("query_insights_status must be an object")
+        status_value = str(insight_status.get("status") or "unknown")
+        if status_value not in {"available", "unavailable", "excluded", "unknown"}:
+            raise EvidenceError("query_insights_status.status must be available, unavailable, excluded, or unknown")
+        insight_coverage = {"status": status_value, "reason": safe_text(insight_status.get("reason") or "not supplied")}
+    else:
+        insight_coverage = {
+            "status": "available" if insights else "unknown",
+            "reason": "rows supplied"
+            if insights
+            else "no row supplied; exclusion, latency, or no signal are all possible",
+        }
     if not insights:
-        warnings.append("no Query Insights supplied; absence is not proof that no performance condition exists")
+        warnings.append(f"no Query Insights supplied; absence is not proof; {insight_coverage['reason']}")
 
     for hypothesis in hypotheses:
         hypothesis["falsification_evidence"] = (
@@ -412,6 +739,12 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
         "estimated_or_derived_metrics": derived,
         "at_risk_hypotheses": hypotheses,
         "top_operators_by_observed_percentage": top_operators,
+        "warehouse_load_summary": warehouse_load,
+        "query_hash_comparison": hash_comparison_rows,
+        "collector_receipt_assessment": collector_receipt,
+        "completeness_claim_blocked": not collector_receipt["complete"],
+        "search_optimization_roi": sos_roi,
+        "query_insights_coverage": insight_coverage,
         "one_variable_experiment": {
             "status": "not_proposed",
             "owner": experiment_owner,
@@ -442,6 +775,7 @@ def render_markdown(result: dict[str, Any]) -> str:
         f"Query: `{query['query_id']}` · Status: `{query['execution_status']}`",
         f"Account: `{query.get('account') or 'not supplied'}` · Role: `{query.get('role') or 'not supplied'}`",
         f"History source: `{result.get('history_source') or 'not supplied'}`; observed age {result['observed_history_age_seconds']} seconds",
+        f"Collector receipt: `{result['collector_receipt_assessment']['status']}`; completeness claim blocked: `{result['completeness_claim_blocked']}`",
         "",
         "## Timeline (milliseconds)",
         "",
@@ -487,6 +821,39 @@ def render_markdown(result: dict[str, Any]) -> str:
             )
     else:
         lines.append("No hypothesis was generated from the supplied evidence.")
+    lines.extend(["", "## Warehouse load correlation", ""])
+    lines.append(
+        f"Query Insights coverage: `{result['query_insights_coverage']['status']}` — {result['query_insights_coverage']['reason']}"
+    )
+    if result["warehouse_load_summary"]:
+        lines.extend(
+            [
+                "",
+                "| Warehouse | Intervals | Running load | Queued load | Provisioning load | Blocked load |",
+                "|---|---:|---:|---:|---:|---:|",
+            ]
+        )
+        for item in result["warehouse_load_summary"]:
+            lines.append(
+                f"| {item['warehouse_name']} | {item['interval_count']} | {item['avg_running_load_sum']} | {item['avg_queued_load_sum']} | {item['avg_queued_provisioning_sum']} | {item['avg_blocked_sum']} |"
+            )
+    else:
+        lines.append("No warehouse load rows supplied; queue cause remains unknown.")
+    lines.extend(["", "## Query-hash comparison", ""])
+    for item in result["query_hash_comparison"]:
+        lines.append(
+            f"- `{item['fingerprint']}` — {item['sample_count']} run(s), average {item['average_elapsed_time_ms']} ms, range {item['min_elapsed_time_ms']}–{item['max_elapsed_time_ms']} ms."
+        )
+    if not result["query_hash_comparison"]:
+        lines.append("No comparable query fingerprint was supplied.")
+    lines.extend(["", "## Search Optimization Service ROI", ""])
+    if result["search_optimization_roi"]:
+        for item in result["search_optimization_roi"]:
+            lines.append(
+                f"- Credits used: {item['credits_used']}; latency reduction: {item.get('latency_reduction_ms', 'unknown')} ms; bytes reduction: {item.get('bytes_scanned_reduction', 'unknown')}; {item['decision']}."
+            )
+    else:
+        lines.append("No Search Optimization Service ROI evidence supplied; benefit and maintenance cost are unknown.")
     experiment = result["one_variable_experiment"]
     lines.extend(
         [

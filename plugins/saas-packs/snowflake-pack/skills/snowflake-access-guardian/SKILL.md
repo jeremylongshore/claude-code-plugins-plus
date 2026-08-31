@@ -76,7 +76,7 @@ approved local change packet; never to apply Snowflake mutations.
    non-claims:
 
    ```bash
-   python3 "${CLAUDE_SKILL_DIR}/../../shared/evidence/collect_snowflake_evidence.py" \
+   python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
      --surface access --connection <existing-readonly-profile> \
      --output ./snowflake-access-live-evidence.json
    ```

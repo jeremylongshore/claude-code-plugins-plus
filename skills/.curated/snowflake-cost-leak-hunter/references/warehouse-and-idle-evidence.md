@@ -46,15 +46,19 @@ Normalized row:
 ## Query attribution by query
 
 Keep query IDs and dimensions, but omit raw `QUERY_TEXT` from the evidence bundle by
-default. SQL text can include literals and sensitive business data.
+default. SQL text, user names, and query tags can include sensitive business data.
+Use Snowflake-side SHA-256 pseudonyms for identity/tag grouping and a separate boolean
+for whether a tag is present.
 
 ```sql
 SELECT
   query_id,
   warehouse_id,
   warehouse_name,
-  user_name,
-  query_tag,
+  SHA2(TO_VARCHAR(user_name), 256) AS user_name_sha256,
+  IFF(query_tag IS NULL OR query_tag = '', NULL, SHA2(TO_VARCHAR(query_tag), 256))
+    AS query_tag_sha256,
+  query_tag IS NOT NULL AND query_tag <> '' AS query_tag_present,
   query_parameterized_hash,
   credits_attributed_compute,
   COALESCE(credits_used_query_acceleration, 0)
@@ -73,8 +77,9 @@ Normalized row:
 {
   "query_id": "01abc...",
   "warehouse_name": "TRANSFORM_WH",
-  "user_name": "SERVICE_USER",
-  "query_tag": "team=data-platform",
+  "user_name_sha256": "<sha256:user>",
+  "query_tag_sha256": "<sha256:tag>",
+  "query_tag_present": true,
   "credits_attributed_compute": "0.42",
   "credits_used_query_acceleration": "0"
 }

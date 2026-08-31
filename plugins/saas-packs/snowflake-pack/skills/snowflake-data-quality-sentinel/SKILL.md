@@ -11,7 +11,7 @@ allowed-tools: Read, Bash(python3:*)
 argument-hint: "[normalized-evidence.json]"
 model: inherit
 effort: high
-version: 1.0.0
+version: 2.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatibility: "Model-neutral; requires Python 3.10+. Optional collection requires Snowflake CLI with an existing read-only profile."
@@ -48,10 +48,10 @@ requirements are the denominator; discovered metrics do not silently enlarge it.
 When live evidence is needed, use the shared read-only collector first:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/../../shared/evidence/collect_snowflake_evidence.py" \
+python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
   --surface data-quality \
-  --connection <existing-readonly-profile> \
-  --output <receipt.json>
+  --connection readonly-observer \
+  --output ./snowflake-data-quality-evidence.json
 ```
 
 Authentication belongs to that existing Snowflake CLI profile. Do not accept or

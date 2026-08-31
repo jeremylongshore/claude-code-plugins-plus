@@ -23,7 +23,20 @@ EXPECTED_COLLECTOR_SOURCES = [
     "SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_LOAD_HISTORY",
 ]
 HASH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$")
-SQL_HASH_PREFIXES = {"SELECT", "WITH", "INSERT", "UPDATE", "DELETE", "MERGE", "DROP", "ALTER", "CREATE", "GRANT", "REVOKE", "CALL"}
+SQL_HASH_PREFIXES = {
+    "SELECT",
+    "WITH",
+    "INSERT",
+    "UPDATE",
+    "DELETE",
+    "MERGE",
+    "DROP",
+    "ALTER",
+    "CREATE",
+    "GRANT",
+    "REVOKE",
+    "CALL",
+}
 
 
 def validate_hash(value: Any, field: str) -> str:
@@ -44,9 +57,7 @@ def _rows_match(left: Any, right: Any) -> bool:
     return sorted(_canonical_json(row) for row in left) == sorted(_canonical_json(row) for row in right)
 
 
-def validate_collector_receipt(
-    data: dict[str, Any], warnings: list[str], evaluation_time: datetime
-) -> dict[str, Any]:
+def validate_collector_receipt(data: dict[str, Any], warnings: list[str], evaluation_time: datetime) -> dict[str, Any]:
     receipt = data.get("collector_receipt")
     if receipt is None:
         issue = "collector receipt not supplied; provenance and completeness are not verified"
@@ -74,7 +85,7 @@ def validate_collector_receipt(
         issues.append("collected_at is invalid")
     if receipt.get("source_views") != EXPECTED_COLLECTOR_SOURCES:
         issues.append("source_views do not match the reviewed query SQL")
-    sql_path = Path(__file__).resolve().parents[3] / "shared" / "evidence" / "sql" / "query.sql"
+    sql_path = Path(__file__).resolve().parent / "sql" / "query.sql"
     expected_sql_hash = None
     if sql_path.is_file():
         expected_sql_hash = f"sha256:{hashlib.sha256(sql_path.read_bytes()).hexdigest()}"
@@ -243,8 +254,22 @@ def load_summary(
         if name != query_warehouse or row_end <= query_start or row_start >= query_end:
             excluded += 1
             continue
-        item = grouped.setdefault(name, {"running": Decimal("0"), "queued": Decimal("0"), "provisioning": Decimal("0"), "blocked": Decimal("0"), "rows": Decimal("0")})
-        for source, target in (("avg_running", "running"), ("avg_queued_load", "queued"), ("avg_queued_provisioning", "provisioning"), ("avg_blocked", "blocked")):
+        item = grouped.setdefault(
+            name,
+            {
+                "running": Decimal("0"),
+                "queued": Decimal("0"),
+                "provisioning": Decimal("0"),
+                "blocked": Decimal("0"),
+                "rows": Decimal("0"),
+            },
+        )
+        for source, target in (
+            ("avg_running", "running"),
+            ("avg_queued_load", "queued"),
+            ("avg_queued_provisioning", "provisioning"),
+            ("avg_blocked", "blocked"),
+        ):
             if row.get(source) is not None:
                 item[target] += decimal_value(row[source], f"warehouse_load[{index}].{source}")
         item["rows"] += 1
@@ -252,17 +277,21 @@ def load_summary(
         warnings.append(f"warehouse_load: excluded {excluded} row(s) outside the query interval or warehouse")
     result = []
     for name, values in grouped.items():
-        result.append({
-            "warehouse_name": name,
-            "interval_count": as_text(values["rows"]),
-            "avg_running_load_sum": as_text(values["running"]),
-            "avg_queued_load_sum": as_text(values["queued"]),
-            "avg_queued_provisioning_sum": as_text(values["provisioning"]),
-            "avg_blocked_sum": as_text(values["blocked"]),
-            "classification": "confirmed",
-        })
+        result.append(
+            {
+                "warehouse_name": name,
+                "interval_count": as_text(values["rows"]),
+                "avg_running_load_sum": as_text(values["running"]),
+                "avg_queued_load_sum": as_text(values["queued"]),
+                "avg_queued_provisioning_sum": as_text(values["provisioning"]),
+                "avg_blocked_sum": as_text(values["blocked"]),
+                "classification": "confirmed",
+            }
+        )
         if values["queued"] > 0 or values["provisioning"] > 0:
-            warnings.append(f"{name}: warehouse load shows queue/provisioning pressure; align it with this query's wait timeline")
+            warnings.append(
+                f"{name}: warehouse load shows queue/provisioning pressure; align it with this query's wait timeline"
+            )
     return sorted(result, key=lambda item: item["warehouse_name"])
 
 
@@ -281,8 +310,7 @@ def hash_comparison(data: dict[str, Any], warnings: list[str]) -> list[dict[str,
         missing = [field for field in required if field not in alignment or alignment[field] is None]
         if missing:
             warnings.append(
-                "query hash comparison unavailable: aligned comparison receipt is missing "
-                + ", ".join(missing)
+                "query hash comparison unavailable: aligned comparison receipt is missing " + ", ".join(missing)
             )
             return []
         if any(not isinstance(alignment[field], (str, dict, list, bool, int, float)) for field in required):
@@ -314,15 +342,17 @@ def hash_comparison(data: dict[str, Any], warnings: list[str]) -> list[dict[str,
     result = []
     for fingerprint, runs in groups.items():
         values = [value for value, _ in runs]
-        result.append({
-            "fingerprint": safe_text(fingerprint),
-            "sample_count": len(values),
-            "average_elapsed_time_ms": as_text(sum(values, Decimal("0")) / len(values)),
-            "min_elapsed_time_ms": as_text(min(values)),
-            "max_elapsed_time_ms": as_text(max(values)),
-            "query_ids": [safe_text(str(query_id)) for _, query_id in runs if query_id is not None],
-            "classification": "derived",
-        })
+        result.append(
+            {
+                "fingerprint": safe_text(fingerprint),
+                "sample_count": len(values),
+                "average_elapsed_time_ms": as_text(sum(values, Decimal("0")) / len(values)),
+                "min_elapsed_time_ms": as_text(min(values)),
+                "max_elapsed_time_ms": as_text(max(values)),
+                "query_ids": [safe_text(str(query_id)) for _, query_id in runs if query_id is not None],
+                "classification": "derived",
+            }
+        )
     return sorted(result, key=lambda item: str(item["fingerprint"]))
 
 
@@ -336,7 +366,14 @@ def search_optimization_roi(data: dict[str, Any], warnings: list[str]) -> list[d
         raise EvidenceError("search_optimization must be an object or array of objects")
     result: list[dict[str, str]] = []
     for index, row in enumerate(supplied):
-        for field in ("credits_used", "query_count", "latency_before_ms", "latency_after_ms", "bytes_scanned_before", "bytes_scanned_after"):
+        for field in (
+            "credits_used",
+            "query_count",
+            "latency_before_ms",
+            "latency_after_ms",
+            "bytes_scanned_before",
+            "bytes_scanned_after",
+        ):
             if field in row and row[field] is not None:
                 decimal_value(row[field], f"search_optimization[{index}].{field}")
         credits = decimal_value(row.get("credits_used", 0), f"search_optimization[{index}].credits_used")
@@ -346,13 +383,19 @@ def search_optimization_roi(data: dict[str, Any], warnings: list[str]) -> list[d
         after_bytes = row.get("bytes_scanned_after")
         item: dict[str, str] = {"classification": "derived", "credits_used": as_text(credits)}
         if before_latency is not None and after_latency is not None:
-            latency_delta = decimal_value(before_latency, f"search_optimization[{index}].latency_before_ms") - decimal_value(after_latency, f"search_optimization[{index}].latency_after_ms")
+            latency_delta = decimal_value(
+                before_latency, f"search_optimization[{index}].latency_before_ms"
+            ) - decimal_value(after_latency, f"search_optimization[{index}].latency_after_ms")
             item["latency_reduction_ms"] = as_text(latency_delta)
         if before_bytes is not None and after_bytes is not None:
-            bytes_delta = decimal_value(before_bytes, f"search_optimization[{index}].bytes_scanned_before") - decimal_value(after_bytes, f"search_optimization[{index}].bytes_scanned_after")
+            bytes_delta = decimal_value(
+                before_bytes, f"search_optimization[{index}].bytes_scanned_before"
+            ) - decimal_value(after_bytes, f"search_optimization[{index}].bytes_scanned_after")
             item["bytes_scanned_reduction"] = as_text(bytes_delta)
         if credits > 0 and "latency_reduction_ms" not in item and "bytes_scanned_reduction" not in item:
-            warnings.append("search optimization credits supplied without a measured latency or scan baseline; ROI is unknown")
+            warnings.append(
+                "search optimization credits supplied without a measured latency or scan baseline; ROI is unknown"
+            )
         item["decision"] = "review measured benefit against maintenance credits; no SOS change proposed"
         result.append(item)
     return result
@@ -661,7 +704,12 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
             raise EvidenceError("query_insights_status.status must be available, unavailable, excluded, or unknown")
         insight_coverage = {"status": status_value, "reason": safe_text(insight_status.get("reason") or "not supplied")}
     else:
-        insight_coverage = {"status": "available" if insights else "unknown", "reason": "rows supplied" if insights else "no row supplied; exclusion, latency, or no signal are all possible"}
+        insight_coverage = {
+            "status": "available" if insights else "unknown",
+            "reason": "rows supplied"
+            if insights
+            else "no row supplied; exclusion, latency, or no signal are all possible",
+        }
     if not insights:
         warnings.append(f"no Query Insights supplied; absence is not proof; {insight_coverage['reason']}")
 
@@ -774,22 +822,36 @@ def render_markdown(result: dict[str, Any]) -> str:
     else:
         lines.append("No hypothesis was generated from the supplied evidence.")
     lines.extend(["", "## Warehouse load correlation", ""])
-    lines.append(f"Query Insights coverage: `{result['query_insights_coverage']['status']}` — {result['query_insights_coverage']['reason']}")
+    lines.append(
+        f"Query Insights coverage: `{result['query_insights_coverage']['status']}` — {result['query_insights_coverage']['reason']}"
+    )
     if result["warehouse_load_summary"]:
-        lines.extend(["", "| Warehouse | Intervals | Running load | Queued load | Provisioning load | Blocked load |", "|---|---:|---:|---:|---:|---:|"])
+        lines.extend(
+            [
+                "",
+                "| Warehouse | Intervals | Running load | Queued load | Provisioning load | Blocked load |",
+                "|---|---:|---:|---:|---:|---:|",
+            ]
+        )
         for item in result["warehouse_load_summary"]:
-            lines.append(f"| {item['warehouse_name']} | {item['interval_count']} | {item['avg_running_load_sum']} | {item['avg_queued_load_sum']} | {item['avg_queued_provisioning_sum']} | {item['avg_blocked_sum']} |")
+            lines.append(
+                f"| {item['warehouse_name']} | {item['interval_count']} | {item['avg_running_load_sum']} | {item['avg_queued_load_sum']} | {item['avg_queued_provisioning_sum']} | {item['avg_blocked_sum']} |"
+            )
     else:
         lines.append("No warehouse load rows supplied; queue cause remains unknown.")
     lines.extend(["", "## Query-hash comparison", ""])
     for item in result["query_hash_comparison"]:
-        lines.append(f"- `{item['fingerprint']}` — {item['sample_count']} run(s), average {item['average_elapsed_time_ms']} ms, range {item['min_elapsed_time_ms']}–{item['max_elapsed_time_ms']} ms.")
+        lines.append(
+            f"- `{item['fingerprint']}` — {item['sample_count']} run(s), average {item['average_elapsed_time_ms']} ms, range {item['min_elapsed_time_ms']}–{item['max_elapsed_time_ms']} ms."
+        )
     if not result["query_hash_comparison"]:
         lines.append("No comparable query fingerprint was supplied.")
     lines.extend(["", "## Search Optimization Service ROI", ""])
     if result["search_optimization_roi"]:
         for item in result["search_optimization_roi"]:
-            lines.append(f"- Credits used: {item['credits_used']}; latency reduction: {item.get('latency_reduction_ms', 'unknown')} ms; bytes reduction: {item.get('bytes_scanned_reduction', 'unknown')}; {item['decision']}.")
+            lines.append(
+                f"- Credits used: {item['credits_used']}; latency reduction: {item.get('latency_reduction_ms', 'unknown')} ms; bytes reduction: {item.get('bytes_scanned_reduction', 'unknown')}; {item['decision']}."
+            )
     else:
         lines.append("No Search Optimization Service ROI evidence supplied; benefit and maintenance cost are unknown.")
     experiment = result["one_variable_experiment"]

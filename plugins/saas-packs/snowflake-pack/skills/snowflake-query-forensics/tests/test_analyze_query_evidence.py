@@ -19,7 +19,7 @@ assert SPEC and SPEC.loader
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
 
-COLLECTOR_SCRIPT = SKILL_DIR.parents[1] / "shared" / "evidence" / "collect_snowflake_evidence.py"
+COLLECTOR_SCRIPT = SKILL_DIR / "scripts" / "collect_snowflake_evidence.py"
 COLLECTOR_SPEC = importlib.util.spec_from_file_location("collect_snowflake_evidence", COLLECTOR_SCRIPT)
 assert COLLECTOR_SPEC and COLLECTOR_SPEC.loader
 COLLECTOR = importlib.util.module_from_spec(COLLECTOR_SPEC)
@@ -177,10 +177,29 @@ class QueryEvidenceTests(unittest.TestCase):
 
     def test_correlates_load_hashes_and_sos_roi_without_recommending_mutation(self) -> None:
         data = self.load_fixture("query_evidence.json")
-        data["warehouse_load"] = [{"warehouse_name": "ETL_WH", "start_time": "2026-08-30T10:20:00Z", "end_time": "2026-08-30T10:22:00Z", "avg_running": "1.2", "avg_queued_load": "0.4", "avg_queued_provisioning": "0"}]
+        data["warehouse_load"] = [
+            {
+                "warehouse_name": "ETL_WH",
+                "start_time": "2026-08-30T10:20:00Z",
+                "end_time": "2026-08-30T10:22:00Z",
+                "avg_running": "1.2",
+                "avg_queued_load": "0.4",
+                "avg_queued_provisioning": "0",
+            }
+        ]
         data["query_runs"] = [
-            {"query_id": "old", "query_parameterized_hash": "phash-1", "warehouse_name": "ETL_WH", "total_elapsed_time_ms": "1000"},
-            {"query_id": "new", "query_parameterized_hash": "phash-1", "warehouse_name": "ETL_WH", "total_elapsed_time_ms": "2000"},
+            {
+                "query_id": "old",
+                "query_parameterized_hash": "phash-1",
+                "warehouse_name": "ETL_WH",
+                "total_elapsed_time_ms": "1000",
+            },
+            {
+                "query_id": "new",
+                "query_parameterized_hash": "phash-1",
+                "warehouse_name": "ETL_WH",
+                "total_elapsed_time_ms": "2000",
+            },
         ]
         data["comparison_alignment"] = {
             "status": "aligned",
@@ -190,7 +209,13 @@ class QueryEvidenceTests(unittest.TestCase):
             "cache_state": "disabled",
             "session_parameters": {},
         }
-        data["search_optimization"] = {"credits_used": "2.5", "latency_before_ms": "5000", "latency_after_ms": "2500", "bytes_scanned_before": "1000", "bytes_scanned_after": "400"}
+        data["search_optimization"] = {
+            "credits_used": "2.5",
+            "latency_before_ms": "5000",
+            "latency_after_ms": "2500",
+            "bytes_scanned_before": "1000",
+            "bytes_scanned_after": "400",
+        }
         data["query_insights_status"] = {"status": "available", "reason": "operator-supplied Query Insights export"}
         result = MODULE.analyze(data)
         self.assertEqual(result["warehouse_load_summary"][0]["avg_queued_load_sum"], "0.4")
@@ -207,8 +232,18 @@ class QueryEvidenceTests(unittest.TestCase):
     def test_load_correlation_requires_same_interval_and_warehouse(self) -> None:
         data = self.load_fixture("query_evidence.json")
         data["warehouse_load"] = [
-            {"warehouse_name": "OTHER_WH", "start_time": "2026-08-30T10:20:00Z", "end_time": "2026-08-30T10:22:00Z", "avg_queued_load": "99"},
-            {"warehouse_name": "ETL_WH", "start_time": "2026-08-30T09:00:00Z", "end_time": "2026-08-30T09:05:00Z", "avg_queued_load": "88"},
+            {
+                "warehouse_name": "OTHER_WH",
+                "start_time": "2026-08-30T10:20:00Z",
+                "end_time": "2026-08-30T10:22:00Z",
+                "avg_queued_load": "99",
+            },
+            {
+                "warehouse_name": "ETL_WH",
+                "start_time": "2026-08-30T09:00:00Z",
+                "end_time": "2026-08-30T09:05:00Z",
+                "avg_queued_load": "88",
+            },
         ]
         result = MODULE.analyze(data)
         self.assertEqual(result["warehouse_load_summary"], [])
@@ -217,8 +252,18 @@ class QueryEvidenceTests(unittest.TestCase):
     def test_unaligned_hash_runs_are_not_compared(self) -> None:
         data = self.load_fixture("query_evidence.json")
         data["query_runs"] = [
-            {"query_id": "old", "query_parameterized_hash": "phash-1", "warehouse_name": "ETL_WH", "total_elapsed_time_ms": "1000"},
-            {"query_id": "new", "query_parameterized_hash": "phash-1", "warehouse_name": "ETL_WH", "total_elapsed_time_ms": "2000"},
+            {
+                "query_id": "old",
+                "query_parameterized_hash": "phash-1",
+                "warehouse_name": "ETL_WH",
+                "total_elapsed_time_ms": "1000",
+            },
+            {
+                "query_id": "new",
+                "query_parameterized_hash": "phash-1",
+                "warehouse_name": "ETL_WH",
+                "total_elapsed_time_ms": "2000",
+            },
         ]
         result = MODULE.analyze(data)
         self.assertEqual(result["query_hash_comparison"], [])
@@ -267,7 +312,9 @@ class QueryEvidenceTests(unittest.TestCase):
         data["collector_receipt"] = receipt
         result = MODULE.analyze(data)
         self.assertTrue(result["completeness_claim_blocked"])
-        self.assertIn("query_history rows do not match collector receipt", result["collector_receipt_assessment"]["issues"])
+        self.assertIn(
+            "query_history rows do not match collector receipt", result["collector_receipt_assessment"]["issues"]
+        )
 
 
 if __name__ == "__main__":

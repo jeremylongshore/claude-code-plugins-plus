@@ -488,7 +488,11 @@ def analyze(doc: dict, principal: str = "", object_name: str = "", privilege: st
             freshness_missing.append("metadata.freshness.checked_at(no later than collection)")
         if type(freshness.get("max_age_seconds")) is not int or freshness.get("max_age_seconds") <= 0:
             freshness_missing.append("metadata.freshness.max_age_seconds(positive integer)")
-        elif freshness_checked is not None and collected_at is not None and (collected_at - freshness_checked).total_seconds() > freshness["max_age_seconds"]:
+        elif (
+            freshness_checked is not None
+            and collected_at is not None
+            and (collected_at - freshness_checked).total_seconds() > freshness["max_age_seconds"]
+        ):
             freshness_missing.append("metadata.freshness.checked_at(within max_age_seconds)")
     if freshness_missing:
         findings.append(
@@ -497,9 +501,11 @@ def analyze(doc: dict, principal: str = "", object_name: str = "", privilege: st
                 "high",
                 "evidence-freshness",
                 "inventory",
-                "Missing or invalid: " + ", ".join(freshness_missing) + ". Recollect current SHOW GRANTS/FUTURE GRANTS evidence with UTC timestamps, an explicit freshness bound, and the observation window; Account Usage lag is not proof of denial.",
+                "Missing or invalid: "
+                + ", ".join(freshness_missing)
+                + ". Recollect current SHOW GRANTS/FUTURE GRANTS evidence with UTC timestamps, an explicit freshness bound, and the observation window; Account Usage lag is not proof of denial.",
             )
-            )
+        )
 
     requested_user = users.get(_upper(principal), {})
     expected_primary = _upper(requested_user.get("primary_role") or requested_user.get("default_role"))
@@ -539,7 +545,12 @@ def analyze(doc: dict, principal: str = "", object_name: str = "", privilege: st
         valid = []
         for index, receipt in enumerate(receipts):
             observed_at = _timestamp(receipt.get("observed_at"))
-            if observed_at is None or proof_start is None or proof_end is None or not (proof_start <= observed_at <= proof_end):
+            if (
+                observed_at is None
+                or proof_start is None
+                or proof_end is None
+                or not (proof_start <= observed_at <= proof_end)
+            ):
                 findings.append(
                     _finding(
                         f"{path}-timestamp-{index}",
@@ -628,7 +639,9 @@ def analyze(doc: dict, principal: str = "", object_name: str = "", privilege: st
             "freshness": freshness,
         },
         "findings": findings,
-        "direct_user_paths": sorted(direct_user_paths, key=lambda item: (item["grantee"], item["object"], item["privilege"])),
+        "direct_user_paths": sorted(
+            direct_user_paths, key=lambda item: (item["grantee"], item["object"], item["privilege"])
+        ),
         "ownership_paths": sorted(ownership_paths, key=lambda item: (item["object"], item["path"])),
         "future_grant_precedence": future_precedence,
         "effective_access": requested,

@@ -18,7 +18,6 @@ from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlsplit
 
 
 VERSION = "1.0.0"
@@ -113,12 +112,16 @@ def reject_sensitive_data(value: Any, path: str = "input") -> None:
         raise EvidenceError(f"PII-like value is not accepted: {path}")
     if BEARER_RE.search(value) or PRIVATE_KEY_RE.search(value):
         raise EvidenceError(f"credential-like value is not accepted: {path}")
-    parsed = urlsplit(value.strip())
-    if parsed.scheme in {"http", "https"}:
-        query = parsed.query.casefold()
-        if parsed.username or parsed.password or query or any(
-            marker in value.casefold()
-            for marker in ("x-amz-signature", "x-goog-signature", "sig=", "signature=")
+    stripped = value.strip()
+    lowered = stripped.casefold()
+    if lowered.startswith(("http://", "https://")):
+        if (
+            re.search(r"://[^/@\s]+@", stripped)
+            or "?" in stripped
+            or "#" in stripped
+            or any(
+                marker in value.casefold() for marker in ("x-amz-signature", "x-goog-signature", "sig=", "signature=")
+            )
         ):
             raise EvidenceError(f"presigned or credential-bearing URL is not accepted: {path}")
 
@@ -414,9 +417,7 @@ def normalize_document(data: Any) -> dict[str, Any]:
         )
 
         if measured_at < window_start or measured_at > window_end:
-            raise EvidenceError(
-                f"measurements[{index}].measured_at must fall within metadata.window_start/window_end"
-            )
+            raise EvidenceError(f"measurements[{index}].measured_at must fall within metadata.window_start/window_end")
 
     source_keys = {
         "source",
@@ -446,11 +447,11 @@ def normalize_document(data: Any) -> dict[str, Any]:
                 "collected_at": parse_time(
                     row["collected_at"],
                     f"source_metadata[{index}].collected_at",
-                ).isoformat().replace("+00:00", "Z"),
+                )
+                .isoformat()
+                .replace("+00:00", "Z"),
                 "latest_record_at": (
-                    parse_time(latest, f"source_metadata[{index}].latest_record_at")
-                    .isoformat()
-                    .replace("+00:00", "Z")
+                    parse_time(latest, f"source_metadata[{index}].latest_record_at").isoformat().replace("+00:00", "Z")
                     if latest is not None
                     else None
                 ),
@@ -462,9 +463,7 @@ def normalize_document(data: Any) -> dict[str, Any]:
                 "error_code": text(row["error_code"], f"source_metadata[{index}].error_code", required=False).upper(),
             }
         )
-        source_collected_at = parse_time(
-            row["collected_at"], f"source_metadata[{index}].collected_at"
-        )
+        source_collected_at = parse_time(row["collected_at"], f"source_metadata[{index}].collected_at")
         if source_collected_at < window_start:
             raise EvidenceError(f"source_metadata[{index}].collected_at cannot precede metadata.window_start")
         if source_collected_at > collected_at:
@@ -518,9 +517,7 @@ def _status(findings: list[dict[str, str]], field: str) -> str:
 def analyze(data: Any) -> dict[str, Any]:
     normalized = normalize_document(data)
     requirements = normalized["requirements"]
-    associations_by_requirement = {
-        row["requirement_id"]: row for row in normalized["associations"]
-    }
+    associations_by_requirement = {row["requirement_id"]: row for row in normalized["associations"]}
     measurements_by_requirement: dict[str, list[dict[str, Any]]] = {}
     for row in normalized["measurements"]:
         measurements_by_requirement.setdefault(row["requirement_id"], []).append(row)
@@ -558,8 +555,7 @@ def analyze(data: Any) -> dict[str, Any]:
         )
 
     notification_privilege_error = any(
-        source["error_code"]
-        in {"DQ_NOTIFICATION_PRIVILEGE_ERROR", "INSUFFICIENT_PRIVILEGES", "NOT_AUTHORIZED"}
+        source["error_code"] in {"DQ_NOTIFICATION_PRIVILEGE_ERROR", "INSUFFICIENT_PRIVILEGES", "NOT_AUTHORIZED"}
         and source["kind"] == "notification"
         for source in normalized["source_metadata"]
     )

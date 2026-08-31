@@ -20,18 +20,37 @@ MODES = {
     "OPERATOR_EXECUTED_FAILOVER_AND_FAILBACK",
 }
 FAIL_CODES = {
-    "EDITION_UNAVAILABLE", "GROUP_NOT_FAILOVER_CAPABLE", "SECONDARY_MISSING",
-    "GROUP_SUSPENDED", "REFRESH_FAILED", "REFRESH_CANCELED", "RPO_BREACH",
-    "RTO_BREACH", "DANGLING_REFERENCE", "TASK_OWNER_INVALID",
-    "TARGET_VALIDATION_FAILED", "PRIVILEGE_GAP", "OPERATOR_APPROVAL_MISSING",
-    "FAILOVER_UNVERIFIED", "FAILBACK_UNVERIFIED", "REPLICATION_RECEIPT_ERROR",
-    "REPLICATION_RECEIPT_TRUNCATED", "REPLICATION_RECEIPT_UNVERIFIABLE",
+    "EDITION_UNAVAILABLE",
+    "GROUP_NOT_FAILOVER_CAPABLE",
+    "SECONDARY_MISSING",
+    "GROUP_SUSPENDED",
+    "REFRESH_FAILED",
+    "REFRESH_CANCELED",
+    "RPO_BREACH",
+    "RTO_BREACH",
+    "DANGLING_REFERENCE",
+    "TASK_OWNER_INVALID",
+    "TARGET_VALIDATION_FAILED",
+    "PRIVILEGE_GAP",
+    "OPERATOR_APPROVAL_MISSING",
+    "FAILOVER_UNVERIFIED",
+    "FAILBACK_UNVERIFIED",
+    "REPLICATION_RECEIPT_ERROR",
+    "REPLICATION_RECEIPT_TRUNCATED",
+    "REPLICATION_RECEIPT_UNVERIFIABLE",
 }
 INCONCLUSIVE_CODES = {
-    "RPO_UNEVALUATED", "RTO_UNEVALUATED", "HISTORY_MISSING",
-    "HISTORY_STALE", "TARGET_VALIDATION_MISSING", "VISIBILITY_GAP",
+    "RPO_UNEVALUATED",
+    "RTO_UNEVALUATED",
+    "HISTORY_MISSING",
+    "HISTORY_STALE",
+    "TARGET_VALIDATION_MISSING",
+    "VISIBILITY_GAP",
 }
-SENSITIVE_KEY = re.compile(r"password|passphrase|secret|private.?key|credential|token|authorization|jwt|sql.?text|query.?text|raw.?row|pii", re.I)
+SENSITIVE_KEY = re.compile(
+    r"password|passphrase|secret|private.?key|credential|token|authorization|jwt|sql.?text|query.?text|raw.?row|pii",
+    re.I,
+)
 PRESIGNED = re.compile(r"https?://\S+[?&](?:X-Amz-|X-Goog-|sig=|signature=)", re.I)
 EMAIL = re.compile(r"(?i)(?<![\w.+-])[\w.+-]+@[a-z0-9.-]+\.[a-z]{2,}(?![\w.-])")
 SSN = re.compile(r"(?<!\d)\d{3}-\d{2}-\d{4}(?!\d)")
@@ -95,21 +114,33 @@ def _replication_receipt_findings(receipt: Any, as_of: datetime) -> list[tuple[s
     try:
         collected = stamp(receipt.get("collected_at"), "collector_receipt.collected_at")
         if collected > datetime.now(collected.tzinfo) or collected > as_of:
-            findings.append(("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt collected_at is future-dated or after as_of"))
+            findings.append(
+                ("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt collected_at is future-dated or after as_of")
+            )
     except ValueError:
         findings.append(("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt collected_at is invalid"))
     if not isinstance(receipt.get("connection_profile"), str) or not receipt["connection_profile"].strip():
         findings.append(("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt connection_profile is required"))
     source_views = receipt.get("source_views")
     if source_views != [REPLICATION_VIEW]:
-        findings.append(("REPLICATION_RECEIPT_UNVERIFIABLE", f"collector receipt source_views must exactly match {REPLICATION_VIEW}"))
+        findings.append(
+            (
+                "REPLICATION_RECEIPT_UNVERIFIABLE",
+                f"collector receipt source_views must exactly match {REPLICATION_VIEW}",
+            )
+        )
     if not isinstance(receipt.get("sql_sha256"), str) or not SHA256_RE.fullmatch(receipt["sql_sha256"]):
         findings.append(("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt sql_sha256 is invalid"))
     else:
-        sql_path = Path(__file__).resolve().parents[3] / "shared" / "evidence" / "sql" / "replication.sql"
+        sql_path = Path(__file__).resolve().parent / "sql" / "replication.sql"
         expected_sql_hash = f"sha256:{hashlib.sha256(sql_path.read_bytes()).hexdigest()}"
         if receipt["sql_sha256"] != expected_sql_hash:
-            findings.append(("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt sql_sha256 does not match the reviewed replication SQL"))
+            findings.append(
+                (
+                    "REPLICATION_RECEIPT_UNVERIFIABLE",
+                    "collector receipt sql_sha256 does not match the reviewed replication SQL",
+                )
+            )
     if not isinstance(receipt.get("receipt_sha256"), str) or not SHA256_RE.fullmatch(receipt["receipt_sha256"]):
         findings.append(("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt receipt_sha256 is invalid"))
     if isinstance(receipt.get("receipt_sha256"), str) and SHA256_RE.fullmatch(receipt["receipt_sha256"]):
@@ -117,10 +148,14 @@ def _replication_receipt_findings(receipt: Any, as_of: datetime) -> list[tuple[s
         unsigned.pop("receipt_sha256", None)
         expected = f"sha256:{hashlib.sha256(_canonical_json(unsigned)).hexdigest()}"
         if receipt["receipt_sha256"] != expected:
-            findings.append(("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt receipt_sha256 does not match its contents"))
+            findings.append(
+                ("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt receipt_sha256 does not match its contents")
+            )
     row_count = receipt.get("row_count")
     if type(row_count) is not int or row_count < 0:
-        findings.append(("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt row_count must be a non-negative integer"))
+        findings.append(
+            ("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt row_count must be a non-negative integer")
+        )
     row_limit = receipt.get("row_limit")
     if row_limit is None or type(row_limit) is not int or row_limit <= 0:
         findings.append(("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt row_limit must be a positive integer"))
@@ -128,7 +163,12 @@ def _replication_receipt_findings(receipt: Any, as_of: datetime) -> list[tuple[s
     if not isinstance(truncation, bool):
         findings.append(("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt truncation_possible must be boolean"))
     elif type(row_count) is int and type(row_limit) is int and truncation != row_count >= row_limit:
-        findings.append(("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt truncation_possible disagrees with row_count and row_limit"))
+        findings.append(
+            (
+                "REPLICATION_RECEIPT_UNVERIFIABLE",
+                "collector receipt truncation_possible disagrees with row_count and row_limit",
+            )
+        )
     if truncation is True:
         findings.append(("REPLICATION_RECEIPT_TRUNCATED", "collector receipt is truncated at its SQL row limit"))
     datasets = receipt.get("datasets")
@@ -137,9 +177,16 @@ def _replication_receipt_findings(receipt: Any, as_of: datetime) -> list[tuple[s
     else:
         rows = datasets.get(REPLICATION_DATASET, [])
         if not isinstance(rows, list) or any(not isinstance(row, dict) for row in rows):
-            findings.append(("REPLICATION_RECEIPT_UNVERIFIABLE", "replication_refresh_history must be an array of objects"))
+            findings.append(
+                ("REPLICATION_RECEIPT_UNVERIFIABLE", "replication_refresh_history must be an array of objects")
+            )
         elif type(row_count) is int and row_count != len(rows):
-            findings.append(("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt row_count does not match replication history rows"))
+            findings.append(
+                (
+                    "REPLICATION_RECEIPT_UNVERIFIABLE",
+                    "collector receipt row_count does not match replication history rows",
+                )
+            )
         if set(datasets) - {REPLICATION_DATASET}:
             findings.append(("REPLICATION_RECEIPT_UNVERIFIABLE", "collector receipt contains unexpected datasets"))
     return findings
@@ -194,7 +241,10 @@ def analyze(data: Any) -> dict[str, Any]:
         raise ValueError("objectives.rto_minutes must be positive")
 
     out: list[dict[str, str]] = []
-    add = lambda c, s, e, a: out.append(finding(c, s, e, a))
+
+    def add(code: str, severity: str, evidence: str, action: str) -> None:
+        out.append(finding(code, severity, evidence, action))
+
     for code, evidence in _replication_receipt_findings(collector_receipt, as_of):
         add(
             code,
@@ -204,14 +254,32 @@ def analyze(data: Any) -> dict[str, Any]:
         )
     edition = str(data.get("edition", "UNKNOWN")).upper().replace(" ", "_")
     if edition not in {"BUSINESS_CRITICAL", "VIRTUAL_PRIVATE_SNOWFLAKE"}:
-        add("EDITION_UNAVAILABLE", "critical", f"edition={edition}", "Confirm edition and limit the plan to supported replication capability; do not claim account failover readiness.")
+        add(
+            "EDITION_UNAVAILABLE",
+            "critical",
+            f"edition={edition}",
+            "Confirm edition and limit the plan to supported replication capability; do not claim account failover readiness.",
+        )
 
     groups = data.get("groups", [])
     names = {str(row.get("name")) for row in groups if row.get("name")}
     if not groups:
-        add("HISTORY_MISSING", "unknown", "no in-scope groups", "Declare the complete in-scope failover-group denominator and collect group evidence.")
-    receipt_rows = collector_receipt.get("datasets", {}).get(REPLICATION_DATASET, []) if isinstance(collector_receipt, dict) and isinstance(collector_receipt.get("datasets"), dict) else []
-    receipt_group_names = {str(row.get("replication_group_name")) for row in receipt_rows if isinstance(row, dict) and row.get("replication_group_name")}
+        add(
+            "HISTORY_MISSING",
+            "unknown",
+            "no in-scope groups",
+            "Declare the complete in-scope failover-group denominator and collect group evidence.",
+        )
+    receipt_rows = (
+        collector_receipt.get("datasets", {}).get(REPLICATION_DATASET, [])
+        if isinstance(collector_receipt, dict) and isinstance(collector_receipt.get("datasets"), dict)
+        else []
+    )
+    receipt_group_names = {
+        str(row.get("replication_group_name"))
+        for row in receipt_rows
+        if isinstance(row, dict) and row.get("replication_group_name")
+    }
     missing_history = sorted(name for name in names if name not in receipt_group_names)
     if missing_history:
         add(
@@ -223,18 +291,43 @@ def analyze(data: Any) -> dict[str, Any]:
     for group in groups:
         name = str(group.get("name", "unnamed"))
         if str(group.get("kind", "")).upper() != "FAILOVER":
-            add("GROUP_NOT_FAILOVER_CAPABLE", "critical", name, "Verify that the recovery scope uses a failover group rather than assuming replication-only capability.")
+            add(
+                "GROUP_NOT_FAILOVER_CAPABLE",
+                "critical",
+                name,
+                "Verify that the recovery scope uses a failover group rather than assuming replication-only capability.",
+            )
         if group.get("secondary_present") is not True:
             add("SECONDARY_MISSING", "critical", name, "Confirm a matching secondary group in the target account.")
         if group.get("suspended") is True:
-            add("GROUP_SUSPENDED", "critical", name, "Review suspension state and require an authorized operator decision outside this skill.")
+            add(
+                "GROUP_SUSPENDED",
+                "critical",
+                name,
+                "Review suspension state and require an authorized operator decision outside this skill.",
+            )
         refresh = str(group.get("refresh_status", "UNKNOWN")).upper()
         if refresh == "IN_PROGRESS":
-            add("REFRESH_IN_PROGRESS", "warning", name, "Wait for the current refresh to finish and collect a new near-live receipt.")
+            add(
+                "REFRESH_IN_PROGRESS",
+                "warning",
+                name,
+                "Wait for the current refresh to finish and collect a new near-live receipt.",
+            )
         elif refresh == "FAILED":
-            add("REFRESH_FAILED", "critical", name, "Inspect the sanitized refresh error and repair the refresh path before a drill.")
+            add(
+                "REFRESH_FAILED",
+                "critical",
+                name,
+                "Inspect the sanitized refresh error and repair the refresh path before a drill.",
+            )
         elif refresh == "CANCELED":
-            add("REFRESH_CANCELED", "critical", name, "Establish why the refresh was canceled and collect a successful replacement receipt.")
+            add(
+                "REFRESH_CANCELED",
+                "critical",
+                name,
+                "Establish why the refresh was canceled and collect a successful replacement receipt.",
+            )
         last = group.get("last_successful_refresh_at")
         if rpo is None or not last:
             add("RPO_UNEVALUATED", "unknown", name, "Declare RPO and collect the last successful refresh timestamp.")
@@ -246,48 +339,118 @@ def analyze(data: Any) -> dict[str, Any]:
             if age < 0:
                 raise ValueError(f"groups[{name}].last_successful_refresh_at cannot be after as_of")
             if age > float(rpo):
-                add("RPO_BREACH", "critical", f"{name}: age={age:.1f}m objective={rpo}m", "Repair refresh cadence and verify a new near-live refresh before a drill.")
+                add(
+                    "RPO_BREACH",
+                    "critical",
+                    f"{name}: age={age:.1f}m objective={rpo}m",
+                    "Repair refresh cadence and verify a new near-live refresh before a drill.",
+                )
         interval = group.get("scheduled_interval_minutes")
         if rpo is not None and type(interval) in (int, float) and interval > rpo:
-            add("SCHEDULE_OVERRUN", "warning", f"{name}: interval={interval}m objective={rpo}m", "Review the schedule; its nominal interval already exceeds the RPO.")
+            add(
+                "SCHEDULE_OVERRUN",
+                "warning",
+                f"{name}: interval={interval}m objective={rpo}m",
+                "Review the schedule; its nominal interval already exceeds the RPO.",
+            )
 
     for dep in data.get("dependencies", []):
         left, right = str(dep.get("from_group", "")), str(dep.get("to_group", ""))
         if left not in names or right not in names or str(dep.get("status", "KNOWN")).upper() == "DANGLING":
-            add("DANGLING_REFERENCE", "critical", f"{left}->{right}", "Resolve or explicitly exclude the dangling dependency before a drill.")
+            add(
+                "DANGLING_REFERENCE",
+                "critical",
+                f"{left}->{right}",
+                "Resolve or explicitly exclude the dangling dependency before a drill.",
+            )
         elif left != right:
-            add("CROSS_GROUP_DEPENDENCY", "warning", f"{left}->{right}", "Prove ordering and target consistency across both groups.")
+            add(
+                "CROSS_GROUP_DEPENDENCY",
+                "warning",
+                f"{left}->{right}",
+                "Prove ordering and target consistency across both groups.",
+            )
 
     for check in data.get("object_checks", []):
         obj = str(check.get("object", "unknown"))
         if check.get("task_stream_split") is True:
-            add("TASK_STREAM_SPLIT", "warning", obj, "Keep dependent tasks and streams in a proven promotion unit or document ordering and replay controls.")
+            add(
+                "TASK_STREAM_SPLIT",
+                "warning",
+                obj,
+                "Keep dependent tasks and streams in a proven promotion unit or document ordering and replay controls.",
+            )
         if check.get("task_owner_valid") is False:
-            add("TASK_OWNER_INVALID", "critical", obj, "Verify target task ownership and execution role before promotion.")
+            add(
+                "TASK_OWNER_INVALID",
+                "critical",
+                obj,
+                "Verify target task ownership and execution role before promotion.",
+            )
         stream = str(check.get("stream_state", "CURRENT")).upper()
         if stream in {"STALE", "DUPLICATE_RISK", "TIME_TRAVEL_RISK"}:
-            add(f"STREAM_{stream}", "warning", obj, "Validate stream offsets, retention, and replay/idempotency behavior on the target.")
+            add(
+                f"STREAM_{stream}",
+                "warning",
+                obj,
+                "Validate stream offsets, retention, and replay/idempotency behavior on the target.",
+            )
         if check.get("dynamic_table_reinitialize") is True:
-            add("DYNAMIC_TABLE_REINITIALIZATION", "warning", obj, "Budget and validate target reinitialization before counting it inside RTO.")
+            add(
+                "DYNAMIC_TABLE_REINITIALIZATION",
+                "warning",
+                obj,
+                "Budget and validate target reinitialization before counting it inside RTO.",
+            )
 
     validations = data.get("target_validations", [])
     if not validations:
-        add("TARGET_VALIDATION_MISSING", "unknown", "no target invariants", "Define and execute target-side data and application invariants.")
+        add(
+            "TARGET_VALIDATION_MISSING",
+            "unknown",
+            "no target invariants",
+            "Define and execute target-side data and application invariants.",
+        )
     for row in validations:
         if str(row.get("status", "MISSING")).upper() != "PASS":
-            add("TARGET_VALIDATION_FAILED", "critical", str(row.get("name", "unnamed")), "Repair the target invariant and collect a passing receipt.")
+            add(
+                "TARGET_VALIDATION_FAILED",
+                "critical",
+                str(row.get("name", "unnamed")),
+                "Repair the target invariant and collect a passing receipt.",
+            )
     redirect = data.get("client_redirect", {})
     if not isinstance(redirect, dict) or redirect.get("tested") is not True:
-        add("CLIENT_REDIRECT_UNVERIFIED", "warning", "client redirect not proven", "Test the approved client redirection path and application reconnect behavior.")
+        add(
+            "CLIENT_REDIRECT_UNVERIFIED",
+            "warning",
+            "client redirect not proven",
+            "Test the approved client redirection path and application reconnect behavior.",
+        )
     privileges = data.get("privileges", {})
     if not isinstance(privileges, dict) or privileges.get("observable") is not True:
-        add("VISIBILITY_GAP", "unknown", "privilege evidence unavailable", "Collect least-privilege source and target visibility evidence.")
+        add(
+            "VISIBILITY_GAP",
+            "unknown",
+            "privilege evidence unavailable",
+            "Collect least-privilege source and target visibility evidence.",
+        )
     elif privileges.get("missing"):
-        add("PRIVILEGE_GAP", "critical", ", ".join(map(str, privileges["missing"])), "Resolve the named runtime/validation privilege gaps through approved change control.")
+        add(
+            "PRIVILEGE_GAP",
+            "critical",
+            ", ".join(map(str, privileges["missing"])),
+            "Resolve the named runtime/validation privilege gaps through approved change control.",
+        )
 
     history = data.get("history", {})
     if not isinstance(history, dict) or not history.get("account_usage_collected_at"):
-        add("HISTORY_MISSING", "unknown", "Account Usage receipt absent", "Collect a timestamped historical receipt and near-live state.")
+        add(
+            "HISTORY_MISSING",
+            "unknown",
+            "Account Usage receipt absent",
+            "Collect a timestamped historical receipt and near-live state.",
+        )
     else:
         history_at = stamp(history["account_usage_collected_at"], "history.account_usage_collected_at")
         if history_at > datetime.now(history_at.tzinfo):
@@ -296,35 +459,78 @@ def analyze(data: Any) -> dict[str, Any]:
         if age < 0:
             raise ValueError("history.account_usage_collected_at cannot be after as_of")
         if age > 180:
-            add("HISTORY_STALE", "unknown", f"Account Usage receipt age={age:.1f}m", "Collect near-live Information Schema state before an operator decision.")
+            add(
+                "HISTORY_STALE",
+                "unknown",
+                f"Account Usage receipt age={age:.1f}m",
+                "Collect near-live Information Schema state before an operator decision.",
+            )
     if history.get("detailed_window_days", 0) > 14:
-        add("HISTORY_RETENTION_EXCEEDED", "warning", f"requested {history['detailed_window_days']} days", "Use a retained external receipt for older detail; do not assume Snowflake still exposes it.")
+        add(
+            "HISTORY_RETENTION_EXCEEDED",
+            "warning",
+            f"requested {history['detailed_window_days']} days",
+            "Use a retained external receipt for older detail; do not assume Snowflake still exposes it.",
+        )
 
     events = {str(row.get("event", "")).upper(): row for row in data.get("drill_events", [])}
     execution = mode.startswith("OPERATOR_EXECUTED")
     if execution:
         failover = events.get("FAILOVER")
-        failover_observed = stamp(failover.get("observed_at"), "drill_events.FAILOVER.observed_at") if failover else None
-        if failover_observed is not None and (failover_observed > as_of or failover_observed > datetime.now(failover_observed.tzinfo)):
+        failover_observed = (
+            stamp(failover.get("observed_at"), "drill_events.FAILOVER.observed_at") if failover else None
+        )
+        if failover_observed is not None and (
+            failover_observed > as_of or failover_observed > datetime.now(failover_observed.tzinfo)
+        ):
             raise ValueError("drill_events.FAILOVER.observed_at cannot be in the future or after as_of")
         if not failover or failover.get("status") != "SUCCEEDED":
-            add("FAILOVER_UNVERIFIED", "critical", "successful failover event absent", "Attach the authorized operator event and post-failover validation receipt.")
+            add(
+                "FAILOVER_UNVERIFIED",
+                "critical",
+                "successful failover event absent",
+                "Attach the authorized operator event and post-failover validation receipt.",
+            )
         elif failover.get("operator_approved") is not True:
-            add("OPERATOR_APPROVAL_MISSING", "critical", "failover approval absent", "Attach explicit operator/change approval; analyzer execution is never authorization.")
+            add(
+                "OPERATOR_APPROVAL_MISSING",
+                "critical",
+                "failover approval absent",
+                "Attach explicit operator/change approval; analyzer execution is never authorization.",
+            )
         duration = failover.get("duration_minutes") if failover else None
         if rto is None or type(duration) not in (int, float):
-            add("RTO_UNEVALUATED", "unknown", "RTO objective or measured duration absent", "Declare RTO and attach measured operator duration.")
+            add(
+                "RTO_UNEVALUATED",
+                "unknown",
+                "RTO objective or measured duration absent",
+                "Declare RTO and attach measured operator duration.",
+            )
         elif duration > rto:
-            add("RTO_BREACH", "critical", f"duration={duration}m objective={rto}m", "Update the recovery plan or reduce measured recovery time before verification.")
+            add(
+                "RTO_BREACH",
+                "critical",
+                f"duration={duration}m objective={rto}m",
+                "Update the recovery plan or reduce measured recovery time before verification.",
+            )
     elif rto is None:
         add("RTO_UNEVALUATED", "unknown", "RTO objective absent", "Declare a target RTO before scheduling an exercise.")
     if mode == "OPERATOR_EXECUTED_FAILOVER_AND_FAILBACK":
         failback = events.get("FAILBACK")
-        failback_observed = stamp(failback.get("observed_at"), "drill_events.FAILBACK.observed_at") if failback else None
-        if failback_observed is not None and (failback_observed > as_of or failback_observed > datetime.now(failback_observed.tzinfo)):
+        failback_observed = (
+            stamp(failback.get("observed_at"), "drill_events.FAILBACK.observed_at") if failback else None
+        )
+        if failback_observed is not None and (
+            failback_observed > as_of or failback_observed > datetime.now(failback_observed.tzinfo)
+        ):
             raise ValueError("drill_events.FAILBACK.observed_at cannot be in the future or after as_of")
         if not failback or failback.get("status") != "SUCCEEDED" or failback.get("operator_approved") is not True:
-            add("FAILBACK_UNVERIFIED", "critical", "approved successful failback event absent", "Attach the authorized failback and post-failback validation receipt.")
+            add(
+                "FAILBACK_UNVERIFIED",
+                "critical",
+                "approved successful failback event absent",
+                "Attach the authorized failback and post-failback validation receipt.",
+            )
 
     out.sort(key=lambda row: (row["code"], row["evidence"]))
     codes = {row["code"] for row in out}
@@ -341,10 +547,14 @@ def analyze(data: Any) -> dict[str, Any]:
     else:
         status = "READY_FOR_OPERATOR_DRILL"
     report = {
-        "schema_version": "1", "status": status, "mode": mode,
+        "schema_version": "1",
+        "status": status,
+        "mode": mode,
         "objectives": {"rpo_minutes": rpo, "rto_minutes": rto},
         "findings": out,
-        "collector_ingestion": _safe(collector_receipt) if isinstance(collector_receipt, dict) else {"status": "not_supplied"},
+        "collector_ingestion": _safe(collector_receipt)
+        if isinstance(collector_receipt, dict)
+        else {"status": "not_supplied"},
         "non_claims": [
             "No Snowflake refresh, promotion, redirect, failover, or failback was executed.",
             "Historical success and successful login do not prove current application readiness.",

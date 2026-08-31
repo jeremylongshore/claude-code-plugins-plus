@@ -114,8 +114,7 @@ class SnowflakePackIntegrityTests(unittest.TestCase):
             }
             self.assertTrue(relative_links, document)
             resolved = {
-                (document.parent / match).resolve().relative_to(PACK.resolve()).as_posix()
-                for match in relative_links
+                (document.parent / match).resolve().relative_to(PACK.resolve()).as_posix() for match in relative_links
             }
             self.assertTrue(resolved.issubset(packed_files), document)
         self.assertIn("000-docs/000-INDEX.md", packed_files)

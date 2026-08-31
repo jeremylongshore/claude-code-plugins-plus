@@ -193,7 +193,11 @@ def analyze(doc: dict) -> dict:
             freshness_missing.append("metadata.freshness.checked_at(no later than collection)")
         if type(freshness.get("max_age_seconds")) is not int or freshness.get("max_age_seconds") <= 0:
             freshness_missing.append("metadata.freshness.max_age_seconds(positive integer)")
-        elif checked_at is not None and collected_at is not None and (collected_at - checked_at).total_seconds() > freshness["max_age_seconds"]:
+        elif (
+            checked_at is not None
+            and collected_at is not None
+            and (collected_at - checked_at).total_seconds() > freshness["max_age_seconds"]
+        ):
             freshness_missing.append("metadata.freshness.checked_at(within max_age_seconds)")
     if freshness_missing:
         findings.append(
@@ -202,7 +206,9 @@ def analyze(doc: dict) -> dict:
                 "high",
                 "inventory-freshness",
                 "identity-estate",
-                "Missing or invalid: " + ", ".join(freshness_missing) + ". Recollect the read-only identity/workload inventory with a bounded observation window.",
+                "Missing or invalid: "
+                + ", ".join(freshness_missing)
+                + ". Recollect the read-only identity/workload inventory with a bounded observation window.",
             )
         )
 
@@ -628,7 +634,9 @@ def analyze(doc: dict) -> dict:
             "observation_window": {"start": metadata.get("window_start"), "end": metadata.get("window_end")},
             "freshness": freshness,
             "counts": {"users": len(users), "workloads": len(workloads), "integrations": len(integrations)},
-            "non_claims": ["No identity, integration, policy, password, key, token, or role was changed by this analyzer."],
+            "non_claims": [
+                "No identity, integration, policy, password, key, token, or role was changed by this analyzer."
+            ],
         },
         "recovery_receipt": {
             "break_glass": break_glass,
