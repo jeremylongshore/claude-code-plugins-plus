@@ -3,8 +3,8 @@
   "authority": "Blueprint 727 §8; Freshie graded export",
   "source": {
     "path": "freshie/grades.csv",
-    "sha256": "1c3804520f6e036fbb8fed212c20aeddb3b03240b91f397dae911536738b6323",
-    "artifact_count": 3606
+    "sha256": "cc914a9f672e6ebcc6117390203906ac77f76f20d827b3e75ca967cb4a79c955",
+    "artifact_count": 3608
   },
   "rule_order": [
     "G0",
@@ -21,7 +21,7 @@
   "counts": {
     "AUTO-MIGRATE": 493,
     "CERTIFY": 0,
-    "CERTIFY-PENDING-EVIDENCE": 2767,
+    "CERTIFY-PENDING-EVIDENCE": 2769,
     "CERTIFY-UPSTREAM": 0,
     "DEEP-REMEDIATE": 2,
     "QUARANTINE": 344
@@ -34418,7 +34418,7 @@
     {
       "path": "plugins/saas-packs/snowflake-pack/skills/snowflake-access-guardian/SKILL.md",
       "grade": "A",
-      "score": 97,
+      "score": 95,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -34438,9 +34438,20 @@
       ]
     },
     {
+      "path": "plugins/saas-packs/snowflake-pack/skills/snowflake-data-quality-sentinel/SKILL.md",
+      "grade": "A",
+      "score": 96,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
       "path": "plugins/saas-packs/snowflake-pack/skills/snowflake-deploy-medic/SKILL.md",
       "grade": "A",
-      "score": 93,
+      "score": 94,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -34449,18 +34460,7 @@
       ]
     },
     {
-      "path": "plugins/saas-packs/snowflake-pack/skills/snowflake-pipeline-guardian/SKILL.md",
-      "grade": "A",
-      "score": 92,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/snowflake-pack/skills/snowflake-query-forensics/SKILL.md",
+      "path": "plugins/saas-packs/snowflake-pack/skills/snowflake-failover-readiness-drill/SKILL.md",
       "grade": "A",
       "score": 95,
       "diagnostics": [],
@@ -34471,9 +34471,31 @@
       ]
     },
     {
+      "path": "plugins/saas-packs/snowflake-pack/skills/snowflake-pipeline-guardian/SKILL.md",
+      "grade": "A",
+      "score": 93,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/snowflake-pack/skills/snowflake-query-forensics/SKILL.md",
+      "grade": "A",
+      "score": 96,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
       "path": "plugins/saas-packs/snowflake-pack/skills/snowflake-strong-auth-migration-pilot/SKILL.md",
       "grade": "A",
-      "score": 98,
+      "score": 95,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",

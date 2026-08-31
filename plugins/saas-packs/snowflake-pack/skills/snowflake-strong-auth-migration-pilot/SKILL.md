@@ -8,11 +8,12 @@ description: |
   workload identity federation, or scoping MCP OAuth. Trigger with phrases like
   "Snowflake auth migration", "service user password", "Snowflake WIF", "key pair
   rotation", or "MCP OAuth role scope".
-allowed-tools: Read, Write, Edit, Bash(python3:*)
-version: 2.0.0
+allowed-tools: Read, Bash(python3:*)
+argument-hint: "[redacted-auth-evidence.json]"
+version: 2.1.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatibility: Designed for Claude Code
+compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection
 tags: [saas, snowflake, security, authentication, wif, oauth, mcp]
 ---
 
@@ -29,9 +30,14 @@ PERSON, SERVICE, and LEGACY_SERVICE principals, maps each bound workload to a
 
 ## Prerequisites
 
-- A sanitized user/workload/integration inventory with evidence timestamps.
+- A sanitized user/workload/integration inventory with evidence timestamps,
+  freshness bounds, and source scope. The collection and observation window
+  must be ordered and no later than the current clock; proof timestamps cannot
+  be future-dated or later than the collection receipt.
 - Named identity/workload owner, security approver, executor, recovery identity,
-  and approved canary/change window.
+  and approved canary/change window. The inventory must include a separately
+  tested break-glass identity and a canary receipt with positive and negative
+  outcomes.
 - Python 3.10+ for the bundled stdlib analyzer. No Snowflake driver or network
   access is required.
 
@@ -40,9 +46,10 @@ PERSON, SERVICE, and LEGACY_SERVICE principals, maps each bound workload to a
 This skill's analyzer is offline and intentionally has no credential or token
 authentication flow. If live Snowflake evidence is collected, use the
 organization's approved session/authentication process and record method names
-only; never place credentials in the inventory or report. Use `Write`/`Edit`
-only to save a sanitized report or approved local cutover packet; never to
-apply Snowflake mutations.
+only; never place credentials in the inventory or report. This skill has no
+`Edit` authority and never edits local source or Snowflake objects. The Python
+analyzer may write only the explicitly requested sanitized report path via
+`--out`; never use that capability for credentials or mutation commands.
 
 This package does not provide an MCP server, OAuth client, or token broker. Any
 connector is configured separately. Supply only sanitized read-only evidence
@@ -68,7 +75,22 @@ and verify account, edition, connector, client behavior, and feature availabilit
 
 1. Capture account/cloud/edition, evidence timestamp, user type, default role,
    observed auth method names, workload binding, runtime/driver, integration,
-   target options, and role scope. Read [identity-types-and-inventory.md](references/identity-types-and-inventory.md).
+   target options, role scope, a separately owned break-glass identity, and a
+   target-auth canary receipt. Read [identity-types-and-inventory.md](references/identity-types-and-inventory.md).
+   For live identity posture, collect account-level rows through the pack's
+   shared read-only evidence collector:
+
+   ```bash
+   python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
+     --surface auth --connection <existing-readonly-profile> \
+     --output ./snowflake-auth-live-evidence.json
+   ```
+
+   Preserve its source views, SQL hash, row count, timestamp, and non-claims;
+   supplement it with an owner-approved workload inventory because the shared
+   auth query intentionally does not discover runtime ownership or credentials.
+   If `truncation_possible` is true, partition the inventory before making a
+   migration-denominator or absence claim.
 2. Create a sanitized JSON inventory. Include method names and booleans only;
    omit all credential values. A minimal shape is:
 
@@ -111,6 +133,8 @@ and verify account, edition, connector, client behavior, and feature availabilit
 - SERVICE without workload: ownership/inventory finding.
 - Unknown user, runtime, driver, or target capability: `MANUAL_REVIEW`, not a
   guessed migration.
+- Missing or untested break-glass identity or canary: block the pilot; do not
+  disable the current path.
 - PAT: bounded fallback only; record owner, audience, revocation/expiration
   process, and why stronger options are unavailable.
 
@@ -125,6 +149,8 @@ Return a JSON report plus a human-readable packet containing:
   behavior, scope-setting location/object, allowed/blocked roles, secondary-role
   controls, and mismatches;
 - no-credential/no-mutation safety statement;
+- read-only inventory receipt, explicit `edit_authority: false`, and separately
+  tested break-glass/canary evidence;
 - positive/negative verification receipts and a recovery plan; and
 - residual unknowns with named owners rather than fabricated certainty.
 

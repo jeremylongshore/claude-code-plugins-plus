@@ -8340,8 +8340,8 @@
     {
       "name": "snowflake-pack",
       "source": "./plugins/saas-packs/snowflake-pack",
-      "description": "Six evidence-driven Snowflake operator skills for cost, query forensics, pipelines, deployments, strong authentication, and access governance",
-      "version": "2.0.0",
+      "description": "Eight model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, and failover",
+      "version": "2.1.0",
       "category": "saas-packs",
       "keywords": ["snowflake", "saas", "sdk", "integration"],
       "author": {
@@ -8350,7 +8350,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "components": {
-        "skills": 6
+        "skills": 8
       },
       "verification": {
         "score": 95,

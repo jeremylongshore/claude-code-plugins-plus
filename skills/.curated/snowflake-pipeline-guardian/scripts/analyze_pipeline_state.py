@@ -24,11 +24,13 @@ Exit codes: 0 for a valid report (findings are data), 2 for bad usage/input.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
 from collections import defaultdict, deque
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 
@@ -69,6 +71,112 @@ def _safe(value: Any) -> str:
     for pattern, replacement in REDACTIONS:
         text = pattern.sub(replacement, text)
     return text
+
+
+def _safe_value(value: Any) -> Any:
+    """Sanitize arbitrary receipt values before they cross the report boundary."""
+    if isinstance(value, dict):
+        return {str(key): _safe_value(child) for key, child in value.items()}
+    if isinstance(value, list):
+        return [_safe_value(child) for child in value]
+    if isinstance(value, str):
+        return _safe(value)
+    return value
+
+
+def _canonical_json(value: Any) -> bytes:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+
+
+SHA256_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
+EXPECTED_PIPELINE_SOURCES = [
+    "SNOWFLAKE.ACCOUNT_USAGE.TASK_HISTORY",
+    "SNOWFLAKE.ACCOUNT_USAGE.DYNAMIC_TABLE_REFRESH_HISTORY",
+    "SNOWFLAKE.ACCOUNT_USAGE.COPY_HISTORY",
+]
+EXPECTED_PIPELINE_DATASETS = {"task_history", "dynamic_table_refresh_history", "copy_history"}
+
+
+def _collector_receipt_issues(receipt: Any, observed_at: datetime | None) -> list[str]:
+    """Validate the shared collector envelope without trusting its claims."""
+    if not isinstance(receipt, dict):
+        return ["collector receipt must be an object"]
+    issues: list[str] = []
+    if receipt.get("schema_version") != "1":
+        issues.append("collector receipt schema_version must be 1")
+    if receipt.get("surface") != "pipeline":
+        issues.append("collector receipt surface must be pipeline")
+    if receipt.get("status") not in {"collected", "error"}:
+        issues.append("collector receipt status must be collected or error")
+    if receipt.get("status") == "error":
+        issues.append("collector receipt status is error")
+    errors = receipt.get("errors")
+    if not isinstance(errors, list):
+        issues.append("collector receipt errors must be an array")
+    elif receipt.get("status") == "collected" and errors:
+        issues.append("collected receipt contains errors")
+    elif receipt.get("status") == "error" and not errors:
+        issues.append("error receipt has no error details")
+
+    collected_at = _parse_observed_at(receipt.get("collected_at"))
+    if collected_at is None:
+        issues.append("collector receipt collected_at must be a valid, non-future timezone timestamp")
+    elif observed_at is not None and collected_at > observed_at:
+        issues.append("collector receipt collected_at cannot be after observed_at")
+    if not isinstance(receipt.get("connection_profile"), str) or not receipt["connection_profile"].strip():
+        issues.append("collector receipt connection_profile is required")
+    source_views = receipt.get("source_views")
+    if source_views != EXPECTED_PIPELINE_SOURCES:
+        issues.append("collector receipt source_views do not match the reviewed pipeline SQL")
+    if not isinstance(receipt.get("sql_sha256"), str) or not SHA256_RE.fullmatch(receipt["sql_sha256"]):
+        issues.append("collector receipt sql_sha256 is invalid")
+    else:
+        sql_path = Path(__file__).resolve().parent / "sql" / "pipeline.sql"
+        expected_sql_hash = f"sha256:{hashlib.sha256(sql_path.read_bytes()).hexdigest()}"
+        if receipt["sql_sha256"] != expected_sql_hash:
+            issues.append("collector receipt sql_sha256 does not match the reviewed pipeline SQL")
+    if not isinstance(receipt.get("receipt_sha256"), str) or not SHA256_RE.fullmatch(receipt["receipt_sha256"]):
+        issues.append("collector receipt receipt_sha256 is invalid")
+    else:
+        unsigned = dict(receipt)
+        unsigned.pop("receipt_sha256", None)
+        expected = f"sha256:{hashlib.sha256(_canonical_json(unsigned)).hexdigest()}"
+        if receipt["receipt_sha256"] != expected:
+            issues.append("collector receipt receipt_sha256 does not match its contents")
+
+    row_count = receipt.get("row_count")
+    if type(row_count) is not int or row_count < 0:
+        issues.append("collector receipt row_count must be a non-negative integer")
+    row_limit = receipt.get("row_limit")
+    if row_limit is None:
+        issues.append("collector receipt row_limit is required")
+    elif type(row_limit) is not int or row_limit <= 0:
+        issues.append("collector receipt row_limit must be a positive integer")
+    truncation = receipt.get("truncation_possible")
+    if not isinstance(truncation, bool):
+        issues.append("collector receipt truncation_possible must be boolean")
+    elif (
+        type(row_count) is int
+        and row_limit is not None
+        and type(row_limit) is int
+        and truncation != row_count >= row_limit
+    ):
+        issues.append("collector receipt truncation_possible disagrees with row_count and row_limit")
+    if truncation is True:
+        issues.append("collector receipt is truncated")
+    datasets = receipt.get("datasets")
+    if not isinstance(datasets, dict):
+        issues.append("collector receipt datasets must be an object")
+    else:
+        unexpected = set(datasets) - EXPECTED_PIPELINE_DATASETS
+        if unexpected:
+            issues.append("collector receipt contains unexpected datasets")
+        dataset_count = sum(len(rows) for rows in datasets.values() if isinstance(rows, list))
+        if any(not isinstance(rows, list) for rows in datasets.values()):
+            issues.append("collector receipt dataset values must be arrays")
+        elif type(row_count) is int and row_count != dataset_count:
+            issues.append("collector receipt row_count does not match its datasets")
+    return issues
 
 
 def _reject_secret_fields(value: Any, path: str = "snapshot") -> None:
@@ -133,6 +241,116 @@ def _number(node: dict[str, Any], *names: str) -> float | None:
 
 def _kind(node: dict[str, Any]) -> str:
     return str(node.get("kind", "UNKNOWN")).upper().replace("-", "_")
+
+
+def _parse_node_time(value: Any) -> datetime | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return None
+    return parsed.astimezone(timezone.utc)
+
+
+def _history_node_id(
+    row: dict[str, Any],
+    object_fields: tuple[str, ...],
+    run_fields: tuple[str, ...],
+    fallback: str,
+    row_index: int,
+) -> str:
+    """Build a stable, unique ID for one historical observation.
+
+    Account Usage history has one row per run/refresh/file, so object name alone
+    is not a node identity. A malformed row without a stable run key is rejected;
+    an input-order ordinal would make replay and overlap analysis unstable.
+    """
+    object_name = ".".join(str(row.get(field)) for field in object_fields if row.get(field)) or fallback
+    run_parts = [str(row[field]) for field in run_fields if row.get(field) is not None]
+    run_key = "|".join(run_parts)
+    if not run_key:
+        raise ValueError(f"{fallback} history row lacks stable identity fields")
+    return f"{object_name}@{run_key}"
+
+
+def _collector_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
+    """Convert a shared collector receipt into the connector-neutral snapshot.
+
+    The collector deliberately emits datasets rather than pretending it knows
+    graph edges. This adapter keeps those rows useful while marking the resulting
+    graph incomplete until an operator supplies object dependencies.
+    """
+    receipt = snapshot.get("collector_receipt") if isinstance(snapshot.get("collector_receipt"), dict) else snapshot
+    datasets = receipt.get("datasets") if isinstance(receipt, dict) else None
+    if not isinstance(datasets, dict) or "nodes" in snapshot:
+        return snapshot
+    nodes: list[dict[str, Any]] = []
+    for row in datasets.get("stream_metadata", []):
+        if not isinstance(row, dict):
+            continue
+        node = dict(row)
+        node["id"] = ".".join(
+            str(row.get(field)) for field in ("database_name", "schema_name", "name") if row.get(field)
+        ) or str(row.get("name") or "stream")
+        node["kind"] = "STREAM"
+        node["status"] = "STALE" if row.get("stale") is True else "OK"
+        nodes.append(node)
+    for row_index, row in enumerate(datasets.get("task_history", [])):
+        if not isinstance(row, dict):
+            continue
+        node = dict(row)
+        node["id"] = _history_node_id(
+            row,
+            ("database_name", "schema_name", "name"),
+            ("run_id", "graph_run_group_id", "attempt_number", "scheduled_time", "query_id"),
+            "task",
+            row_index,
+        )
+        node["kind"] = "TASK"
+        node["status"] = row.get("state", "UNKNOWN")
+        nodes.append(node)
+    for row_index, row in enumerate(datasets.get("dynamic_table_refresh_history", [])):
+        if not isinstance(row, dict):
+            continue
+        node = dict(row)
+        node["id"] = _history_node_id(
+            row,
+            ("database_name", "schema_name", "name"),
+            ("refresh_start_time", "query_id", "data_timestamp"),
+            "dynamic_table",
+            row_index,
+        )
+        node["kind"] = "DYNAMIC_TABLE"
+        node["status"] = row.get("state", "UNKNOWN")
+        nodes.append(node)
+    for row_index, row in enumerate(datasets.get("copy_history", [])):
+        if not isinstance(row, dict):
+            continue
+        node = dict(row)
+        node["id"] = _history_node_id(
+            row,
+            ("table_name",),
+            ("last_load_time", "file_name_sha256", "stage_location_sha256"),
+            "copy_target",
+            row_index,
+        )
+        node["kind"] = "PIPE"
+        node["status"] = (
+            "FAILED" if str(row.get("status", "")).upper() not in {"LOADED", "PARTIALLY LOADED", ""} else "OK"
+        )
+        nodes.append(node)
+    if not nodes:
+        return snapshot
+    return {
+        "observed_at": receipt.get("collected_at"),
+        "evidence_source": "shared Snowflake evidence collector",
+        "nodes": nodes,
+        "edges": snapshot.get("edges", []),
+        "collector_receipt": _safe_value(receipt),
+    }
 
 
 def normalize_snapshot(snapshot: Any) -> tuple[dict[str, dict[str, Any]], list[tuple[str, str]], list[dict[str, str]]]:
@@ -301,6 +519,133 @@ def classify_node(node: dict[str, Any]) -> list[dict[str, Any]]:
             )
         )
 
+    idempotency = node.get("idempotency")
+    idempotency_status = node.get("idempotency_status")
+    if isinstance(idempotency, dict):
+        idempotency_status = idempotency.get("status", idempotency_status)
+        if node.get("delivery_key") is None:
+            node["delivery_key"] = idempotency.get("delivery_key") or idempotency.get("business_key")
+        if node.get("dedup_checked") is None:
+            node["dedup_checked"] = idempotency.get("dedup_checked")
+    status_text = str(idempotency_status or "").upper()
+    has_key = any(
+        node.get(field) for field in ("delivery_key", "business_key", "dedupe_key", "event_id", "file_identity")
+    )
+    if status_text in {"FAILED", "FALSE", "UNPROVEN", "UNKNOWN"} or (
+        idempotency_status is None and (node.get("idempotency") is not None or node.get("replay_requested") is True)
+    ):
+        findings.append(
+            _finding(
+                "IDEMPOTENCY_UNPROVEN",
+                node,
+                "high",
+                f"idempotency status={idempotency_status or 'not supplied'}; delivery key={'present' if has_key else 'absent'}",
+                "Inspect the business/event/file key, target uniqueness or MERGE semantics, and partial-commit boundary before retry or replay; do not claim exactly-once from task or pipe success.",
+                45,
+            )
+        )
+    if node.get("replay_requested") is True or node.get("replay_window") is not None or node.get("replay_risk") is True:
+        findings.append(
+            _finding(
+                "REPLAY_RISK",
+                node,
+                "high",
+                f"replay boundary={node.get('replay_window') or 'not bounded'}",
+                "Freeze replay scope, reconcile source identities to target keys, and prove idempotence with a bounded dry-run/count check before any replay.",
+                47,
+            )
+        )
+
+    if node.get("dedup_checked") is False or node.get("deduplication_status") in {"FAILED", "UNKNOWN"}:
+        findings.append(
+            _finding(
+                "DEDUPLICATION_UNVERIFIED",
+                node,
+                "high",
+                f"deduplication status={node.get('deduplication_status', node.get('dedup_checked'))}",
+                "Run a read-only key-level duplicate and source-file/event reconciliation; hold replay until the duplicate budget and correction boundary are approved.",
+                48,
+            )
+        )
+
+    runs = node.get("run_history")
+    skipped_count = _number(node, "skipped_runs", "skipped_count")
+    if skipped_count is not None and skipped_count > 0:
+        findings.append(
+            _finding(
+                "TASK_SKIPPED",
+                node,
+                "high",
+                f"skipped_runs={skipped_count:g}",
+                "Align skipped runs to predecessor return/state and WHEN-condition evidence; bound the missed interval before replaying downstream work.",
+                22,
+            )
+        )
+    overlap_count = _number(node, "overlapping_runs", "overlap_count")
+    if overlap_count is not None and overlap_count > 0:
+        findings.append(
+            _finding(
+                "TASK_OVERLAP",
+                node,
+                "high",
+                f"overlapping_runs={overlap_count:g}",
+                "Compare run IDs, attempt numbers, target keys, and transaction boundaries; prove whether concurrent runs can commit the same business interval before changing schedule or replaying.",
+                23,
+            )
+        )
+    if isinstance(runs, list):
+        normalized_runs = [run for run in runs if isinstance(run, dict)]
+        skipped = [run for run in normalized_runs if str(run.get("state", run.get("status", ""))).upper() == "SKIPPED"]
+        if skipped:
+            findings.append(
+                _finding(
+                    "TASK_SKIPPED",
+                    node,
+                    "high",
+                    f"{len(skipped)} scheduled run(s) were SKIPPED",
+                    "Align skipped runs to predecessor return/state and WHEN-condition evidence; bound the missed interval before replaying downstream work.",
+                    22,
+                )
+            )
+        parsed_runs = sorted(
+            (
+                (run, _parse_node_time(run.get("scheduled_time")), _parse_node_time(run.get("completed_time")))
+                for run in normalized_runs
+                if _parse_node_time(run.get("scheduled_time"))
+            ),
+            key=lambda item: item[1],
+        )
+        overlaps = []
+        for current, (_, scheduled, completed) in zip(parsed_runs, parsed_runs[1:]):
+            previous_run, previous_scheduled, previous_completed = current
+            if previous_completed and scheduled and previous_completed > scheduled:
+                overlaps.append((previous_run, scheduled))
+        if overlaps:
+            findings.append(
+                _finding(
+                    "TASK_OVERLAP",
+                    node,
+                    "high",
+                    f"{len(overlaps)} scheduled interval(s) overlap a prior completion",
+                    "Compare run IDs, attempt numbers, target keys, and transaction boundaries; prove whether concurrent runs can commit the same business interval before changing schedule or replaying.",
+                    23,
+                )
+            )
+
+    if kind == "PIPE":
+        notification_duplicates = _number(node, "duplicate_notifications", "notification_duplicates")
+        if notification_duplicates is not None and notification_duplicates > 0:
+            findings.append(
+                _finding(
+                    "PIPE_NOTIFICATION_DUPLICATE",
+                    node,
+                    "high",
+                    f"duplicate notification count={notification_duplicates:g}",
+                    "Reconcile notification IDs to file identities and COPY_HISTORY; suppress blind replay until duplicate delivery is bounded.",
+                    46,
+                )
+            )
+
     if kind == "TASK":
         if status == "SUSPENDED":
             findings.append(
@@ -311,6 +656,17 @@ def classify_node(node: dict[str, Any]) -> list[dict[str, Any]]:
                     node.get("last_error") or "task graph/task is suspended",
                     "Inspect TASK_HISTORY and predecessor completion; suspend/resume changes require explicit operator approval and are not performed by this skill.",
                     15,
+                )
+            )
+        elif status == "SKIPPED":
+            findings.append(
+                _finding(
+                    "TASK_SKIPPED",
+                    node,
+                    "high",
+                    node.get("last_error") or "task run reports SKIPPED",
+                    "Align the skipped run to predecessor return/state and WHEN-condition evidence; bound the missed interval before replaying downstream work.",
+                    22,
                 )
             )
         elif status in {"FAILED", "FAILURE", "ERROR"}:
@@ -459,17 +815,24 @@ def _dependency_chains(
 
 
 def analyze(snapshot: Any) -> dict[str, Any]:
+    if isinstance(snapshot, dict):
+        snapshot = _collector_snapshot(snapshot)
     nodes, edges, dangling_edges = normalize_snapshot(snapshot)
     components = _connected_components(nodes, edges)
     observed_at = _parse_observed_at(snapshot.get("observed_at"))
     evidence_source = snapshot.get("evidence_source")
     evidence_gaps: list[str] = []
+    collector_receipt = snapshot.get("collector_receipt") if isinstance(snapshot, dict) else None
+    receipt_issues = _collector_receipt_issues(collector_receipt, observed_at) if collector_receipt is not None else []
+    evidence_gaps.extend(receipt_issues)
     if observed_at is None:
         evidence_gaps.append("observed_at must be a valid, non-future timezone timestamp")
     if not isinstance(evidence_source, str) or not evidence_source.strip():
         evidence_gaps.append("evidence_source is required")
     if dangling_edges:
         evidence_gaps.append("one or more dependency edges reference missing nodes")
+    if collector_receipt and not edges:
+        evidence_gaps.append("shared collector receipt did not include dependency edges")
     if len(components) > 1:
         evidence_gaps.append("node inventory contains disconnected components")
     findings = [finding for node_id in sorted(nodes) for finding in classify_node(nodes[node_id])]
@@ -486,7 +849,9 @@ def analyze(snapshot: Any) -> dict[str, Any]:
         "Every incremental dynamic table retains source change history for its recovery window.",
         "Actual freshness is within the stated target lag, or the breach is acknowledged with capacity evidence.",
         "Task graphs have a successful predecessor chain and are not silently suspended.",
-        "Snowpipe message, load, and COPY history agree; replay keys are idempotent and duplicates are zero.",
+        "Task run history has no unexplained overlap or SKIPPED interval; retries carry an attempt/run-group boundary.",
+        "Snowpipe message, load, and COPY history agree; notification/file identities are deduplicated.",
+        "Replay keys and target merge/uniqueness semantics are proven idempotent; duplicate count is zero or explicitly reconciled.",
     ]
     limitations = [
         "This report classifies supplied evidence only; missing fields are not proof of health.",
@@ -502,12 +867,22 @@ def analyze(snapshot: Any) -> dict[str, Any]:
         "edge_count": len(edges),
         "causal_chains": _dependency_chains(nodes, edges, findings),
         "dangling_edges": dangling_edges,
-        "graph_complete": not dangling_edges and len(components) == 1,
+        "graph_complete": not dangling_edges
+        and len(components) == 1
+        and not (collector_receipt and not edges)
+        and not receipt_issues,
         "connected_components": [[_safe(node_id) for node_id in group] for group in components],
         "findings": findings,
         "ordered_recovery": recovery,
         "post_fix_invariants": invariants,
         "limitations": limitations,
+        "collector_ingestion": _safe_value(collector_receipt)
+        if collector_receipt
+        else {
+            "status": "not_used",
+            "datasets": [],
+            "message": "connector-neutral nodes were supplied directly",
+        },
     }
 
 

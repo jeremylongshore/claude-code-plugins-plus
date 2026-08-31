@@ -1,0 +1,844 @@
+#!/usr/bin/env python3
+"""Deterministically assess normalized Snowflake data-quality evidence.
+
+The analyzer is connector- and model-neutral. It consumes metadata only, never
+connects to Snowflake, and treats findings as data rather than process failures.
+Exit code 2 is reserved for invalid or unsafe input.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import ipaddress
+import json
+import re
+import sys
+from collections import Counter
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+
+VERSION = "1.0.0"
+STATUS_ORDER = {
+    "FAIL": 0,
+    "DEGRADED": 1,
+    "INCONCLUSIVE": 2,
+    "PASS": 3,
+    "NO_REQUIRED_CHECKS": 4,
+}
+SUPPORTED_OBJECT_TYPES = {"TABLE", "VIEW"}
+TOP_LEVEL_KEYS = {
+    "metadata",
+    "requirements",
+    "associations",
+    "measurements",
+    "source_metadata",
+}
+PROHIBITED_KEY_FRAGMENTS = (
+    "password",
+    "passphrase",
+    "privatekey",
+    "secret",
+    "token",
+    "apikey",
+    "authorization",
+    "credential",
+    "querytext",
+    "sqltext",
+    "sqlstatement",
+    "presignedurl",
+    "rawfailedrow",
+    "failedrow",
+    "rejectedrow",
+    "rawpayload",
+    "rowdata",
+    "firstname",
+    "lastname",
+    "email",
+    "phone",
+    "socialsecurity",
+    "dateofbirth",
+    "clientip",
+    "ipaddress",
+)
+EMAIL_RE = re.compile(r"(?i)(?<![\w.+-])[\w.+-]+@[a-z0-9.-]+\.[a-z]{2,}(?![\w.-])")
+SSN_RE = re.compile(r"(?<!\d)\d{3}-\d{2}-\d{4}(?!\d)")
+BEARER_RE = re.compile(r"(?i)\bbearer\s+[a-z0-9._~+/=-]{8,}")
+PRIVATE_KEY_RE = re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")
+SHA256_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
+IDENTIFIER_RE = re.compile(r"^[A-Za-z0-9_$.-]{1,255}$")
+
+
+class EvidenceError(ValueError):
+    """Raised when evidence cannot be assessed safely."""
+
+
+def canonical_json(value: Any) -> bytes:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+
+
+def _normalized_key(value: object) -> str:
+    return re.sub(r"[^a-z0-9]", "", str(value).casefold())
+
+
+def _looks_like_ip(value: str) -> bool:
+    try:
+        ipaddress.ip_address(value.strip())
+    except ValueError:
+        return False
+    return True
+
+
+def reject_sensitive_data(value: Any, path: str = "input") -> None:
+    """Reject secrets, PII, SQL text, row payloads, and signed URLs."""
+    if isinstance(value, dict):
+        for key, child in value.items():
+            normalized = _normalized_key(key)
+            if any(fragment in normalized for fragment in PROHIBITED_KEY_FRAGMENTS):
+                raise EvidenceError(f"prohibited field is not accepted: {path}.{key}")
+            reject_sensitive_data(child, f"{path}.{key}")
+        return
+    if isinstance(value, list):
+        for index, child in enumerate(value):
+            reject_sensitive_data(child, f"{path}[{index}]")
+        return
+    if not isinstance(value, str):
+        return
+    if len(value) > 4096:
+        raise EvidenceError(f"string exceeds 4096 characters: {path}")
+    if EMAIL_RE.search(value) or SSN_RE.search(value) or _looks_like_ip(value):
+        raise EvidenceError(f"PII-like value is not accepted: {path}")
+    if BEARER_RE.search(value) or PRIVATE_KEY_RE.search(value):
+        raise EvidenceError(f"credential-like value is not accepted: {path}")
+    stripped = value.strip()
+    lowered = stripped.casefold()
+    if lowered.startswith(("http://", "https://")):
+        if (
+            re.search(r"://[^/@\s]+@", stripped)
+            or "?" in stripped
+            or "#" in stripped
+            or any(
+                marker in value.casefold() for marker in ("x-amz-signature", "x-goog-signature", "sig=", "signature=")
+            )
+        ):
+            raise EvidenceError(f"presigned or credential-bearing URL is not accepted: {path}")
+
+
+def parse_time(value: Any, path: str) -> datetime:
+    if not isinstance(value, str) or not value.strip():
+        raise EvidenceError(f"{path} must be an ISO-8601 timestamp")
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise EvidenceError(f"{path} must be an ISO-8601 timestamp") from exc
+    if parsed.tzinfo is None:
+        raise EvidenceError(f"{path} must include a timezone")
+    return parsed.astimezone(timezone.utc)
+
+
+def text(value: Any, path: str, *, required: bool = True) -> str:
+    if value is None and not required:
+        return ""
+    if not isinstance(value, str) or (required and not value.strip()):
+        raise EvidenceError(f"{path} must be a non-empty string")
+    result = value.strip()
+    if len(result) > 255 or "\n" in result or "\r" in result:
+        raise EvidenceError(f"{path} contains unsafe text")
+    return result
+
+
+def identifier(value: Any, path: str) -> str:
+    result = text(value, path)
+    if not IDENTIFIER_RE.fullmatch(result):
+        raise EvidenceError(f"{path} must be a bounded Snowflake identifier")
+    return result.upper()
+
+
+def boolean(value: Any, path: str, *, default: bool | None = None) -> bool | None:
+    if value is None and default is not None:
+        return default
+    if value is None:
+        return None
+    if type(value) is not bool:
+        raise EvidenceError(f"{path} must be a boolean or null")
+    return value
+
+
+def positive_integer(value: Any, path: str, *, default: int | None = None) -> int:
+    if value is None and default is not None:
+        return default
+    if type(value) is not int or value <= 0 or value > 31_536_000:
+        raise EvidenceError(f"{path} must be an integer from 1 to 31536000")
+    return value
+
+
+def string_list(value: Any, path: str) -> list[str]:
+    if value is None:
+        return []
+    if not isinstance(value, list) or any(not isinstance(item, str) for item in value):
+        raise EvidenceError(f"{path} must be an array of strings")
+    result = [text(item, f"{path}[]").upper() for item in value]
+    if len(result) > 500:
+        raise EvidenceError(f"{path} exceeds 500 entries")
+    return sorted(set(result))
+
+
+def object_identity(value: Any, path: str) -> dict[str, str]:
+    if not isinstance(value, dict):
+        raise EvidenceError(f"{path} must be an object")
+    required = {"database", "schema", "name", "type"}
+    if set(value) != required:
+        raise EvidenceError(f"{path} must contain exactly {sorted(required)}")
+    return {
+        "database": identifier(value["database"], f"{path}.database"),
+        "schema": identifier(value["schema"], f"{path}.schema"),
+        "name": identifier(value["name"], f"{path}.name"),
+        "type": identifier(value["type"], f"{path}.type"),
+    }
+
+
+def metric_identity(value: Any, path: str) -> dict[str, str]:
+    if not isinstance(value, dict):
+        raise EvidenceError(f"{path} must be an object")
+    required = {"database", "schema", "name"}
+    if set(value) != required:
+        raise EvidenceError(f"{path} must contain exactly {sorted(required)}")
+    return {key: identifier(value[key], f"{path}.{key}") for key in sorted(required)}
+
+
+def normalize_document(data: Any) -> dict[str, Any]:
+    if not isinstance(data, dict):
+        raise EvidenceError("input must be an object")
+    reject_sensitive_data(data)
+    unknown = set(data) - TOP_LEVEL_KEYS
+    missing = TOP_LEVEL_KEYS - set(data)
+    if unknown or missing:
+        raise EvidenceError(f"top-level keys must be exactly {sorted(TOP_LEVEL_KEYS)}")
+
+    metadata = data["metadata"]
+    if not isinstance(metadata, dict):
+        raise EvidenceError("metadata must be an object")
+    expected_metadata = {
+        "schema_version",
+        "surface",
+        "collected_at",
+        "window_start",
+        "window_end",
+        "collector_receipt_sha256",
+    }
+    if set(metadata) != expected_metadata:
+        raise EvidenceError(f"metadata keys must be exactly {sorted(expected_metadata)}")
+    collected_at = parse_time(metadata["collected_at"], "metadata.collected_at")
+    window_start = parse_time(metadata["window_start"], "metadata.window_start")
+    window_end = parse_time(metadata["window_end"], "metadata.window_end")
+    if collected_at > datetime.now(timezone.utc):
+        raise EvidenceError("metadata.collected_at cannot be in the future")
+    if window_start >= window_end or window_end > collected_at:
+        raise EvidenceError("metadata window must end after start and not after collected_at")
+    receipt_hash = text(metadata["collector_receipt_sha256"], "metadata.collector_receipt_sha256")
+    if not SHA256_RE.fullmatch(receipt_hash):
+        raise EvidenceError("metadata.collector_receipt_sha256 must be sha256:<64 lowercase hex>")
+    normalized_metadata = {
+        "schema_version": text(metadata["schema_version"], "metadata.schema_version"),
+        "surface": text(metadata["surface"], "metadata.surface"),
+        "collected_at": collected_at.isoformat().replace("+00:00", "Z"),
+        "window_start": window_start.isoformat().replace("+00:00", "Z"),
+        "window_end": window_end.isoformat().replace("+00:00", "Z"),
+        "collector_receipt_sha256": receipt_hash,
+    }
+    if normalized_metadata["surface"] != "data-quality":
+        raise EvidenceError("metadata.surface must be data-quality")
+
+    requirements = data["requirements"]
+    associations = data["associations"]
+    measurements = data["measurements"]
+    sources = data["source_metadata"]
+    for name, rows in (
+        ("requirements", requirements),
+        ("associations", associations),
+        ("measurements", measurements),
+        ("source_metadata", sources),
+    ):
+        if not isinstance(rows, list) or len(rows) > 10_000:
+            raise EvidenceError(f"{name} must be an array with at most 10000 entries")
+        if any(not isinstance(row, dict) for row in rows):
+            raise EvidenceError(f"{name} entries must be objects")
+
+    normalized_requirements: list[dict[str, Any]] = []
+    seen_requirement_ids: set[str] = set()
+    requirement_keys = {
+        "id",
+        "object",
+        "metric",
+        "objective",
+        "max_result_age_seconds",
+        "expected_schedule",
+        "notification_required",
+        "expected_execution_role",
+        "required_groups",
+    }
+    for index, row in enumerate(requirements):
+        if set(row) != requirement_keys:
+            raise EvidenceError(f"requirements[{index}] keys must be exactly {sorted(requirement_keys)}")
+        requirement_id = text(row["id"], f"requirements[{index}].id")
+        if requirement_id in seen_requirement_ids:
+            raise EvidenceError(f"duplicate requirement id: {requirement_id}")
+        seen_requirement_ids.add(requirement_id)
+        objective = row["objective"]
+        if objective is not None:
+            if not isinstance(objective, dict) or set(objective) != {"mode", "name"}:
+                raise EvidenceError(f"requirements[{index}].objective must be null or mode/name")
+            mode = text(objective["mode"], f"requirements[{index}].objective.mode").lower()
+            if mode not in {"expectation", "anomaly"}:
+                raise EvidenceError(f"requirements[{index}].objective.mode is unsupported")
+            objective = {
+                "mode": mode,
+                "name": text(objective["name"], f"requirements[{index}].objective.name"),
+            }
+        expected_role = text(
+            row["expected_execution_role"],
+            f"requirements[{index}].expected_execution_role",
+            required=False,
+        )
+        normalized_requirements.append(
+            {
+                "id": requirement_id,
+                "object": object_identity(row["object"], f"requirements[{index}].object"),
+                "metric": metric_identity(row["metric"], f"requirements[{index}].metric"),
+                "objective": objective,
+                "max_result_age_seconds": positive_integer(
+                    row["max_result_age_seconds"],
+                    f"requirements[{index}].max_result_age_seconds",
+                ),
+                "expected_schedule": text(
+                    row["expected_schedule"],
+                    f"requirements[{index}].expected_schedule",
+                ).upper(),
+                "notification_required": boolean(
+                    row["notification_required"],
+                    f"requirements[{index}].notification_required",
+                    default=False,
+                ),
+                "expected_execution_role": expected_role.upper(),
+                "required_groups": string_list(row["required_groups"], f"requirements[{index}].required_groups"),
+            }
+        )
+
+    association_keys = {
+        "requirement_id",
+        "reference_id",
+        "schedule",
+        "schedule_status",
+        "schedule_update_pending",
+        "notification_status",
+        "anomaly_status",
+        "execution_role",
+        "observed_groups",
+    }
+    normalized_associations: list[dict[str, Any]] = []
+    seen_association_requirements: set[str] = set()
+    seen_reference_ids: set[str] = set()
+    for index, row in enumerate(associations):
+        if set(row) != association_keys:
+            raise EvidenceError(f"associations[{index}] keys must be exactly {sorted(association_keys)}")
+        requirement_id = text(row["requirement_id"], f"associations[{index}].requirement_id")
+        reference_id = text(row["reference_id"], f"associations[{index}].reference_id")
+        if requirement_id in seen_association_requirements or reference_id in seen_reference_ids:
+            raise EvidenceError("association requirement_id and reference_id must be unique")
+        seen_association_requirements.add(requirement_id)
+        seen_reference_ids.add(reference_id)
+        normalized_associations.append(
+            {
+                "requirement_id": requirement_id,
+                "reference_id": reference_id,
+                "schedule": text(row["schedule"], f"associations[{index}].schedule").upper(),
+                "schedule_status": text(row["schedule_status"], f"associations[{index}].schedule_status").upper(),
+                "schedule_update_pending": boolean(
+                    row["schedule_update_pending"],
+                    f"associations[{index}].schedule_update_pending",
+                    default=False,
+                ),
+                "notification_status": text(
+                    row["notification_status"],
+                    f"associations[{index}].notification_status",
+                ).upper(),
+                "anomaly_status": text(row["anomaly_status"], f"associations[{index}].anomaly_status").upper(),
+                "execution_role": text(row["execution_role"], f"associations[{index}].execution_role").upper(),
+                "observed_groups": string_list(row["observed_groups"], f"associations[{index}].observed_groups"),
+            }
+        )
+
+    measurement_keys = {
+        "requirement_id",
+        "reference_id",
+        "measured_at",
+        "evaluation_status",
+        "expectation_name",
+        "expectation_violated",
+        "anomaly_detected",
+        "observed_value",
+        "observed_groups",
+    }
+    normalized_measurements: list[dict[str, Any]] = []
+    for index, row in enumerate(measurements):
+        if set(row) != measurement_keys:
+            raise EvidenceError(f"measurements[{index}] keys must be exactly {sorted(measurement_keys)}")
+        observed_value = row["observed_value"]
+        if isinstance(observed_value, (dict, list)):
+            raise EvidenceError(f"measurements[{index}].observed_value must be scalar")
+        measured_at = parse_time(row["measured_at"], f"measurements[{index}].measured_at")
+        normalized_measurements.append(
+            {
+                "requirement_id": text(row["requirement_id"], f"measurements[{index}].requirement_id"),
+                "reference_id": text(row["reference_id"], f"measurements[{index}].reference_id"),
+                "measured_at": measured_at.isoformat().replace("+00:00", "Z"),
+                "evaluation_status": text(
+                    row["evaluation_status"],
+                    f"measurements[{index}].evaluation_status",
+                ).upper(),
+                "expectation_name": text(
+                    row["expectation_name"],
+                    f"measurements[{index}].expectation_name",
+                    required=False,
+                ),
+                "expectation_violated": boolean(
+                    row["expectation_violated"],
+                    f"measurements[{index}].expectation_violated",
+                ),
+                "anomaly_detected": boolean(
+                    row["anomaly_detected"],
+                    f"measurements[{index}].anomaly_detected",
+                ),
+                "observed_value": observed_value,
+                "observed_groups": string_list(row["observed_groups"], f"measurements[{index}].observed_groups"),
+            }
+        )
+
+        if measured_at < window_start or measured_at > window_end:
+            raise EvidenceError(f"measurements[{index}].measured_at must fall within metadata.window_start/window_end")
+
+    source_keys = {
+        "source",
+        "kind",
+        "status",
+        "collected_at",
+        "latest_record_at",
+        "max_latency_seconds",
+        "row_count",
+        "error_code",
+    }
+    normalized_sources: list[dict[str, Any]] = []
+    seen_sources: set[str] = set()
+    for index, row in enumerate(sources):
+        if set(row) != source_keys:
+            raise EvidenceError(f"source_metadata[{index}] keys must be exactly {sorted(source_keys)}")
+        source = text(row["source"], f"source_metadata[{index}].source")
+        if source in seen_sources:
+            raise EvidenceError(f"duplicate source metadata: {source}")
+        seen_sources.add(source)
+        latest = row["latest_record_at"]
+        normalized_sources.append(
+            {
+                "source": source,
+                "kind": text(row["kind"], f"source_metadata[{index}].kind").lower(),
+                "status": text(row["status"], f"source_metadata[{index}].status").lower(),
+                "collected_at": parse_time(
+                    row["collected_at"],
+                    f"source_metadata[{index}].collected_at",
+                )
+                .isoformat()
+                .replace("+00:00", "Z"),
+                "latest_record_at": (
+                    parse_time(latest, f"source_metadata[{index}].latest_record_at").isoformat().replace("+00:00", "Z")
+                    if latest is not None
+                    else None
+                ),
+                "max_latency_seconds": positive_integer(
+                    row["max_latency_seconds"],
+                    f"source_metadata[{index}].max_latency_seconds",
+                ),
+                "row_count": row["row_count"],
+                "error_code": text(row["error_code"], f"source_metadata[{index}].error_code", required=False).upper(),
+            }
+        )
+        source_collected_at = parse_time(row["collected_at"], f"source_metadata[{index}].collected_at")
+        if source_collected_at < window_start:
+            raise EvidenceError(f"source_metadata[{index}].collected_at cannot precede metadata.window_start")
+        if source_collected_at > collected_at:
+            raise EvidenceError(f"source_metadata[{index}].collected_at cannot be after metadata.collected_at")
+        source_latest = normalized_sources[-1]["latest_record_at"]
+        if source_latest is not None:
+            source_latest_at = parse_time(source_latest, f"source_metadata[{index}].latest_record_at")
+            if source_latest_at < window_start or source_latest_at > window_end:
+                raise EvidenceError(
+                    f"source_metadata[{index}].latest_record_at must fall within metadata.window_start/window_end"
+                )
+        if type(row["row_count"]) is not int or row["row_count"] < 0:
+            raise EvidenceError(f"source_metadata[{index}].row_count must be a non-negative integer")
+
+    return {
+        "metadata": normalized_metadata,
+        "requirements": sorted(normalized_requirements, key=lambda item: item["id"]),
+        "associations": sorted(normalized_associations, key=lambda item: item["requirement_id"]),
+        "measurements": sorted(
+            normalized_measurements,
+            key=lambda item: (item["requirement_id"], item["measured_at"], item["reference_id"]),
+        ),
+        "source_metadata": sorted(normalized_sources, key=lambda item: item["source"]),
+    }
+
+
+def finding(
+    code: str,
+    scope: str,
+    evidence: str,
+    action: str,
+    *,
+    quality_impact: str = "PASS",
+    monitoring_impact: str = "PASS",
+) -> dict[str, str]:
+    return {
+        "code": code,
+        "scope": scope,
+        "evidence": evidence,
+        "action": action,
+        "quality_impact": quality_impact,
+        "monitoring_impact": monitoring_impact,
+    }
+
+
+def _status(findings: list[dict[str, str]], field: str) -> str:
+    impacts = [item[field] for item in findings if item[field] != "PASS"]
+    return min(impacts, key=lambda status: STATUS_ORDER[status]) if impacts else "PASS"
+
+
+def analyze(data: Any) -> dict[str, Any]:
+    normalized = normalize_document(data)
+    requirements = normalized["requirements"]
+    associations_by_requirement = {row["requirement_id"]: row for row in normalized["associations"]}
+    measurements_by_requirement: dict[str, list[dict[str, Any]]] = {}
+    for row in normalized["measurements"]:
+        measurements_by_requirement.setdefault(row["requirement_id"], []).append(row)
+    collected_at = parse_time(normalized["metadata"]["collected_at"], "metadata.collected_at")
+    findings: list[dict[str, str]] = []
+
+    edition_unavailable = any(
+        source["error_code"] in {"DQ_EDITION_UNAVAILABLE", "ENTERPRISE_EDITION_REQUIRED", "FEATURE_NOT_AVAILABLE"}
+        or source["status"] == "edition_unavailable"
+        for source in normalized["source_metadata"]
+    )
+    if edition_unavailable:
+        findings.append(
+            finding(
+                "DQ_EDITION_UNAVAILABLE",
+                "data-quality-surface",
+                "Enterprise data-quality evidence is unavailable for the selected account or role.",
+                "Record the edition boundary; do not infer health or escalate privileges automatically.",
+                quality_impact="INCONCLUSIVE",
+                monitoring_impact="INCONCLUSIVE",
+            )
+        )
+
+    usage_sources = [source for source in normalized["source_metadata"] if source["kind"] == "usage"]
+    if not usage_sources or any(source["status"] != "collected" for source in usage_sources):
+        findings.append(
+            finding(
+                "DQ_USAGE_VISIBILITY_GAP",
+                "data-quality-usage",
+                "No complete collected usage source proves monitoring visibility.",
+                "Restore read-only usage visibility before making coverage or cost claims.",
+                quality_impact="INCONCLUSIVE",
+                monitoring_impact="INCONCLUSIVE",
+            )
+        )
+
+    notification_privilege_error = any(
+        source["error_code"] in {"DQ_NOTIFICATION_PRIVILEGE_ERROR", "INSUFFICIENT_PRIVILEGES", "NOT_AUTHORIZED"}
+        and source["kind"] == "notification"
+        for source in normalized["source_metadata"]
+    )
+    if notification_privilege_error:
+        findings.append(
+            finding(
+                "DQ_NOTIFICATION_PRIVILEGE_ERROR",
+                "notification-evidence",
+                "Notification evidence collection failed with a privilege error.",
+                "Grant only the documented read/monitor privilege and recollect; do not switch to ACCOUNTADMIN.",
+                quality_impact="INCONCLUSIVE",
+                monitoring_impact="FAIL",
+            )
+        )
+
+    if not edition_unavailable:
+        for requirement in requirements:
+            requirement_id = requirement["id"]
+            scope = requirement_id
+            objective = requirement["objective"]
+            if requirement["object"]["type"] not in SUPPORTED_OBJECT_TYPES:
+                findings.append(
+                    finding(
+                        "DQ_UNSUPPORTED_OBJECT",
+                        scope,
+                        f"Object type {requirement['object']['type']} is outside this analyzer's TABLE/VIEW contract.",
+                        "Use a supported object or document a separate monitoring control.",
+                        quality_impact="INCONCLUSIVE",
+                        monitoring_impact="FAIL",
+                    )
+                )
+            if objective is None:
+                findings.append(
+                    finding(
+                        "DQ_OBJECTIVE_MISSING",
+                        scope,
+                        "The required metric has no expectation or anomaly objective.",
+                        "Define a bounded objective before interpreting the metric value.",
+                        quality_impact="INCONCLUSIVE",
+                        monitoring_impact="DEGRADED",
+                    )
+                )
+
+            association = associations_by_requirement.get(requirement_id)
+            if association is None:
+                findings.append(
+                    finding(
+                        "DQ_ASSOCIATION_MISSING",
+                        scope,
+                        "No observed DMF association matches the required check.",
+                        "Create or restore the association through the approved change process.",
+                        quality_impact="INCONCLUSIVE",
+                        monitoring_impact="FAIL",
+                    )
+                )
+            else:
+                if association["schedule_status"].startswith("SUSPENDED"):
+                    findings.append(
+                        finding(
+                            "DQ_ASSOCIATION_SUSPENDED",
+                            scope,
+                            f"Association status is {association['schedule_status']}.",
+                            "Resolve the documented suspension cause before resuming evaluation.",
+                            quality_impact="INCONCLUSIVE",
+                            monitoring_impact="FAIL",
+                        )
+                    )
+                if (
+                    association["schedule_update_pending"]
+                    or association["schedule"] != requirement["expected_schedule"]
+                ):
+                    findings.append(
+                        finding(
+                            "DQ_SCHEDULE_UPDATE_PENDING",
+                            scope,
+                            f"Observed schedule {association['schedule']} differs from required {requirement['expected_schedule']}.",
+                            "Wait for metadata propagation or complete the approved schedule update, then recollect.",
+                            quality_impact="INCONCLUSIVE",
+                            monitoring_impact="DEGRADED",
+                        )
+                    )
+                if requirement["notification_required"] and association["notification_status"] not in {
+                    "ENABLED",
+                    "STARTED",
+                }:
+                    findings.append(
+                        finding(
+                            "DQ_NOTIFICATION_DISABLED",
+                            scope,
+                            f"Required notification status is {association['notification_status']}.",
+                            "Enable the approved notification path and verify delivery with a safe test.",
+                            monitoring_impact="DEGRADED",
+                        )
+                    )
+                if (
+                    requirement["expected_execution_role"]
+                    and association["execution_role"] != requirement["expected_execution_role"]
+                ):
+                    findings.append(
+                        finding(
+                            "DQ_EXECUTION_ROLE_DRIFT",
+                            scope,
+                            f"Observed role {association['execution_role']} differs from required {requirement['expected_execution_role']}.",
+                            "Restore the least-privilege execution role and verify object visibility.",
+                            quality_impact="INCONCLUSIVE",
+                            monitoring_impact="FAIL",
+                        )
+                    )
+                if association["anomaly_status"] == "TRAINING_IN_PROGRESS":
+                    findings.append(
+                        finding(
+                            "DQ_ANOMALY_TRAINING",
+                            scope,
+                            "Anomaly detection is still training; this is not a health result.",
+                            "Wait for training completion and require a post-training measurement.",
+                            quality_impact="INCONCLUSIVE",
+                            monitoring_impact="DEGRADED",
+                        )
+                    )
+
+            measurements = measurements_by_requirement.get(requirement_id, [])
+            if not measurements:
+                findings.append(
+                    finding(
+                        "DQ_RESULT_MISSING",
+                        scope,
+                        "No measurement exists in the declared evidence window.",
+                        "Verify scheduling, permissions, and event-table visibility; do not infer pass.",
+                        quality_impact="INCONCLUSIVE",
+                        monitoring_impact="DEGRADED",
+                    )
+                )
+                continue
+            latest = max(measurements, key=lambda item: item["measured_at"])
+            measured_at = parse_time(latest["measured_at"], f"measurements[{scope}].measured_at")
+            age_seconds = max(0, int((collected_at - measured_at).total_seconds()))
+            if age_seconds > requirement["max_result_age_seconds"]:
+                findings.append(
+                    finding(
+                        "DQ_RESULT_STALE",
+                        scope,
+                        f"Newest result is {age_seconds}s old; limit is {requirement['max_result_age_seconds']}s.",
+                        "Recollect after the next successful evaluation before making a health claim.",
+                        quality_impact="INCONCLUSIVE",
+                        monitoring_impact="DEGRADED",
+                    )
+                )
+
+            if objective is None and latest["observed_value"] is not None:
+                findings.append(
+                    finding(
+                        "DQ_METRIC_OBSERVED_NO_OBJECTIVE",
+                        scope,
+                        "A raw metric value was observed without a decision objective.",
+                        "Treat the value as observation only; define an objective before classifying quality.",
+                        quality_impact="INCONCLUSIVE",
+                        monitoring_impact="DEGRADED",
+                    )
+                )
+            elif objective and objective["mode"] == "expectation":
+                if latest["evaluation_status"] in {"FAILED", "ERROR"} or latest["expectation_violated"] is None:
+                    findings.append(
+                        finding(
+                            "DQ_EXPECTATION_EVALUATION_FAILED",
+                            scope,
+                            f"Expectation evaluation status is {latest['evaluation_status']}.",
+                            "Fix evaluation execution and obtain a valid Boolean result before classifying quality.",
+                            quality_impact="INCONCLUSIVE",
+                            monitoring_impact="DEGRADED",
+                        )
+                    )
+                elif latest["expectation_violated"] is True:
+                    findings.append(
+                        finding(
+                            "DQ_EXPECTATION_VIOLATED",
+                            scope,
+                            f"Expectation {objective['name']} was violated by the newest valid result.",
+                            "Investigate the governed data owner workflow; never include raw failed rows in evidence.",
+                            quality_impact="FAIL",
+                        )
+                    )
+            elif objective and objective["mode"] == "anomaly" and latest["anomaly_detected"] is True:
+                findings.append(
+                    finding(
+                        "DQ_ANOMALY_DETECTED",
+                        scope,
+                        f"Anomaly objective {objective['name']} detected an anomaly in the newest result.",
+                        "Triage the anomaly with aggregate metadata only and record the disposition.",
+                        quality_impact="FAIL",
+                    )
+                )
+
+            observed_groups = set(latest["observed_groups"])
+            if association is not None:
+                observed_groups.update(association["observed_groups"])
+            missing_groups = sorted(set(requirement["required_groups"]) - observed_groups)
+            if missing_groups:
+                findings.append(
+                    finding(
+                        "DQ_GROUP_COVERAGE_GAP",
+                        scope,
+                        f"Required groups lack evidence: {', '.join(missing_groups)}.",
+                        "Restore grouped evaluation coverage and verify each required group emits a result.",
+                        quality_impact="INCONCLUSIVE",
+                        monitoring_impact="DEGRADED",
+                    )
+                )
+
+        known_requirement_ids = {item["id"] for item in requirements}
+        for measurement in normalized["measurements"]:
+            if measurement["requirement_id"] not in known_requirement_ids and measurement["observed_value"] is not None:
+                findings.append(
+                    finding(
+                        "DQ_METRIC_OBSERVED_NO_OBJECTIVE",
+                        measurement["requirement_id"],
+                        "A measurement is outside the governed requirement denominator.",
+                        "Add an owner-approved requirement and objective or retire the orphan measurement.",
+                        quality_impact="INCONCLUSIVE",
+                        monitoring_impact="DEGRADED",
+                    )
+                )
+
+    findings.sort(key=lambda item: (item["code"], item["scope"], item["evidence"]))
+    if requirements:
+        quality_status = _status(findings, "quality_impact")
+        monitoring_status = _status(findings, "monitoring_impact")
+    else:
+        quality_status = "NO_REQUIRED_CHECKS"
+        monitoring_status = "NO_REQUIRED_CHECKS"
+
+    input_hash = f"sha256:{hashlib.sha256(canonical_json(normalized)).hexdigest()}"
+    report = {
+        "schema_version": "1",
+        "analyzer": {"name": "snowflake-data-quality-sentinel", "version": VERSION},
+        "quality_status": quality_status,
+        "monitoring_status": monitoring_status,
+        "denominator": {
+            "requirements": len(requirements),
+            "associations": len(normalized["associations"]),
+            "measurements": len(normalized["measurements"]),
+            "sources": len(normalized["source_metadata"]),
+        },
+        "finding_counts": dict(sorted(Counter(item["code"] for item in findings).items())),
+        "findings": findings,
+        "provenance": {
+            "input_sha256": input_hash,
+            "collector_receipt_sha256": normalized["metadata"]["collector_receipt_sha256"],
+            "surface": normalized["metadata"]["surface"],
+            "collected_at": normalized["metadata"]["collected_at"],
+            "window_start": normalized["metadata"]["window_start"],
+            "window_end": normalized["metadata"]["window_end"],
+            "sources": normalized["source_metadata"],
+        },
+        "non_claims": [
+            "No Snowflake mutation was executed.",
+            "Raw metric values without objectives are not violations or passes.",
+            "Anomaly training is not a health result.",
+            "Missing, stale, unavailable, or privilege-blocked evidence cannot prove health.",
+        ],
+    }
+    report["receipt_sha256"] = f"sha256:{hashlib.sha256(canonical_json(report)).hexdigest()}"
+    return report
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("input", nargs="?", help="normalized evidence JSON; omit to read stdin")
+    parser.add_argument("--pretty", action="store_true", help="indent JSON output")
+    args = parser.parse_args(argv)
+    try:
+        if args.input:
+            raw = Path(args.input).read_text(encoding="utf-8")
+        else:
+            raw = sys.stdin.read()
+        data = json.loads(raw)
+        report = analyze(data)
+    except (OSError, json.JSONDecodeError, EvidenceError) as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
+    json.dump(report, sys.stdout, indent=2 if args.pretty else None, sort_keys=True, ensure_ascii=False)
+    sys.stdout.write("\n")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

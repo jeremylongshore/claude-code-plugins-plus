@@ -19,6 +19,15 @@ from datetime import datetime, timezone
 from typing import Any
 
 
+SENSITIVE_VALUE_PATTERNS = (
+    re.compile(
+        r"(?i)\b(?:password|passwd|pwd|passphrase|secret|token|api[_ -]?key|authorization|credential|private[_ -]?key)\b\s*[:=]\s*\S+"
+    ),
+    re.compile(r"(?i)\bbearer\s+[A-Za-z0-9._~+/=-]{8,}"),
+    re.compile(r"-----BEGIN(?: [A-Z0-9]+)? PRIVATE KEY-----"),
+)
+
+
 def _finding(code: str, severity: str, evidence: str, action: str, rank: int) -> dict[str, Any]:
     return {"code": code, "severity": severity, "evidence": evidence, "read_only_action": action, "recovery_rank": rank}
 
@@ -83,6 +92,12 @@ def _reject_secret_fields(value: Any, path: str = "input") -> None:
     elif isinstance(value, list):
         for index, child in enumerate(value):
             _reject_secret_fields(child, f"{path}[{index}]")
+    elif (
+        isinstance(value, str)
+        and not path.endswith(".backend")
+        and any(pattern.search(value) for pattern in SENSITIVE_VALUE_PATTERNS)
+    ):
+        raise ValueError(f"credential-shaped value is not accepted: {path}")
 
 
 def _timestamp(value: Any, field: str) -> datetime | None:
@@ -97,6 +112,23 @@ def _timestamp(value: Any, field: str) -> datetime | None:
     return parsed.astimezone(timezone.utc)
 
 
+def _sha256(value: Any) -> bool:
+    return bool(re.fullmatch(r"[0-9a-fA-F]{64}", str(value or "")))
+
+
+def _object_label(row: dict[str, Any]) -> str:
+    return str(row.get("object") or row.get("address") or row.get("name") or "").strip()
+
+
+def _inventory_rows(value: Any, field: str) -> list[dict[str, Any]]:
+    if not isinstance(value, list):
+        raise ValueError(f"{field} must be an array")
+    for index, row in enumerate(value):
+        if not isinstance(row, dict):
+            raise ValueError(f"{field}[{index}] must be an object")
+    return value
+
+
 def validate_input(data: Any) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise ValueError("evidence must be a JSON object")
@@ -107,12 +139,24 @@ def validate_input(data: Any) -> dict[str, Any]:
     for field in ("state", "plan"):
         if field in tf and not isinstance(tf[field], dict):
             raise ValueError(f"terraform.{field} must be an object")
-    for field in ("resources", "preview_features"):
+    for field in ("resources", "preview_features", "affected_objects"):
         if field in tf and not isinstance(tf[field], list):
             raise ValueError(f"terraform.{field} must be an array")
     for index, row in enumerate(tf.get("resources", [])):
         if not isinstance(row, dict):
             raise ValueError(f"terraform.resources[{index}] must be an object")
+    if "affected_objects" in data:
+        _inventory_rows(data["affected_objects"], "affected_objects")
+    if "preflight" in data and not isinstance(data["preflight"], dict):
+        raise ValueError("preflight must be an object")
+    if "state_backup" in data and not isinstance(data["state_backup"], dict):
+        raise ValueError("state_backup must be an object")
+    if "bcr" in data and isinstance(data["bcr"], dict) and "inventory" in data["bcr"]:
+        _inventory_rows(data["bcr"]["inventory"], "bcr.inventory")
+    if "bcr_inventory" in data:
+        _inventory_rows(data["bcr_inventory"], "bcr_inventory")
+    if "zero_change_receipt" in data and not isinstance(data["zero_change_receipt"], dict):
+        raise ValueError("zero_change_receipt must be an object")
     if "migrations" in data and not isinstance(data["migrations"], list):
         raise ValueError("migrations must be an array")
     for index, row in enumerate(data.get("migrations", [])):
@@ -368,6 +412,139 @@ def analyze(data: Any) -> dict[str, Any]:
     elif collected_at is not None and bcr_checked_at > collected_at:
         missing_provenance.append("bcr.checked_at(no later than collection)")
 
+    # A checked BCR is an inventory of account-release behavior changes, not a
+    # single checkbox.  Every item needs a disposition so an affected change
+    # cannot disappear behind a generic "reviewed" label.
+    bcr_inventory = bcr.get("inventory", data.get("bcr_inventory", []))
+    if bcr.get("checked") is True and not bcr_inventory:
+        findings.append(
+            _finding(
+                "BCR_INVENTORY_MISSING",
+                "critical",
+                "BCR checked without an itemized behavior-change inventory",
+                "Recollect the account-release BCR inventory with item IDs, affected surfaces, disposition, and owner before approving the deploy.",
+                37,
+            )
+        )
+    for index, item in enumerate(bcr_inventory if isinstance(bcr_inventory, list) else []):
+        if not _nonempty(item.get("id")):
+            missing_provenance.append(f"bcr.inventory[{index}].id")
+        if not _nonempty(item.get("source")):
+            missing_provenance.append(f"bcr.inventory[{index}].source")
+        affected = item.get("affected") is True or str(item.get("status", "")).upper() in {"OPEN", "IMPACTED", "REVIEW"}
+        disposition = str(item.get("disposition", "")).upper()
+        if affected and disposition not in {"VERIFIED", "MITIGATED", "ACCEPTED", "NOT_APPLICABLE"}:
+            findings.append(
+                _finding(
+                    f"BCR_AFFECTED_UNRESOLVED-{index}",
+                    "critical",
+                    f"{item.get('id') or 'unnamed BCR'} is marked affected without an approved disposition",
+                    "Review the BCR against the affected objects and toolchain, record an owner and mitigation, or block the release.",
+                    38,
+                )
+            )
+
+    # Preflight is deliberately a separate gate from the Terraform plan: a
+    # valid plan can still target the wrong account, stale backend, or unknown
+    # object set.  Check records are metadata only and must be explicit.
+    preflight = data.get("preflight", {}) if isinstance(data.get("preflight", {}), dict) else {}
+    check_rows = preflight.get("checks", [])
+    if (
+        preflight.get("completed") is not True
+        or not _nonempty(preflight.get("operator"))
+        or _timestamp(preflight.get("checked_at"), "preflight.checked_at") is None
+        or not isinstance(check_rows, list)
+        or not check_rows
+    ):
+        findings.append(
+            _finding(
+                "PREFLIGHT_INCOMPLETE",
+                "critical",
+                "deployment preflight is absent or incomplete",
+                "Capture account/backend/workspace identity, state lock/backup, affected-object inventory, plan, BCR, and rollback checks with an operator and UTC timestamp.",
+                6,
+            )
+        )
+    else:
+        preflight_checked_at = _timestamp(preflight.get("checked_at"), "preflight.checked_at")
+        if collected_at is not None and preflight_checked_at is not None and preflight_checked_at > collected_at:
+            missing_provenance.append("preflight.checked_at(no later than collection)")
+        failed_checks = []
+        for index, check in enumerate(check_rows):
+            if isinstance(check, dict):
+                if not _nonempty(check.get("name")) or str(check.get("status", "")).upper() != "PASS":
+                    failed_checks.append(str(check.get("name") or f"check-{index}"))
+            elif not (isinstance(check, str) and check.strip()):
+                failed_checks.append(f"check-{index}")
+        if failed_checks:
+            findings.append(
+                _finding(
+                    "PREFLIGHT_CHECK_FAILED",
+                    "critical",
+                    ", ".join(failed_checks),
+                    "Resolve each failed preflight check and recollect the packet; do not infer readiness from a green Terraform plan.",
+                    7,
+                )
+            )
+
+    state_backup = data.get("state_backup") or data.get("state_backup_receipt") or tf.get("state_backup")
+    if (
+        not isinstance(state_backup, dict)
+        or state_backup.get("created") is not True
+        or state_backup.get("verified") is not True
+    ):
+        findings.append(
+            _finding(
+                "STATE_BACKUP_MISSING",
+                "critical",
+                "verified state backup receipt is missing",
+                "Preserve a point-in-time backend snapshot/version and verify its identity, timestamp, location, and checksum before any state refresh or apply.",
+                8,
+            )
+        )
+    else:
+        for field in ("location", "captured_at", "state_sha256"):
+            if not _nonempty(state_backup.get(field)):
+                missing_provenance.append(f"state_backup.{field}")
+        if _safe_backend(state_backup.get("location")) is None:
+            missing_provenance.append("state_backup.location(redacted identifier without credentials)")
+        if not _sha256(state_backup.get("state_sha256")):
+            missing_provenance.append("state_backup.state_sha256(valid SHA-256)")
+        state_backup_at = _timestamp(state_backup.get("captured_at"), "state_backup.captured_at")
+        if state_backup_at is None:
+            missing_provenance.append("state_backup.captured_at(valid timezone timestamp)")
+        elif collected_at is not None and state_backup_at > collected_at:
+            missing_provenance.append("state_backup.captured_at(no later than collection)")
+
+    affected_objects = data.get("affected_objects", data.get("affected_object_inventory", tf.get("affected_objects")))
+    if isinstance(affected_objects, dict):
+        affected_verified = affected_objects.get("verified")
+        affected_objects = affected_objects.get("objects", [])
+    else:
+        affected_verified = data.get("affected_objects_verified", tf.get("affected_objects_verified"))
+    if not isinstance(affected_objects, list) or affected_verified is not True:
+        findings.append(
+            _finding(
+                "AFFECTED_OBJECTS_UNVERIFIED",
+                "critical",
+                "affected-object inventory is absent or not verified",
+                "Reconcile plan addresses to database/schema/table/view/grant identities and record the exact reviewed object set before approval.",
+                9,
+            )
+        )
+    else:
+        blank_objects = [str(index) for index, row in enumerate(affected_objects) if not _object_label(row)]
+        if blank_objects:
+            findings.append(
+                _finding(
+                    "AFFECTED_OBJECTS_INCOMPLETE",
+                    "high",
+                    "blank object identity at rows " + ", ".join(blank_objects),
+                    "Complete the object inventory with stable Terraform addresses or fully qualified Snowflake object names.",
+                    10,
+                )
+            )
+
     rollback = data.get("rollback", {}) if isinstance(data.get("rollback", {}), dict) else {}
     if rollback.get("tested") is not True:
         findings.append(
@@ -405,6 +582,30 @@ def analyze(data: Any) -> dict[str, Any]:
             )
         )
 
+    zero_change = plan_numbers_valid and exit_code == 0 and changes == 0
+    zero_receipt = data.get("zero_change_receipt", {}) if isinstance(data.get("zero_change_receipt", {}), dict) else {}
+    if zero_change:
+        receipt_plan_hash = zero_receipt.get("plan_sha256") or zero_receipt.get("saved_plan_sha256")
+        receipt_object_count = zero_receipt.get("affected_objects", zero_receipt.get("affected_object_count"))
+        receipt_issued_at = _timestamp(zero_receipt.get("issued_at"), "zero_change_receipt.issued_at")
+        receipt_matches = (
+            zero_receipt.get("issued") is True
+            and _sha256(receipt_plan_hash)
+            and receipt_plan_hash == plan.get("saved_plan_sha256")
+            and receipt_object_count == 0
+            and receipt_issued_at is not None
+            and (collected_at is None or receipt_issued_at <= collected_at)
+        )
+        if not receipt_matches:
+            findings.append(
+                _finding(
+                    "ZERO_CHANGE_RECEIPT_MISSING",
+                    "critical",
+                    "exit_code=0 and changes=0 without a matching zero-change receipt",
+                    "Issue a signed/hashed zero-change receipt tied to the saved plan, verified object count, and UTC issuance time; do not treat plan output alone as adoption proof.",
+                    11,
+                )
+            )
     findings.sort(key=lambda item: (item["recovery_rank"], item["code"]))
     recovery: list[dict[str, Any]] = []
     seen: set[str] = set()
@@ -413,8 +614,10 @@ def analyze(data: Any) -> dict[str, Any]:
         if action not in seen:
             seen.add(action)
             recovery.append({"order": len(recovery) + 1, "for": finding["code"], "action": action})
-    zero_change = plan_numbers_valid and exit_code == 0 and changes == 0
     release_gate = "pass" if zero_change and not findings else "blocked"
+    safe_state_backup = dict(state_backup) if isinstance(state_backup, dict) else {}
+    if safe_state_backup and _safe_backend(safe_state_backup.get("location")) is None:
+        safe_state_backup["location"] = None
     return {
         "schema_version": "1",
         "zero_change_plan": zero_change,
@@ -448,7 +651,20 @@ def analyze(data: Any) -> dict[str, Any]:
             "id": bcr.get("id"),
             "source": bcr.get("source"),
             "checked_at": bcr.get("checked_at"),
+            "inventory": bcr_inventory,
         },
+        "preflight": {
+            "completed": preflight.get("completed"),
+            "operator": preflight.get("operator"),
+            "checked_at": preflight.get("checked_at"),
+            "checks": check_rows,
+        },
+        "affected_object_inventory": {
+            "verified": affected_verified,
+            "objects": affected_objects if isinstance(affected_objects, list) else [],
+        },
+        "state_backup_receipt": safe_state_backup,
+        "zero_change_receipt": zero_receipt,
         "migration_evidence": [
             {
                 "path": migration.get("path"),
@@ -481,6 +697,8 @@ def analyze(data: Any) -> dict[str, Any]:
             "Versioned migration checksums match change history; repeatable reruns are intentional and idempotent.",
             "Snowflake CLI, connector/driver, runtime, and behavior-change review are current for this account release window.",
             "Rollback or forward-fix was tested against the exact plan/migration set and its stop condition is recorded.",
+            "Preflight, BCR inventory, affected-object inventory, and state-backup receipts reconcile to the same account and plan.",
+            "A zero-change receipt is issued only for exit code 0, zero changes, and a matching saved-plan hash.",
         ],
         "limitations": [
             "This report classifies supplied evidence; it does not invoke Terraform, schemachange, Snowflake CLI, a driver, or Snowflake SQL.",

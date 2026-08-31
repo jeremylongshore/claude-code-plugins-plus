@@ -1,4 +1,16 @@
 {
+  "metadata": {
+    "account": "ORG-ACCOUNT",
+    "role": "SECURITY_AUDITOR",
+    "collected_at": "2026-08-30T12:00:00Z",
+    "window_start": "2026-08-30T11:45:00Z",
+    "window_end": "2026-08-30T12:00:00Z",
+    "freshness": {
+      "status": "FRESH",
+      "checked_at": "2026-08-30T12:00:00Z",
+      "max_age_seconds": 86400
+    }
+  },
   "roles": [
     {"name": "ANALYST", "inherits": ["DATA_READER"]},
     {"name": "DATA_READER"},
@@ -21,5 +33,9 @@
     {"grantee": "ANALYST", "privilege": "SELECT", "scope": "ANALYTICS", "scope_type": "DATABASE", "object_type": "TABLE"},
     {"grantee": "ANALYST", "privilege": "SELECT", "scope": "ANALYTICS.CURATED", "scope_type": "SCHEMA", "object_type": "TABLE"},
     {"grantee": "REPORTING", "privilege": "OWNERSHIP", "scope": "ANALYTICS.CURATED", "scope_type": "SCHEMA", "object_type": "VIEW"}
-  ]
+  ],
+  "verification": {
+    "positive": [{"id": "allow-1", "status": "PASS", "observed_at": "2026-08-30T11:58:00Z", "account": "ORG-ACCOUNT", "principal": "ALICE", "object": "ANALYTICS.CURATED.ORDERS", "privilege": "SELECT", "primary_role": "ANALYST", "secondary_roles_mode": "EXPLICIT", "secondary_roles": ["REPORTING"]}],
+    "negative": [{"id": "deny-1", "status": "DENIED", "observed_at": "2026-08-30T11:59:00Z", "account": "ORG-ACCOUNT", "principal": "ALICE", "object": "ANALYTICS.CURATED.ORDERS", "privilege": "SELECT", "primary_role": "ANALYST", "secondary_roles_mode": "EXPLICIT", "secondary_roles": ["REPORTING"]}]
+  }
 }

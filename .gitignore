@@ -70,6 +70,10 @@
 # was explicitly NOT done). No inherent secrets risk; transparency is the point.
 **/*/000-docs/
 **/*/000-docs/**
+# EXCEPTION: Snowflake operator research and architecture records are published
+# with the curated pack, like the Databricks benchmark corpus.
+!plugins/saas-packs/snowflake-pack/000-docs/
+!plugins/saas-packs/snowflake-pack/000-docs/**
 # EXCEPTION: the consistency-validator golden fixtures deliberately ship
 # miniature 000-docs/ trees — they ARE the test corpus for the
 # index-vs-filesystem and dead-reference checks (GH #991 Phase 1).

@@ -8,11 +8,12 @@ description: |
   denied, a role graph needs review, or an authorization cleanup needs evidence.
   Trigger with phrases like "Snowflake access audit", "trace Snowflake grants",
   "why can this user read", "Snowflake RBAC drift", or "future grants conflict".
-allowed-tools: Read, Write, Edit, Bash(python3:*)
-version: 2.0.0
+allowed-tools: Read, Write, Bash(python3:*)
+argument-hint: "[redacted-access-evidence.json]"
+version: 2.1.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatibility: Designed for Claude Code
+compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection
 tags: [saas, snowflake, security, rbac, governance, least-privilege]
 ---
 
@@ -31,8 +32,12 @@ access semantics, secondary-role assumptions, and future-grant precedence.
 
 - Read-only, sanitized exports from `SHOW ROLES`, `SHOW GRANTS`, and relevant
   `SHOW FUTURE GRANTS` queries.
-- A named principal/object/privilege question, evidence timestamp, and review
-  period. Live Snowflake checks remain the operator's responsibility.
+- A named principal/object/privilege question, account/role identity, UTC
+  collection timestamp, observation window, and explicit freshness bound. Live
+  Snowflake checks remain the operator's responsibility.
+- Timestamped positive (allowed action) and negative (denied action) receipts
+  captured under the same primary/secondary-role context; missing proof is
+  `NOT_PROVEN`, never an inferred denial.
 - Python 3.10+ for the bundled stdlib analyzer. No Snowflake driver or network
   access is required.
 
@@ -41,7 +46,7 @@ access semantics, secondary-role assumptions, and future-grant precedence.
 This skill's analyzer is offline and deliberately has no authentication flow.
 If live Snowflake evidence is collected, use the organization's approved
 Snowflake session/authentication process; never put its credentials in the
-inventory or report. Use `Write`/`Edit` only to save a sanitized report or
+inventory or report. Use `Write` only to save a sanitized report or
 approved local change packet; never to apply Snowflake mutations.
 
 ## Safety contract
@@ -66,6 +71,20 @@ approved local change packet; never to apply Snowflake mutations.
 2. Collect the narrowest read-only `SHOW ROLES`, `SHOW GRANTS`, and `SHOW FUTURE
    GRANTS` exports needed. Read [audit-queries.md](references/audit-queries.md)
    for the sanitized input shape. Record the role that ran each query.
+   For Account Usage-backed metadata, use the pack's shared collector and
+   preserve its source views, SQL hash, row count, collection timestamp, and
+   non-claims:
+
+   ```bash
+   python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
+     --surface access --connection <existing-readonly-profile> \
+     --output ./snowflake-access-live-evidence.json
+   ```
+
+   Reconcile that historical receipt with current `SHOW` output; collector
+   permission failures remain evidence gaps and are never solved by escalating
+   to `ACCOUNTADMIN`. If `truncation_possible` is true, partition the grant
+   inventory before making any absence or completeness claim.
 3. Run the deterministic analyzer:
 
    ```bash
@@ -82,13 +101,17 @@ approved local change packet; never to apply Snowflake mutations.
 4. For each finding, distinguish **observed**, **not proven**, and **needs live
    verification**. Resolve managed-access, ownership, and future-grant findings
    with [managed-access-and-future-grants.md](references/managed-access-and-future-grants.md).
+   The report must retain direct-user paths and every ownership path separately;
+   ownership is control-plane authority, not routine access.
 5. Produce a dry-run change packet: current path, intended path, exact proposed
    principal/privilege/object edge, approver, executor, precondition, reversal,
    and residual risk. Proposed SQL may be described as a review artifact, but it
    is not executed by this skill.
 6. Require positive and negative verification before an authorized operator
    applies anything. Use [verification-and-rollback.md](references/verification-and-rollback.md)
-   for the receipt fields and rollback boundary.
+   for receipt fields and rollback boundary. When database- and schema-level
+   future grants overlap, report effective schema precedence and test a
+   disposable object; do not summarize the conflict as a generic duplicate.
 
 ## What the report must answer
 
@@ -102,6 +125,8 @@ approved local change packet; never to apply Snowflake mutations.
   type, or does a future `OWNERSHIP` grant need explicit approval?
 - Which live checks remain necessary: container `USAGE`, policies, shares,
   `SHOW GRANTS`, current secondary-role mode, and a real allowed/denied operation?
+- Is the evidence fresh for this decision, and do timestamped positive and
+  negative access proofs exist for the requested role/object context?
 
 ## Output
 
@@ -112,8 +137,10 @@ Return a JSON report plus a human-readable change packet containing:
   this never certifies complete access without separate container/policy checks;
 - sorted findings with severity, evidence, and remediation decision;
 - managed-access and secondary-role boundaries;
+- evidence scope/freshness, direct-user and ownership paths, and explicit
+  database-versus-schema future-grant precedence;
 - proposed change/reversal descriptions with no executed mutations; and
-- positive and negative verification receipts.
+- positive and negative verification receipts with `PROVEN`/`NOT_PROVEN` status.
 
 ## Error Handling
 

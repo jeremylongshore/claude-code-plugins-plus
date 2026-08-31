@@ -13,6 +13,7 @@ import hashlib
 import json
 import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -37,6 +38,13 @@ SENSITIVE_KEY_NAMES = {
 METHODS = {"WIF", "PAT", "OAUTH", "KEY_PAIR", "PASSWORD", "SAML", "BASIC"}
 TARGET_PRIORITY = ("WIF", "KEY_PAIR", "OAUTH", "PAT")
 HIGH_RISK_CURRENT = {"PASSWORD", "BASIC"}
+SENSITIVE_VALUE_PATTERNS = (
+    re.compile(
+        r"(?i)\b(?:password|passwd|pwd|passphrase|secret|token|api[_ -]?key|authorization|credential|private[_ -]?key)\b\s*[:=]\s*\S+"
+    ),
+    re.compile(r"(?i)\bbearer\s+[A-Za-z0-9._~+/=-]{8,}"),
+    re.compile(r"-----BEGIN(?: [A-Z0-9]+)? PRIVATE KEY-----"),
+)
 
 
 def norm(value: object) -> str:
@@ -73,6 +81,8 @@ def reject_credentials(value: object, path: str = "input") -> None:
     elif isinstance(value, list):
         for index, child in enumerate(value):
             reject_credentials(child, f"{path}[{index}]")
+    elif isinstance(value, str) and any(pattern.search(value) for pattern in SENSITIVE_VALUE_PATTERNS):
+        raise ValueError(f"credential-shaped value is not accepted: {path}")
 
 
 def rows(doc: dict, field: str) -> list[dict]:
@@ -103,6 +113,18 @@ def list_upper(value: object, path: str, *, allow_scalar: bool = False) -> list[
     return sorted({upper(item) for item in string_list(value, path, allow_scalar=allow_scalar) if norm(item)})
 
 
+def timestamp(value: object) -> datetime | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return None
+    return parsed.astimezone(timezone.utc)
+
+
 def finding(fid: str, severity: str, category: str, subject: str, detail: str, **extra: object) -> dict:
     result: dict[str, object] = {
         "id": fid,
@@ -129,9 +151,130 @@ def analyze(doc: dict) -> dict:
     users = [row for row in rows(doc, "users") if norm(row.get("name"))]
     workloads = [row for row in rows(doc, "workloads") if norm(row.get("name"))]
     integrations = [row for row in rows(doc, "integrations") if norm(row.get("name"))]
+    metadata = doc.get("metadata", {})
+    if not isinstance(metadata, dict):
+        raise ValueError("metadata must be an object")
+    break_glass = doc.get("break_glass", doc.get("break_glass_identity", {}))
+    if not isinstance(break_glass, dict):
+        raise ValueError("break_glass must be an object")
+    canary = doc.get("canary", doc.get("canary_receipt", {}))
+    if not isinstance(canary, dict):
+        raise ValueError("canary must be an object")
     user_map = {upper(row["name"]): row for row in users}
     findings: list[dict] = []
     plans: list[dict] = []
+
+    freshness = metadata.get("freshness", {})
+    freshness_missing: list[str] = []
+    now = datetime.now(timezone.utc)
+    parsed_metadata: dict[str, datetime | None] = {}
+    for field in ("collected_at", "window_start", "window_end"):
+        parsed_metadata[field] = timestamp(metadata.get(field))
+        if parsed_metadata[field] is None:
+            freshness_missing.append(f"metadata.{field}(valid timezone timestamp)")
+    collected_at = parsed_metadata["collected_at"]
+    window_start = parsed_metadata["window_start"]
+    window_end = parsed_metadata["window_end"]
+    if collected_at is not None and collected_at > now:
+        freshness_missing.append("metadata.collected_at(not in future)")
+    if window_start is not None and window_end is not None and window_start > window_end:
+        freshness_missing.append("metadata.observation_window(ordered)")
+    if window_end is not None and collected_at is not None and window_end > collected_at:
+        freshness_missing.append("metadata.window_end(no later than collection)")
+    if not isinstance(freshness, dict):
+        freshness_missing.append("metadata.freshness(object)")
+    else:
+        if str(freshness.get("status", "")).upper() != "FRESH":
+            freshness_missing.append("metadata.freshness.status(FRESH)")
+        checked_at = timestamp(freshness.get("checked_at"))
+        if checked_at is None:
+            freshness_missing.append("metadata.freshness.checked_at(valid timezone timestamp)")
+        elif collected_at is not None and checked_at > collected_at:
+            freshness_missing.append("metadata.freshness.checked_at(no later than collection)")
+        if type(freshness.get("max_age_seconds")) is not int or freshness.get("max_age_seconds") <= 0:
+            freshness_missing.append("metadata.freshness.max_age_seconds(positive integer)")
+        elif (
+            checked_at is not None
+            and collected_at is not None
+            and (collected_at - checked_at).total_seconds() > freshness["max_age_seconds"]
+        ):
+            freshness_missing.append("metadata.freshness.checked_at(within max_age_seconds)")
+    if freshness_missing:
+        findings.append(
+            finding(
+                "inventory-freshness-missing",
+                "high",
+                "inventory-freshness",
+                "identity-estate",
+                "Missing or invalid: "
+                + ", ".join(freshness_missing)
+                + ". Recollect the read-only identity/workload inventory with a bounded observation window.",
+            )
+        )
+
+    if (
+        break_glass.get("verified") is not True
+        or not norm(break_glass.get("identity"))
+        or not norm(break_glass.get("owner"))
+        or timestamp(break_glass.get("tested_at")) is None
+        or (
+            window_start is not None
+            and timestamp(break_glass.get("tested_at")) is not None
+            and timestamp(break_glass.get("tested_at")) < window_start
+        )
+        or (
+            collected_at is not None
+            and timestamp(break_glass.get("tested_at")) is not None
+            and timestamp(break_glass.get("tested_at")) > collected_at
+        )
+        or not norm(break_glass.get("auth_method"))
+    ):
+        findings.append(
+            finding(
+                "break-glass-unverified",
+                "critical",
+                "break-glass-unverified",
+                "recovery-identity",
+                "A separately owned, tested recovery identity is not proven. Do not retire a password/basic path or start a cutover without break-glass recovery evidence.",
+            )
+        )
+    canary_positive = (
+        canary.get("positive") is True
+        if "positive" in canary
+        else str(canary.get("positive_status", "")).upper() in {"PASS", "PASSED"}
+    )
+    canary_negative = (
+        canary.get("negative") is True
+        if "negative" in canary
+        else str(canary.get("negative_status", "")).upper() in {"PASS", "PASSED", "DENIED"}
+    )
+    if (
+        canary.get("verified") is not True
+        or not norm(canary.get("workload"))
+        or not norm(canary.get("target_auth"))
+        or timestamp(canary.get("tested_at")) is None
+        or (
+            window_start is not None
+            and timestamp(canary.get("tested_at")) is not None
+            and timestamp(canary.get("tested_at")) < window_start
+        )
+        or (
+            collected_at is not None
+            and timestamp(canary.get("tested_at")) is not None
+            and timestamp(canary.get("tested_at")) > collected_at
+        )
+        or not canary_positive
+        or not canary_negative
+    ):
+        findings.append(
+            finding(
+                "canary-unverified",
+                "high",
+                "canary-unverified",
+                norm(canary.get("workload")) or "pilot",
+                "A target-auth canary lacks verified positive and negative outcomes. Keep the current path and stage the target only after the canary and rollback identity are proven.",
+            )
+        )
 
     for index, user in enumerate(users):
         name = upper(user["name"])
@@ -261,6 +404,11 @@ def analyze(doc: dict) -> dict:
                     "current_auth": current,
                     "target_auth": selected,
                     "target_rationale": detail,
+                    "owner": norm(workload.get("owner")) or norm(user.get("owner")),
+                    "canary": {
+                        "verified": canary.get("verified") is True and upper(canary.get("workload")) == wname,
+                        "tested_at": canary.get("tested_at"),
+                    },
                     "roles": list_upper(
                         workload.get("roles") if "roles" in workload else workload.get("role"),
                         f"workloads.{wname}.roles",
@@ -471,9 +619,28 @@ def analyze(doc: dict) -> dict:
         },
         "boundaries": {
             "read_only": True,
+            "edit_authority": False,
+            "snowflake_mutation_authority": False,
             "credential_handling": "No password, token, private-key, or secret values are accepted or emitted.",
             "dates": "No universal retirement date is assumed; use the account's approved change window and live feature support.",
             "managed_mcp_oauth": "Primary-role scopes, client behavior, DEFAULT_ROLE, allowed/blocked roles, and OAUTH_USE_SECONDARY_ROLES are separate evidence; the analyzer does not broaden or enable them.",
+        },
+        "inventory_receipt": {
+            "read_only": True,
+            "source": metadata.get("source") or "operator-supplied sanitized inventory",
+            "account": metadata.get("account"),
+            "role": metadata.get("role"),
+            "collected_at": metadata.get("collected_at"),
+            "observation_window": {"start": metadata.get("window_start"), "end": metadata.get("window_end")},
+            "freshness": freshness,
+            "counts": {"users": len(users), "workloads": len(workloads), "integrations": len(integrations)},
+            "non_claims": [
+                "No identity, integration, policy, password, key, token, or role was changed by this analyzer."
+            ],
+        },
+        "recovery_receipt": {
+            "break_glass": break_glass,
+            "canary": canary,
         },
         "plans": plans,
         "managed_mcp_controls": [

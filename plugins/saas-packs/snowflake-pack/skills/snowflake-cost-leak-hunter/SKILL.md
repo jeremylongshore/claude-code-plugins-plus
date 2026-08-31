@@ -13,7 +13,7 @@ allowed-tools: Read, Write, Bash(python3:*)
 argument-hint: "[evidence-json-or-output-directory]"
 model: inherit
 effort: high
-version: 2.0.0
+version: 2.1.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,7 +22,7 @@ tags:
   - analytics
   - snowflake
   - finops
-compatibility: Designed for Claude Code
+compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection
 ---
 
 # Snowflake Cost Leak Hunter
@@ -84,6 +84,31 @@ before collecting evidence. Read
 for the bounded SQL surfaces. If controls are requested, read
 [references/controls-boundaries.md](references/controls-boundaries.md), but return a
 review packet only.
+
+For a live, model-neutral collection, use the shared read-only collector with an
+existing Snowflake CLI profile:
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
+  --surface cost --connection <approved-readonly-profile> \
+  --output ./snowflake-cost-collector.json
+```
+
+Map its `datasets.warehouse_metering`, `query_attribution`, `warehouse_load`, and
+`serverless_usage` rows into the analyzer schema. Preserve `collected_at`, source
+views, row count, and sanitized errors. The collector's current-week query is a
+discovery aid; the report must still state the requested half-open window and call
+out any rows outside or missing from it.
+If `truncation_possible` is true, do not issue a completeness or savings verdict;
+narrow or partition the window and recollect until every receipt is below its cap.
+Every usage row must carry `start_time` and `end_time` wholly inside the requested
+window. Query attribution uses `query_tag_present` and optional
+`query_tag_sha256`; never supply raw user names or query tags.
+The analyzer treats a missing collector receipt as unverified and blocks completeness
+and savings claims. When supplied, it verifies the receipt's surface, source views,
+reviewed SQL hash, receipt hash, dataset rows, status, and cap. An error, mismatch,
+missing integrity field, or possible truncation is surfaced in the report and blocks
+completeness/savings claims.
 
 ## Instructions
 
@@ -155,6 +180,12 @@ keeps three result classes separate:
   usage that merits review; not promised savings.
 
 It does not apply magnitude thresholds, infer a price, or recommend a warehouse size.
+When query fingerprints have both attributed credits and elapsed time, it also emits
+a non-dominance cost/latency Pareto view. A Pareto point is a comparison aid, not a
+proof that a workload should move warehouses. Right-sizing is only a bounded review
+proposal when the operator supplies the current size, explicit candidate sizes,
+maximum size steps, measurement window, success criteria, and approver; never infer a
+target size from credits or queue time.
 
 ### 5. Corroborate before recommending
 
@@ -177,6 +208,9 @@ Follow [references/output-contract.md](references/output-contract.md). Lead with
 window and coverage, not a sensational savings number. A valid packet contains:
 
 - confirmed credits by evidence surface;
+- attribution completeness by warehouse, including unknown boundaries for NULL
+  attribution and query coverage gaps;
+- cost/latency Pareto points by query fingerprint and warehouse-load correlation;
 - estimated currency in a separate table, if and only if a rate card was supplied;
 - at-risk opportunities ranked by observed credits, each labeled `review required`;
 - missing/late-source warnings;
@@ -246,6 +280,8 @@ reviewable control proposal requiring explicit authorization.
   collection queries and normalization schema.
 - [Controls boundaries](references/controls-boundaries.md) — resource-monitor and budget
   semantics, including uncovered serverless usage.
+- [Pareto and right-sizing](references/pareto-and-right-sizing.md) — cost/latency
+  frontier and bounded, one-variable resize review.
 - [Output contract](references/output-contract.md) — evidence labels and review-packet
   format.
 - [`scripts/analyze_cost_evidence.py`](scripts/analyze_cost_evidence.py) — deterministic

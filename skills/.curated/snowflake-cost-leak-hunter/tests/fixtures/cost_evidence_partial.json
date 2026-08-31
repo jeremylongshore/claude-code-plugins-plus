@@ -13,6 +13,8 @@
   },
   "warehouse_metering": [
     {
+      "start_time": "2026-08-01T00:00:00Z",
+      "end_time": "2026-08-02T00:00:00Z",
       "warehouse_name": "ADAPTIVE_WH",
       "credits_used_compute": "7.0",
       "credits_attributed_compute_queries": null,

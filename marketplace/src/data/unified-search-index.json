@@ -6,9 +6,9 @@
   },
   "stats": {
     "totalPlugins": 439,
-    "totalSkills": 3015,
+    "totalSkills": 3017,
     "totalDocs": 24,
-    "totalItems": 3478,
+    "totalItems": 3480,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -13326,7 +13326,7 @@
       "slug": "snowflake-pack",
       "name": "snowflake-pack",
       "displayName": "snowflake pack",
-      "description": "Six evidence-driven Snowflake operator skills for cost, query forensics, pipelines, deployments, strong authentication, and access governance",
+      "description": "Eight model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, and failover",
       "category": "saas-packs",
       "keywords": [
         "snowflake",
@@ -13340,15 +13340,15 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
-      "skillCount": 6,
+      "skillCount": 8,
       "verificationScore": 95,
       "verificationGrade": "A",
       "verificationBadge": "gold",
-      "searchText": "snowflake pack six evidence-driven snowflake operator skills for cost, query forensics, pipelines, deployments, strong authentication, and access governance saas-packs snowflake saas sdk integration"
+      "searchText": "snowflake pack eight model-neutral snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, and failover saas-packs snowflake saas sdk integration"
     },
     {
       "type": "plugin",
@@ -72751,16 +72751,15 @@
       "allowedTools": [
         "Read",
         "Write",
-        "Edit",
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "2.0.0",
+      "version": "2.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
-      "searchText": "snowflake-access-guardian audit snowflake effective access and produce a safe least-privilege change packet. trace account-role inheritance, primary and secondary roles, managed-access schemas, ownership, direct-to-user/public grants, orphaned principals, and existing-versus-future-grant conflicts. use when access is unexpectedly broad or denied, a role graph needs review, or an authorization cleanup needs evidence. trigger with phrases like \"snowflake access audit\", \"trace snowflake grants\", \"why can this user read\", \"snowflake rbac drift\", or \"future grants conflict\". saas-packs read write edit bash(python3:*) "
+      "searchText": "snowflake-access-guardian audit snowflake effective access and produce a safe least-privilege change packet. trace account-role inheritance, primary and secondary roles, managed-access schemas, ownership, direct-to-user/public grants, orphaned principals, and existing-versus-future-grant conflicts. use when access is unexpectedly broad or denied, a role graph needs review, or an authorization cleanup needs evidence. trigger with phrases like \"snowflake access audit\", \"trace snowflake grants\", \"why can this user read\", \"snowflake rbac drift\", or \"future grants conflict\". saas-packs read write bash(python3:*) "
     },
     {
       "type": "skill",
@@ -72775,12 +72774,31 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "2.0.0",
+      "version": "2.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
       "searchText": "snowflake-cost-leak-hunter audit snowflake warehouse and query-attribution evidence to locate idle compute, unallocated or untagged usage, query-acceleration spend, and serverless visibility gaps without guessing prices or savings. use when a snowflake bill increased, a team needs chargeback/showback evidence, warehouse credits appear unexplained, or an operator asks which usage merits investigation. trigger with \"snowflake bill increased\", \"find idle snowflake credits\", \"snowflake cost attribution\", or \"untagged snowflake spend\". do not use to change warehouse size, suspend compute, create resource monitors, or claim invoice reconciliation. saas-packs read write bash(python3:*) "
+    },
+    {
+      "type": "skill",
+      "id": "snowflake-data-quality-sentinel",
+      "slug": "snowflake-data-quality-sentinel",
+      "name": "snowflake-data-quality-sentinel",
+      "description": "Assess Snowflake data metric function coverage and current quality evidence without reading customer rows. Use when expectations or anomaly monitoring may be violated, stale, suspended, incomplete, mis-scoped, or unavailable, or when an operator needs separate data-quality and monitoring verdicts. Trigger with \"Snowflake data quality\", \"DMF expectation\", \"expectation violation\", \"anomaly training\", \"data quality monitoring gap\", or \"stale DMF result\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)"
+      ],
+      "compatibleWith": [],
+      "version": "2.1.0",
+      "parentPlugin": {
+        "name": "snowflake-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "snowflake-data-quality-sentinel assess snowflake data metric function coverage and current quality evidence without reading customer rows. use when expectations or anomaly monitoring may be violated, stale, suspended, incomplete, mis-scoped, or unavailable, or when an operator needs separate data-quality and monitoring verdicts. trigger with \"snowflake data quality\", \"dmf expectation\", \"expectation violation\", \"anomaly training\", \"data quality monitoring gap\", or \"stale dmf result\". saas-packs read bash(python3:*) "
     },
     {
       "type": "skill",
@@ -72795,12 +72813,31 @@
         "Bash(terraform:plan*)"
       ],
       "compatibleWith": [],
-      "version": "2.0.0",
+      "version": "2.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
       "searchText": "snowflake-deploy-medic review and safely diagnose snowflake infrastructure and database deployments across the snowflakedb/snowflake terraform 2.x provider, grants/state/imports, schemachange versioned and repeatable migrations, snowflake cli/drivers, and behavior-change releases. use before a production deploy, when a plan wants to replace or revoke grants, state is unreadable, a migration checksum drifts, or a cli/driver upgrade changes behavior. produces a zero-change/plan verdict, ordered remediation, and tested rollback requirements. it never applies, destroys, deploys, runs mutating sql, or edits state/history automatically. trigger with \"snowflake terraform plan\", \"grant import\", \"terraform state\", \"schemachange checksum\", \"repeatable migration\", \"snowflake cli upgrade\", \"driver bcr\", or \"rollback snowflake deploy\". use when a production change needs a current plan, migration-integrity, toolchain, or rollback gate. saas-packs read bash(python3:*) bash(terraform:plan*) "
+    },
+    {
+      "type": "skill",
+      "id": "snowflake-failover-readiness-drill",
+      "slug": "snowflake-failover-readiness-drill",
+      "name": "snowflake-failover-readiness-drill",
+      "description": "Assess Snowflake replication and failover-group readiness without performing a refresh, promotion, redirect, cancellation, resume, failover, or failback. Use when defining RPO/RTO, preparing or reviewing a Business Critical disaster- recovery exercise, diagnosing replication history, checking cross-group object dependencies, or verifying an operator-executed failover/failback receipt. Produces a deterministic readiness verdict, evidence gaps, abort gates, and an operator runbook boundary. Trigger with \"Snowflake failover drill\", \"replication group RPO\", \"secondary refresh failed\", \"account failover\", \"failback proof\", or \"client redirect validation\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)"
+      ],
+      "compatibleWith": [],
+      "version": "2.1.0",
+      "parentPlugin": {
+        "name": "snowflake-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "snowflake-failover-readiness-drill assess snowflake replication and failover-group readiness without performing a refresh, promotion, redirect, cancellation, resume, failover, or failback. use when defining rpo/rto, preparing or reviewing a business critical disaster- recovery exercise, diagnosing replication history, checking cross-group object dependencies, or verifying an operator-executed failover/failback receipt. produces a deterministic readiness verdict, evidence gaps, abort gates, and an operator runbook boundary. trigger with \"snowflake failover drill\", \"replication group rpo\", \"secondary refresh failed\", \"account failover\", \"failback proof\", or \"client redirect validation\". saas-packs read bash(python3:*) "
     },
     {
       "type": "skill",
@@ -72814,7 +72851,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "2.0.0",
+      "version": "2.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72834,7 +72871,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "2.0.0",
+      "version": "2.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72850,17 +72887,15 @@
       "category": "saas-packs",
       "allowedTools": [
         "Read",
-        "Write",
-        "Edit",
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "2.0.0",
+      "version": "2.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
-      "searchText": "snowflake-strong-auth-migration-pilot pilot a snowflake authentication modernization without lockouts or credential exposure. inventory person, service, and legacy_service users; map named workloads to wif, key pair, oauth, or bounded pat; and audit managed mcp/oauth session controls. use when replacing snowflake passwords, reviewing service identities, planning workload identity federation, or scoping mcp oauth. trigger with phrases like \"snowflake auth migration\", \"service user password\", \"snowflake wif\", \"key pair rotation\", or \"mcp oauth role scope\". saas-packs read write edit bash(python3:*) "
+      "searchText": "snowflake-strong-auth-migration-pilot pilot a snowflake authentication modernization without lockouts or credential exposure. inventory person, service, and legacy_service users; map named workloads to wif, key pair, oauth, or bounded pat; and audit managed mcp/oauth session controls. use when replacing snowflake passwords, reviewing service identities, planning workload identity federation, or scoping mcp oauth. trigger with phrases like \"snowflake auth migration\", \"service user password\", \"snowflake wif\", \"key pair rotation\", or \"mcp oauth role scope\". saas-packs read bash(python3:*) "
     },
     {
       "type": "skill",

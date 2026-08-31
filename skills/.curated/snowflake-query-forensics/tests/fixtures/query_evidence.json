@@ -9,8 +9,11 @@
     "collected_at": "2026-08-30T11:00:00Z"
   },
   "query_history": {
+    "query_id": "01abc-example",
     "execution_status": "success",
     "warehouse_name": "ETL_WH",
+    "start_time": "2026-08-30T10:20:00Z",
+    "end_time": "2026-08-30T10:22:33Z",
     "query_hash": "hash-1",
     "query_parameterized_hash": "phash-1",
     "total_elapsed_time_ms": 153000,

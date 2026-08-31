@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 import subprocess
 import sys
@@ -18,13 +19,42 @@ assert SPEC and SPEC.loader
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
 
+COLLECTOR_SCRIPT = SKILL_DIR / "scripts" / "collect_snowflake_evidence.py"
+COLLECTOR_SPEC = importlib.util.spec_from_file_location("collect_snowflake_evidence", COLLECTOR_SCRIPT)
+assert COLLECTOR_SPEC and COLLECTOR_SPEC.loader
+COLLECTOR = importlib.util.module_from_spec(COLLECTOR_SPEC)
+COLLECTOR_SPEC.loader.exec_module(COLLECTOR)
+
 
 class QueryEvidenceTests(unittest.TestCase):
     def load_fixture(self, name: str) -> dict:
         return json.loads((FIXTURES / name).read_text(encoding="utf-8"))
 
+    def valid_receipt(self, data: dict) -> dict:
+        raw = []
+        for dataset in ("query_history", "warehouse_load"):
+            if dataset in data:
+                value = data.get(dataset, [])
+                rows = [value] if isinstance(value, dict) else value
+                raw.extend({"EVIDENCE": {"_dataset": dataset, **row}} for row in rows if isinstance(row, dict))
+        _, sql, sources = COLLECTOR.load_surface("query")
+        return COLLECTOR.build_receipt(
+            "query",
+            "readonly",
+            sql,
+            sources,
+            raw=raw,
+            collected_at=data["metadata"]["collected_at"],
+        )
+
+    def rehash_receipt(self, receipt: dict) -> None:
+        body = dict(receipt)
+        body.pop("receipt_sha256", None)
+        receipt["receipt_sha256"] = f"sha256:{hashlib.sha256(COLLECTOR.canonical_json(body)).hexdigest()}"
+
     def test_separates_observations_ratios_and_hypotheses(self) -> None:
         result = MODULE.analyze(self.load_fixture("query_evidence.json"))
+        self.assertTrue(result["completeness_claim_blocked"])
         confirmed_metrics = {item["metric"] for item in result["confirmed_observations"]}
         self.assertIn("queued_overload_time_ms", confirmed_metrics)
         self.assertIn("transaction_blocked_time_ms", confirmed_metrics)
@@ -144,6 +174,147 @@ class QueryEvidenceTests(unittest.TestCase):
             self.assertIn("## At-risk hypotheses", markdown)
             self.assertIn("## Timeline", markdown)
             self.assertIn("## One-variable experiment boundary", markdown)
+
+    def test_correlates_load_hashes_and_sos_roi_without_recommending_mutation(self) -> None:
+        data = self.load_fixture("query_evidence.json")
+        data["warehouse_load"] = [
+            {
+                "warehouse_name": "ETL_WH",
+                "start_time": "2026-08-30T10:20:00Z",
+                "end_time": "2026-08-30T10:22:00Z",
+                "avg_running": "1.2",
+                "avg_queued_load": "0.4",
+                "avg_queued_provisioning": "0",
+            }
+        ]
+        data["query_runs"] = [
+            {
+                "query_id": "old",
+                "query_parameterized_hash": "phash-1",
+                "warehouse_name": "ETL_WH",
+                "total_elapsed_time_ms": "1000",
+            },
+            {
+                "query_id": "new",
+                "query_parameterized_hash": "phash-1",
+                "warehouse_name": "ETL_WH",
+                "total_elapsed_time_ms": "2000",
+            },
+        ]
+        data["comparison_alignment"] = {
+            "status": "aligned",
+            "warehouse_name": "ETL_WH",
+            "data_scope": "orders-2026-08-30",
+            "parameters": {},
+            "cache_state": "disabled",
+            "session_parameters": {},
+        }
+        data["search_optimization"] = {
+            "credits_used": "2.5",
+            "latency_before_ms": "5000",
+            "latency_after_ms": "2500",
+            "bytes_scanned_before": "1000",
+            "bytes_scanned_after": "400",
+        }
+        data["query_insights_status"] = {"status": "available", "reason": "operator-supplied Query Insights export"}
+        result = MODULE.analyze(data)
+        self.assertEqual(result["warehouse_load_summary"][0]["avg_queued_load_sum"], "0.4")
+        self.assertEqual(result["query_hash_comparison"][0]["sample_count"], 2)
+        self.assertEqual(result["search_optimization_roi"][0]["latency_reduction_ms"], "2500")
+        self.assertEqual(result["query_insights_coverage"]["status"], "available")
+
+    def test_rejects_query_identity_mismatch(self) -> None:
+        data = self.load_fixture("query_evidence.json")
+        data["metadata"]["query_id"] = "claimed-query"
+        with self.assertRaises(MODULE.EvidenceError):
+            MODULE.analyze(data)
+
+    def test_load_correlation_requires_same_interval_and_warehouse(self) -> None:
+        data = self.load_fixture("query_evidence.json")
+        data["warehouse_load"] = [
+            {
+                "warehouse_name": "OTHER_WH",
+                "start_time": "2026-08-30T10:20:00Z",
+                "end_time": "2026-08-30T10:22:00Z",
+                "avg_queued_load": "99",
+            },
+            {
+                "warehouse_name": "ETL_WH",
+                "start_time": "2026-08-30T09:00:00Z",
+                "end_time": "2026-08-30T09:05:00Z",
+                "avg_queued_load": "88",
+            },
+        ]
+        result = MODULE.analyze(data)
+        self.assertEqual(result["warehouse_load_summary"], [])
+        self.assertTrue(any("outside the query interval or warehouse" in item for item in result["warnings"]))
+
+    def test_unaligned_hash_runs_are_not_compared(self) -> None:
+        data = self.load_fixture("query_evidence.json")
+        data["query_runs"] = [
+            {
+                "query_id": "old",
+                "query_parameterized_hash": "phash-1",
+                "warehouse_name": "ETL_WH",
+                "total_elapsed_time_ms": "1000",
+            },
+            {
+                "query_id": "new",
+                "query_parameterized_hash": "phash-1",
+                "warehouse_name": "ETL_WH",
+                "total_elapsed_time_ms": "2000",
+            },
+        ]
+        result = MODULE.analyze(data)
+        self.assertEqual(result["query_hash_comparison"], [])
+        self.assertTrue(any("aligned comparison receipt is missing" in item for item in result["warnings"]))
+
+    def test_rejects_raw_identity_and_query_tag_fields(self) -> None:
+        for field in ("user_name", "query_tag"):
+            data = self.load_fixture("query_evidence.json")
+            data["query_history"][field] = "raw-value"
+            with self.subTest(field=field), self.assertRaises(MODULE.EvidenceError):
+                MODULE.analyze(data)
+
+    def test_verified_collector_receipt_is_accepted(self) -> None:
+        data = self.load_fixture("query_evidence.json")
+        data["collector_receipt"] = self.valid_receipt(data)
+        result = MODULE.analyze(data)
+        self.assertEqual(result["collector_receipt_assessment"]["status"], "verified")
+        self.assertFalse(result["completeness_claim_blocked"])
+
+    def test_truncated_or_unverifiable_receipt_blocks_completeness(self) -> None:
+        for mutation in ("truncate", "hash"):
+            data = self.load_fixture("query_evidence.json")
+            receipt = self.valid_receipt(data)
+            if mutation == "truncate":
+                receipt["truncation_possible"] = True
+                self.rehash_receipt(receipt)
+            else:
+                del receipt["receipt_sha256"]
+            data["collector_receipt"] = receipt
+            result = MODULE.analyze(data)
+            self.assertEqual(result["collector_receipt_assessment"]["status"], "unverifiable")
+            self.assertTrue(result["completeness_claim_blocked"])
+            self.assertTrue(any("collector receipt unverifiable" in item for item in result["warnings"]))
+
+    def test_rejects_sql_shaped_query_hash(self) -> None:
+        data = self.load_fixture("query_evidence.json")
+        data["query_history"]["query_hash"] = "SELECT secret FROM customer_data"
+        with self.assertRaises(MODULE.EvidenceError):
+            MODULE.analyze(data)
+
+    def test_receipt_dataset_tamper_blocks_completeness(self) -> None:
+        data = self.load_fixture("query_evidence.json")
+        receipt = self.valid_receipt(data)
+        receipt["datasets"]["query_history"][0]["query_id"] = "different-query"
+        self.rehash_receipt(receipt)
+        data["collector_receipt"] = receipt
+        result = MODULE.analyze(data)
+        self.assertTrue(result["completeness_claim_blocked"])
+        self.assertIn(
+            "query_history rows do not match collector receipt", result["collector_receipt_assessment"]["issues"]
+        )
 
 
 if __name__ == "__main__":
