@@ -51,6 +51,13 @@ Query History can lag by up to 45 minutes and Query Insights by up to 90 minutes
 Their receipts remain separately scoped and must match the target query. Likewise, pipeline `SYSTEM$PIPE_STATUS`
 is collected only for an explicitly named pipe by the operator and is never replayed.
 
+Reliability analyzers use separate near-live receipts: `pipeline-current`,
+`data-quality-current`, and `replication-current`. The SHOW-based templates use
+Snowflake's pipe operator so raw SHOW result sets never cross the collection boundary;
+only the reviewed `EVIDENCE` projection is emitted. History and current-state receipts
+must both verify, remain below their caps, and reconcile before an analyzer can claim a
+complete graph, monitoring denominator, or failover-ready state.
+
 Run each supplemental cost surface separately and retain all receipts beside the
 normalized evidence. The cost analyzer accepts them under `supplemental_receipts`
 and verifies the exact template, source, payload, collection time, and canonical

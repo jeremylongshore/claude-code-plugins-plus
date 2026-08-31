@@ -37,10 +37,10 @@ BUNDLES: dict[str, tuple[str, ...]] = {
         "cost-storage.sql",
         "cost-transfer.sql",
     ),
-    "snowflake-data-quality-sentinel": ("data-quality.sql",),
+    "snowflake-data-quality-sentinel": ("data-quality.sql", "data-quality-current.sql"),
     "snowflake-deploy-medic": ("query.sql",),
-    "snowflake-failover-readiness-drill": ("replication.sql",),
-    "snowflake-pipeline-guardian": ("pipeline.sql",),
+    "snowflake-failover-readiness-drill": ("replication.sql", "replication-current.sql"),
+    "snowflake-pipeline-guardian": ("pipeline.sql", "pipeline-current.sql"),
     "snowflake-query-forensics": ("query.sql", "query-operator-stats.sql", "query-insights.sql"),
     "snowflake-strong-auth-migration-pilot": ("auth.sql", "auth-current.sql"),
 }

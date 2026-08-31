@@ -74,6 +74,21 @@ class CollectorTests(unittest.TestCase):
                 with self.subTest(surface=surface, column=column):
                     self.assertNotRegex(sql, rf"\b{column}\b")
 
+    def test_current_state_show_surfaces_export_only_safe_pipe_projections(self) -> None:
+        pipeline = MODULE.load_surface("pipeline-current")[1]
+        replication = MODULE.load_surface("replication-current")[1]
+        self.assertIn("SHOW TASKS IN ACCOUNT\n->> SELECT OBJECT_CONSTRUCT_KEEP_NULL", pipeline)
+        self.assertIn("SHOW REPLICATION GROUPS\n->> SELECT OBJECT_CONSTRUCT_KEEP_NULL", replication)
+        self.assertNotIn("RESULT_SCAN", pipeline)
+        self.assertNotIn("RESULT_SCAN", replication)
+        projected = MODULE.strip_sql_comments_and_strings(pipeline + replication)
+        for forbidden in ("allowed_accounts", "account_locator", "owner", "DETAILS", "definition", "notification_channel"):
+            with self.subTest(field=forbidden):
+                self.assertNotIn(forbidden, projected)
+        data_quality = MODULE.strip_sql_comments_and_strings(MODULE.load_surface("data-quality-current")[1]).upper()
+        self.assertNotIn("WITHIN_GROUP", data_quality)
+        self.assertNotRegex(data_quality, r"\bFILTER\b")
+
     def test_gate_rejects_mutation_and_session_changes(self) -> None:
         for sql in (
             "ALTER WAREHOUSE X SUSPEND",

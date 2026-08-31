@@ -72,8 +72,11 @@ SUBSURFACES = {
     "cost-resource-monitors": ("cost-resource-monitors.sql", ["SHOW RESOURCE MONITORS"], None),
     "cost-storage": ("cost-storage.sql", ["SNOWFLAKE.ACCOUNT_USAGE.STORAGE_USAGE"], None),
     "cost-transfer": ("cost-transfer.sql", ["SNOWFLAKE.ACCOUNT_USAGE.DATA_TRANSFER_HISTORY"], None),
+    "data-quality-current": ("data-quality-current.sql", ["SNOWFLAKE.ACCOUNT_USAGE.DATA_METRIC_FUNCTION_REFERENCES"], None),
+    "pipeline-current": ("pipeline-current.sql", ["SHOW TASKS", "SHOW STREAMS", "SHOW DYNAMIC TABLES", "SHOW PIPES"], None),
     "query-operator-stats": ("query-operator-stats.sql", ["GET_QUERY_OPERATOR_STATS"], "query_id"),
     "query-insights": ("query-insights.sql", ["SNOWFLAKE.ACCOUNT_USAGE.QUERY_INSIGHTS"], "query_id"),
+    "replication-current": ("replication-current.sql", ["SHOW REPLICATION GROUPS", "INFORMATION_SCHEMA.REPLICATION_GROUP_REFRESH_PROGRESS_ALL"], None),
 }
 FORBIDDEN_SQL = {
     "ALTER",
