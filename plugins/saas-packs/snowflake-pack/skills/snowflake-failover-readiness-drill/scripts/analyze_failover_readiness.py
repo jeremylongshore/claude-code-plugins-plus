@@ -35,6 +35,7 @@ FAIL_CODES = {
     "OPERATOR_APPROVAL_MISSING",
     "FAILOVER_UNVERIFIED",
     "FAILBACK_UNVERIFIED",
+    "DRILL_RECEIPT_UNVERIFIABLE",
     "REPLICATION_RECEIPT_ERROR",
     "REPLICATION_RECEIPT_TRUNCATED",
     "REPLICATION_RECEIPT_UNVERIFIABLE",
@@ -46,6 +47,14 @@ INCONCLUSIVE_CODES = {
     "HISTORY_STALE",
     "TARGET_VALIDATION_MISSING",
     "VISIBILITY_GAP",
+    "CURRENT_STATE_MISSING",
+    "CURRENT_STATE_UNAVAILABLE",
+    "CURRENT_STATE_UNVERIFIABLE",
+    "CURRENT_STATE_STALE",
+    "CURRENT_GROUP_STATE_MISSING",
+    "GROUP_PROGRESS_MISSING",
+    "GROUP_STATE_HISTORY_DRIFT",
+    "GROUP_SCHEDULE_HISTORY_DRIFT",
 }
 SENSITIVE_KEY = re.compile(
     r"password|passphrase|secret|private.?key|credential|token|authorization|jwt|sql.?text|query.?text|raw.?row|pii",
@@ -216,6 +225,66 @@ def finding(code: str, severity: str, evidence: str, action: str) -> dict[str, s
     return {"code": code, "severity": severity, "evidence": evidence, "read_only_action": action}
 
 
+def _current_state_findings(data: dict[str, Any], as_of: datetime, groups: list[dict[str, Any]]) -> list[tuple[str, str]]:
+    """Validate near-live group/progress/schedule state against the history view."""
+    current = data.get("current_state")
+    if not isinstance(current, dict):
+        return [("CURRENT_STATE_MISSING", "near-live failover-group state is absent")]
+    findings: list[tuple[str, str]] = []
+    if current.get("status") != "collected":
+        findings.append(("CURRENT_STATE_UNAVAILABLE", f"current-state status={current.get('status')!r}"))
+    try:
+        observed = stamp(current.get("observed_at"), "current_state.observed_at")
+    except ValueError:
+        findings.append(("CURRENT_STATE_UNVERIFIABLE", "current_state.observed_at is invalid"))
+        observed = None
+    max_age = current.get("max_age_minutes")
+    if type(max_age) is not int or max_age <= 0:
+        findings.append(("CURRENT_STATE_UNVERIFIABLE", "current_state.max_age_minutes must be positive"))
+    elif observed is not None and (as_of - observed).total_seconds() > max_age * 60:
+        findings.append(("CURRENT_STATE_STALE", f"current group state age exceeds {max_age} minutes"))
+    current_groups = current.get("groups")
+    if not isinstance(current_groups, list) or any(not isinstance(row, dict) for row in current_groups):
+        findings.append(("CURRENT_STATE_UNVERIFIABLE", "current_state.groups must be an array of objects"))
+        return findings
+    current_by_name: dict[str, dict[str, Any]] = {}
+    for row in current_groups:
+        name = row.get("name")
+        if not isinstance(name, str) or not name:
+            findings.append(("CURRENT_STATE_UNVERIFIABLE", "current group is missing a name"))
+            continue
+        if name in current_by_name:
+            findings.append(("CURRENT_STATE_UNVERIFIABLE", f"duplicate current group {name}"))
+        current_by_name[name] = row
+        if str(row.get("progress_status", "")).upper() in {"", "UNKNOWN", "MISSING"}:
+            findings.append(("GROUP_PROGRESS_MISSING", name))
+    for group in groups:
+        name = str(group.get("name", "unnamed"))
+        current_group = current_by_name.get(name)
+        if current_group is None:
+            findings.append(("CURRENT_GROUP_STATE_MISSING", name))
+            continue
+        if str(current_group.get("refresh_status", "")).upper() != str(group.get("refresh_status", "")).upper():
+            findings.append(("GROUP_STATE_HISTORY_DRIFT", name))
+        if "scheduled_interval_minutes" in current_group and current_group.get("scheduled_interval_minutes") != group.get(
+            "scheduled_interval_minutes"
+        ):
+            findings.append(("GROUP_SCHEDULE_HISTORY_DRIFT", name))
+    return findings
+
+
+def _drill_receipt_issue(event: Any, name: str) -> str | None:
+    if not isinstance(event, dict):
+        return f"{name} event is not an object"
+    receipt = event.get("receipt_sha256")
+    if not isinstance(receipt, str) or not SHA256_RE.fullmatch(receipt):
+        return f"{name} receipt_sha256 is missing or invalid"
+    unsigned = dict(event)
+    unsigned.pop("receipt_sha256", None)
+    expected = f"sha256:{hashlib.sha256(_canonical_json(unsigned)).hexdigest()}"
+    return None if receipt == expected else f"{name} receipt_sha256 does not match event contents"
+
+
 def analyze(data: Any) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise ValueError("evidence must be a JSON object")
@@ -259,6 +328,14 @@ def analyze(data: Any) -> dict[str, Any]:
             "critical",
             f"edition={edition}",
             "Confirm edition and limit the plan to supported replication capability; do not claim account failover readiness.",
+        )
+
+    for code, evidence in _current_state_findings(data, as_of, data.get("groups", [])):
+        add(
+            code,
+            "critical" if code.endswith("UNVERIFIABLE") else "unknown",
+            evidence,
+            "Collect a fresh, hash-verifiable near-live group state receipt before making a readiness decision.",
         )
 
     groups = data.get("groups", [])
@@ -477,6 +554,13 @@ def analyze(data: Any) -> dict[str, Any]:
     execution = mode.startswith("OPERATOR_EXECUTED")
     if execution:
         failover = events.get("FAILOVER")
+        if (issue := _drill_receipt_issue(failover, "FAILOVER")) is not None:
+            add(
+                "DRILL_RECEIPT_UNVERIFIABLE",
+                "critical",
+                issue,
+                "Attach a canonical hash over the approved operator event and recollect the drill receipt.",
+            )
         failover_observed = (
             stamp(failover.get("observed_at"), "drill_events.FAILOVER.observed_at") if failover else None
         )
@@ -517,6 +601,13 @@ def analyze(data: Any) -> dict[str, Any]:
         add("RTO_UNEVALUATED", "unknown", "RTO objective absent", "Declare a target RTO before scheduling an exercise.")
     if mode == "OPERATOR_EXECUTED_FAILOVER_AND_FAILBACK":
         failback = events.get("FAILBACK")
+        if (issue := _drill_receipt_issue(failback, "FAILBACK")) is not None:
+            add(
+                "DRILL_RECEIPT_UNVERIFIABLE",
+                "critical",
+                issue,
+                "Attach a canonical hash over the approved operator event and recollect the drill receipt.",
+            )
         failback_observed = (
             stamp(failback.get("observed_at"), "drill_events.FAILBACK.observed_at") if failback else None
         )

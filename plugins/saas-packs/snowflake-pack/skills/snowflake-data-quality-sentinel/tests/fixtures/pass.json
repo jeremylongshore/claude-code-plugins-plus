@@ -67,5 +67,23 @@
       "row_count": 1,
       "error_code": ""
     }
-  ]
+  ],
+  "current_state": {
+    "status": "collected",
+    "observed_at": "2026-08-31T11:55:00Z",
+    "max_age_seconds": 1800,
+    "associations": [
+      {
+        "requirement_id": "orders-null-count",
+        "reference_id": "ref-orders-null",
+        "status": "ACTIVE",
+        "schedule_status": "STARTED",
+        "notification_status": "ENABLED",
+        "execution_role": "DQ_MONITOR"
+      }
+    ],
+    "notifications": [
+      {"requirement_id": "orders-null-count", "status": "ENABLED", "last_delivery_at": "2026-08-31T11:30:00Z"}
+    ]
+  }
 }

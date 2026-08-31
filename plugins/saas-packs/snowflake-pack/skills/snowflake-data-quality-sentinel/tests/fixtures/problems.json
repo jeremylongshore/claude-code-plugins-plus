@@ -67,5 +67,23 @@
       "row_count": 0,
       "error_code": "NOT_AUTHORIZED"
     }
-  ]
+  ],
+  "current_state": {
+    "status": "collected",
+    "observed_at": "2026-08-31T11:55:00Z",
+    "max_age_seconds": 1800,
+    "associations": [
+      {
+        "requirement_id": "customers-row-count",
+        "reference_id": "ref-customers-row",
+        "status": "SUSPENDED",
+        "schedule_status": "SUSPENDED_INSUFFICIENT_PRIVILEGE_TO_EXECUTE_DATA_METRIC_FUNCTION",
+        "notification_status": "DISABLED",
+        "execution_role": "SYSADMIN"
+      }
+    ],
+    "notifications": [
+      {"requirement_id": "customers-row-count", "status": "DISABLED", "last_delivery_at": null}
+    ]
+  }
 }

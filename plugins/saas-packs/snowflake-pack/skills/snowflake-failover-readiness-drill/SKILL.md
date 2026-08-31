@@ -70,6 +70,8 @@ distinct from Business Critical account failover/failback.
    checks, target validation, privileges, client redirect proof, and drill events
    to the input contract in
    [`references/evidence-contract.md`](references/evidence-contract.md).
+   Use [`references/current-state.md`](references/current-state.md) for the
+   current group/progress/schedule envelope and drill receipt hash contract.
 4. Run the deterministic classifier:
 
    ```bash
@@ -109,6 +111,8 @@ a positive readiness claim.
   input schema, status logic, and operator boundary.
 - [`references/source-notes.md`](references/source-notes.md) — primary Snowflake
   sources and freshness/edition constraints to re-check at execution time.
+- [`references/current-state.md`](references/current-state.md) — current group,
+  progress, schedule, history, and operator receipt integrity requirements.
 - `scripts/collect_snowflake_evidence.py` — bundled read-only collector and
   receipt implementation; each installed skill carries the executable code.
 

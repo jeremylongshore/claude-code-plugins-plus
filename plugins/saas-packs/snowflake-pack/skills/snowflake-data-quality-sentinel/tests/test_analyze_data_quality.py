@@ -222,6 +222,38 @@ class DataQualityAnalyzerTests(unittest.TestCase):
         self.assertEqual(completed.stdout, "")
         self.assertIn("prohibited field", completed.stderr)
 
+    def test_current_association_and_notification_state_are_required_for_health(self):
+        data = self.fixture("pass.json")
+        data["current_state"]["associations"][0]["status"] = "SUSPENDED"
+        data["current_state"]["associations"][0]["notification_status"] = "DISABLED"
+        data["current_state"]["notifications"][0]["status"] = "DISABLED"
+        report = analyzer.analyze(data)
+        self.assertEqual(report["quality_status"], "INCONCLUSIVE")
+        self.assertEqual(report["monitoring_status"], "FAIL")
+        self.assertTrue(
+            {"DQ_CURRENT_ASSOCIATION_NOT_ACTIVE", "DQ_CURRENT_NOTIFICATION_DISABLED"}
+            <= self.codes(report)
+        )
+
+    def test_stale_current_state_blocks_monitoring_claim(self):
+        data = self.fixture("pass.json")
+        data["current_state"]["observed_at"] = "2026-08-30T12:00:00Z"
+        report = analyzer.analyze(data)
+        self.assertIn("DQ_CURRENT_STATE_STALE", self.codes(report))
+        self.assertEqual(report["monitoring_status"], "INCONCLUSIVE")
+
+    def test_current_state_shape_rejects_raw_group_values_and_duplicates(self):
+        data = self.fixture("pass.json")
+        data["current_state"]["associations"][0]["raw_group_values"] = ["customer@example.com"]
+        with self.assertRaises(analyzer.EvidenceError):
+            analyzer.analyze(data)
+
+        data = self.fixture("pass.json")
+        duplicate = dict(data["current_state"]["associations"][0])
+        data["current_state"]["associations"].append(duplicate)
+        with self.assertRaisesRegex(analyzer.EvidenceError, "duplicate current association"):
+            analyzer.analyze(data)
+
 
 if __name__ == "__main__":
     unittest.main()

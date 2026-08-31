@@ -54,6 +54,19 @@ def clean() -> dict:
         "client_redirect": {"tested": True},
         "privileges": {"observable": True, "missing": []},
         "history": {"account_usage_collected_at": "2026-08-31T17:45:00Z", "detailed_window_days": 14},
+        "current_state": {
+            "status": "collected",
+            "observed_at": "2026-08-31T17:55:00Z",
+            "max_age_minutes": 30,
+            "groups": [
+                {
+                    "name": "DR",
+                    "refresh_status": "SUCCEEDED",
+                    "progress_status": "COMPLETED",
+                    "scheduled_interval_minutes": 30,
+                }
+            ],
+        },
         "collector_receipt": receipt,
         "drill_events": [],
     }
@@ -68,6 +81,14 @@ def rehash(receipt: dict) -> None:
             json.dumps(unsigned, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
         ).hexdigest()
     )
+
+
+def rehash_event(event: dict) -> None:
+    unsigned = dict(event)
+    unsigned.pop("receipt_sha256", None)
+    event["receipt_sha256"] = "sha256:" + hashlib.sha256(
+        json.dumps(unsigned, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    ).hexdigest()
 
 
 class FailoverTests(unittest.TestCase):
@@ -139,6 +160,8 @@ class FailoverTests(unittest.TestCase):
                 "observed_at": "2026-08-31T17:55:00Z",
             },
         ]
+        for event in data["drill_events"]:
+            rehash_event(event)
         self.assertEqual(failover.analyze(data)["status"], "DRILL_VERIFIED")
 
         data["drill_events"][0]["observed_at"] = "2099-01-01T00:00:00Z"
@@ -232,6 +255,32 @@ class FailoverTests(unittest.TestCase):
 
     def test_receipt_is_deterministic(self):
         self.assertEqual(failover.analyze(clean()), failover.analyze(clean()))
+
+    def test_current_group_state_freshness_and_progress_are_required(self):
+        data = clean()
+        data["current_state"]["observed_at"] = "2026-08-31T12:00:00Z"
+        data["current_state"]["groups"][0]["progress_status"] = "UNKNOWN"
+        report = failover.analyze(data)
+        codes = {row["code"] for row in report["findings"]}
+        self.assertTrue({"CURRENT_STATE_STALE", "GROUP_PROGRESS_MISSING"} <= codes)
+        self.assertEqual(report["status"], "INCONCLUSIVE")
+
+    def test_operator_drill_receipt_hash_is_required_and_verified(self):
+        data = clean()
+        data["mode"] = "OPERATOR_EXECUTED_FAILOVER"
+        data["drill_events"] = [
+            {
+                "event": "FAILOVER",
+                "status": "SUCCEEDED",
+                "operator_approved": True,
+                "duration_minutes": 15,
+                "observed_at": "2026-08-31T17:45:00Z",
+            }
+        ]
+        report = failover.analyze(data)
+        self.assertIn("DRILL_RECEIPT_UNVERIFIABLE", {row["code"] for row in report["findings"]})
+        rehash_event(data["drill_events"][0])
+        self.assertNotIn("DRILL_RECEIPT_UNVERIFIABLE", {row["code"] for row in failover.analyze(data)["findings"]})
 
 
 if __name__ == "__main__":

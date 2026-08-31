@@ -59,6 +59,12 @@ persist passwords, private keys, OAuth tokens, MFA codes, or temporary connectio
 flags. A permission or edition error is evidence, not authorization to switch to
 `ACCOUNTADMIN`.
 
+Read [`references/current-state.md`](references/current-state.md) before
+interpreting a historical result. Current association schedule/status,
+execution role, and notification state are separate evidence and must be fresh
+enough for the declared decision. Never collect predicates, raw group values,
+failed rows, SQL text, endpoints, or customer identifiers.
+
 ## Workflow
 
 1. Confirm the input contains the declared requirement denominator and the shared
@@ -128,4 +134,5 @@ controls `monitoring_status`.
 
 - [Normalized evidence input contract](references/input-contract.md)
 - [Primary-source notes](references/source-notes.md)
+- [Current association and notification state](references/current-state.md)
 - [Snowflake data-quality monitoring documentation](https://docs.snowflake.com/en/user-guide/data-quality-intro)

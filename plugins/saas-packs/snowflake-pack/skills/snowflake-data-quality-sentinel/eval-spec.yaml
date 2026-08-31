@@ -38,6 +38,14 @@ criteria:
     judge_prompt: >-
       Does the response record edition unavailability as inconclusive without
       escalating privileges or inventing a fallback pass? Answer yes or no.
+  - id: current-association-notification-state
+    description: Separates current association/notification control state from history
+    method: judge
+    blocker: true
+    judge_prompt: >-
+      Does the response require fresh association schedule/status, execution role,
+      and notification state, and refuse a monitoring-health claim when current
+      state is missing, stale, suspended, or disabled? Answer yes or no.
 test_cases:
   - id: expectation-incident
     tier: core
@@ -64,5 +72,12 @@ test_cases:
     prompt: "Why did this Snowflake query spill to remote storage?"
     trigger_expectation: should_not_trigger
     criteria_ids: []
+  - id: current-state-gap
+    tier: edge
+    prompt: >-
+      The historical expectation passed yesterday, but current association metadata
+      says SUSPENDED and notification status is disabled. Is monitoring healthy?
+    trigger_expectation: should_trigger
+    criteria_ids: [current-association-notification-state, no-false-health]
 models: [deepseek-v4-flash]
 tags: [eval, snowflake, data-quality, governance]

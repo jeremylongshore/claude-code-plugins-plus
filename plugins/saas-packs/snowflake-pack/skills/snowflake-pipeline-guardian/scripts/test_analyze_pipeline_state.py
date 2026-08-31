@@ -227,6 +227,23 @@ class PipelineAnalyzerTests(unittest.TestCase):
         self.assertFalse(report["graph_complete"])
         self.assertIn("TASK_SKIPPED", {item["code"] for item in report["findings"]})
 
+    def test_collector_adapter_preserves_current_state_envelope(self):
+        report = analyzer.analyze(
+            {
+                "collector_receipt": self.collector_receipt(),
+                "current_state": {
+                    "status": "collected",
+                    "observed_at": "2026-08-30T11:58:00Z",
+                    "max_age_minutes": 15,
+                    "complete": True,
+                    "nodes": [{"id": "load_task", "kind": "TASK", "status": "SUCCEEDED"}],
+                    "edges": [],
+                },
+            }
+        )
+        self.assertEqual(report["state_reconciliation"]["current_nodes"], 1)
+        self.assertNotIn("current_state must be an object", report["evidence_gaps"])
+
     def test_verified_receipt_can_support_complete_bounded_graph(self):
         report = analyzer.analyze(
             {
@@ -337,6 +354,22 @@ class PipelineAnalyzerTests(unittest.TestCase):
             {node_id for component in report["connected_components"] for node_id in component},
             {"load_task@run-a|1", "load_task@run-a|2"},
         )
+
+    def test_current_state_is_fresh_and_reconciled_to_history(self):
+        report = analyzer.analyze(self.load("current-state-drift.json"))
+        self.assertEqual(report["state_reconciliation"]["current_nodes"], 2)
+        self.assertEqual(report["state_reconciliation"]["history_nodes"], 2)
+        self.assertEqual(report["state_reconciliation"]["drift"][0]["id"], "load_task")
+        self.assertIn("CURRENT_HISTORY_STATE_DRIFT", {item["code"] for item in report["findings"]})
+        self.assertIn("current state and history disagree", " ".join(report["evidence_gaps"]))
+
+    def test_stale_or_incomplete_current_state_blocks_completeness(self):
+        data = self.load("current-state-drift.json")
+        data["current_state"]["observed_at"] = "2026-08-29T12:00:00Z"
+        data["current_state"]["complete"] = False
+        report = analyzer.analyze(data)
+        self.assertFalse(report["evidence_complete"])
+        self.assertTrue(any("current_state" in gap for gap in report["evidence_gaps"]))
 
 
 if __name__ == "__main__":

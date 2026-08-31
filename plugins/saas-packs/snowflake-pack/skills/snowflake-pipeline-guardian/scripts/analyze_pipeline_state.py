@@ -255,6 +255,74 @@ def _parse_node_time(value: Any) -> datetime | None:
     return parsed.astimezone(timezone.utc)
 
 
+def _state_envelope_issues(snapshot: dict[str, Any], observed_at: datetime | None) -> tuple[list[str], dict[str, Any]]:
+    """Validate optional near-live state and reconcile it with bounded history."""
+    current = snapshot.get("current_state")
+    history = snapshot.get("history")
+    current_present = current is not None
+    history_present = history is not None
+    issues: list[str] = []
+    reconciliation: dict[str, Any] = {"current_nodes": 0, "history_nodes": 0, "drift": []}
+    if not current_present and not history_present:
+        return issues, reconciliation
+    if not isinstance(current, dict):
+        issues.append("current_state must be an object")
+        current = {}
+    if current_present:
+        if current.get("status") != "collected":
+            issues.append("current_state status is not collected")
+        current_at = _parse_observed_at(current.get("observed_at"))
+        if current_at is None:
+            issues.append("current_state.observed_at must be a valid, non-future timezone timestamp")
+        elif observed_at is not None:
+            if current_at > observed_at:
+                issues.append("current_state.observed_at cannot be after observed_at")
+            max_age = current.get("max_age_minutes", 15)
+            if type(max_age) is not int or max_age <= 0:
+                issues.append("current_state.max_age_minutes must be a positive integer")
+            elif (observed_at - current_at).total_seconds() > max_age * 60:
+                issues.append("current_state is stale for its declared freshness bound")
+        if current.get("complete") is not True:
+            issues.append("current_state completeness is not proven")
+        current_nodes = current.get("nodes", [])
+        if not isinstance(current_nodes, list):
+            issues.append("current_state.nodes must be an array")
+            current_nodes = []
+        elif any(not isinstance(node, dict) or not node.get("id") for node in current_nodes):
+            issues.append("current_state.nodes must contain identified objects")
+        reconciliation["current_nodes"] = len(current_nodes)
+        reconciliation["current_state_observed_at"] = current.get("observed_at")
+    if not isinstance(history, dict):
+        issues.append("history must be an object")
+        history = {}
+    if history_present:
+        if history.get("status") != "collected":
+            issues.append("history status is not collected")
+        if history.get("complete") is not True:
+            issues.append("history completeness is not proven")
+        history_nodes = history.get("nodes", [])
+        if not isinstance(history_nodes, list):
+            issues.append("history.nodes must be an array")
+            history_nodes = []
+        elif any(not isinstance(node, dict) or not node.get("id") for node in history_nodes):
+            issues.append("history.nodes must contain identified objects")
+        reconciliation["history_nodes"] = len(history_nodes)
+        reconciliation["history_latest_at"] = history.get("latest_at")
+    if current_present and history_present and reconciliation["current_nodes"] and reconciliation["history_nodes"]:
+        current_by_id = {str(node["id"]): node for node in current.get("nodes", []) if isinstance(node, dict) and node.get("id")}
+        history_by_id = {str(node["id"]): node for node in history.get("nodes", []) if isinstance(node, dict) and node.get("id")}
+        for node_id in sorted(set(current_by_id) & set(history_by_id)):
+            current_status = str(current_by_id[node_id].get("status", current_by_id[node_id].get("state", ""))).upper()
+            history_status = str(history_by_id[node_id].get("status", history_by_id[node_id].get("state", ""))).upper()
+            if current_status and history_status and current_status != history_status:
+                reconciliation["drift"].append(
+                    {"id": _safe(node_id), "current": current_status, "history": history_status}
+                )
+        if reconciliation["drift"]:
+            issues.append("current state and history disagree for one or more objects")
+    return issues, reconciliation
+
+
 def _history_node_id(
     row: dict[str, Any],
     object_fields: tuple[str, ...],
@@ -344,13 +412,20 @@ def _collector_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
         nodes.append(node)
     if not nodes:
         return snapshot
-    return {
+    normalized = {
         "observed_at": receipt.get("collected_at"),
         "evidence_source": "shared Snowflake evidence collector",
         "nodes": nodes,
         "edges": snapshot.get("edges", []),
         "collector_receipt": _safe_value(receipt),
     }
+    # Keep operator-supplied near-live/history envelopes beside collector rows;
+    # dropping them here would silently turn a reconciliation request into a
+    # history-only claim.
+    for key in ("current_state", "history"):
+        if key in snapshot:
+            normalized[key] = snapshot[key]
+    return normalized
 
 
 def normalize_snapshot(snapshot: Any) -> tuple[dict[str, dict[str, Any]], list[tuple[str, str]], list[dict[str, str]]]:
@@ -817,6 +892,10 @@ def _dependency_chains(
 def analyze(snapshot: Any) -> dict[str, Any]:
     if isinstance(snapshot, dict):
         snapshot = _collector_snapshot(snapshot)
+        if "nodes" not in snapshot and isinstance(snapshot.get("current_state"), dict):
+            snapshot = dict(snapshot)
+            snapshot["nodes"] = snapshot["current_state"].get("nodes", [])
+            snapshot["edges"] = snapshot["current_state"].get("edges", snapshot.get("edges", []))
     nodes, edges, dangling_edges = normalize_snapshot(snapshot)
     components = _connected_components(nodes, edges)
     observed_at = _parse_observed_at(snapshot.get("observed_at"))
@@ -835,7 +914,21 @@ def analyze(snapshot: Any) -> dict[str, Any]:
         evidence_gaps.append("shared collector receipt did not include dependency edges")
     if len(components) > 1:
         evidence_gaps.append("node inventory contains disconnected components")
+    state_issues, state_reconciliation = _state_envelope_issues(snapshot, observed_at)
+    evidence_gaps.extend(state_issues)
     findings = [finding for node_id in sorted(nodes) for finding in classify_node(nodes[node_id])]
+    for drift in state_reconciliation["drift"]:
+        if drift["id"] in nodes:
+            findings.append(
+                _finding(
+                    "CURRENT_HISTORY_STATE_DRIFT",
+                    nodes[drift["id"]],
+                    "high",
+                    f"current={drift['current']} history={drift['history']}",
+                    "Recollect both current state and bounded history; do not choose a recovery action from stale history alone.",
+                    12,
+                )
+            )
     findings.sort(key=lambda f: (f["recovery_rank"], f["node_id"], f["code"]))
     recovery = []
     seen_actions: set[str] = set()
@@ -872,6 +965,7 @@ def analyze(snapshot: Any) -> dict[str, Any]:
         and not (collector_receipt and not edges)
         and not receipt_issues,
         "connected_components": [[_safe(node_id) for node_id in group] for group in components],
+        "state_reconciliation": state_reconciliation,
         "findings": findings,
         "ordered_recovery": recovery,
         "post_fix_invariants": invariants,

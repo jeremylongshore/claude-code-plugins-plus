@@ -35,7 +35,9 @@ TOP_LEVEL_KEYS = {
     "associations",
     "measurements",
     "source_metadata",
+    "current_state",
 }
+REQUIRED_TOP_LEVEL_KEYS = TOP_LEVEL_KEYS - {"current_state"}
 PROHIBITED_KEY_FRAGMENTS = (
     "password",
     "passphrase",
@@ -53,6 +55,8 @@ PROHIBITED_KEY_FRAGMENTS = (
     "failedrow",
     "rejectedrow",
     "rawpayload",
+    "rawgroup",
+    "groupbyvalues",
     "rowdata",
     "firstname",
     "lastname",
@@ -213,7 +217,7 @@ def normalize_document(data: Any) -> dict[str, Any]:
         raise EvidenceError("input must be an object")
     reject_sensitive_data(data)
     unknown = set(data) - TOP_LEVEL_KEYS
-    missing = TOP_LEVEL_KEYS - set(data)
+    missing = REQUIRED_TOP_LEVEL_KEYS - set(data)
     if unknown or missing:
         raise EvidenceError(f"top-level keys must be exactly {sorted(TOP_LEVEL_KEYS)}")
 
@@ -478,6 +482,108 @@ def normalize_document(data: Any) -> dict[str, Any]:
         if type(row["row_count"]) is not int or row["row_count"] < 0:
             raise EvidenceError(f"source_metadata[{index}].row_count must be a non-negative integer")
 
+    current_state = data.get("current_state")
+    if current_state is None:
+        normalized_current_state = {
+            "status": "not_supplied",
+            "observed_at": None,
+            "max_age_seconds": None,
+            "associations": [],
+            "notifications": [],
+        }
+    else:
+        if not isinstance(current_state, dict):
+            raise EvidenceError("current_state must be an object")
+        current_keys = {"status", "observed_at", "max_age_seconds", "associations", "notifications"}
+        if set(current_state) != current_keys:
+            raise EvidenceError(f"current_state keys must be exactly {sorted(current_keys)}")
+        current_status = text(current_state["status"], "current_state.status").lower()
+        current_observed = parse_time(current_state["observed_at"], "current_state.observed_at")
+        max_age = positive_integer(current_state["max_age_seconds"], "current_state.max_age_seconds")
+        if current_observed > collected_at:
+            raise EvidenceError("current_state.observed_at cannot be after metadata.collected_at")
+        current_associations = current_state["associations"]
+        current_notifications = current_state["notifications"]
+        if not isinstance(current_associations, list) or any(
+            not isinstance(row, dict) for row in current_associations
+        ):
+            raise EvidenceError("current_state.associations must be an array of objects")
+        if not isinstance(current_notifications, list) or any(
+            not isinstance(row, dict) for row in current_notifications
+        ):
+            raise EvidenceError("current_state.notifications must be an array of objects")
+        current_association_keys = {
+            "requirement_id",
+            "reference_id",
+            "status",
+            "schedule_status",
+            "notification_status",
+            "execution_role",
+        }
+        normalized_associations_current: list[dict[str, str]] = []
+        seen_current_requirements: set[str] = set()
+        for index, row in enumerate(current_associations):
+            if set(row) != current_association_keys:
+                raise EvidenceError(
+                    f"current_state.associations[{index}] keys must be exactly {sorted(current_association_keys)}"
+                )
+            requirement_id = text(row["requirement_id"], f"current_state.associations[{index}].requirement_id")
+            if requirement_id in seen_current_requirements:
+                raise EvidenceError(f"duplicate current association requirement id: {requirement_id}")
+            seen_current_requirements.add(requirement_id)
+            normalized_associations_current.append(
+                {
+                    "requirement_id": requirement_id,
+                    "reference_id": text(row["reference_id"], f"current_state.associations[{index}].reference_id"),
+                    "status": text(row["status"], f"current_state.associations[{index}].status").upper(),
+                    "schedule_status": text(
+                        row["schedule_status"], f"current_state.associations[{index}].schedule_status"
+                    ).upper(),
+                    "notification_status": text(
+                        row["notification_status"], f"current_state.associations[{index}].notification_status"
+                    ).upper(),
+                    "execution_role": text(
+                        row["execution_role"], f"current_state.associations[{index}].execution_role"
+                    ).upper(),
+                }
+            )
+        notification_keys = {"requirement_id", "status", "last_delivery_at"}
+        normalized_notifications: list[dict[str, Any]] = []
+        seen_notification_requirements: set[str] = set()
+        for index, row in enumerate(current_notifications):
+            if set(row) != notification_keys:
+                raise EvidenceError(
+                    f"current_state.notifications[{index}] keys must be exactly {sorted(notification_keys)}"
+                )
+            requirement_id = text(row["requirement_id"], f"current_state.notifications[{index}].requirement_id")
+            if requirement_id in seen_notification_requirements:
+                raise EvidenceError(f"duplicate current notification requirement id: {requirement_id}")
+            seen_notification_requirements.add(requirement_id)
+            last_delivery = row["last_delivery_at"]
+            normalized_notifications.append(
+                {
+                    "requirement_id": requirement_id,
+                    "status": text(row["status"], f"current_state.notifications[{index}].status").upper(),
+                    "last_delivery_at": (
+                        parse_time(
+                            last_delivery,
+                            f"current_state.notifications[{index}].last_delivery_at",
+                        )
+                        .isoformat()
+                        .replace("+00:00", "Z")
+                        if last_delivery is not None
+                        else None
+                    ),
+                }
+            )
+        normalized_current_state = {
+            "status": current_status,
+            "observed_at": current_observed.isoformat().replace("+00:00", "Z"),
+            "max_age_seconds": max_age,
+            "associations": sorted(normalized_associations_current, key=lambda item: item["requirement_id"]),
+            "notifications": sorted(normalized_notifications, key=lambda item: item["requirement_id"]),
+        }
+
     return {
         "metadata": normalized_metadata,
         "requirements": sorted(normalized_requirements, key=lambda item: item["id"]),
@@ -487,6 +593,7 @@ def normalize_document(data: Any) -> dict[str, Any]:
             key=lambda item: (item["requirement_id"], item["measured_at"], item["reference_id"]),
         ),
         "source_metadata": sorted(normalized_sources, key=lambda item: item["source"]),
+        "current_state": normalized_current_state,
     }
 
 
@@ -523,6 +630,33 @@ def analyze(data: Any) -> dict[str, Any]:
         measurements_by_requirement.setdefault(row["requirement_id"], []).append(row)
     collected_at = parse_time(normalized["metadata"]["collected_at"], "metadata.collected_at")
     findings: list[dict[str, str]] = []
+    current_state = normalized["current_state"]
+    current_associations = {row["requirement_id"]: row for row in current_state["associations"]}
+    current_notifications = {row["requirement_id"]: row for row in current_state["notifications"]}
+    if current_state["status"] != "collected":
+        findings.append(
+            finding(
+                "DQ_CURRENT_STATE_UNAVAILABLE",
+                "data-quality-current-state",
+                f"current association state status is {current_state['status']}",
+                "Collect current association and notification metadata before claiming monitoring health.",
+                quality_impact="INCONCLUSIVE",
+                monitoring_impact="INCONCLUSIVE",
+            )
+        )
+    elif current_state["observed_at"] is not None:
+        current_age = int((collected_at - parse_time(current_state["observed_at"], "current_state.observed_at")).total_seconds())
+        if current_age > current_state["max_age_seconds"]:
+            findings.append(
+                finding(
+                    "DQ_CURRENT_STATE_STALE",
+                    "data-quality-current-state",
+                    f"current association state is {current_age}s old; limit is {current_state['max_age_seconds']}s",
+                    "Recollect current association and notification metadata before making a monitoring claim.",
+                    quality_impact="INCONCLUSIVE",
+                    monitoring_impact="INCONCLUSIVE",
+                )
+            )
 
     edition_unavailable = any(
         source["error_code"] in {"DQ_EDITION_UNAVAILABLE", "ENTERPRISE_EDITION_REQUIRED", "FEATURE_NOT_AVAILABLE"}
@@ -673,6 +807,58 @@ def analyze(data: Any) -> dict[str, Any]:
                             "Wait for training completion and require a post-training measurement.",
                             quality_impact="INCONCLUSIVE",
                             monitoring_impact="DEGRADED",
+                        )
+                    )
+
+            current_association = current_associations.get(requirement_id)
+            if current_state["status"] == "collected" and current_association is None:
+                findings.append(
+                    finding(
+                        "DQ_CURRENT_ASSOCIATION_MISSING",
+                        scope,
+                        "No current association metadata matches the required check.",
+                        "Collect current DATA_METRIC_FUNCTION_REFERENCES metadata; historical association rows cannot prove present coverage.",
+                        quality_impact="INCONCLUSIVE",
+                        monitoring_impact="FAIL",
+                    )
+                )
+            elif current_association is not None:
+                if current_association["status"] != "ACTIVE" or current_association["schedule_status"] != "STARTED":
+                    findings.append(
+                        finding(
+                            "DQ_CURRENT_ASSOCIATION_NOT_ACTIVE",
+                            scope,
+                            f"current status={current_association['status']} schedule_status={current_association['schedule_status']}",
+                            "Restore the association through approved change control, then recollect current metadata.",
+                            quality_impact="INCONCLUSIVE",
+                            monitoring_impact="FAIL",
+                        )
+                    )
+                if requirement["notification_required"] and current_association["notification_status"] not in {
+                    "ENABLED",
+                    "STARTED",
+                }:
+                    findings.append(
+                        finding(
+                            "DQ_CURRENT_NOTIFICATION_DISABLED",
+                            scope,
+                            f"current notification status={current_association['notification_status']}",
+                            "Restore the approved notification integration and verify delivery without collecting payloads.",
+                            quality_impact="INCONCLUSIVE",
+                            monitoring_impact="FAIL",
+                        )
+                    )
+            current_notification = current_notifications.get(requirement_id)
+            if requirement["notification_required"] and current_state["status"] == "collected":
+                if current_notification is None or current_notification["status"] not in {"ENABLED", "STARTED"}:
+                    findings.append(
+                        finding(
+                            "DQ_NOTIFICATION_STATE_MISSING",
+                            scope,
+                            "Current notification delivery state is missing or not enabled.",
+                            "Collect notification state and a safe delivery receipt; do not infer delivery from an expectation result.",
+                            quality_impact="INCONCLUSIVE",
+                            monitoring_impact="FAIL",
                         )
                     )
 

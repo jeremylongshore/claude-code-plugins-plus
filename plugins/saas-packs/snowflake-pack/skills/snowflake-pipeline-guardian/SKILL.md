@@ -86,6 +86,11 @@ Collect a timestamped, redacted snapshot with:
 Read [`references/privilege-and-boundaries.md`](references/privilege-and-boundaries.md)
 before requesting additional access.
 
+For current-versus-history reconciliation and freshness/completeness rules, read
+[`references/current-state.md`](references/current-state.md). Current `SHOW`
+metadata is separate from Account Usage history; report stale, incomplete, or
+disagreeing surfaces instead of selecting one source silently.
+
 For model-neutral live control-plane evidence, use the shared read-only collector:
 
 ```bash
@@ -249,3 +254,5 @@ file identity and target-key idempotence are proven.
   — least-privilege, redaction, and advisory-mode rules.
 - [`references/source-notes.md`](references/source-notes.md) — research scope and
   primary Snowflake documentation links; re-check live docs for current syntax.
+- [`references/current-state.md`](references/current-state.md) — current control-plane
+  metadata, history reconciliation, freshness, and graph completeness contract.
