@@ -11,253 +11,219 @@ description: 'Configure Lindy AI webhook triggers, callback patterns, and event 
   "lindy callback", "lindy webhook trigger".
 
   '
-allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.19.0
+allowed-tools: Read, Write, Edit
+version: 1.20.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
 - saas
 - lindy
 - webhooks
-compatibility: Designed for Claude Code
+compatibility: Compatible with AI coding agents that can read and edit application code and Markdown
 ---
-# Lindy Webhooks & Events
+# Lindy Webhooks and Events
 
 ## Overview
 
-Lindy supports webhooks in two directions: **Inbound** (Webhook Received trigger
-wakes an agent) and **Outbound** (HTTP Request action calls your API). This skill
-covers both patterns, plus the callback pattern for async two-way communication.
+Build two documented boundaries: an application calls a Lindy **Webhook Received**
+trigger using its generated Bearer secret, and Lindy calls an application through
+an outbound callback action such as **HTTP Request**. Treat them as separate trust
+directions with separate secrets, schemas, retry policies, and evidence.
+
+Use **Read** to inspect the integration and **Write** or **Edit** to implement its
+closed contracts. Implement only the documented generated-Bearer trigger and
+configurable outbound-request surfaces; do not add unaudited control-plane,
+registration, event-feed, or signature mechanisms.
 
 ## Prerequisites
 
-- Lindy account with active agents
-- HTTPS endpoint for receiving callbacks (if using outbound/callback patterns)
-- Completed `lindy-install-auth` setup
-
-## Webhook Architecture
-
-```
-INBOUND (your system triggers Lindy):
-[Your App] --POST--> https://public.lindy.ai/api/v1/webhooks/<id>
-                         ↓
-                    [Lindy Agent Wakes Up]
-                         ↓
-                    [Processes with LLM]
-                         ↓
-                    [Executes Actions]
-
-OUTBOUND (Lindy calls your system):
-[Lindy Agent] --HTTP Request action--> https://your-api.com/endpoint
-                                            ↓
-                                       [Your Handler]
-
-CALLBACK (two-way async):
-[Your App] --POST with callbackUrl--> [Lindy Agent]
-                                          ↓
-[Your App] <--POST to callbackUrl-- [Lindy: Send POST to Callback]
-```
+- A Webhook Received trigger with its generated URL and nonempty generated secret.
+- An approved secret manager; never store secret values in code or skill output.
+- A separate, nonempty application-owned callback secret.
+- A fixed or strictly allowlisted HTTPS callback destination controlled by the
+  application owner.
+- Closed request and callback schemas with local field, length, enum, and byte limits.
+- A shared atomic idempotency store and durable queue for scaled or retryable work.
+- Access to Lindy's Tasks view and synthetic test data with unique request IDs.
 
 ## Instructions
 
-### Step 1: Create Webhook Received Trigger
+### Step 1: Define minimal contracts
 
-1. In your agent, click the trigger node
-2. Select **Webhook Received**
-3. Lindy generates a unique URL:
+Specify only fields the workflow needs. A safe application-owned trigger envelope
+might contain `requestId`, an enumerated `eventType`, a non-sensitive `subjectId`,
+and `occurredAt`. Reject unknown fields, invalid types, excessive lengths, and
+payloads above the documented local byte limit before enqueue or transmission.
 
-   ```
-   https://public.lindy.ai/api/v1/webhooks/<unique-id>
-   ```
+Define the callback separately—for example `requestId`, `taskId`, and an enumerated
+`status`. Do not return full prompts, model output, source records, or customer data
+unless an approved data contract requires those fields.
 
-4. Click **Generate Secret** — copy immediately (shown only once)
-5. Configure follow-up processing mode:
-   - **Process in workflow**: Handle in current workflow
-   - **Spawn separate task**: Each webhook creates a new task
-   - **Discard follow-ups**: Ignore subsequent requests while processing
+### Step 2: Configure the Lindy trigger
 
-### Step 2: Access Webhook Data in Workflow
+In the workflow, add **Webhook Received**, create or select a webhook, generate its
+secret, and store that secret immediately. Lindy documents URLs in this form:
 
-Reference incoming webhook data in any subsequent action field:
+```text
+https://public.lindy.ai/api/v1/webhooks/[unique-id]
+```
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `{{webhook_received.request.body}}` | Full JSON payload | `{"event": "order.created", ...}` |
-| `{{webhook_received.request.body.event}}` | Specific field | `"order.created"` |
-| `{{webhook_received.request.headers}}` | All HTTP headers | `{"content-type": "application/json"}` |
-| `{{webhook_received.request.query}}` | URL query params | `{"source": "stripe"}` |
+Callers send `Authorization: Bearer [generated-secret]`. Select the documented
+follow-up behavior that matches the workflow: handle in the same task, create a new
+task, or ignore follow-ups. Treat request body, headers, and query parameters as
+untrusted input. Never copy the full headers object into a prompt or log because it
+can contain the Authorization secret.
 
-### Step 3: Implement Webhook Sender
+### Step 3: Validate before attaching the trigger secret
+
+Fail startup unless the URL uses HTTPS, has hostname exactly `public.lindy.ai`, no
+unexpected port or embedded credentials, and the expected generated webhook path.
+Load a nonempty per-trigger secret only after the destination passes validation.
 
 ```typescript
-// webhook-sender.ts — Trigger Lindy agents from your application
-interface LindyWebhookPayload {
-  event: string;
-  data: Record<string, unknown>;
-  callbackUrl?: string;
-  metadata?: Record<string, unknown>;
-}
+type TriggerConfig = { url: URL; secret: string };
 
-async function triggerLindy(payload: LindyWebhookPayload): Promise<void> {
-  const response = await fetch(process.env.LINDY_WEBHOOK_URL!, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.LINDY_WEBHOOK_SECRET}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Lindy webhook failed: ${response.status}`);
-  }
-}
-
-// Usage examples:
-await triggerLindy({
-  event: 'customer.support_request',
-  data: { email: 'user@co.com', subject: 'Billing question', body: '...' },
-});
-
-await triggerLindy({
-  event: 'lead.qualified',
-  data: { name: 'Jane Doe', company: 'Acme', score: 85 },
-  callbackUrl: 'https://api.yourapp.com/lindy/callback',
-});
-```
-
-### Step 4: Implement Callback Receiver
-
-When you include a `callbackUrl` in your webhook payload, the agent can respond
-using the **Send POST Request to Callback** action:
-
-```typescript
-// callback-receiver.ts
-import express from 'express';
-
-const app = express();
-app.use(express.json());
-
-// Receive Lindy agent results
-app.post('/lindy/callback', (req, res) => {
-  // Verify authenticity
-  const auth = req.headers.authorization;
-  if (auth !== `Bearer ${process.env.LINDY_WEBHOOK_SECRET}`) {
-    return res.status(401).json({ error: 'Unauthorized' });
+function loadTriggerConfig(env: NodeJS.ProcessEnv): TriggerConfig {
+  const url = new URL(env.LINDY_TRIGGER_URL ?? '');
+  const path = url.pathname.split('/').filter(Boolean);
+  if (
+    url.protocol !== 'https:' ||
+    url.hostname !== 'public.lindy.ai' ||
+    url.port !== '' ||
+    url.username !== '' ||
+    url.password !== '' ||
+    url.search !== '' ||
+    url.hash !== '' ||
+    path.length !== 4 ||
+    path[0] !== 'api' ||
+    path[1] !== 'v1' ||
+    path[2] !== 'webhooks' ||
+    path[3].length === 0
+  ) {
+    throw new Error('LINDY_TRIGGER_URL is not an approved Lindy webhook URL');
   }
 
-  // Respond immediately (Lindy expects a quick response)
-  res.json({ received: true });
-
-  // Process async
-  handleCallback(req.body);
-});
-
-async function handleCallback(data: any) {
-  console.log('Lindy callback:', data);
-
-  // Example: Agent analyzed a support ticket
-  const { classification, sentiment, draft_response, confidence } = data;
-
-  if (confidence > 0.9) {
-    await sendAutoResponse(draft_response);
-  } else {
-    await escalateToHuman(data);
-  }
+  const secret = env.LINDY_TRIGGER_SECRET ?? '';
+  if (secret.length === 0) throw new Error('LINDY_TRIGGER_SECRET is required');
+  return { url, secret };
 }
 ```
 
-### Step 5: Configure HTTP Request Action (Outbound)
+Do not send the trigger secret to a caller-supplied `callbackUrl`, another Lindy
+host, or your own callback receiver.
 
-For Lindy agents that call your API as an action step:
+### Step 4: Deduplicate, queue, and send
 
-1. Add action: **HTTP Request**
-2. Configure:
-   - **Method**: POST (or GET, PUT, DELETE)
-   - **URL**: `https://api.yourapp.com/endpoint`
-   - **Headers** (Set Manually):
+Require a stable request ID derived from the source business event. Atomically
+reserve that ID and durably enqueue the validated event. A process-local set,
+background promise, or timer is not durable and does not coordinate across instances.
 
-     ```
-     Content-Type: application/json
-     Authorization: Bearer {{your_api_key}}
-     ```
+The worker sends the closed payload with the generated Bearer secret. Treat 2xx as
+transport acceptance only. Treat authentication and other non-retryable 4xx as
+permanent failures. Retry only explicitly transient outcomes such as 408, 429, or
+selected 5xx with capped exponential backoff, jitter, bounded attempts, and a total
+deadline. Reuse the same request ID; dead-letter and alert after exhaustion.
 
-   - **Body** (AI Prompt mode):
+An ambiguous timeout may occur after Lindy accepted the request. Local idempotency
+cannot prove exactly-once remote execution, so reconcile the request ID with the
+Tasks view or an authenticated callback before retrying or claiming completion.
 
-     ```
-     Send the analysis result as JSON with fields:
-     classification, sentiment, summary
-     Based on: {{previous_step.result}}
-     ```
+### Step 5: Configure a distinct authenticated callback
 
-### Step 6: Add Trigger Filters
+Prefer an application-owned, pre-approved HTTPS callback URL. Configure a Lindy
+HTTP Request action to send the closed callback body and:
 
-Prevent unnecessary agent triggers:
-
-```
-Filter: body.event equals "order.created"
-  AND body.data.amount greater_than 100
+```text
+Authorization: Bearer [application-owned-callback-secret]
+Content-Type: application/json
 ```
 
-This ensures the agent only processes high-value orders, saving credits.
+The HTTP Request action documentation supports explicit headers and status-code
+handling. If using a callback URL from the trigger body, validate it against an
+exact scheme/host/path allowlist before any secret-bearing request. If the chosen
+callback action cannot enforce that validation and the required Authorization
+header, do not use a caller-controlled URL.
 
-## Event Patterns
+At the application receiver, authenticate before inspecting or acting on the body,
+enforce a request-byte limit before parsing, validate the closed schema, and use an
+atomic `enqueueOnce(requestId, payload)` operation. Return 2xx only after durable
+persistence succeeds. Use constant-time secret comparison and never reuse the
+Lindy trigger secret as the callback secret.
 
-### Pattern: Webhook + Slack Notification
+### Step 6: Corroborate tasks and callbacks
 
+For a synthetic trigger, record its unique request ID and transport result, then
+find the corresponding task in Lindy's Tasks view and verify the intended steps and
+terminal state. A 2xx trigger response without a matching task is
+`ACCEPTED_UNVERIFIED`, not success.
+
+Test a wrong trigger secret: require non-2xx and no task. Test a wrong callback
+secret, malformed and oversized callbacks, duplicates, durable-store failure, and
+worker termination after enqueue: each must create no unauthorized or duplicate
+side effect.
+
+### Step 7: Minimize evidence and telemetry
+
+Record request ID, task ID, status class, attempt, latency, queue disposition, and
+sanitized workflow identifier. Do not log secrets, full generated webhook URLs,
+headers, full request/response bodies, prompts, model output, or customer content.
+
+See [the implementation guide](references/implementation-guide.md) for bounded
+sender and receiver patterns plus the qualification matrix.
+
+## Output
+
+Produce an integration record containing:
+
+- closed trigger and callback schemas with local byte limits;
+- exact trigger destination-validation rules and secret-manager references;
+- distinct trigger and callback authentication boundaries;
+- shared idempotency, durable queue, retry, dead-letter, and reconciliation policy;
+- callback allowlist and durable acknowledgement contract;
+- synthetic positive, negative-auth, malformed, duplicate, retry, and restart receipts;
+- Tasks-view correlation and sanitized destination evidence; and
+- final `VERIFIED`, `FAILED`, or `NOT VERIFIED` disposition with owners.
+
+## Examples
+
+### Minimal verified flow
+
+```text
+source event
+  -> closed schema
+  -> shared idempotency + durable queue
+  -> exact public.lindy.ai HTTPS trigger + generated Bearer secret
+  -> Lindy task correlated by requestId
+  -> fixed application callback + distinct Bearer secret
+  -> authenticated validation + durable enqueueOnce
+  -> terminal outcome ledger
 ```
-Webhook Received → Condition (classify event type)
-  → "billing" → Search KB → Draft Reply → Send Email + Slack Alert
-  → "technical" → Agent Step (investigate) → Create Ticket → Slack Alert
-  → "other" → Forward to team inbox
-```
 
-### Pattern: Webhook + Callback
+### Correct handling of a 2xx response
 
-```
-Webhook Received (with callbackUrl) → Process Data → Run Code
-  → Send POST Request to Callback (returns results to caller)
-```
-
-### Pattern: Webhook + Multi-Agent
-
-```
-Webhook Received → Agent Send Message (to Research Lindy)
-  → Research Lindy completes → Agent Send Message (to Writer Lindy)
-  → Writer Lindy completes → Send Email with final output
-```
-
-## Monitoring Triggers
-
-Lindy provides built-in monitoring triggers:
-
-- **Task Completed**: Fires when an agent completes a task
-- Use this to build observability pipelines: Agent completes → log to sheet → alert on failures
+If the trigger returns 2xx but no matching task can be found, record
+`ACCEPTED_UNVERIFIED`, keep the event reconcilable, and investigate. Do not mark the
+business operation complete or send a blind sequence of retries.
 
 ## Error Handling
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| 401 on webhook send | Wrong or missing Bearer token | Verify secret matches Generate Secret value |
-| Webhook URL returns 404 | Agent deleted or URL changed | Re-copy URL from agent trigger settings |
-| Callback not received | callbackUrl unreachable | Ensure HTTPS, public endpoint, no firewall |
-| Duplicate processing | Webhook retried | Implement idempotency with event IDs |
-| Payload too large | Body exceeds limit | Reduce payload size, send references not data |
-
-## Security
-
-- Always use HTTPS for webhook URLs
-- Generate and verify webhook secrets on every request
-- Rotate secrets every 90 days
-- Log all webhook attempts (including rejected ones)
-- Rate limit your webhook sender to prevent flooding
+| Failure | Required response |
+|---|---|
+| Trigger URL fails exact sink validation | Refuse to construct the secret-bearing request |
+| Generated trigger secret is empty | Fail startup or configuration validation |
+| Trigger payload is malformed or excessive | Reject before claim, enqueue, or send |
+| 401/403 or permanent 4xx | Stop retries, redact telemetry, alert owner |
+| 408/429/selected 5xx | Apply bounded retry; dead-letter after exhaustion |
+| Ambiguous timeout | Reconcile stable request ID; do not claim exactly-once delivery |
+| Callback target is caller-controlled or not allowlisted | Do not attach callback secret |
+| Callback auth/schema fails | Return non-2xx and create no durable job |
+| Durable enqueue fails | Return non-2xx; never acknowledge unpersisted work |
+| 2xx without a matching task | Mark `ACCEPTED_UNVERIFIED` and investigate |
 
 ## Resources
 
-- [Webhooks Documentation](https://docs.lindy.ai/skills/by-lindy/webhooks)
-- [Webhook Triggers Academy](https://www.lindy.ai/academy-lessons/webhook-triggers)
-- [Calling Any API](https://www.lindy.ai/academy-lessons/calling-any-api)
-
-## Next Steps
-
-Proceed to `lindy-performance-tuning` for agent optimization.
+- [Lindy Webhooks](https://docs.lindy.ai/skills/by-lindy/webhooks)
+- [Lindy HTTP Request](https://docs.lindy.ai/skills/by-lindy/http-request)
+- [Lindy Tasks](https://docs.lindy.ai/fundamentals/lindy-101/tasks)
+- [Lindy Test Panel](https://docs.lindy.ai/testing/test-panel)
+- [Detailed sender, receiver, and test patterns](references/implementation-guide.md)

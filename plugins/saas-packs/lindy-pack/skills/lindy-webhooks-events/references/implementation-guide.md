@@ -1,231 +1,347 @@
-# Lindy Webhooks Events - Implementation Guide
+# Lindy Webhook Integration Guide
 
-# Lindy Webhooks & Events
+This guide implements application-owned safety around Lindy's documented Webhook
+Received trigger and HTTP Request action. The numeric bounds are examples of local
+policy, not Lindy service limits.
 
-## Overview
+## Contents
 
-Configure webhooks and event-driven integrations with Lindy AI.
+1. [Trust model](#trust-model)
+2. [Closed trigger contract](#closed-trigger-contract)
+3. [Durable trigger pipeline](#durable-trigger-pipeline)
+4. [Bounded delivery](#bounded-delivery)
+5. [Authenticated callback](#authenticated-callback)
+6. [Task reconciliation](#task-reconciliation)
+7. [Qualification matrix](#qualification-matrix)
 
-## Prerequisites
+## Trust Model
 
-- Lindy account with webhook access
-- HTTPS endpoint for receiving webhooks
-- Understanding of event types
-
-## Instructions
-
-### Step 1: Register Webhook
-
-```typescript
-import { Lindy } from '@lindy-ai/sdk';
-
-const lindy = new Lindy({ apiKey: process.env.LINDY_API_KEY });
-
-async function registerWebhook() {
-  const webhook = await lindy.webhooks.create({
-    url: 'https://myapp.com/webhooks/lindy',
-    events: [
-      'agent.run.started',
-      'agent.run.completed',
-      'agent.run.failed',
-      'automation.triggered',
-    ],
-    secret: process.env.WEBHOOK_SECRET,
-  });
-
-  console.log(`Webhook ID: ${webhook.id}`);
-  return webhook;
-}
+```text
+application -- generated trigger Bearer secret --> Lindy Webhook Received
+Lindy HTTP Request -- distinct callback Bearer secret --> application
 ```
 
-### Step 2: Create Webhook Handler
+The first secret is generated in the Lindy webhook trigger. The application owns
+the second secret and configures it in the outbound action. Do not reuse either
+secret, infer an HMAC signature scheme, or treat request headers and callback URLs
+as trusted payload data.
+
+## Closed Trigger Contract
+
+Define and validate the business event before it reaches a queue or HTTP client:
 
 ```typescript
-// routes/webhooks/lindy.ts
-import express from 'express';
-import crypto from 'crypto';
+type TriggerEvent = {
+  requestId: string;
+  eventType: 'case_opened' | 'case_updated';
+  subjectId: string;
+  occurredAt: string;
+};
 
-const router = express.Router();
+const MAX_TRIGGER_BYTES = 16 * 1024; // local example policy
 
-function verifySignature(payload: string, signature: string, secret: string): boolean {
-  const expected = crypto
-    .createHmac('sha256', secret)
-    .update(payload)
-    .digest('hex');
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(`sha256=${expected}`)
-  );
-}
-
-router.post('/lindy', express.raw({ type: 'application/json' }), (req, res) => {
-  const signature = req.headers['x-lindy-signature'] as string;
-  const payload = req.body.toString();
-
-  // Verify signature
-  if (!verifySignature(payload, signature, process.env.WEBHOOK_SECRET!)) {
-    return res.status(401).send('Invalid signature');
+function validateTriggerEvent(value: unknown): TriggerEvent {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    throw new Error('trigger event must be an object');
+  }
+  const record = value as Record<string, unknown>;
+  const allowed = new Set(['requestId', 'eventType', 'subjectId', 'occurredAt']);
+  if (Object.keys(record).some((key) => !allowed.has(key))) {
+    throw new Error('unknown trigger field');
+  }
+  if (
+    typeof record.requestId !== 'string' ||
+    !/^[A-Za-z0-9._:-]{1,128}$/.test(record.requestId)
+  ) {
+    throw new Error('invalid requestId');
+  }
+  if (record.eventType !== 'case_opened' && record.eventType !== 'case_updated') {
+    throw new Error('invalid eventType');
+  }
+  if (typeof record.subjectId !== 'string' || record.subjectId.length > 128) {
+    throw new Error('invalid subjectId');
+  }
+  if (
+    typeof record.occurredAt !== 'string' ||
+    !Number.isFinite(Date.parse(record.occurredAt))
+  ) {
+    throw new Error('invalid occurredAt');
   }
 
-  const event = JSON.parse(payload);
-
-  // Handle event
-  switch (event.type) {
-    case 'agent.run.completed':
-      handleRunCompleted(event.data);
-      break;
-    case 'agent.run.failed':
-      handleRunFailed(event.data);
-      break;
-    case 'automation.triggered':
-      handleAutomationTriggered(event.data);
-      break;
-    default:
-      console.log('Unhandled event:', event.type);
+  const event: TriggerEvent = {
+    requestId: record.requestId,
+    eventType: record.eventType,
+    subjectId: record.subjectId,
+    occurredAt: record.occurredAt,
+  };
+  if (Buffer.byteLength(JSON.stringify(event), 'utf8') > MAX_TRIGGER_BYTES) {
+    throw new Error('trigger event exceeds local byte policy');
   }
-
-  res.status(200).send('OK');
-});
-
-export default router;
+  return event;
+}
 ```
 
-### Step 3: Implement Event Handlers
+When the producer is an HTTP server, enforce the byte limit on raw input before
+JSON parsing. Keep sensitive source data behind `subjectId`; let the workflow fetch
+only the approved fields it actually needs through an authenticated integration.
+
+## Durable Trigger Pipeline
+
+Use atomic, shared infrastructure contracts:
 
 ```typescript
-// handlers/lindy-events.ts
+type TriggerJob = {
+  requestId: string;
+  event: TriggerEvent;
+  attempt: number;
+  firstAttemptAt: string;
+};
 
-interface RunCompletedEvent {
-  runId: string;
-  agentId: string;
-  input: string;
-  output: string;
-  duration: number;
+interface DurableTriggerJobs {
+  // Couple the idempotency claim and enqueue in one durable transaction.
+  enqueueOnce(event: TriggerEvent): Promise<'created' | 'duplicate'>;
+  reschedule(job: TriggerJob, delayMs: number): Promise<void>;
+  deadLetter(job: TriggerJob, reason: string): Promise<void>;
 }
 
-interface RunFailedEvent {
-  runId: string;
-  agentId: string;
-  error: string;
-  errorCode: string;
-}
-
-async function handleRunCompleted(data: RunCompletedEvent) {
-  console.log(`Run ${data.runId} completed in ${data.duration}ms`);
-
-  // Store result
-  await db.runs.create({
-    runId: data.runId,
-    agentId: data.agentId,
-    output: data.output,
-    status: 'completed',
-  });
-
-  // Trigger downstream actions
-  await processResult(data);
-}
-
-async function handleRunFailed(data: RunFailedEvent) {
-  console.error(`Run ${data.runId} failed: ${data.error}`);
-
-  // Alert on failure
-  await alerting.send({
-    severity: 'high',
-    message: `Lindy agent failed: ${data.errorCode}`,
-    details: data,
-  });
-
-  // Retry if appropriate
-  if (data.errorCode === 'TIMEOUT') {
-    await retryRun(data.runId);
-  }
-}
-
-async function handleAutomationTriggered(data: any) {
-  console.log(`Automation ${data.automationId} triggered`);
-
-  // Log automation trigger
-  await db.automations.log({
-    automationId: data.automationId,
-    triggeredAt: new Date(),
-    input: data.input,
-  });
+interface TriggerOutcomes {
+  record(input: {
+    requestId: string;
+    attempt: number;
+    disposition: string;
+    status?: number;
+    latencyMs?: number;
+  }): Promise<void>;
 }
 ```
 
-### Step 4: Test Webhooks
+A module-level set or in-memory queue is insufficient for multiple processes and
+does not survive termination. If claim plus enqueue cannot share a transaction,
+use a recoverable lease and a sweeper for stranded claims.
+
+## Bounded Delivery
+
+Validate the destination before loading the secret:
 
 ```typescript
-// Test webhook delivery
-async function testWebhook(webhookId: string) {
-  const lindy = new Lindy({ apiKey: process.env.LINDY_API_KEY });
+type TriggerConfig = { url: URL; secret: string };
 
-  const result = await lindy.webhooks.test(webhookId, {
-    type: 'agent.run.completed',
-    data: {
-      runId: 'test_run_123',
-      agentId: 'agt_test',
-      output: 'Test output',
-      duration: 1000,
-    },
-  });
-
-  console.log('Test result:', result);
+function loadTriggerConfig(env: NodeJS.ProcessEnv): TriggerConfig {
+  const url = new URL(env.LINDY_TRIGGER_URL ?? '');
+  const path = url.pathname.split('/').filter(Boolean);
+  if (
+    url.protocol !== 'https:' ||
+    url.hostname !== 'public.lindy.ai' ||
+    url.port !== '' ||
+    url.username !== '' ||
+    url.password !== '' ||
+    url.search !== '' ||
+    url.hash !== '' ||
+    path.length !== 4 ||
+    path[0] !== 'api' ||
+    path[1] !== 'v1' ||
+    path[2] !== 'webhooks' ||
+    path[3].length === 0
+  ) {
+    throw new Error('invalid Lindy webhook destination');
+  }
+  const secret = env.LINDY_TRIGGER_SECRET ?? '';
+  if (secret.length === 0) throw new Error('missing Lindy trigger secret');
+  return { url, secret };
 }
 ```
 
-## Event Types
-
-| Event | Description | Payload |
-|-------|-------------|---------|
-| `agent.run.started` | Agent run began | runId, agentId, input |
-| `agent.run.completed` | Agent run finished | runId, output, duration |
-| `agent.run.failed` | Agent run failed | runId, error, errorCode |
-| `automation.triggered` | Automation fired | automationId, input |
-| `agent.created` | New agent created | agentId, name |
-| `agent.deleted` | Agent deleted | agentId |
-
-## Output
-
-- Registered webhooks
-- Event handler implementation
-- Signature verification
-- Event logging
-
-## Error Handling
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Check WEBHOOK_SECRET |
-| Timeout | Handler slow | Respond quickly, process async |
-| Duplicate events | Retry delivery | Implement idempotency |
-
-## Examples
-
-### Async Processing Pattern
+Make one attempt and classify only the HTTP semantics the application owns:
 
 ```typescript
-router.post('/lindy', async (req, res) => {
-  // Verify signature first
-  if (!verifySignature(req)) {
-    return res.status(401).send('Invalid');
+type Attempt =
+  | { kind: 'accepted'; status: number; latencyMs: number }
+  | { kind: 'permanent'; status: number; latencyMs: number }
+  | { kind: 'transient'; status?: number; latencyMs: number; retryAfterMs?: number };
+
+const REQUEST_TIMEOUT_MS = 30_000;
+const MAX_RETRY_DELAY_MS = 60_000;
+
+function retryAfter(value: string | null): number | undefined {
+  if (!value) return undefined;
+  const seconds = Number(value);
+  const requested = Number.isFinite(seconds)
+    ? Math.max(0, seconds * 1000)
+    : Math.max(0, Date.parse(value) - Date.now());
+  return Number.isFinite(requested)
+    ? Math.min(requested, MAX_RETRY_DELAY_MS)
+    : undefined;
+}
+
+async function postTrigger(config: TriggerConfig, event: TriggerEvent): Promise<Attempt> {
+  const started = Date.now();
+  try {
+    const response = await fetch(config.url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${config.secret}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    });
+    const latencyMs = Date.now() - started;
+    await response.body?.cancel();
+
+    if (response.status >= 200 && response.status < 300) {
+      return { kind: 'accepted', status: response.status, latencyMs };
+    }
+    if ([408, 429, 500, 502, 503, 504].includes(response.status)) {
+      return {
+        kind: 'transient',
+        status: response.status,
+        latencyMs,
+        retryAfterMs: retryAfter(response.headers.get('Retry-After')),
+      };
+    }
+    return { kind: 'permanent', status: response.status, latencyMs };
+  } catch {
+    return { kind: 'transient', latencyMs: Date.now() - started };
   }
-
-  // Acknowledge immediately
-  res.status(200).send('OK');
-
-  // Process asynchronously
-  const event = JSON.parse(req.body);
-  await queue.push('lindy-events', event);
-});
+}
 ```
 
-## Resources
+The worker caps attempts and total job age, applies exponential backoff with full
+jitter, honors only a bounded `Retry-After`, and dead-letters after exhaustion. It
+reuses `requestId` on every attempt. A timeout is ambiguous, and a 2xx result is
+only `accepted_unverified` until task reconciliation succeeds.
 
-- Lindy Webhooks
-- Event Reference
-- Security Best Practices
+## Authenticated Callback
 
-## Next Steps
+Configure a pre-approved HTTPS callback URL in Lindy's HTTP Request action and set
+the Authorization header to the application-owned callback secret. Dynamic
+callback destinations require exact application-owned allowlisting before a secret
+can be attached.
 
-Proceed to `lindy-performance-tuning` for optimization.
+Authenticate before processing the body:
+
+```typescript
+import { timingSafeEqual } from 'node:crypto';
+
+const callbackSecret = process.env.LINDY_CALLBACK_SECRET ?? '';
+if (callbackSecret.length === 0) throw new Error('missing callback secret');
+
+function callbackAuthorized(header: string | undefined): boolean {
+  if (!header?.startsWith('Bearer ')) return false;
+  const actual = Buffer.from(header.slice('Bearer '.length));
+  const expected = Buffer.from(callbackSecret);
+  return actual.length === expected.length && timingSafeEqual(actual, expected);
+}
+
+type Callback = {
+  requestId: string;
+  taskId: string;
+  status: 'completed' | 'failed';
+};
+
+function validateCallback(value: unknown): Callback {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    throw new Error('callback must be an object');
+  }
+  const record = value as Record<string, unknown>;
+  const allowed = new Set(['requestId', 'taskId', 'status']);
+  if (Object.keys(record).some((key) => !allowed.has(key))) {
+    throw new Error('unknown callback field');
+  }
+  if (typeof record.requestId !== 'string' || record.requestId.length > 128) {
+    throw new Error('invalid requestId');
+  }
+  if (typeof record.taskId !== 'string' || record.taskId.length > 128) {
+    throw new Error('invalid taskId');
+  }
+  if (record.status !== 'completed' && record.status !== 'failed') {
+    throw new Error('invalid status');
+  }
+  return {
+    requestId: record.requestId,
+    taskId: record.taskId,
+    status: record.status,
+  };
+}
+```
+
+Use an application-owned raw request-byte limit before parsing. Then couple schema
+validation to a durable, atomic receiver contract:
+
+```typescript
+interface DurableCallbacks {
+  enqueueOnce(requestId: string, callback: Callback): Promise<'created' | 'duplicate'>;
+}
+
+const MAX_CALLBACK_BYTES = 16 * 1024; // local example policy
+
+async function acceptCallback(
+  authorization: string | undefined,
+  rawBody: Uint8Array,
+  callbacks: DurableCallbacks,
+): Promise<{ status: number; disposition: string }> {
+  if (!callbackAuthorized(authorization)) {
+    return { status: 401, disposition: 'unauthorized' };
+  }
+  if (rawBody.byteLength > MAX_CALLBACK_BYTES) {
+    return { status: 413, disposition: 'oversized' };
+  }
+
+  let callback: Callback;
+  try {
+    callback = validateCallback(JSON.parse(new TextDecoder().decode(rawBody)));
+  } catch {
+    return { status: 400, disposition: 'invalid' };
+  }
+
+  const disposition = await callbacks.enqueueOnce(callback.requestId, callback);
+  return { status: 202, disposition };
+}
+```
+
+If persistence fails, propagate a non-2xx result. Never acknowledge and then rely
+on an unawaited promise, timer, or process-local queue.
+
+## Task Reconciliation
+
+Maintain explicit states:
+
+```text
+queued -> attempted -> accepted_unverified -> completed | failed | unknown
+                   \-> permanent_failure
+                   \-> retry_scheduled -> dead_letter
+```
+
+Correlate the stable request ID to the Lindy Tasks view or the authenticated
+callback. Record only request ID, task ID, status, timestamps, and sanitized
+operational metadata. Alert when `accepted_unverified` exceeds the local deadline.
+
+Do not claim exactly-once remote execution. An ambiguous timeout can result in a
+created task even if the caller never receives its response.
+
+## Qualification Matrix
+
+| Test | Expected response | Durable jobs | Lindy task / side effect |
+|---|---:|---:|---:|
+| Valid trigger | 2xx acceptance | one source job | one correlated task |
+| Wrong trigger secret | non-2xx | source job terminal/review | no task |
+| Lookalike or HTTP trigger URL | no request | none sent | no task |
+| Malformed or oversized trigger | local rejection | zero | no task |
+| Concurrent duplicate trigger | one local job | one | reconcile at most one intended operation |
+| Transient response | bounded retries | one logical job | reconciled or dead-lettered |
+| Valid callback | 2xx after persistence | one callback job | one intended side effect |
+| Wrong callback secret | 401/403 | zero | no side effect |
+| Malformed or oversized callback | 4xx | zero | no side effect |
+| Duplicate callback | duplicate disposition | one total | at most one side effect |
+| Durable store unavailable | non-2xx | zero or safely pending | no acknowledged loss |
+| Worker termination | queue recovers | job remains durable | outcome reconciled |
+
+Inspect logs after every test: no secret, full webhook URL, headers, payload,
+prompt, model output, or customer data may appear.
+
+## Official References
+
+- [Lindy Webhooks](https://docs.lindy.ai/skills/by-lindy/webhooks)
+- [Lindy HTTP Request](https://docs.lindy.ai/skills/by-lindy/http-request)
+- [Lindy Tasks](https://docs.lindy.ai/fundamentals/lindy-101/tasks)
+- [Lindy Test Panel](https://docs.lindy.ai/testing/test-panel)

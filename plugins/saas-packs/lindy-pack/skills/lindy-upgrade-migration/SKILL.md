@@ -11,183 +11,177 @@ description: 'Manage Lindy agent configuration changes, platform updates, and mi
   "lindy reconfigure", "update lindy agents", "lindy workspace migration".
 
   '
-allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.19.0
+allowed-tools: Read, Write, Edit
+version: 1.20.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
 - saas
 - lindy
 - migration
-compatibility: Designed for Claude Code
+compatibility: Compatible with AI coding agents that can read and edit Markdown evidence records
 ---
-# Lindy Upgrade & Migration
+# Lindy Upgrade and Migration
 
 ## Overview
 
-Lindy is a managed platform — agents run on Lindy's infrastructure. "Upgrades"
-mean reconfiguring agents for new capabilities, migrating agents between workspaces,
-or adapting to platform changes. Key concern: agents with webhooks, Lindymail,
-and phone numbers require reconfiguration after migration.
+Plan and verify changes to Lindy workflows through the documented workspace UI.
+Use Lindy's Version History as the in-place restoration mechanism, the Test Panel
+for controlled execution, and the Tasks view for run evidence. Do not invent a
+Lindy SDK, API key, package upgrade, CLI, export endpoint, or control plane.
+
+Use **Read** to inspect the approved change record and evidence. Use **Write** or
+**Edit** to maintain the migration record without copying secrets or customer data.
 
 ## Prerequisites
 
-- Admin access to source and target Lindy workspaces
-- Inventory of all agents, triggers, and integrations
-- Migration window scheduled for customer-facing agents
+- Authorized access to every source and target workspace in scope.
+- A named change owner, approver, rollback owner, and acceptance owner.
+- A known-good saved agent version visible in Version History.
+- A current inventory of triggers, actions, conditions, integrations, knowledge
+  sources, manual approval steps, owners, and downstream side effects.
+- Synthetic inputs and sandboxed destinations for Test Panel runs; its tests can
+  execute real actions and call real external systems.
+- Baseline task receipts from the Tasks view and explicit acceptance criteria.
+- Current Lindy documentation and workspace evidence for any transfer or feature
+  behavior relied upon by the change.
 
 ## Instructions
 
-### Step 1: Inventory Current Agents
+### Step 1: Define the change boundary
 
-Document every agent before making changes:
+Record whether this is an in-place configuration change, restoration, template-
+based recreation, or workspace move. List the exact workflows, integrations,
+callers, secrets, data stores, approvers, and external side effects in scope.
 
-| Agent Name | Trigger Type | Actions | Integrations | Webhook URL | Phone # |
-|-----------|-------------|---------|--------------|-------------|---------|
-| Support Bot | Email Received | Gmail Reply, Slack Notify | Gmail, Slack | N/A | N/A |
-| Lead Router | Webhook | Sheets Update, Slack DM | Sheets, Slack | `https://public.lindy.ai/...` | N/A |
-| Phone Screener | Call Received | Transfer, Agent Send | Phone | N/A | +1-555-0100 |
+Treat anything not documented by Lindy or directly observed in the target
+workspace as `NOT VERIFIED`. Templates are starting workflows that must be
+configured, customized, and tested; do not assume they preserve credentials,
+triggers, knowledge, memories, phone or mail resources, permissions, approval
+rules, webhook URLs, or other workspace-bound state.
 
-### Step 2: Export Agent Configurations
+### Step 2: Capture a rollback anchor and baseline
 
-For each agent, document:
+1. Save the current working workflow with a descriptive version name.
+2. Open **Version History**, record the rollback version and review its changes.
+3. Run approved synthetic cases and retain Tasks-view identifiers, step outcomes,
+   and expected side effects.
+4. Record current integration identities, trigger configuration, manual approval
+   gates, and sanitized destination identifiers.
 
-- **Prompt**: Copy full text from Settings > Prompt
-- **Model**: Which AI model is selected
-- **Skills/Actions**: List all action steps and their configurations
-- **Trigger filters**: Copy filter conditions
-- **Knowledge Base**: Note all sources (files, URLs, integrations)
-- **Memories**: Export any persistent memories
-- **Exit conditions**: Copy all condition text
+Do not copy OAuth tokens, webhook secrets, full payloads, or customer content into
+the record.
 
-### Step 3: Plan Migration Order
+### Step 3: Build the candidate safely
 
+For an in-place change, edit the workflow but keep it inactive or otherwise
+isolated until testing and approval are complete. For a workspace move, use a
+documented template installation or recreate the workflow in the target workspace,
+then verify every target-bound dependency individually.
+
+If the target uses a webhook trigger, inspect its generated URL and secret. The
+calling application may send that secret only to an HTTPS URL whose hostname is
+exactly `public.lindy.ai` and whose path is the expected generated webhook path.
+If the target URL or secret differs from the source, plan an atomic caller update;
+do not infer whether copying or installing a template preserves either value.
+
+Reconnect integrations through the target workspace UI. Preserve human-in-the-
+loop approval by confirming the approval step, reviewer identity or role, timeout
+behavior, and rejection path in the candidate—not merely by copying visible text.
+
+### Step 4: Test with clean inputs
+
+Use the Test Panel with synthetic data and sandboxed destinations. Test every
+trigger and material condition branch, including malformed input, denied approval,
+expired or missing authorization, external-action failure, duplicate delivery,
+and recovery after a worker or downstream interruption.
+
+The Test Panel performs real execution. Confirm each result in the panel and the
+Tasks view, and reconcile expected side effects at the destination. A green step
+without the expected destination state is not sufficient evidence.
+
+### Step 5: Obtain approval and cut over
+
+Present the evidence bundle and unresolved risks to the named approver. After
+approval, use an owner-defined cutover method that prevents duplicate side effects.
+Do not run old and new workflows in parallel against production inputs unless the
+design proves idempotency and explicitly permits duplicate delivery.
+
+Route a controlled canary where possible, observe Tasks-view results and downstream
+state, then move remaining traffic. Keep the rollback target intact until the
+acceptance owner signs off; do not delete it on a fixed timer.
+
+### Step 6: Roll back when acceptance fails
+
+For an in-place change, select the known-good entry in Version History, restore it,
+review the loaded configuration, and save it. Lindy documents that saving a
+restored configuration creates a new version rather than deleting later history.
+
+For a workspace or endpoint cutover, restore the previously approved routing and
+workflow state using the recorded change procedure. Revalidate authentication and
+confirm a clean synthetic task. Rollback is complete only when the Tasks view and
+destination evidence match the pre-change baseline.
+
+### Step 7: Close with retained evidence
+
+Record the final workflow version, task identifiers, approvals, observed outcomes,
+cutover or rollback timestamps, remaining risks, and follow-up owners. Redact
+secrets and minimize personal or customer data.
+
+## Output
+
+Produce a migration evidence bundle containing:
+
+- change type, source and target workspaces, workflow identifiers, and owners;
+- dependency inventory with `VERIFIED`, `FAILED`, `NOT VERIFIED`, or `N/A` status;
+- rollback version and restoration procedure;
+- clean-test cases and Tasks-view receipts for happy, failure, and approval paths;
+- target integration, trigger, webhook, and destination verification;
+- explicit approval and cutover decision;
+- production observation and destination reconciliation; and
+- final disposition: `MIGRATED`, `ROLLED BACK`, or `BLOCKED`, with open risks.
+
+## Examples
+
+### In-place configuration change
+
+```markdown
+# Change LND-42
+
+- Boundary: prompt and one condition branch; no new integrations
+- Rollback anchor: Version History entry "pre-LND-42"
+- Clean tests: happy, denied approval, malformed input, destination failure
+- Task receipts: task-a, task-b, task-c, task-d
+- Human approval: VERIFIED -- reviewer role and rejection branch exercised
+- Destination effects: VERIFIED against sandbox records
+- Decision: MIGRATED
 ```
-Phase 1: Internal-only agents (no customer impact)
-  → Migrate, test, verify for 24-48 hours
 
-Phase 2: Low-risk customer-facing agents (email triage, notifications)
-  → Migrate during low-traffic window
-  → Monitor for 24 hours
+### Correct workspace-move decision
 
-Phase 3: Critical agents (phone, live chat, lead routing)
-  → Migrate with rollback plan ready
-  → Keep old agent active in parallel for 48 hours
-```
-
-### Step 4: Migrate Agent to New Workspace
-
-**Option A — Template sharing**:
-
-1. In source workspace: Share agent as **Template**
-2. In target workspace: Import template
-3. Reconfigure integrations (OAuth tokens are NOT transferred)
-4. Re-authorize all connected services
-
-**Option B — Manual recreation**:
-
-1. Create new agent in target workspace
-2. Paste saved prompt
-3. Recreate trigger with same configuration
-4. Re-add all actions and configure fields
-5. Upload knowledge base files
-6. Re-create memories
-
-### Step 5: Reconfigure Webhooks, Email, and Phone
-
-These require special attention — they are NOT automatically transferred:
-
-**Webhooks**:
-
-- New agent gets a NEW webhook URL
-- Update all calling systems with the new URL
-- Generate new webhook secret
-- Update all clients with new Bearer token
-
-**Lindymail** (Lindy-assigned email addresses):
-
-- New agent gets a new Lindymail address
-- Update forwarding rules and any published email addresses
-
-**Phone numbers**:
-
-- Phone numbers may need to be re-provisioned ($10/month each)
-- Update IVR systems and published phone numbers
-- Test call quality and language settings
-
-### Step 6: Parallel Run & Cutover
-
-```
-Day 1-2: Both old and new agents active
-  → Route test traffic to new agent
-  → Compare task completion rates and output quality
-
-Day 3: Gradual cutover
-  → Redirect 50% of traffic to new agent
-  → Monitor error rates and credit consumption
-
-Day 4: Full cutover
-  → Route 100% to new agent
-  → Keep old agent paused (not deleted) for 7 days
-
-Day 11: Cleanup
-  → Delete old agent after 7-day safety window
-```
-
-### Step 7: Verify Post-Migration
-
-- [ ] All triggers firing correctly
-- [ ] All actions completing successfully
-- [ ] Knowledge base returning relevant results
-- [ ] Webhook URLs updated in all calling systems
-- [ ] Phone numbers tested (inbound and outbound)
-- [ ] Credit consumption within expected range
-- [ ] Team members have correct access in new workspace
-
-## Common Migration Scenarios
-
-### Scenario: Consolidating Multiple Agents
-
-When you have too many single-purpose agents:
-
-1. Identify agents with overlapping triggers
-2. Merge prompts into sections (use `## Billing`, `## Technical`, etc.)
-3. Add conditions to route based on content
-4. Reduce total active agents → lower costs
-
-### Scenario: Upgrading Agent Capabilities
-
-When Lindy adds new features (new actions, new models):
-
-1. Review [Lindy Changelog](https://www.lindy.ai/changelog)
-2. Update model selection if better options available
-3. Replace workaround actions with new native actions
-4. Test thoroughly — model changes affect output quality
-
-### Scenario: Environment Promotion (Dev to Prod)
-
-1. Share dev agent as Template
-2. Import in production workspace
-3. Re-authorize all production integrations
-4. Update webhook URLs to production endpoints
-5. Verify trigger filters match production requirements
+If a template installs but the target integration identity or approval path cannot
+be verified, record that dependency as `NOT VERIFIED` and choose `BLOCKED`. Template
+installation alone is not migration evidence.
 
 ## Error Handling
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Webhook URL changed | New agent gets new URL | Update all callers with new URL |
-| Integration auth failed | OAuth not transferred | Re-authorize in new workspace |
-| Knowledge base empty | Files not re-uploaded | Upload files to new agent's KB |
-| Phone number unavailable | Not re-provisioned | Purchase new number in settings |
-| Memory lost | Memories not exported | Manually re-create critical memories |
+| Failure | Required response |
+|---|---|
+| No known-good Version History entry | Save and test a baseline before changing the workflow |
+| Candidate test touches production data | Stop, contain the side effect, and replace it with clean test data |
+| Target dependency behavior is undocumented | Verify directly or mark `NOT VERIFIED`; do not infer transfer behavior |
+| Approval step or rejection path differs | Block cutover until the control is restored and tested |
+| Webhook destination is not exact approved Lindy HTTPS host/path | Do not attach the trigger secret |
+| Tasks evidence and destination state disagree | Treat acceptance as failed and investigate or roll back |
+| Restore loads but is not saved and retested | Rollback remains incomplete |
 
 ## Resources
 
-- [Lindy Changelog](https://www.lindy.ai/changelog)
+- [Lindy Version History](https://docs.lindy.ai/testing/version-history)
+- [Lindy Test Panel](https://docs.lindy.ai/testing/test-panel)
+- [Lindy Tasks](https://docs.lindy.ai/fundamentals/lindy-101/tasks)
+- [Lindy Human in the Loop](https://docs.lindy.ai/testing/human-in-the-loop)
 - [Lindy Templates](https://docs.lindy.ai/fundamentals/lindy-101/templates)
-- [Lindy Documentation](https://docs.lindy.ai)
-
-## Next Steps
-
-Proceed to Pro tier skills for advanced CI integration, deployment, and performance.
+- [Lindy Workspaces](https://docs.lindy.ai/account-billing/workspaces)
+- [Lindy Webhooks](https://docs.lindy.ai/skills/by-lindy/webhooks)
+- [Detailed migration evidence guide](references/implementation-guide.md)

@@ -12,7 +12,7 @@ description: 'Set up local development workflow for testing Lindy AI agent integ
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(npx:*)
-version: 1.19.0
+version: 1.20.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

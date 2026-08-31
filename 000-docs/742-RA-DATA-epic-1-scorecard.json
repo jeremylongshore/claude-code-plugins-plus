@@ -14,16 +14,16 @@
     "source": "scripts/validate-skills-schema.py --marketplace --skills-only --json",
     "status": "measured",
     "values": {
-      "a_error_total": 41,
-      "a_failing": 21,
-      "ab_error_total": 654,
-      "ab_failing": 317,
-      "b_failing": 296,
-      "error_files": 809,
-      "error_total": 3938,
+      "a_error_total": 35,
+      "a_failing": 18,
+      "ab_error_total": 645,
+      "ab_failing": 313,
+      "b_failing": 295,
+      "error_files": 805,
+      "error_total": 3929,
       "grade_distribution": {
-        "A": 1873,
-        "B": 1116,
+        "A": 1874,
+        "B": 1115,
         "C": 479,
         "D": 157,
         "F": 5
@@ -90,7 +90,7 @@
           "validator_reported_mixed_denominator_percent": 80.8
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 4175,
+          "error_total_all_validated_surfaces": 4166,
           "fully_compliant_surfaces": 1138,
           "terminal_denominator": {
             "agents": 357,
@@ -104,16 +104,16 @@
           "validator_reported_mixed_denominator_percent": 23
         },
         "skill_rows": {
-          "a_error_total": 41,
-          "a_failing": 21,
-          "ab_error_total": 654,
-          "ab_failing": 317,
-          "b_failing": 296,
-          "error_files": 809,
-          "error_total": 3938,
+          "a_error_total": 35,
+          "a_failing": 18,
+          "ab_error_total": 645,
+          "ab_failing": 313,
+          "b_failing": 295,
+          "error_files": 805,
+          "error_total": 3929,
           "grade_distribution": {
-            "A": 1873,
-            "B": 1116,
+            "A": 1874,
+            "B": 1115,
             "C": 479,
             "D": 157,
             "F": 5
@@ -131,8 +131,8 @@
       "values": {
         "average_score": 87.2,
         "grade_distribution": {
-          "A": 1873,
-          "B": 1116,
+          "A": 1874,
+          "B": 1115,
           "C": 479,
           "D": 157,
           "F": 5
@@ -154,12 +154,12 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "a_error_total": 41,
-        "a_failing": 21,
-        "ab_error_total": 654,
-        "ab_failing": 317,
-        "b_error_total": 613,
-        "b_failing": 296,
+        "a_error_total": 35,
+        "a_failing": 18,
+        "ab_error_total": 645,
+        "ab_failing": 313,
+        "b_error_total": 610,
+        "b_failing": 295,
         "certified_target": 0,
         "skill_summary_rows": 3630
       }
@@ -286,7 +286,7 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "distinct_values": 50,
+        "distinct_values": 52,
         "invalid_or_empty": 0,
         "target_free_text_values": 0,
         "values": [
@@ -340,10 +340,18 @@
           },
           {
             "count": 1,
+            "value": "Compatible with AI coding agents that can read and edit Markdown evidence records"
+          },
+          {
+            "count": 1,
+            "value": "Compatible with AI coding agents that can read and edit application code and Markdown"
+          },
+          {
+            "count": 1,
             "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18, a persistent local filesystem (the observe-decide-act loop passes state through local turn files), and ~/.kobiton/.credentials written by /automate:setup — scripts/appium.js reads that file directly and never calls the MCP getCredential tool, so it is required, not a fallback. An authenticated Kobiton MCP connection is additionally useful for device selection."
           },
           {
-            "count": 3316,
+            "count": 3314,
             "value": "Designed for Claude Code"
           },
           {

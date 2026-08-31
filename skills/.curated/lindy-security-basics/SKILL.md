@@ -1,18 +1,18 @@
 ---
 name: lindy-security-basics
-description: 'Implement security best practices for Lindy AI agents and integrations.
+description: 'Implement security best practices for Lindy agents and integrations.
 
-  Use when securing API keys, configuring agent permissions,
+  Use when securing webhook secrets, scoping connected accounts,
 
-  verifying webhooks, or auditing agent access.
+  controlling side effects, or auditing agent access.
 
   Trigger with phrases like "lindy security", "secure lindy",
 
-  "lindy API key security", "lindy permissions", "lindy audit".
+  "lindy webhook security", "lindy permissions", "lindy audit".
 
   '
-allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.19.0
+allowed-tools: Read, Write, Edit
+version: 1.20.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,166 +26,161 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Security practices for Lindy AI agents. Agents are autonomous — they connect to
-external services, execute actions, and handle data. Security focuses on: API key
-management, webhook authentication, agent permission scoping, integration account
-isolation, and connection sharing controls.
+Secure Lindy workflows at the boundaries Lindy currently documents: generated
+Webhook Received secrets, per-action connected-account selection, target-service
+authentication in HTTP Request, Ask for Confirmation/draft modes, dedicated Computer
+Use sessions, Tasks, and Test Panel. Do not rely on an undocumented Lindy API key,
+webhook signature, role, connection-sharing level, fixed quota, or plan entitlement.
 
 ## Prerequisites
 
-- Lindy account with API access
-- Understanding of which integrations your agents use
-- For Enterprise: SSO/SCIM configuration access
+- Lindy workspace with an editable custom agent
+- Inventory of triggers, actions, connected accounts, external endpoints, data
+  classes, owners, and consequential side effects
+- Sanitized fixtures and test/sandbox integrations
 
 ## Instructions
 
-### Step 1: API Key Management
+### Step 1: Draw the Trust Map
 
-```bash
-# Store API key in environment variable — never in source code
-export LINDY_API_KEY="lnd_live_xxxxxxxxxxxxxxxxxxxx"
+For every path, record source, destination, data fields, credential owner, selected
+connected account, allowed side effects, approver, failure path, and evidence source.
+Separate these directions:
 
-# Or use a secret manager
-# AWS Secrets Manager
-aws secretsmanager create-secret \
-  --name lindy/api-key \
-  --secret-string "$LINDY_API_KEY"
+| Direction | Supported boundary |
+|---|---|
+| Application to Lindy | Webhook Received URL + Lindy-generated bearer secret |
+| Lindy to external service | HTTP Request + that service's authentication |
+| External account action | Exactly the connected account selected on the action |
+| Lindy callback to application | Receiver-owned trust boundary; no documented Lindy signature claim |
 
-# Google Secret Manager
-echo -n "$LINDY_API_KEY" | gcloud secrets create lindy-api-key \
-  --data-file=-
-```
+### Step 2: Secure Webhook Received
 
-**Key rotation schedule**:
+1. Create the webhook inside the Webhook Received trigger.
+2. Generate the secret, copy it once, and store it in the caller's secret manager.
+3. Send it only in the Authorization bearer header to the generated HTTPS URL.
+4. Keep the webhook URL/secret out of prompts, bodies, query strings, task titles,
+   screenshots, logs, and tickets.
+5. Minimize and validate the caller's payload before transmission.
+6. Rotate after suspected exposure by creating/reconfiguring the protected boundary,
+   verifying the replacement, and retiring the old value according to the current UI.
 
-| Environment | Rotation Period | Method |
-|-------------|----------------|--------|
-| Development | 30 days | Manual regeneration |
-| Staging | 90 days | Automated via CI |
-| Production | 90 days | Secret manager + automated rotation |
-| Post-incident | Immediately | Manual regeneration + revoke old key |
+The bearer secret authenticates the caller **to Lindy**. It does not authenticate a
+callback from Lindy to your application, and Lindy's Webhooks guide does not document
+an HMAC signature or timestamp header for that callback.
 
-### Step 2: Webhook Authentication
+### Step 3: Scope Connected Accounts and Actions
 
-Every webhook trigger generates a unique secret key. Verify it on every inbound request:
+Lindy documents that each action selects one connected account. For every action:
 
-```typescript
-// Webhook signature verification middleware
-function verifyLindyWebhook(
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) {
-  const authHeader = req.headers.authorization;
-  const expectedToken = process.env.LINDY_WEBHOOK_SECRET;
+- select the account with the minimum data and authority required;
+- prefer a dedicated work/test account when the integration supports one;
+- remove actions and connections no longer required by the workflow;
+- avoid combining broad read and consequential write abilities in an autonomous
+  Agent Step when deterministic actions/conditions are sufficient; and
+- use a dedicated Computer for an agent that needs Computer Use so saved sessions and
+  site credentials are not shared across unrelated work.
 
-  if (!authHeader || authHeader !== `Bearer ${expectedToken}`) {
-    console.warn('Rejected unauthorized webhook attempt', {
-      ip: req.ip,
-      path: req.path,
-      timestamp: new Date().toISOString(),
-    });
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+Do not invent local permission dictionaries or quotas and describe them as Lindy
+controls. Enforce application-owned authorization again at any external receiver.
 
-  next();
-}
+### Step 4: Put Humans Before Consequential Side Effects
 
-app.post('/lindy/callback', verifyLindyWebhook, (req, res) => {
-  // Process verified webhook
-  handleWebhook(req.body);
-  res.json({ received: true });
-});
-```
+Enable **Ask for Confirmation** on supported actions that send messages, update
+records, create events, or cause other consequential effects. Use draft mode where
+available. Add condition-based escalation for unknown/out-of-scope cases. Keep
+confirmation enabled until representative testing and review justify a deliberate
+change; money, contracts, access changes, deletion, and sensitive external
+communications should retain explicit approval.
 
-### Step 3: Agent Permission Scoping
+### Step 5: Minimize Data Across Every Step
 
-Lindy agents access external services through authorized connections. Minimize blast radius:
+- Use stable references instead of full messages/documents where possible.
+- Do not pass all webhook headers or the entire body to later actions.
+- Send HTTP Request only fields required by the target schema.
+- Bound lengths, collection sizes, nesting, and allowed enum values.
+- Never print secrets or sensitive inputs in Run Code; stdout becomes `text`.
+- Keep task links restricted because Tasks can expose step inputs and outputs.
+- Redact incident/evaluation exports; retain details only in approved systems.
 
-**Per-agent integration isolation**:
+Prompt instructions are defense in depth, not authorization. Conditions, selected
+accounts, receiver-side checks, confirmation, and schema validation must enforce the
+boundary even if model output is incorrect or adversarial.
 
-- Authorize a dedicated Gmail account per agent (not your personal inbox)
-- Create Slack bot tokens scoped to specific channels
-- Use read-only database credentials where possible
-- Create separate API keys for each integration
+### Step 6: Test Fail-Closed Behavior
 
-**Connection sharing controls**:
+Use synthetic data and test accounts. Lindy's Test Panel executes real actions.
+Verify valid flow plus wrong/missing webhook secret, oversized/unknown payload,
+unexpected outbound host, target 401/403/429/5xx, malformed response, attempted prompt
+injection, missing approval, and untrusted callback content. Each negative case must
+stop, quarantine, or request human review without completing its side effect.
 
-| Sharing Level | When to Use |
-|--------------|-------------|
-| Private (default) | Personal agents, sensitive data |
-| Team shared | Team-wide automation agents |
-| Workspace shared | Organization-wide utility agents |
+### Step 7: Review Tasks and Current Account Controls
 
-### Step 4: Limit Agent Skill Surface Area
-
-Agents with Agent Steps can choose which skills to use. Reduce risk:
-
-- Start with 2-4 focused skills per agent (not the full catalog)
-- Avoid giving agents both read AND write access to the same service unless necessary
-- Separate "read" agents from "write" agents for critical systems
-- Use conditions to gate destructive actions behind human approval
-
-### Step 5: Data Handling in Agents
-
-```
-Agent Prompt Security Patterns:
-
-## Data Constraints
-- Never include API keys, passwords, or tokens in responses
-- Redact email addresses and phone numbers from summaries
-- Do not forward customer data to channels outside #support
-- If asked to perform an action outside your scope, respond:
-  "I cannot perform that action. Please contact an admin."
-```
-
-### Step 6: Audit Agent Activity
-
-1. **Task history**: Review agent Tasks tab for unexpected actions
-2. **Integration access**: Periodically review which services each agent can access
-3. **Credit anomalies**: Sudden credit spikes may indicate misuse or misconfiguration
-4. **Connection review**: Remove unused integrations from agents
-
-### Step 7: Enterprise Security Features
-
-Available on Enterprise plan:
-
-| Feature | Purpose |
-|---------|---------|
-| **SSO** | SAML-based single sign-on |
-| **SCIM** | Automated user provisioning/deprovisioning |
-| **Audit Logs** | Complete activity trail |
-| **Role-Based Access** | Owner/Editor/Viewer workspace roles |
-| **BAA** | HIPAA Business Associate Agreement |
-| **AES-256** | Encryption at rest and in transit |
+Use Tasks to inspect the exact step order, selected paths, inputs/outputs, errors, and
+timestamps after testing and deployment. Review connected accounts and agent actions
+on a defined owner-approved cadence. For organization identity, audit, compliance,
+or contractual controls, verify current availability and configuration in Lindy's
+official security/pricing material and your workspace; do not freeze plan claims in
+this skill.
 
 ## Security Checklist
 
-- [ ] API keys stored in environment variables or secret manager
-- [ ] `.env` file in `.gitignore`
-- [ ] Webhook secrets generated and verified on every request
-- [ ] Each agent uses minimum necessary integrations
-- [ ] Separate integration credentials per agent where possible
-- [ ] Agent prompts include data handling constraints
-- [ ] Regular review of agent task history for anomalies
-- [ ] Key rotation schedule defined and followed
-- [ ] Enterprise: SSO enabled, SCIM configured
+- [ ] Trust map covers every inbound, outbound, connected-account, and callback path
+- [ ] Webhook Received uses the generated bearer secret and exact generated URL
+- [ ] Secrets are distinct, nonempty, protected, and absent from content/logs
+- [ ] Every action uses the minimum-authority connected account
+- [ ] Consequential side effects require confirmation/draft/review
+- [ ] Payloads and Run Code inputs/outputs have explicit schemas and bounds
+- [ ] Callback content is untrusted until receiver-owned checks succeed
+- [ ] Test Panel uses synthetic data and test integrations
+- [ ] Negative tests prove fail-closed behavior
+- [ ] Tasks and connection/action inventory have owners and a review cadence
 
 ## Error Handling
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Agent accesses wrong service | Over-permissioned | Remove unnecessary integrations |
-| Unauthorized webhook processed | No auth verification | Add Bearer token verification |
-| API key leaked in logs | Key in agent output | Add "never output credentials" to prompt |
-| Agent sends data to wrong channel | Shared connection | Use per-agent dedicated connections |
+| Wrong caller reaches webhook | Missing/wrong generated bearer | Reject; rotate if exposure is suspected |
+| Agent uses wrong account | Wrong account selected on action | Stop workflow and correct the explicit selection |
+| Callback has no trusted auth boundary | Assumed Lindy signature | Quarantine; implement receiver-owned auth without claiming platform signing |
+| Sensitive data appears in Tasks/logs | Payload/output too broad | Disable path, redact downstream copies, minimize schema, retest |
+| Side effect runs during test | Production connection/no confirmation | Contain impact, restore state, use test account and confirmation |
+| External receiver accepts excess authority | Lindy prompt treated as authorization | Enforce identity, schema, and authorization at receiver |
+
+## Output
+
+Return a security review containing:
+
+- trust map and data classification for each boundary;
+- credential inventory with owner, storage, rotation trigger, and separation proof;
+- action-to-connected-account and side-effect inventory;
+- confirmation/draft/escalation decisions;
+- exact schema/data-minimization controls;
+- happy-path and negative fail-closed test receipts; and
+- open risks with owner and remediation, without copying secrets or sensitive payloads.
+
+## Examples
+
+For an inbound document event, the caller sends only a synthetic document reference
+to the generated Webhook Received URL using its generated bearer secret. The workflow
+uses a specifically selected read-only source account, transforms only the reference,
+and stages any external update behind Ask for Confirmation. A separate application
+receiver validates its own credential and minimal callback schema; it does not assume
+an undocumented Lindy signature or act on callback text alone.
 
 ## Resources
 
+- [Webhooks](https://docs.lindy.ai/skills/by-lindy/webhooks)
+- [HTTP Request](https://docs.lindy.ai/skills/by-lindy/http-request)
+- [Actions and account selection](https://docs.lindy.ai/fundamentals/lindy-101/actions)
+- [Human in Loop](https://docs.lindy.ai/testing/human-in-the-loop)
+- [Computer Use](https://docs.lindy.ai/skills/by-lindy/computer-use)
+- [Test Panel](https://docs.lindy.ai/testing/test-panel)
+- [Tasks](https://docs.lindy.ai/fundamentals/lindy-101/tasks)
 - [Lindy Security](https://www.lindy.ai/security)
-- [Lindy Privacy Policy](https://www.lindy.ai/privacy)
-- [Lindy Documentation](https://docs.lindy.ai)
 
 ## Next Steps
 
-Proceed to `lindy-prod-checklist` for production readiness.
+Carry the completed trust map, negative-test receipts, and open risks into
+`lindy-prod-checklist`; production readiness is not proven by this checklist alone.
