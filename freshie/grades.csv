@@ -1481,14 +1481,14 @@ plugins/saas-packs/flexport-pack/skills/flexport-webhooks-events,B,82
 plugins/saas-packs/flyio-pack/skills/flyio-ci-integration,A,91
 plugins/saas-packs/flyio-pack/skills/flyio-common-errors,B,86
 plugins/saas-packs/flyio-pack/skills/flyio-core-workflow-a,B,86
-plugins/saas-packs/flyio-pack/skills/flyio-core-workflow-b,B,85
+plugins/saas-packs/flyio-pack/skills/flyio-core-workflow-b,B,86
 plugins/saas-packs/flyio-pack/skills/flyio-cost-tuning,B,84
 plugins/saas-packs/flyio-pack/skills/flyio-debug-bundle,B,87
 plugins/saas-packs/flyio-pack/skills/flyio-deploy-integration,B,88
 plugins/saas-packs/flyio-pack/skills/flyio-hello-world,B,84
 plugins/saas-packs/flyio-pack/skills/flyio-install-auth,B,85
 plugins/saas-packs/flyio-pack/skills/flyio-local-dev-loop,B,87
-plugins/saas-packs/flyio-pack/skills/flyio-performance-tuning,B,83
+plugins/saas-packs/flyio-pack/skills/flyio-performance-tuning,B,84
 plugins/saas-packs/flyio-pack/skills/flyio-prod-checklist,B,89
 plugins/saas-packs/flyio-pack/skills/flyio-rate-limits,B,84
 plugins/saas-packs/flyio-pack/skills/flyio-reference-architecture,B,89
