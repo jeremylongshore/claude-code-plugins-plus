@@ -26,9 +26,30 @@ Use `as_of` as the deterministic evaluation clock.
     "account_usage_collected_at": "2026-08-31T17:45:00Z",
     "detailed_window_days": 14
   },
+  "current_state": {
+    "status": "collected",
+    "observed_at": "2026-08-31T17:55:00Z",
+    "max_age_minutes": 30,
+    "groups": [],
+    "progress": []
+  },
+  "current_state_receipt": {
+    "schema_version": "1",
+    "surface": "replication-current",
+    "status": "collected",
+    "collected_at": "2026-08-31T17:55:00Z",
+    "datasets": {"failover_groups": [], "replication_progress": []},
+    "receipt_sha256": "sha256:<canonical-receipt-hash>"
+  },
   "drill_events": []
 }
 ```
+
+The abbreviated `current_state_receipt` above must be supplied as the complete,
+unmodified collector output, including exact source/template/hash, cap, count,
+and truncation fields. The empty arrays illustrate shape only: every in-scope
+group requires matching inventory and progress rows. `current_state.groups` and
+`current_state.progress` must exactly equal those receipt datasets.
 
 Allowed modes are `PLAN_ONLY`, `READ_ONLY_PREFLIGHT`,
 `OPERATOR_EXECUTED_FAILOVER`, and `OPERATOR_EXECUTED_FAILOVER_AND_FAILBACK`.

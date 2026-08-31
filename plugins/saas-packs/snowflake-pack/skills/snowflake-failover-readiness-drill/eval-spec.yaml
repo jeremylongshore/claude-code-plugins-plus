@@ -26,13 +26,14 @@ criteria:
     method: judge
     blocker: true
   - id: current-group-progress
-    description: Reconciles current group progress/schedule with historical refresh evidence
+    description: Requires an exact, fresh replication-current collector receipt and binds current group/progress payloads to its datasets
     method: judge
     blocker: true
     judge_prompt: >-
-      Does the response require fresh group state, refresh progress, schedule,
-      dependencies, and complete denominators before readiness, while treating
-      stale or contradictory evidence as inconclusive? Answer yes or no.
+      Does the response fail closed unless the fresh current-state payload is
+      bound to a complete, exact-hash replication-current collector receipt,
+      while rejecting capped, truncated, stale, or contradictory evidence?
+      Answer yes or no.
   - id: drill-receipt-integrity
     description: Requires integrity and approval evidence for executed drill claims
     method: judge

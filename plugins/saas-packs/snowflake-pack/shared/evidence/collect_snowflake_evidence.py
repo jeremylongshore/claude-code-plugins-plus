@@ -105,10 +105,22 @@ QUERY_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$")
 IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_$]{0,254}$")
 SELECTOR_MARKERS = {"query_id": "__QUERY_ID__", "database": "__DATABASE_IDENTIFIER__"}
 SENSITIVE_KEYS = {
+    "account_endpoint",
+    "account_endpoints",
+    "account_identifier",
+    "account_locator",
+    "account_name",
+    "account_url",
+    "allowed_accounts",
     "api_key",
     "authorization",
     "credential",
     "credentials",
+    "detail",
+    "details",
+    "endpoint",
+    "host",
+    "hostname",
     "jwt",
     "oauth_token",
     "password",
@@ -121,6 +133,18 @@ SENSITIVE_KEYS = {
     "session_token",
     "sql_text",
     "token",
+}
+FORBIDDEN_RAW_METADATA_KEYS = {
+    "endpoint",
+    "endpoints",
+    "filter",
+    "filter_value",
+    "filter_values",
+    "group_by_values",
+    "group_values",
+    "raw_filter",
+    "raw_group_values",
+    "within_group",
 }
 REDACTIONS = (
     (re.compile(r"(?i)\bBearer\s+\S+"), "[REDACTED_BEARER]"),
@@ -159,7 +183,16 @@ def reject_secret_fields(value: Any, path: str = "result") -> None:
                     f"raw identity/tag field is not accepted: {path}.{key}; use a Snowflake-side hash"
                 )
             if normalized in SENSITIVE_KEYS or normalized.endswith(("_token", "_secret", "_private_key")):
-                raise CollectionError(f"credential-bearing field is not accepted: {path}.{key}")
+                category = (
+                    "credential-bearing field; raw filter/group/endpoint field"
+                    if normalized in FORBIDDEN_RAW_METADATA_KEYS
+                    else "credential-bearing field"
+                )
+                raise CollectionError(f"{category} is not accepted: {path}.{key}")
+            if normalized in FORBIDDEN_RAW_METADATA_KEYS:
+                raise CollectionError(
+                    f"raw filter/group/endpoint field is not accepted: {path}.{key}"
+                )
             reject_secret_fields(child, f"{path}.{key}")
     elif isinstance(value, list):
         for index, child in enumerate(value):
@@ -289,9 +322,17 @@ def build_receipt(
     row_count = 0
     if raw is not None:
         datasets, row_count = normalize_cli_json(raw)
+        # Preserve the reviewed dataset identity even when Snowflake returns no
+        # association rows. Consumers can distinguish a complete empty result
+        # from a receipt whose expected dataset was removed.
+        if surface == "data-quality-current":
+            datasets.setdefault("data_quality_current", [])
     limits = re.findall(r"\bLIMIT\s+(\d+)\b", sql, flags=re.IGNORECASE)
     row_limit = int(limits[-1]) if limits else None
-    truncation_possible = row_limit is not None and row_count >= row_limit
+    dataset_truncation = {
+        name: row_limit is not None and len(rows) >= row_limit for name, rows in datasets.items()
+    }
+    truncation_possible = any(dataset_truncation.values())
     canonical_template = template_sql if template_sql is not None else sql
     template_hash = f"sha256:{hashlib.sha256(canonical_template.encode('utf-8')).hexdigest()}"
     rendered_hash = f"sha256:{hashlib.sha256(sql.encode('utf-8')).hexdigest()}"
@@ -323,7 +364,7 @@ def build_receipt(
         "row_limit": row_limit,
         "truncation_possible": truncation_possible,
         "dataset_row_limits": {name: row_limit for name in datasets} if row_limit is not None else {},
-        "dataset_truncation_possible": {name: truncation_possible for name in datasets},
+        "dataset_truncation_possible": dataset_truncation,
         "datasets": datasets,
         "errors": [error] if error else [],
         "non_claims": [

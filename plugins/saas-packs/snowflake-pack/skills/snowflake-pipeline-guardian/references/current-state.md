@@ -1,23 +1,40 @@
 # Current-state and history boundary
 
-Use `scripts/sql/current-state.sql` with the approved read-only profile for a
-near-live control-plane snapshot. It intentionally asks only for `SHOW TASKS`,
-`SHOW STREAMS`, `SHOW DYNAMIC TABLES`, and `SHOW PIPES`; add no definitions,
-stage URLs, query text, or payloads.
+Use the bundled collector with `--surface pipeline-current` and the approved
+read-only profile for a near-live control-plane snapshot. Its reviewed
+`scripts/sql/pipeline-current.sql` template asks only for `SHOW TASKS`, `SHOW
+STREAMS`, `SHOW DYNAMIC TABLES`, and `SHOW PIPES`; add no definitions, stage URLs,
+notification endpoints, query text, or payloads.
 
-The analyzer accepts an optional `current_state` envelope alongside the normal
-`nodes`/`edges` snapshot:
+The analyzer accepts a `current_state` envelope alongside the normal
+`nodes`/`edges` snapshot. When it is supplied, its unmodified collector receipt
+is required at the root as `current_state_receipt`:
 
 ```json
 {
-  "status": "collected",
-  "observed_at": "2026-08-30T11:58:00Z",
-  "max_age_minutes": 15,
-  "complete": true,
-  "nodes": [{"id": "orders_task", "kind": "TASK", "status": "STARTED"}],
-  "edges": [{"from": "orders_stream", "to": "orders_task"}]
+  "current_state": {
+    "status": "collected",
+    "observed_at": "2026-08-30T11:58:00Z",
+    "max_age_minutes": 15,
+    "complete": true,
+    "nodes": [{"id": "ANALYTICS.OPS.ORDERS_TASK", "kind": "TASK", "status": "STARTED"}],
+    "edges": [{"from": "ANALYTICS.OPS.ORDERS_STREAM", "to": "ANALYTICS.OPS.ORDERS_TASK"}]
+  },
+  "current_state_receipt": {"surface": "pipeline-current", "...": "unmodified collector receipt"}
 }
 ```
+
+`current_state.observed_at` must equal the receipt's `collected_at`; the fixed
+freshness ceiling is 15 minutes and the declared `max_age_minutes` cannot exceed
+it. The receipt must contain exactly `task_current`, `stream_current`,
+`dynamic_table_current`, and `pipe_current`, stay below the analyzer's 10,000-row
+safety cap, and report no truncation or collector errors. Each current node must
+match exactly one receipt row by kind plus fully qualified name, unambiguous short
+name, or the projected task ID, and its normalized status must agree. Missing IDs,
+status drift, omitted rows, extra rows, and ambiguous names are evidence gaps.
+
+The report returns only verification status, sanitized issues, and binding counts.
+It does not echo current receipt rows, raw definitions, or notification endpoints.
 
 Use `history` for bounded `TASK_HISTORY`, dynamic-table refresh history, and
 `COPY_HISTORY` observations. Supply identified rows with `status`/`state` and

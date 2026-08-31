@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Any
 
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 STATUS_ORDER = {
     "FAIL": 0,
     "DEGRADED": 1,
@@ -36,8 +36,9 @@ TOP_LEVEL_KEYS = {
     "measurements",
     "source_metadata",
     "current_state",
+    "current_state_receipt",
 }
-REQUIRED_TOP_LEVEL_KEYS = TOP_LEVEL_KEYS - {"current_state"}
+REQUIRED_TOP_LEVEL_KEYS = TOP_LEVEL_KEYS - {"current_state", "current_state_receipt"}
 PROHIBITED_KEY_FRAGMENTS = (
     "password",
     "passphrase",
@@ -56,7 +57,11 @@ PROHIBITED_KEY_FRAGMENTS = (
     "rejectedrow",
     "rawpayload",
     "rawgroup",
+    "groupvalues",
     "groupbyvalues",
+    "withingroup",
+    "filter",
+    "endpoint",
     "rowdata",
     "firstname",
     "lastname",
@@ -73,6 +78,53 @@ BEARER_RE = re.compile(r"(?i)\bbearer\s+[a-z0-9._~+/=-]{8,}")
 PRIVATE_KEY_RE = re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")
 SHA256_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 IDENTIFIER_RE = re.compile(r"^[A-Za-z0-9_$.-]{1,255}$")
+CURRENT_RECEIPT_SOURCE = "SNOWFLAKE.ACCOUNT_USAGE.DATA_METRIC_FUNCTION_REFERENCES"
+CURRENT_RECEIPT_DATASET = "data_quality_current"
+CURRENT_RECEIPT_TEMPLATE = "data-quality-current.sql"
+CURRENT_RECEIPT_KEYS = {
+    "schema_version",
+    "surface",
+    "status",
+    "collected_at",
+    "connection_profile",
+    "sql_sha256",
+    "template_sha256",
+    "rendered_sql_sha256",
+    "selector_fingerprint",
+    "source_metadata",
+    "source_views",
+    "row_count",
+    "row_limit",
+    "truncation_possible",
+    "dataset_row_limits",
+    "dataset_truncation_possible",
+    "datasets",
+    "errors",
+    "non_claims",
+    "receipt_sha256",
+}
+CURRENT_RECEIPT_ROW_KEYS = {
+    "metric_database_name",
+    "metric_schema_name",
+    "metric_name",
+    "ref_database_name",
+    "ref_schema_name",
+    "ref_entity_name",
+    "ref_entity_domain",
+    "reference_id",
+    "schedule",
+    "schedule_status",
+    "notification_status",
+    "anomaly_detection_status",
+    "execution_role",
+}
+CURRENT_RECEIPT_NON_CLAIMS = [
+    "No Snowflake mutation was executed.",
+    "Missing rows or permission-blocked views do not prove health.",
+    "Account Usage evidence can lag and must not be treated as real-time state.",
+    "The selected domain skill must evaluate freshness and completeness.",
+    "A row count at the reviewed SQL limit may indicate truncated evidence.",
+]
 
 
 class EvidenceError(ValueError):
@@ -210,6 +262,202 @@ def metric_identity(value: Any, path: str) -> dict[str, str]:
     if set(value) != required:
         raise EvidenceError(f"{path} must contain exactly {sorted(required)}")
     return {key: identifier(value[key], f"{path}.{key}") for key in sorted(required)}
+
+
+def _reviewed_current_sql() -> tuple[str, int]:
+    path = Path(__file__).resolve().parent / "sql" / CURRENT_RECEIPT_TEMPLATE
+    try:
+        sql = path.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise EvidenceError("bundled data-quality-current SQL is unavailable") from exc
+    limits = re.findall(r"\bLIMIT\s+(\d+)\b", sql, flags=re.IGNORECASE)
+    if len(limits) != 1:
+        raise EvidenceError("bundled data-quality-current SQL must declare exactly one row cap")
+    return f"sha256:{hashlib.sha256(sql.encode('utf-8')).hexdigest()}", int(limits[0])
+
+
+def validate_current_state_receipt(
+    value: Any,
+    *,
+    envelope_collected_at: datetime,
+    current_observed_at: datetime | None,
+    requirements: list[dict[str, Any]],
+    current_associations: list[dict[str, str]],
+    current_notifications: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Verify an exact data-quality-current collector receipt and row binding."""
+
+    if value is None:
+        return {
+            "status": "not_supplied",
+            "complete": False,
+            "issues": ["current_state_receipt not supplied"],
+            "receipt_sha256": None,
+        }
+    if not isinstance(value, dict):
+        return {
+            "status": "unverifiable",
+            "complete": False,
+            "issues": ["current_state_receipt is not an object"],
+            "receipt_sha256": None,
+        }
+
+    issues: list[str] = []
+    if set(value) != CURRENT_RECEIPT_KEYS:
+        issues.append(f"receipt keys must be exactly {sorted(CURRENT_RECEIPT_KEYS)}")
+    if value.get("schema_version") != "1":
+        issues.append("schema_version is not 1")
+    if value.get("surface") != "data-quality-current":
+        issues.append("surface is not data-quality-current")
+    if value.get("status") != "collected":
+        issues.append("status is not collected")
+    if value.get("errors") != []:
+        issues.append("errors is not an empty array")
+    profile = value.get("connection_profile")
+    if not isinstance(profile, str) or not re.fullmatch(r"[A-Za-z0-9_.-]{1,128}", profile):
+        issues.append("connection_profile is invalid")
+
+    receipt_time: datetime | None = None
+    try:
+        receipt_time = parse_time(value.get("collected_at"), "current_state_receipt.collected_at")
+        if receipt_time > envelope_collected_at or receipt_time > datetime.now(timezone.utc):
+            issues.append("collected_at is after the evidence envelope or in the future")
+        if current_observed_at is None or receipt_time != current_observed_at:
+            issues.append("collected_at does not exactly match current_state.observed_at")
+    except EvidenceError:
+        issues.append("collected_at is invalid")
+
+    expected_hash, expected_limit = _reviewed_current_sql()
+    for field in ("sql_sha256", "template_sha256", "rendered_sql_sha256"):
+        if value.get(field) != expected_hash:
+            issues.append(f"{field} does not match the bundled data-quality-current SQL")
+    if value.get("selector_fingerprint") is not None:
+        issues.append("selector_fingerprint is unexpected")
+    expected_views = [CURRENT_RECEIPT_SOURCE]
+    if value.get("source_views") != expected_views:
+        issues.append("source_views do not match the reviewed current-state SQL")
+    expected_source_metadata = {
+        "template": CURRENT_RECEIPT_TEMPLATE,
+        "source_views": expected_views,
+        "selector": {},
+    }
+    if value.get("source_metadata") != expected_source_metadata:
+        issues.append("source_metadata does not exactly describe the bundled current-state SQL")
+
+    datasets = value.get("datasets")
+    if not isinstance(datasets, dict) or set(datasets) != {CURRENT_RECEIPT_DATASET}:
+        issues.append(f"datasets must contain exactly {CURRENT_RECEIPT_DATASET}")
+        receipt_rows: Any = []
+    else:
+        receipt_rows = datasets[CURRENT_RECEIPT_DATASET]
+    if not isinstance(receipt_rows, list) or any(not isinstance(row, dict) for row in receipt_rows):
+        issues.append(f"datasets.{CURRENT_RECEIPT_DATASET} must be an array of objects")
+        receipt_rows = []
+
+    normalized_receipt_rows: list[dict[str, str]] = []
+    seen_reference_ids: set[str] = set()
+    for index, row in enumerate(receipt_rows):
+        path = f"current_state_receipt.datasets.{CURRENT_RECEIPT_DATASET}[{index}]"
+        if set(row) != CURRENT_RECEIPT_ROW_KEYS:
+            issues.append(f"{path} keys do not match the reviewed SQL projection")
+            continue
+        try:
+            normalized_row = {
+                "metric_database_name": identifier(row["metric_database_name"], f"{path}.metric_database_name"),
+                "metric_schema_name": identifier(row["metric_schema_name"], f"{path}.metric_schema_name"),
+                "metric_name": identifier(row["metric_name"], f"{path}.metric_name"),
+                "ref_database_name": identifier(row["ref_database_name"], f"{path}.ref_database_name"),
+                "ref_schema_name": identifier(row["ref_schema_name"], f"{path}.ref_schema_name"),
+                "ref_entity_name": identifier(row["ref_entity_name"], f"{path}.ref_entity_name"),
+                "ref_entity_domain": identifier(row["ref_entity_domain"], f"{path}.ref_entity_domain"),
+                "reference_id": text(row["reference_id"], f"{path}.reference_id"),
+                "schedule": text(row["schedule"], f"{path}.schedule").upper(),
+                "schedule_status": text(row["schedule_status"], f"{path}.schedule_status").upper(),
+                "notification_status": text(row["notification_status"], f"{path}.notification_status").upper(),
+                "anomaly_detection_status": text(
+                    row["anomaly_detection_status"], f"{path}.anomaly_detection_status"
+                ).upper(),
+                "execution_role": text(row["execution_role"], f"{path}.execution_role").upper(),
+            }
+        except EvidenceError as exc:
+            issues.append(str(exc))
+            continue
+        if normalized_row["reference_id"] in seen_reference_ids:
+            issues.append(f"duplicate receipt reference_id: {normalized_row['reference_id']}")
+        seen_reference_ids.add(normalized_row["reference_id"])
+        normalized_receipt_rows.append(normalized_row)
+
+    row_count = value.get("row_count")
+    if type(row_count) is not int or row_count < 0:
+        issues.append("row_count is invalid")
+    elif row_count != len(receipt_rows):
+        issues.append("row_count does not match the current-state dataset")
+    if value.get("row_limit") != expected_limit:
+        issues.append(f"row_limit is not the reviewed SQL cap of {expected_limit}")
+    if type(row_count) is int and row_count >= expected_limit:
+        issues.append("row_count is at or above the reviewed SQL cap")
+    if value.get("truncation_possible") is not False:
+        issues.append("truncation_possible is not false")
+    if value.get("dataset_row_limits") != {CURRENT_RECEIPT_DATASET: expected_limit}:
+        issues.append("dataset_row_limits does not match the reviewed SQL cap")
+    if value.get("dataset_truncation_possible") != {CURRENT_RECEIPT_DATASET: False}:
+        issues.append("dataset_truncation_possible is not exactly false for data_quality_current")
+    if value.get("non_claims") != CURRENT_RECEIPT_NON_CLAIMS:
+        issues.append("non_claims do not match the collector contract")
+
+    body = dict(value)
+    supplied_receipt_hash = body.pop("receipt_sha256", None)
+    expected_receipt_hash = f"sha256:{hashlib.sha256(canonical_json(body)).hexdigest()}"
+    if supplied_receipt_hash != expected_receipt_hash:
+        issues.append("receipt_sha256 is missing or invalid")
+
+    requirements_by_id = {row["id"]: row for row in requirements}
+    receipt_by_reference = {row["reference_id"]: row for row in normalized_receipt_rows}
+    association_by_requirement = {row["requirement_id"]: row for row in current_associations}
+    for association in current_associations:
+        requirement_id = association["requirement_id"]
+        requirement = requirements_by_id.get(requirement_id)
+        row = receipt_by_reference.get(association["reference_id"])
+        if requirement is None:
+            issues.append(f"current association {requirement_id} is outside the requirement denominator")
+            continue
+        if row is None:
+            issues.append(f"current association {requirement_id} has no matching receipt row")
+            continue
+        expected_projection = {
+            "metric_database_name": requirement["metric"]["database"],
+            "metric_schema_name": requirement["metric"]["schema"],
+            "metric_name": requirement["metric"]["name"],
+            "ref_database_name": requirement["object"]["database"],
+            "ref_schema_name": requirement["object"]["schema"],
+            "ref_entity_name": requirement["object"]["name"],
+            "ref_entity_domain": requirement["object"]["type"],
+            "schedule_status": association["schedule_status"],
+            "notification_status": association["notification_status"],
+            "execution_role": association["execution_role"],
+        }
+        for field, expected in expected_projection.items():
+            if row[field] != expected:
+                issues.append(f"current association {requirement_id} does not match receipt field {field}")
+
+    for notification in current_notifications:
+        association = association_by_requirement.get(notification["requirement_id"])
+        row = receipt_by_reference.get(association["reference_id"]) if association else None
+        if row is None or row["notification_status"] != notification["status"]:
+            issues.append(
+                f"current notification {notification['requirement_id']} does not match a receipt association row"
+            )
+
+    unique_issues = sorted(set(issues))
+    return {
+        "status": "verified" if not unique_issues else "unverifiable",
+        "complete": not unique_issues,
+        "issues": unique_issues,
+        "receipt_sha256": supplied_receipt_hash if isinstance(supplied_receipt_hash, str) else None,
+        "collected_at": receipt_time.isoformat().replace("+00:00", "Z") if receipt_time else None,
+        "row_count": row_count,
+        "row_limit": value.get("row_limit"),
+    }
 
 
 def normalize_document(data: Any) -> dict[str, Any]:
@@ -584,6 +832,20 @@ def normalize_document(data: Any) -> dict[str, Any]:
             "notifications": sorted(normalized_notifications, key=lambda item: item["requirement_id"]),
         }
 
+    current_observed_at = (
+        parse_time(normalized_current_state["observed_at"], "current_state.observed_at")
+        if normalized_current_state["observed_at"] is not None
+        else None
+    )
+    current_state_receipt = validate_current_state_receipt(
+        data.get("current_state_receipt"),
+        envelope_collected_at=collected_at,
+        current_observed_at=current_observed_at,
+        requirements=normalized_requirements,
+        current_associations=normalized_current_state["associations"],
+        current_notifications=normalized_current_state["notifications"],
+    )
+
     return {
         "metadata": normalized_metadata,
         "requirements": sorted(normalized_requirements, key=lambda item: item["id"]),
@@ -594,6 +856,7 @@ def normalize_document(data: Any) -> dict[str, Any]:
         ),
         "source_metadata": sorted(normalized_sources, key=lambda item: item["source"]),
         "current_state": normalized_current_state,
+        "current_state_receipt": current_state_receipt,
     }
 
 
@@ -631,8 +894,20 @@ def analyze(data: Any) -> dict[str, Any]:
     collected_at = parse_time(normalized["metadata"]["collected_at"], "metadata.collected_at")
     findings: list[dict[str, str]] = []
     current_state = normalized["current_state"]
+    current_state_receipt = normalized["current_state_receipt"]
     current_associations = {row["requirement_id"]: row for row in current_state["associations"]}
     current_notifications = {row["requirement_id"]: row for row in current_state["notifications"]}
+    if not current_state_receipt["complete"]:
+        findings.append(
+            finding(
+                "DQ_CURRENT_STATE_RECEIPT_INVALID",
+                "data-quality-current-state",
+                "; ".join(current_state_receipt["issues"]),
+                "Recollect with the bundled data-quality-current surface and preserve its exact canonical receipt.",
+                quality_impact="INCONCLUSIVE",
+                monitoring_impact="INCONCLUSIVE",
+            )
+        )
     if current_state["status"] != "collected":
         findings.append(
             finding(
@@ -994,6 +1269,7 @@ def analyze(data: Any) -> dict[str, Any]:
             "window_start": normalized["metadata"]["window_start"],
             "window_end": normalized["metadata"]["window_end"],
             "sources": normalized["source_metadata"],
+            "current_state_receipt": current_state_receipt,
         },
         "non_claims": [
             "No Snowflake mutation was executed.",

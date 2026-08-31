@@ -85,5 +85,53 @@
     "notifications": [
       {"requirement_id": "customers-row-count", "status": "DISABLED", "last_delivery_at": null}
     ]
+  },
+  "current_state_receipt": {
+    "schema_version": "1",
+    "surface": "data-quality-current",
+    "status": "collected",
+    "collected_at": "2026-08-31T11:55:00Z",
+    "connection_profile": "offline-input",
+    "sql_sha256": "sha256:c8bc14105ac4c917678a985983731a179c485283d708e85b12fd4922fd209bfe",
+    "template_sha256": "sha256:c8bc14105ac4c917678a985983731a179c485283d708e85b12fd4922fd209bfe",
+    "rendered_sql_sha256": "sha256:c8bc14105ac4c917678a985983731a179c485283d708e85b12fd4922fd209bfe",
+    "selector_fingerprint": null,
+    "source_metadata": {
+      "template": "data-quality-current.sql",
+      "source_views": ["SNOWFLAKE.ACCOUNT_USAGE.DATA_METRIC_FUNCTION_REFERENCES"],
+      "selector": {}
+    },
+    "source_views": ["SNOWFLAKE.ACCOUNT_USAGE.DATA_METRIC_FUNCTION_REFERENCES"],
+    "row_count": 1,
+    "row_limit": 5000,
+    "truncation_possible": false,
+    "dataset_row_limits": {"data_quality_current": 5000},
+    "dataset_truncation_possible": {"data_quality_current": false},
+    "datasets": {
+      "data_quality_current": [{
+        "metric_database_name": "SNOWFLAKE",
+        "metric_schema_name": "CORE",
+        "metric_name": "ROW_COUNT",
+        "ref_database_name": "ANALYTICS",
+        "ref_schema_name": "CURATED",
+        "ref_entity_name": "CUSTOMERS",
+        "ref_entity_domain": "TABLE",
+        "reference_id": "ref-customers-row",
+        "schedule": "TRIGGER_ON_CHANGES",
+        "schedule_status": "SUSPENDED_INSUFFICIENT_PRIVILEGE_TO_EXECUTE_DATA_METRIC_FUNCTION",
+        "notification_status": "DISABLED",
+        "anomaly_detection_status": "TRAINING_IN_PROGRESS",
+        "execution_role": "SYSADMIN"
+      }]
+    },
+    "errors": [],
+    "non_claims": [
+      "No Snowflake mutation was executed.",
+      "Missing rows or permission-blocked views do not prove health.",
+      "Account Usage evidence can lag and must not be treated as real-time state.",
+      "The selected domain skill must evaluate freshness and completeness.",
+      "A row count at the reviewed SQL limit may indicate truncated evidence."
+    ],
+    "receipt_sha256": "sha256:e5e1e17314f786d634f2a09523118158f308913f30beae6986be87e5ea76e959"
   }
 }

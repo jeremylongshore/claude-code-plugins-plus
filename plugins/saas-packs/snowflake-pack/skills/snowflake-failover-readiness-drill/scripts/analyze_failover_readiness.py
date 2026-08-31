@@ -39,6 +39,10 @@ FAIL_CODES = {
     "REPLICATION_RECEIPT_ERROR",
     "REPLICATION_RECEIPT_TRUNCATED",
     "REPLICATION_RECEIPT_UNVERIFIABLE",
+    "CURRENT_STATE_RECEIPT_STALE",
+    "CURRENT_STATE_RECEIPT_TRUNCATED",
+    "CURRENT_STATE_RECEIPT_UNVERIFIABLE",
+    "CURRENT_STATE_PAYLOAD_MISMATCH",
 }
 INCONCLUSIVE_CODES = {
     "RPO_UNEVALUATED",
@@ -66,6 +70,54 @@ SSN = re.compile(r"(?<!\d)\d{3}-\d{2}-\d{4}(?!\d)")
 SHA256_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 REPLICATION_VIEW = "SNOWFLAKE.ACCOUNT_USAGE.REPLICATION_GROUP_REFRESH_HISTORY"
 REPLICATION_DATASET = "replication_refresh_history"
+CURRENT_SURFACE = "replication-current"
+CURRENT_TEMPLATE = "replication-current.sql"
+CURRENT_SOURCE_VIEWS = [
+    "SHOW REPLICATION GROUPS",
+    "INFORMATION_SCHEMA.REPLICATION_GROUP_REFRESH_PROGRESS_ALL",
+]
+CURRENT_DATASETS = ("failover_groups", "replication_progress")
+CURRENT_MAX_AGE_MINUTES = 30
+CURRENT_RECEIPT_FIELDS = {
+    "schema_version",
+    "surface",
+    "status",
+    "collected_at",
+    "connection_profile",
+    "sql_sha256",
+    "template_sha256",
+    "rendered_sql_sha256",
+    "selector_fingerprint",
+    "source_metadata",
+    "source_views",
+    "row_count",
+    "row_limit",
+    "truncation_possible",
+    "dataset_row_limits",
+    "dataset_truncation_possible",
+    "datasets",
+    "errors",
+    "non_claims",
+    "receipt_sha256",
+}
+CURRENT_DATASET_FIELDS = {
+    "failover_groups": {
+        "name",
+        "type",
+        "object_types",
+        "replication_schedule",
+        "secondary_state",
+        "next_scheduled_refresh",
+    },
+    "replication_progress": {
+        "group_name",
+        "group_type",
+        "phase_name",
+        "start_time",
+        "end_time",
+        "progress",
+    },
+}
 REDACTIONS = (
     (re.compile(r"https?://\S+", re.IGNORECASE), "[REDACTED_URL]"),
     (re.compile(r"\bBearer\s+\S+", re.IGNORECASE), "[REDACTED_BEARER]"),
@@ -204,6 +256,22 @@ def _replication_receipt_findings(receipt: Any, as_of: datetime) -> list[tuple[s
 def reject_sensitive(value: Any, path: str = "input") -> None:
     if isinstance(value, dict):
         for key, child in value.items():
+            normalized = re.sub(r"[^a-z0-9]+", "_", str(key).casefold()).strip("_")
+            if normalized in {
+                "account_endpoint",
+                "account_endpoints",
+                "account_identifier",
+                "account_locator",
+                "account_name",
+                "account_url",
+                "allowed_accounts",
+                "detail",
+                "details",
+                "endpoint",
+                "host",
+                "hostname",
+            }:
+                raise ValueError(f"details/account endpoint field is not accepted: {path}.{key}")
             if SENSITIVE_KEY.search(str(key)):
                 raise ValueError(f"sensitive field is not accepted: {path}.{key}")
             reject_sensitive(child, f"{path}.{key}")
@@ -225,27 +293,144 @@ def finding(code: str, severity: str, evidence: str, action: str) -> dict[str, s
     return {"code": code, "severity": severity, "evidence": evidence, "read_only_action": action}
 
 
-def _current_state_findings(data: dict[str, Any], as_of: datetime, groups: list[dict[str, Any]]) -> list[tuple[str, str]]:
-    """Validate near-live group/progress/schedule state against the history view."""
+def _current_state_receipt_findings(
+    receipt: Any, current: Any, as_of: datetime
+) -> list[tuple[str, str]]:
+    """Validate and bind the near-live state to the exact bundled collector receipt."""
+    if not isinstance(receipt, dict):
+        return [("CURRENT_STATE_RECEIPT_UNVERIFIABLE", "current_state_receipt is missing or not an object")]
+    findings: list[tuple[str, str]] = []
+
+    def unverifiable(message: str) -> None:
+        findings.append(("CURRENT_STATE_RECEIPT_UNVERIFIABLE", message))
+
+    if set(receipt) != CURRENT_RECEIPT_FIELDS:
+        unverifiable("current-state receipt fields do not match collector schema 1")
+    if receipt.get("schema_version") != "1":
+        unverifiable("current-state receipt schema_version must be 1")
+    if receipt.get("surface") != CURRENT_SURFACE:
+        unverifiable(f"current-state receipt surface must be {CURRENT_SURFACE}")
+    if receipt.get("status") != "collected":
+        unverifiable("current-state receipt status must be collected")
+    if receipt.get("errors") != []:
+        unverifiable("current-state receipt errors must be an empty array")
+    if not isinstance(receipt.get("connection_profile"), str) or not receipt["connection_profile"].strip():
+        unverifiable("current-state receipt connection_profile is required")
+    if receipt.get("source_views") != CURRENT_SOURCE_VIEWS:
+        unverifiable("current-state receipt source_views do not match the reviewed current-state SQL")
+    expected_metadata = {
+        "template": CURRENT_TEMPLATE,
+        "source_views": CURRENT_SOURCE_VIEWS,
+        "selector": {},
+    }
+    if receipt.get("source_metadata") != expected_metadata:
+        unverifiable("current-state receipt source_metadata does not exactly identify the reviewed template")
+    if receipt.get("selector_fingerprint") is not None:
+        unverifiable("current-state receipt must not contain a selector fingerprint")
+
+    sql_path = Path(__file__).resolve().parent / "sql" / CURRENT_TEMPLATE
+    expected_sql_hash = f"sha256:{hashlib.sha256(sql_path.read_bytes()).hexdigest()}"
+    for field in ("sql_sha256", "template_sha256", "rendered_sql_sha256"):
+        if receipt.get(field) != expected_sql_hash:
+            unverifiable(f"current-state receipt {field} does not match the bundled current-state SQL")
+
+    collected: datetime | None
+    try:
+        collected = stamp(receipt.get("collected_at"), "current_state_receipt.collected_at")
+        if collected > datetime.now(collected.tzinfo) or collected > as_of:
+            unverifiable("current-state receipt collected_at is future-dated or after as_of")
+    except ValueError:
+        collected = None
+        unverifiable("current-state receipt collected_at is invalid")
+
+    datasets = receipt.get("datasets")
+    if not isinstance(datasets, dict):
+        unverifiable("current-state receipt datasets must be an object")
+        datasets = {}
+    elif set(datasets) != set(CURRENT_DATASETS):
+        unverifiable("current-state receipt dataset names must be exactly failover_groups and replication_progress")
+    for name in CURRENT_DATASETS:
+        rows = datasets.get(name)
+        if not isinstance(rows, list) or any(not isinstance(row, dict) for row in rows):
+            unverifiable(f"current-state receipt dataset {name} must be an array of objects")
+        elif any(set(row) != CURRENT_DATASET_FIELDS[name] for row in rows):
+            unverifiable(f"current-state receipt dataset {name} rows do not match the reviewed projection")
+
+    row_count = receipt.get("row_count")
+    valid_rows = all(isinstance(datasets.get(name), list) for name in CURRENT_DATASETS)
+    actual_count = sum(len(datasets[name]) for name in CURRENT_DATASETS) if valid_rows else None
+    if type(row_count) is not int or row_count < 0:
+        unverifiable("current-state receipt row_count must be a non-negative integer")
+    elif actual_count is not None and row_count != actual_count:
+        unverifiable("current-state receipt row_count does not match its datasets")
+
+    limits = [int(value) for value in re.findall(r"\bLIMIT\s+(\d+)\b", sql_path.read_text(), re.I)]
+    expected_cap = limits[-1] if limits and len(set(limits)) == 1 else None
+    if expected_cap is None or receipt.get("row_limit") != expected_cap:
+        unverifiable("current-state receipt row_limit does not match the bundled SQL cap")
+    expected_limits = {name: expected_cap for name in CURRENT_DATASETS}
+    if receipt.get("dataset_row_limits") != expected_limits:
+        unverifiable("current-state receipt dataset_row_limits do not match the bundled SQL caps")
+    expected_truncation = {name: False for name in CURRENT_DATASETS}
+    if receipt.get("dataset_truncation_possible") != expected_truncation:
+        findings.append(("CURRENT_STATE_RECEIPT_TRUNCATED", "current-state dataset truncation flags are not all false"))
+    if receipt.get("truncation_possible") is not False:
+        findings.append(("CURRENT_STATE_RECEIPT_TRUNCATED", "current-state receipt is marked truncated"))
+    if expected_cap is not None:
+        for name in CURRENT_DATASETS:
+            rows = datasets.get(name)
+            if isinstance(rows, list) and len(rows) >= expected_cap:
+                findings.append(("CURRENT_STATE_RECEIPT_TRUNCATED", f"{name} reached the reviewed SQL cap"))
+
+    supplied_hash = receipt.get("receipt_sha256")
+    unsigned = dict(receipt)
+    unsigned.pop("receipt_sha256", None)
+    expected_receipt_hash = f"sha256:{hashlib.sha256(_canonical_json(unsigned)).hexdigest()}"
+    if supplied_hash != expected_receipt_hash:
+        unverifiable("current-state receipt receipt_sha256 does not match its canonical contents")
+
+    if not isinstance(current, dict):
+        findings.append(("CURRENT_STATE_PAYLOAD_MISMATCH", "current_state is missing or not an object"))
+        return findings
+    if current.get("status") != receipt.get("status"):
+        findings.append(("CURRENT_STATE_PAYLOAD_MISMATCH", "current_state.status does not match its receipt"))
+    try:
+        observed = stamp(current.get("observed_at"), "current_state.observed_at")
+    except ValueError:
+        observed = None
+        findings.append(("CURRENT_STATE_PAYLOAD_MISMATCH", "current_state.observed_at is invalid"))
+    if collected is not None and observed != collected:
+        findings.append(("CURRENT_STATE_PAYLOAD_MISMATCH", "current_state.observed_at does not match receipt collected_at"))
+    max_age = current.get("max_age_minutes")
+    if type(max_age) is not int or not 0 < max_age <= CURRENT_MAX_AGE_MINUTES:
+        findings.append(
+            (
+                "CURRENT_STATE_PAYLOAD_MISMATCH",
+                f"current_state.max_age_minutes must be between 1 and {CURRENT_MAX_AGE_MINUTES}",
+            )
+        )
+    elif collected is not None and (as_of - collected).total_seconds() > max_age * 60:
+        findings.append(("CURRENT_STATE_RECEIPT_STALE", f"current-state receipt age exceeds {max_age} minutes"))
+    if current.get("groups") != datasets.get("failover_groups"):
+        findings.append(("CURRENT_STATE_PAYLOAD_MISMATCH", "current_state.groups does not match receipt failover_groups"))
+    if current.get("progress") != datasets.get("replication_progress"):
+        findings.append(("CURRENT_STATE_PAYLOAD_MISMATCH", "current_state.progress does not match receipt replication_progress"))
+    return findings
+
+
+def _current_state_findings(data: dict[str, Any], groups: list[dict[str, Any]]) -> list[tuple[str, str]]:
+    """Reconcile receipt-bound group and progress state against historical input."""
     current = data.get("current_state")
     if not isinstance(current, dict):
         return [("CURRENT_STATE_MISSING", "near-live failover-group state is absent")]
     findings: list[tuple[str, str]] = []
-    if current.get("status") != "collected":
-        findings.append(("CURRENT_STATE_UNAVAILABLE", f"current-state status={current.get('status')!r}"))
-    try:
-        observed = stamp(current.get("observed_at"), "current_state.observed_at")
-    except ValueError:
-        findings.append(("CURRENT_STATE_UNVERIFIABLE", "current_state.observed_at is invalid"))
-        observed = None
-    max_age = current.get("max_age_minutes")
-    if type(max_age) is not int or max_age <= 0:
-        findings.append(("CURRENT_STATE_UNVERIFIABLE", "current_state.max_age_minutes must be positive"))
-    elif observed is not None and (as_of - observed).total_seconds() > max_age * 60:
-        findings.append(("CURRENT_STATE_STALE", f"current group state age exceeds {max_age} minutes"))
     current_groups = current.get("groups")
     if not isinstance(current_groups, list) or any(not isinstance(row, dict) for row in current_groups):
         findings.append(("CURRENT_STATE_UNVERIFIABLE", "current_state.groups must be an array of objects"))
+        return findings
+    progress_rows = current.get("progress")
+    if not isinstance(progress_rows, list) or any(not isinstance(row, dict) for row in progress_rows):
+        findings.append(("CURRENT_STATE_UNVERIFIABLE", "current_state.progress must be an array of objects"))
         return findings
     current_by_name: dict[str, dict[str, Any]] = {}
     for row in current_groups:
@@ -256,20 +441,19 @@ def _current_state_findings(data: dict[str, Any], as_of: datetime, groups: list[
         if name in current_by_name:
             findings.append(("CURRENT_STATE_UNVERIFIABLE", f"duplicate current group {name}"))
         current_by_name[name] = row
-        if str(row.get("progress_status", "")).upper() in {"", "UNKNOWN", "MISSING"}:
-            findings.append(("GROUP_PROGRESS_MISSING", name))
+    progress_names = {
+        str(row.get("group_name")) for row in progress_rows if isinstance(row.get("group_name"), str) and row["group_name"]
+    }
     for group in groups:
         name = str(group.get("name", "unnamed"))
         current_group = current_by_name.get(name)
         if current_group is None:
             findings.append(("CURRENT_GROUP_STATE_MISSING", name))
             continue
-        if str(current_group.get("refresh_status", "")).upper() != str(group.get("refresh_status", "")).upper():
+        if name not in progress_names:
+            findings.append(("GROUP_PROGRESS_MISSING", name))
+        if str(current_group.get("type", "")).upper() != str(group.get("kind", "")).upper():
             findings.append(("GROUP_STATE_HISTORY_DRIFT", name))
-        if "scheduled_interval_minutes" in current_group and current_group.get("scheduled_interval_minutes") != group.get(
-            "scheduled_interval_minutes"
-        ):
-            findings.append(("GROUP_SCHEDULE_HISTORY_DRIFT", name))
     return findings
 
 
@@ -296,6 +480,7 @@ def analyze(data: Any) -> dict[str, Any]:
     if as_of > datetime.now(as_of.tzinfo):
         raise ValueError("as_of cannot be in the future")
     collector_receipt = data.get("collector_receipt")
+    current_state_receipt = data.get("current_state_receipt")
     for name in ("groups", "dependencies", "object_checks", "target_validations", "drill_events"):
         if not isinstance(data.get(name, []), list) or any(not isinstance(row, dict) for row in data.get(name, [])):
             raise ValueError(f"{name} must be an array of objects")
@@ -321,6 +506,15 @@ def analyze(data: Any) -> dict[str, Any]:
             evidence,
             "Recollect a complete, hash-verifiable replication receipt through the approved read-only collector before making a readiness decision.",
         )
+    for code, evidence in _current_state_receipt_findings(
+        current_state_receipt, data.get("current_state"), as_of
+    ):
+        add(
+            code,
+            "critical",
+            evidence,
+            "Recollect the bounded replication-current surface and use its receipt-bound group/progress payload before making a readiness decision.",
+        )
     edition = str(data.get("edition", "UNKNOWN")).upper().replace(" ", "_")
     if edition not in {"BUSINESS_CRITICAL", "VIRTUAL_PRIVATE_SNOWFLAKE"}:
         add(
@@ -330,7 +524,7 @@ def analyze(data: Any) -> dict[str, Any]:
             "Confirm edition and limit the plan to supported replication capability; do not claim account failover readiness.",
         )
 
-    for code, evidence in _current_state_findings(data, as_of, data.get("groups", [])):
+    for code, evidence in _current_state_findings(data, data.get("groups", [])):
         add(
             code,
             "critical" if code.endswith("UNVERIFIABLE") else "unknown",
@@ -645,6 +839,9 @@ def analyze(data: Any) -> dict[str, Any]:
         "findings": out,
         "collector_ingestion": _safe(collector_receipt)
         if isinstance(collector_receipt, dict)
+        else {"status": "not_supplied"},
+        "current_state_ingestion": _safe(current_state_receipt)
+        if isinstance(current_state_receipt, dict)
         else {"status": "not_supplied"},
         "non_claims": [
             "No Snowflake refresh, promotion, redirect, failover, or failback was executed.",

@@ -66,13 +66,25 @@ distinct from Business Critical account failover/failback.
    receipt must match the exact vendored SQL hash and contain history for every
    in-scope group; an absent group remains `INCONCLUSIVE`, never healthy.
 
-3. Add operator-reviewed near-live group state, membership, dependencies, object
-   checks, target validation, privileges, client redirect proof, and drill events
-   to the input contract in
+3. Collect the bounded near-live group inventory and refresh progress separately:
+
+   ```bash
+   python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
+     --surface replication-current --connection readonly-observer \
+     --output ./snowflake-replication-current-receipt.json
+   ```
+
+   Supply that whole collector object as root `current_state_receipt`. Copy its
+   `failover_groups` and `replication_progress` datasets unchanged into
+   `current_state.groups` and `current_state.progress`; bind `observed_at` to the
+   receipt `collected_at`. Missing, stale, altered, capped, truncated, or
+   payload-mismatched current state blocks every readiness claim.
+4. Add operator-reviewed dependencies, object checks, target validation,
+   privileges, client redirect proof, and drill events to the input contract in
    [`references/evidence-contract.md`](references/evidence-contract.md).
    Use [`references/current-state.md`](references/current-state.md) for the
    current group/progress/schedule envelope and drill receipt hash contract.
-4. Run the deterministic classifier:
+5. Run the deterministic classifier:
 
    ```bash
    python3 "${CLAUDE_SKILL_DIR}/scripts/analyze_failover_readiness.py" \
@@ -80,10 +92,10 @@ distinct from Business Critical account failover/failback.
      --output ./snowflake-failover-readiness-report.json
    ```
 
-5. Stop on `NOT_READY` or `INCONCLUSIVE`. Resolve the named evidence gap or
+6. Stop on `NOT_READY` or `INCONCLUSIVE`. Resolve the named evidence gap or
    readiness defect and collect a new receipt. `READY_FOR_OPERATOR_DRILL` permits
    planning an approved exercise; it does not authorize one.
-6. `FAILOVER_VERIFIED` requires a separately operator-executed failover plus
+7. `FAILOVER_VERIFIED` requires a separately operator-executed failover plus
    successful target validations. `DRILL_VERIFIED` additionally requires an
    operator-executed failback and post-failback validation.
 
@@ -119,11 +131,12 @@ a positive readiness claim.
 ## Error Handling
 
 Malformed JSON, invalid modes, naive timestamps, future evidence, non-positive
-objectives, secret-bearing fields, raw rows, SQL text, PII, or presigned URLs exit
-with code 2 and no partial report. A missing group denominator, stale history,
-missing target invariants, or insufficient visibility stays in the report as
-`INCONCLUSIVE`; correct the evidence and rerun. A Snowflake permission failure is
-not authorization to escalate to `ACCOUNTADMIN`.
+objectives, secret-bearing fields, raw rows, SQL text, detail payloads, account
+endpoints/identifiers, PII, or presigned URLs exit with code 2 and no partial
+report. A missing group denominator, stale history, missing target invariants,
+or insufficient visibility stays in the report as `INCONCLUSIVE`; correct the
+evidence and rerun. A Snowflake permission failure is not authorization to
+escalate to `ACCOUNTADMIN`.
 
 ## Examples
 
