@@ -81,6 +81,32 @@ class CostEvidenceTests(unittest.TestCase):
             for surface, (source, latency) in sources.items()
         ]
 
+    def valid_supplemental_receipt(self, data: dict, surface: str) -> dict:
+        collector_surface, dataset = MODULE.SUPPLEMENTAL_RECEIPT_SURFACES[surface]
+        rows = MODULE._supplemental_input_rows(data, surface)
+        receipt_rows = [
+            {key: value for key, value in row.items() if key != "covered_domains"}
+            for row in rows
+        ]
+        raw = [{"EVIDENCE": {"_dataset": dataset, **row}} for row in receipt_rows]
+        path, sql, sources = COLLECTOR.load_surface(collector_surface)
+        return COLLECTOR.build_receipt(
+            collector_surface,
+            "readonly",
+            sql,
+            sources,
+            raw=raw,
+            collected_at=data["metadata"]["generated_at"],
+            template_sql=sql,
+            template_path=path,
+        )
+
+    def add_supplemental_receipts(self, data: dict) -> None:
+        data["supplemental_receipts"] = {
+            surface: self.valid_supplemental_receipt(data, surface)
+            for surface in MODULE.SUPPLEMENTAL_RECEIPT_SURFACES
+        }
+
     def test_classifies_observed_estimated_and_at_risk_separately(self) -> None:
         result = MODULE.analyze(self.load_fixture("cost_evidence.json"))
         self.assertTrue(result["completeness_claim_blocked"])
@@ -188,6 +214,38 @@ class CostEvidenceTests(unittest.TestCase):
         result = MODULE.analyze(data)
         self.assertEqual(result["collector_receipt_assessment"]["status"], "verified")
         self.assertFalse(result["completeness_claim_blocked"])
+
+    def test_verified_supplemental_receipts_bind_every_cost_surface(self) -> None:
+        data = self.load_fixture("cost_evidence_v2.json")
+        data["collector_receipt"] = self.valid_receipt(data)
+        self.add_supplemental_receipts(data)
+        result = MODULE.analyze(data)
+        self.assertTrue(
+            all(item["status"] == "verified" for item in result["supplemental_receipt_assessments"].values())
+        )
+        self.assertFalse(result["completeness_claim_blocked"])
+
+    def test_missing_or_tampered_supplemental_receipt_blocks_completeness(self) -> None:
+        for mutation in ("missing", "template", "payload", "hash"):
+            data = self.load_fixture("cost_evidence_v2.json")
+            data["collector_receipt"] = self.valid_receipt(data)
+            self.add_supplemental_receipts(data)
+            if mutation == "missing":
+                del data["supplemental_receipts"]["storage_usage"]
+            else:
+                receipt = data["supplemental_receipts"]["storage_usage"]
+                if mutation == "template":
+                    receipt["source_metadata"]["template"] = "cost-transfer.sql"
+                    self.rehash_receipt(receipt)
+                elif mutation == "payload":
+                    receipt["datasets"]["storage_usage"][0]["storage_bytes"] = "999999"
+                    self.rehash_receipt(receipt)
+                else:
+                    receipt["receipt_sha256"] = "sha256:" + "0" * 64
+            result = MODULE.analyze(data)
+            assessment = result["supplemental_receipt_assessments"]["storage_usage"]
+            self.assertNotEqual(assessment["status"], "verified")
+            self.assertTrue(result["completeness_claim_blocked"])
 
     def test_truncated_or_error_receipt_blocks_completeness(self) -> None:
         for mutation in ("truncate", "error"):

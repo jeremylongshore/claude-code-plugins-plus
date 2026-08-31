@@ -52,6 +52,15 @@ EXPECTED_SURFACE_SOURCES = {
     "resource_monitors": "SHOW RESOURCE MONITORS",
     "budgets": "SHOW SNOWFLAKE.CORE.BUDGET",
 }
+SUPPLEMENTAL_RECEIPT_SURFACES = {
+    "adaptive_usage": ("cost-adaptive", "adaptive_usage"),
+    "storage_usage": ("cost-storage", "storage_usage"),
+    "data_transfer_usage": ("cost-transfer", "data_transfer_usage"),
+    "internal_transfer_usage": ("cost-internal-transfer", "internal_transfer_usage"),
+    "ai_usage": ("cost-ai-functions", "ai_usage"),
+    "resource_monitors": ("cost-resource-monitors", "resource_monitors"),
+    "budgets": ("cost-budgets", "budgets"),
+}
 SURFACE_ARRAYS = {
     "warehouse_metering": "warehouse_metering",
     "query_attribution": "query_attribution",
@@ -72,6 +81,7 @@ COMPLETENESS_BLOCKING_CODES = {
     "COST_SURFACE_TRUNCATED",
     "COST_DOUBLE_COUNT_RISK",
     "COST_ADAPTIVE_REGION_UNAVAILABLE",
+    "COST_SURFACE_RECEIPT_INVALID",
 }
 HASH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$")
 SQL_HASH_PREFIXES = {
@@ -182,6 +192,143 @@ def validate_collector_receipt(data: dict[str, Any], warnings: list[str], evalua
         "row_limit": receipt.get("row_limit"),
         "truncation_possible": receipt.get("truncation_possible"),
     }
+
+
+def _supplemental_input_rows(data: dict[str, Any], surface: str) -> list[dict[str, Any]]:
+    if surface in SURFACE_ARRAYS:
+        value = data.get(SURFACE_ARRAYS[surface], [])
+    else:
+        controls = data.get("controls_inventory", {})
+        if not isinstance(controls, dict):
+            raise EvidenceError("controls_inventory must be an object")
+        value = controls.get(surface, [])
+    if not isinstance(value, list) or not all(isinstance(row, dict) for row in value):
+        raise EvidenceError(f"{surface} evidence must be an array of objects")
+    return value
+
+
+def _rows_match_receipt_projection(supplied: list[dict[str, Any]], receipt_rows: Any) -> bool:
+    if not isinstance(receipt_rows, list) or not all(isinstance(row, dict) for row in receipt_rows):
+        return False
+    if len(supplied) != len(receipt_rows):
+        return False
+    receipt_keys = {key for row in receipt_rows for key in row}
+    projected = [{key: row[key] for key in receipt_keys if key in row} for row in supplied]
+    return _rows_match(projected, receipt_rows)
+
+
+def validate_supplemental_receipts(
+    data: dict[str, Any],
+    expected_surfaces: tuple[str, ...],
+    evaluation_time: datetime,
+    findings: list[dict[str, str]],
+    warnings: list[str],
+) -> dict[str, dict[str, Any]]:
+    supplied = data.get("supplemental_receipts", {})
+    if not isinstance(supplied, dict):
+        raise EvidenceError("supplemental_receipts must be an object keyed by cost surface")
+    unknown = sorted(set(supplied) - set(SUPPLEMENTAL_RECEIPT_SURFACES))
+    if unknown:
+        raise EvidenceError(f"supplemental_receipts contains unsupported surfaces: {', '.join(unknown)}")
+
+    assessments: dict[str, dict[str, Any]] = {}
+    for surface in sorted(set(expected_surfaces) & set(SUPPLEMENTAL_RECEIPT_SURFACES)):
+        receipt = supplied.get(surface)
+        if receipt is None:
+            issue = "supplemental collector receipt not supplied"
+            assessments[surface] = {"status": "not_supplied", "complete": False, "issues": [issue]}
+            warnings.append(f"{surface}: {issue}")
+            add_finding(
+                findings,
+                "COST_SURFACE_RECEIPT_INVALID",
+                "error",
+                surface,
+                "The surface inventory is not bound to an exact reviewed collector receipt.",
+            )
+            continue
+        if not isinstance(receipt, dict):
+            issues = ["receipt is not an object"]
+            receipt = {}
+        else:
+            issues = []
+
+        collector_surface, dataset = SUPPLEMENTAL_RECEIPT_SURFACES[surface]
+        template_name = f"{collector_surface}.sql"
+        if receipt.get("schema_version") != "1":
+            issues.append("schema_version is not 1")
+        if receipt.get("surface") != collector_surface:
+            issues.append(f"surface is not {collector_surface}")
+        if receipt.get("status") != "collected":
+            issues.append("status is not collected")
+        if receipt.get("errors"):
+            issues.append("collector reported an error")
+        if receipt.get("truncation_possible") is not False:
+            issues.append("truncation_possible is not false")
+        if receipt.get("source_views") != [EXPECTED_SURFACE_SOURCES[surface]]:
+            issues.append("source_views do not match the reviewed supplemental SQL")
+        metadata = receipt.get("source_metadata")
+        if not isinstance(metadata, dict) or metadata.get("template") != template_name:
+            issues.append(f"source_metadata.template is not {template_name}")
+        if not isinstance(metadata, dict) or metadata.get("selector") != {}:
+            issues.append("source_metadata.selector is not empty")
+        if receipt.get("selector_fingerprint") is not None:
+            issues.append("selector_fingerprint is unexpected")
+
+        template_path = Path(__file__).resolve().parent / "sql" / template_name
+        expected_hash = (
+            f"sha256:{hashlib.sha256(template_path.read_bytes()).hexdigest()}"
+            if template_path.is_file()
+            else None
+        )
+        for field in ("sql_sha256", "template_sha256", "rendered_sql_sha256"):
+            if receipt.get(field) != expected_hash:
+                issues.append(f"{field} does not match the reviewed supplemental SQL")
+
+        try:
+            receipt_time = parse_time(receipt.get("collected_at"), f"supplemental_receipts.{surface}.collected_at")
+            if receipt_time > evaluation_time or receipt_time > datetime.now(timezone.utc):
+                issues.append("collected_at is after the report evaluation time or in the future")
+        except EvidenceError:
+            issues.append("collected_at is invalid")
+
+        datasets = receipt.get("datasets")
+        if not isinstance(datasets, dict):
+            issues.append("datasets is not an object")
+            datasets = {}
+        if set(datasets) - {dataset}:
+            issues.append("datasets contains an unexpected supplemental dataset")
+        receipt_rows = datasets.get(dataset, [])
+        if not _rows_match_receipt_projection(_supplemental_input_rows(data, surface), receipt_rows):
+            issues.append(f"{dataset} rows do not match the supplemental receipt")
+        row_count = receipt.get("row_count")
+        if not isinstance(row_count, int) or isinstance(row_count, bool) or row_count < 0:
+            issues.append("row_count is invalid")
+        elif row_count != len(receipt_rows):
+            issues.append("row_count does not match receipt rows")
+        row_limit = receipt.get("row_limit")
+        if not isinstance(row_limit, int) or isinstance(row_limit, bool) or row_limit <= 0:
+            issues.append("row_limit is invalid")
+        elif isinstance(row_count, int) and not isinstance(row_count, bool) and row_count >= row_limit:
+            issues.append("row_count is at or above the SQL cap")
+
+        body = dict(receipt)
+        supplied_hash = body.pop("receipt_sha256", None)
+        expected_receipt_hash = f"sha256:{hashlib.sha256(_canonical_json(body)).hexdigest()}"
+        if supplied_hash != expected_receipt_hash:
+            issues.append("receipt_sha256 is missing or invalid")
+
+        status = "verified" if not issues else "unverifiable"
+        assessments[surface] = {"status": status, "complete": not issues, "issues": issues}
+        if issues:
+            warnings.extend(f"{surface} receipt unverifiable: {issue}" for issue in issues)
+            add_finding(
+                findings,
+                "COST_SURFACE_RECEIPT_INVALID",
+                "error",
+                surface,
+                "The supplemental collector receipt is missing, altered, stale, truncated, or mismatched.",
+            )
+    return assessments
 
 
 def reject_secret_fields(value: Any, path: str = "input") -> None:
@@ -1184,6 +1331,13 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
     surface_inventory, inventory_by_surface = assess_surface_inventory(
         data, generated, expected_surfaces, findings, warnings
     )
+    supplemental_receipts = validate_supplemental_receipts(
+        data,
+        expected_surfaces,
+        generated,
+        findings,
+        warnings,
+    )
 
     completeness = attribution_completeness(warehouses, warnings)
     pareto = cost_latency_pareto(queries, warnings)
@@ -1475,6 +1629,7 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
         if warnings or any(item["severity"] != "info" for item in findings)
         else "complete_for_supplied_surfaces",
         "collector_receipt_assessment": collector_receipt,
+        "supplemental_receipt_assessments": supplemental_receipts,
         "completeness_claim_blocked": not collector_receipt["complete"]
         or any(item["code"] in COMPLETENESS_BLOCKING_CODES for item in findings),
         "warnings": sorted(set(warnings)),
@@ -1496,11 +1651,21 @@ def render_markdown(result: dict[str, Any]) -> str:
         f"Account: `{scope.get('account') or 'not supplied'}` · Role: `{scope.get('role') or 'not supplied'}`",
         f"Collector receipt: `{result['collector_receipt_assessment']['status']}`; completeness claim blocked: `{result['completeness_claim_blocked']}`",
         "",
+        "## Supplemental receipt assessments",
+        "",
+        "| Surface | Status | Issues |",
+        "|---|---|---|",
+    ]
+    for surface, assessment in sorted(result["supplemental_receipt_assessments"].items()):
+        issues = "; ".join(assessment["issues"]) or "none"
+        lines.append(f"| {surface} | {assessment['status']} | {issues} |")
+    lines.extend([
+        "",
         "## Typed cost ledger",
         "",
         "| Entry | Domain | Role | Amount | Additive | Freshness | Availability | Invoice |",
         "|---|---|---|---:|---|---|---|---|",
-    ]
+    ])
     for item in result["cost_ledger"]:
         lines.append(
             f"| {item['entry_id']} | {item['domain']} | {item['ledger_role']} | "

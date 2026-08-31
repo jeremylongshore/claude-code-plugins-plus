@@ -12,8 +12,11 @@ python3 shared/evidence/collect_snowflake_evidence.py \
   --output ./snowflake-query-evidence.json
 ```
 
-Supported surfaces are `cost`, `query`, `pipeline`, `access`, `auth`,
-`data-quality`, and `replication`. Each query is capped and intentionally collects
+Baseline surfaces are `cost`, `query`, `pipeline`, `access`, `auth`,
+`data-quality`, and `replication`. The cost skill also bundles independently
+receipted `cost-adaptive`, `cost-ai-functions`, `cost-budgets`,
+`cost-internal-transfer`, `cost-resource-monitors`, `cost-storage`, and
+`cost-transfer` surfaces. Each query is capped and intentionally collects
 metadata rather than SQL text, raw failed rows, credential values, or customer
 payloads. `row_limit` and `truncation_possible` in every receipt expose the reviewed
 cap; a receipt at the cap is partial until a narrower query or pagination proves
@@ -47,6 +50,12 @@ Operator statistics require a completed query and the platform retrieval window;
 Query History can lag by up to 45 minutes and Query Insights by up to 90 minutes.
 Their receipts remain separately scoped and must match the target query. Likewise, pipeline `SYSTEM$PIPE_STATUS`
 is collected only for an explicitly named pipe by the operator and is never replayed.
+
+Run each supplemental cost surface separately and retain all receipts beside the
+normalized evidence. The cost analyzer accepts them under `supplemental_receipts`
+and verifies the exact template, source, payload, collection time, and canonical
+receipt hash. A surface-inventory row without its matching receipt cannot support a
+complete cost claim.
 
 The runner invokes only:
 

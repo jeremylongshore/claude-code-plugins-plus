@@ -112,10 +112,12 @@ missing integrity field, or possible truncation is surfaced in the report and bl
 completeness/savings claims.
 The bundled collector currently supplies the baseline warehouse, query, load, and
 generic metering receipt. Supplemental canonical templates live under
-`../../shared/evidence/sql/cost-*.sql`; run only the needed templates through the same
-approved read-only profile and preserve a separate availability/freshness receipt for
-each. An unavailable region, edition, view, or privilege is a bounded finding, never a
-reason to broaden privileges or treat the surface as zero.
+`scripts/sql/cost-*.sql`; collect each needed surface with the same bundled collector,
+for example `--surface cost-storage`. Put its complete JSON receipt under
+`supplemental_receipts.<surface_inventory_name>`. The analyzer verifies the exact
+template, source, normalized payload, collection time, cap, and canonical receipt hash.
+An unavailable region, edition, view, or privilege is a bounded finding, never a reason
+to broaden privileges or treat the surface as zero.
 
 ## Instructions
 
@@ -173,6 +175,10 @@ The input JSON has these optional evidence arrays:
   generic `AI_SERVICES` total;
 - `surface_inventory`: availability, privilege, latency, freshness, and truncation
   receipts for every expected surface;
+- `supplemental_receipts`: exact collector envelopes keyed by `adaptive_usage`,
+  `storage_usage`, `data_transfer_usage`, `internal_transfer_usage`, `ai_usage`,
+  `resource_monitors`, or `budgets`; an inventory assertion without its matching
+  receipt blocks completeness;
 - `controls_inventory`: visibility-scoped resource-monitor and budget inventory;
 - `invoice_usage`: optional customer-supplied billing-statement rows, kept as
   `invoice-only` entries and never inferred from usage views;

@@ -65,6 +65,13 @@ SUBSURFACES = {
     "access-current": ("access-current.sql", ["SHOW GRANTS ON ACCOUNT"], None),
     "access-future": ("access-future.sql", ["SHOW FUTURE GRANTS"], "database"),
     "auth-current": ("auth-current.sql", ["SHOW USERS"], None),
+    "cost-adaptive": ("cost-adaptive.sql", ["SNOWFLAKE.ACCOUNT_USAGE.QUERY_METERING_HISTORY"], None),
+    "cost-ai-functions": ("cost-ai-functions.sql", ["SNOWFLAKE.ACCOUNT_USAGE.CORTEX_AI_FUNCTIONS_USAGE_HISTORY"], None),
+    "cost-budgets": ("cost-budgets.sql", ["SHOW SNOWFLAKE.CORE.BUDGET"], None),
+    "cost-internal-transfer": ("cost-internal-transfer.sql", ["SNOWFLAKE.ACCOUNT_USAGE.INTERNAL_DATA_TRANSFER_HISTORY"], None),
+    "cost-resource-monitors": ("cost-resource-monitors.sql", ["SHOW RESOURCE MONITORS"], None),
+    "cost-storage": ("cost-storage.sql", ["SNOWFLAKE.ACCOUNT_USAGE.STORAGE_USAGE"], None),
+    "cost-transfer": ("cost-transfer.sql", ["SNOWFLAKE.ACCOUNT_USAGE.DATA_TRANSFER_HISTORY"], None),
     "query-operator-stats": ("query-operator-stats.sql", ["GET_QUERY_OPERATOR_STATS"], "query_id"),
     "query-insights": ("query-insights.sql", ["SNOWFLAKE.ACCOUNT_USAGE.QUERY_INSIGHTS"], "query_id"),
 }

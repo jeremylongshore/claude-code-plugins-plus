@@ -27,7 +27,16 @@ SKILLS_DIR = Path("skills")
 # is deliberately shared by deploy-medic and query-forensics.
 BUNDLES: dict[str, tuple[str, ...]] = {
     "snowflake-access-guardian": ("access.sql", "access-current.sql", "access-future.sql"),
-    "snowflake-cost-leak-hunter": ("cost.sql",),
+    "snowflake-cost-leak-hunter": (
+        "cost.sql",
+        "cost-adaptive.sql",
+        "cost-ai-functions.sql",
+        "cost-budgets.sql",
+        "cost-internal-transfer.sql",
+        "cost-resource-monitors.sql",
+        "cost-storage.sql",
+        "cost-transfer.sql",
+    ),
     "snowflake-data-quality-sentinel": ("data-quality.sql",),
     "snowflake-deploy-medic": ("query.sql",),
     "snowflake-failover-readiness-drill": ("replication.sql",),

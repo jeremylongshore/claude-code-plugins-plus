@@ -54,6 +54,11 @@ List actual source ages and the official latency/coverage caveats checked during
 run. “No rows” must be distinguishable from “surface unavailable,” “region
 unavailable,” “privilege error,” and “collection truncated.”
 
+Include both the baseline collector assessment and every expected supplemental
+receipt assessment. A complete claim requires the exact reviewed template hash,
+canonical receipt hash, expected source, normalized payload match, timestamp, and cap
+for each supplemental surface in scope.
+
 ### Approval queue
 
 Write proposed configuration changes separately. Do not execute them. Include impact,

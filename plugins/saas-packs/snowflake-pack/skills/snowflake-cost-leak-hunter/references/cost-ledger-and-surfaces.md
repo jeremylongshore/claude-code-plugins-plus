@@ -71,6 +71,12 @@ Canonical read-only templates are named `cost-adaptive.sql`, `cost-storage.sql`,
 directory. Keep each optional surface separate so an unavailable feature does not
 erase evidence from the others.
 
+Run those names through `scripts/collect_snowflake_evidence.py --surface <name>` and
+store the returned envelopes in `supplemental_receipts`, keyed by the dataset name in
+the table above. `surface_inventory` is an operator assertion; it becomes verified
+evidence only when the analyzer binds it to the matching source, template SHA-256,
+normalized dataset rows, collection time, row cap, and canonical receipt SHA-256.
+
 Primary sources:
 
 - [QUERY_METERING_HISTORY](https://docs.snowflake.com/en/sql-reference/account-usage/query_metering_history)
@@ -83,7 +89,8 @@ Primary sources:
 
 ## Stable findings
 
-- `COST_SURFACE_MISSING`, `COST_SURFACE_STALE`, `COST_SURFACE_TRUNCATED`
+- `COST_SURFACE_MISSING`, `COST_SURFACE_STALE`, `COST_SURFACE_TRUNCATED`,
+  `COST_SURFACE_RECEIPT_INVALID`
 - `COST_DOUBLE_COUNT_RISK`, `COST_INVOICE_ONLY`, `COST_UNATTRIBUTABLE`
 - `COST_ESTIMATE_UNPRICED`, `COST_TAG_COVERAGE_GAP`
 - `COST_RESOURCE_MONITOR_COVERAGE_GAP`, `COST_BUDGET_COVERAGE_GAP`,
