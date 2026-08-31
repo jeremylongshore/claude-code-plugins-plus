@@ -12,7 +12,7 @@ description: 'Execute Hootsuite secondary workflow: Core Workflow B.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
