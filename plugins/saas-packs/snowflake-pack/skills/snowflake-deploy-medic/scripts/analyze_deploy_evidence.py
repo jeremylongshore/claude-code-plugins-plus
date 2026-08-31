@@ -11,6 +11,7 @@ Exit codes: 0 for valid input (findings are data), 2 for bad usage/input.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -116,6 +117,22 @@ def _sha256(value: Any) -> bool:
     return bool(re.fullmatch(r"[0-9a-fA-F]{64}", str(value or "")))
 
 
+def _canonical_json(value: Any) -> bytes:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+
+
+def _canonical_receipt_valid(value: Any) -> bool:
+    if not isinstance(value, dict):
+        return False
+    supplied = value.get("receipt_sha256")
+    if not isinstance(supplied, str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", supplied):
+        return False
+    body = dict(value)
+    body.pop("receipt_sha256", None)
+    expected = f"sha256:{hashlib.sha256(_canonical_json(body)).hexdigest()}"
+    return supplied == expected
+
+
 def _object_label(row: dict[str, Any]) -> str:
     return str(row.get("object") or row.get("address") or row.get("name") or "").strip()
 
@@ -162,6 +179,9 @@ def validate_input(data: Any) -> dict[str, Any]:
     for index, row in enumerate(data.get("migrations", [])):
         if not isinstance(row, dict):
             raise ValueError(f"migrations[{index}] must be an object")
+    for field in ("provider_migrations", "dbt_projects", "post_change_invariants"):
+        if field in data:
+            _inventory_rows(data[field], field)
     return data
 
 
@@ -219,6 +239,16 @@ def analyze(data: Any) -> dict[str, Any]:
         missing_provenance.append("terraform.plan.generated_at(no later than collection)")
     if _nonempty(plan.get("saved_plan_sha256")) and not re.fullmatch(r"[0-9a-fA-F]{64}", plan["saved_plan_sha256"]):
         missing_provenance.append("terraform.plan.saved_plan_sha256(valid SHA-256)")
+    if not _canonical_receipt_valid(plan):
+        findings.append(
+            _finding(
+                "PLAN_RECEIPT_UNVERIFIABLE",
+                "critical",
+                "saved plan metadata lacks a matching canonical receipt hash",
+                "Recreate the plan receipt from the exact detailed-exitcode result and saved-plan hash; do not approve an altered or partial plan envelope.",
+                6,
+            )
+        )
 
     if provider_version is not None and provider_version < 2:
         findings.append(
@@ -263,6 +293,42 @@ def analyze(data: Any) -> dict[str, Any]:
                 13,
             )
         )
+
+    provider_migrations = data.get("provider_migrations", [])
+    if data.get("provider_migrations_verified") is not True:
+        findings.append(
+            _finding(
+                "PROVIDER_MIGRATION_INVENTORY_MISSING",
+                "critical",
+                "provider migration segments are not verified",
+                "Enumerate every migration-guide segment between the locked source and target provider versions, including state moves, import changes, and preview schema changes.",
+                14,
+            )
+        )
+    for index, segment in enumerate(provider_migrations):
+        required = ("from_version", "to_version", "source", "status")
+        if any(not _nonempty(segment.get(field)) for field in required) or not _canonical_receipt_valid(segment):
+            findings.append(
+                _finding(
+                    f"PROVIDER_MIGRATION_SEGMENT_UNVERIFIABLE-{index}",
+                    "critical",
+                    f"provider migration segment {index} is incomplete or hash-invalid",
+                    "Bind the exact migration-guide segment, source/target versions, affected addresses, state-move boundary, and disposition to a canonical receipt hash.",
+                    15,
+                )
+            )
+            continue
+        status = str(segment.get("status", "")).upper()
+        if status not in {"VERIFIED", "NOT_APPLICABLE"}:
+            findings.append(
+                _finding(
+                    f"PROVIDER_MIGRATION_SEGMENT_OPEN-{index}",
+                    "critical",
+                    f"{segment['from_version']} -> {segment['to_version']} status={status}",
+                    "Resolve the migration segment in an isolated state copy and require a reviewed zero-change or explicitly approved change plan before production.",
+                    16,
+                )
+            )
 
     resources = tf.get("resources", [])
     for resource in resources:
@@ -371,6 +437,98 @@ def analyze(data: Any) -> dict[str, Any]:
                     f"version {version} appears {count} times",
                     "Resolve the migration naming collision before deployment; do not rely on filesystem ordering or an out-of-order flag to choose between two scripts.",
                     21,
+                )
+            )
+
+    dbt_projects = data.get("dbt_projects", [])
+    if data.get("dbt_projects_verified") is not True:
+        findings.append(
+            _finding(
+                "DBT_PROJECT_DENOMINATOR_UNVERIFIED",
+                "critical",
+                "affected dbt Project object inventory is not verified",
+                "Inventory every affected dbt Project object and bind its current/live-version model, code hashes, supported dbt version, BCR disposition, and rollback boundary.",
+                22,
+            )
+        )
+    for index, project in enumerate(dbt_projects):
+        name = str(project.get("name") or f"dbt-project-{index}")
+        if not _canonical_receipt_valid(project):
+            findings.append(
+                _finding(
+                    f"DBT_PROJECT_RECEIPT_UNVERIFIABLE-{index}",
+                    "critical",
+                    f"{name}: receipt hash missing or invalid",
+                    "Recollect the dbt Project preflight from the exact deployed object and staged artifact without embedding project source or credentials.",
+                    23,
+                )
+            )
+            continue
+        current_model = str(project.get("current_model", "")).upper()
+        target_model = str(project.get("target_model", "")).upper()
+        disposition = str(project.get("bcr_disposition", "")).upper()
+        if current_model not in {"VERSIONED", "LIVE"} or target_model not in {"VERSIONED", "LIVE"}:
+            findings.append(
+                _finding(
+                    f"DBT_PROJECT_MODEL_UNVERIFIED-{index}",
+                    "critical",
+                    f"{name}: current/target deployment model is invalid",
+                    "Recollect the deployed object and target BCR state; use only the observed VERSIONED or LIVE model.",
+                    24,
+                )
+            )
+        if current_model != target_model and disposition not in {"VERIFIED", "MITIGATED", "NOT_APPLICABLE"}:
+            findings.append(
+                _finding(
+                    f"DBT_PROJECT_BCR_UNRESOLVED-{index}",
+                    "critical",
+                    f"{name}: {current_model or 'unknown'} -> {target_model or 'unknown'}",
+                    "Resolve the dbt Project live-version behavior-change disposition before deployment; do not assume immutable-version rollback still exists.",
+                    24,
+                )
+            )
+        if project.get("target_version_supported") is not True:
+            findings.append(
+                _finding(
+                    f"DBT_PROJECT_VERSION_UNSUPPORTED-{index}",
+                    "critical",
+                    f"{name}: target dbt runtime support is not verified",
+                    "Check the current Snowflake-supported dbt version table and pin a supported runtime before deploying the project object.",
+                    25,
+                )
+            )
+        deployed_hash = project.get("deployed_code_sha256")
+        staged_hash = project.get("staged_code_sha256")
+        if not _sha256(deployed_hash) or not _sha256(staged_hash):
+            findings.append(
+                _finding(
+                    f"DBT_PROJECT_ARTIFACT_UNVERIFIED-{index}",
+                    "critical",
+                    f"{name}: deployed/staged code SHA-256 is missing or invalid",
+                    "Hash the exact deployed and staged dbt Project artifacts without exporting source code or credentials.",
+                    25,
+                )
+            )
+        rollback_hash = project.get("rollback_artifact_sha256")
+        if _nonempty(rollback_hash) and not _sha256(rollback_hash):
+            findings.append(
+                _finding(
+                    f"DBT_PROJECT_ROLLBACK_UNVERIFIABLE-{index}",
+                    "critical",
+                    f"{name}: rollback artifact SHA-256 is malformed",
+                    "Preserve and hash the exact previous project artifact before approving a mutable live-version replacement.",
+                    26,
+                )
+            )
+        code_changed = deployed_hash != staged_hash
+        if code_changed and not _nonempty(project.get("rollback_artifact_sha256")):
+            findings.append(
+                _finding(
+                    f"DBT_PROJECT_ROLLBACK_UNBOUNDED-{index}",
+                    "critical",
+                    f"{name}: staged code differs without a rollback artifact hash",
+                    "Preserve the exact previous project artifact and define the operator restore trigger before replacing the mutable live version.",
+                    26,
                 )
             )
 
@@ -515,6 +673,16 @@ def analyze(data: Any) -> dict[str, Any]:
             missing_provenance.append("state_backup.captured_at(valid timezone timestamp)")
         elif collected_at is not None and state_backup_at > collected_at:
             missing_provenance.append("state_backup.captured_at(no later than collection)")
+        if not _canonical_receipt_valid(state_backup):
+            findings.append(
+                _finding(
+                    "STATE_BACKUP_RECEIPT_UNVERIFIABLE",
+                    "critical",
+                    "state backup metadata lacks a matching canonical receipt hash",
+                    "Recreate and verify the state-backup receipt from the exact backend version, capture time, and state SHA-256 before any refresh or apply.",
+                    8,
+                )
+            )
 
     affected_objects = data.get("affected_objects", data.get("affected_object_inventory", tf.get("affected_objects")))
     if isinstance(affected_objects, dict):
@@ -570,6 +738,32 @@ def analyze(data: Any) -> dict[str, Any]:
         and rollback["plan_sha256"] != plan["saved_plan_sha256"]
     ):
         missing_provenance.append("rollback.plan_sha256(matches saved plan)")
+
+    post_change_invariants = data.get("post_change_invariants", [])
+    if data.get("post_change_invariants_verified") is not True or (
+        plan_numbers_valid and changes > 0 and not post_change_invariants
+    ):
+        findings.append(
+            _finding(
+                "POST_CHANGE_INVARIANTS_MISSING",
+                "critical",
+                "post-change invariant denominator is absent or not verified",
+                "Declare the exact account/object invariants, owners, expected values, read-only verification, and rollback triggers before approving a non-zero plan.",
+                51,
+            )
+        )
+    for index, invariant in enumerate(post_change_invariants):
+        required = ("name", "owner", "expected", "verification", "rollback_trigger")
+        if any(not _nonempty(invariant.get(field)) for field in required) or not _canonical_receipt_valid(invariant):
+            findings.append(
+                _finding(
+                    f"POST_CHANGE_INVARIANT_UNVERIFIABLE-{index}",
+                    "critical",
+                    f"post-change invariant {index} is incomplete or hash-invalid",
+                    "Bind each invariant to a canonical receipt and a read-only check; do not use deploy exit status as post-change proof.",
+                    52,
+                )
+            )
 
     if missing_provenance:
         findings.append(
@@ -681,6 +875,9 @@ def analyze(data: Any) -> dict[str, Any]:
             }
             for migration in migrations
         ],
+        "provider_migration_segments": provider_migrations,
+        "dbt_project_preflight": dbt_projects,
+        "post_change_invariant_receipts": post_change_invariants,
         "rollback_receipt": {
             "tested": rollback.get("tested"),
             "strategy": rollback.get("strategy"),

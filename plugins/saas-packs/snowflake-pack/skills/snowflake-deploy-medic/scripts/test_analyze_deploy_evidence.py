@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Stdlib fixture tests for analyze_deploy_evidence.py."""
 
+import hashlib
 import json
 import pathlib
 import sys
@@ -14,6 +15,13 @@ import analyze_deploy_evidence as analyzer  # noqa: E402
 class DeployAnalyzerTests(unittest.TestCase):
     def load(self, name):
         return json.loads((HERE / "fixtures" / name).read_text(encoding="utf-8"))
+
+    def rehash(self, value):
+        body = dict(value)
+        body.pop("receipt_sha256", None)
+        value["receipt_sha256"] = "sha256:" + hashlib.sha256(
+            json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        ).hexdigest()
 
     def test_unsafe_fixture_finds_adoption_checksum_and_release_risks(self):
         report = analyzer.analyze(self.load("unsafe-deploy.json"))
@@ -161,6 +169,79 @@ class DeployAnalyzerTests(unittest.TestCase):
         self.assertEqual(report["release_gate"], "blocked")
         self.assertIn("ZERO_CHANGE_RECEIPT_MISSING", {item["code"] for item in report["findings"]})
         self.assertIn("ZERO_CHANGE_RECEIPT_MISSING", {item["for"] for item in report["ordered_recovery"]})
+
+    def test_plan_and_state_receipt_tamper_are_blocking(self):
+        for target, field, value, code in (
+            ("plan", "changes", 1, "PLAN_RECEIPT_UNVERIFIABLE"),
+            ("state_backup", "state_sha256", "c" * 64, "STATE_BACKUP_RECEIPT_UNVERIFIABLE"),
+        ):
+            data = self.load("clean-preview.json")
+            container = data["terraform"]["plan"] if target == "plan" else data["state_backup"]
+            container[field] = value
+            report = analyzer.analyze(data)
+            self.assertIn(code, {item["code"] for item in report["findings"]})
+            self.assertEqual(report["release_gate"], "blocked")
+
+    def test_provider_migration_segments_are_versioned_and_hash_bound(self):
+        data = self.load("clean-preview.json")
+        segment = {
+            "from_version": "2.19.0",
+            "to_version": "2.20.0",
+            "source": "official migration guide",
+            "status": "VERIFIED",
+            "affected_addresses": [],
+            "state_move_required": False,
+        }
+        self.rehash(segment)
+        data["provider_migrations"] = [segment]
+        self.assertEqual(analyzer.analyze(data)["release_gate"], "pass")
+        segment["status"] = "OPEN"
+        report = analyzer.analyze(data)
+        codes = {item["code"] for item in report["findings"]}
+        self.assertIn("PROVIDER_MIGRATION_SEGMENT_UNVERIFIABLE-0", codes)
+        self.rehash(segment)
+        codes = {item["code"] for item in analyzer.analyze(data)["findings"]}
+        self.assertIn("PROVIDER_MIGRATION_SEGMENT_OPEN-0", codes)
+
+    def test_preview_feature_remains_blocking_even_with_a_green_plan(self):
+        data = self.load("clean-preview.json")
+        data["terraform"]["preview_features"] = ["snowflake_table_resource"]
+        report = analyzer.analyze(data)
+        self.assertIn("PROVIDER_PREVIEW_FEATURE", {item["code"] for item in report["findings"]})
+        self.assertEqual(report["release_gate"], "blocked")
+
+    def test_dbt_project_live_version_bcr_support_and_rollback_are_gated(self):
+        data = self.load("clean-preview.json")
+        project = {
+            "name": "analytics",
+            "current_model": "VERSIONED",
+            "target_model": "LIVE",
+            "bcr_disposition": "OPEN",
+            "target_version_supported": False,
+            "deployed_code_sha256": "a" * 64,
+            "staged_code_sha256": "b" * 64,
+            "rollback_artifact_sha256": "",
+        }
+        self.rehash(project)
+        data["dbt_projects"] = [project]
+        codes = {item["code"] for item in analyzer.analyze(data)["findings"]}
+        self.assertTrue(
+            {
+                "DBT_PROJECT_BCR_UNRESOLVED-0",
+                "DBT_PROJECT_VERSION_UNSUPPORTED-0",
+                "DBT_PROJECT_ROLLBACK_UNBOUNDED-0",
+            }.issubset(codes)
+        )
+
+    def test_nonzero_plan_requires_hashed_post_change_invariant_denominator(self):
+        data = self.load("clean-preview.json")
+        data["terraform"]["plan"]["exit_code"] = 2
+        data["terraform"]["plan"]["changes"] = 1
+        self.rehash(data["terraform"]["plan"])
+        data["post_change_invariants_verified"] = False
+        report = analyzer.analyze(data)
+        self.assertIn("POST_CHANGE_INVARIANTS_MISSING", {item["code"] for item in report["findings"]})
+        self.assertEqual(report["release_gate"], "blocked")
 
 
 if __name__ == "__main__":

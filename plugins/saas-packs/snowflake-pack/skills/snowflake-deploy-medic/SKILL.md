@@ -15,7 +15,7 @@ description: |
   needs a current plan, migration-integrity, toolchain, or rollback gate.
 allowed-tools: Read, Bash(python3:*), Bash(terraform:plan*)
 argument-hint: "[redacted-deploy-evidence.json]"
-version: 2.1.0
+version: 2.2.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection
@@ -89,6 +89,11 @@ commit. It should include:
    saved plan hash and verified affected-object count. Otherwise, a rollback or
    forward-fix test against this exact plan/migration set, including
    owner, preconditions, validation, and stop condition.
+10. A hash-bound provider migration-segment inventory and a verified denominator
+    for affected dbt Project objects, including the 2026_06 live-version BCR when
+    applicable.
+11. Hash-bound post-change invariants for every non-zero plan; process exit status
+    is never the verification result.
 
 Missing evidence is an explicit finding. A successful command from a different
 role, account, or environment is not a deployment receipt.
@@ -136,6 +141,15 @@ import.
 For provider 2.x preview resources/features, read the exact current support
 boundary and release notes. A green plan does not make preview behavior stable.
 See [`references/terraform-provider-2x.md`](references/terraform-provider-2x.md).
+Record every migration-guide segment between the locked source and target provider
+versions. Each segment receipt must bind its source, versions, affected addresses,
+state-move boundary, disposition, and canonical SHA-256. Empty means explicitly
+verified not applicable, not “not checked.”
+
+If dbt Project objects are in scope, inventory their deployed/staged code hashes,
+current and target version model, supported runtime, behavior-change disposition,
+and rollback artifact. The pending live-version behavior changes the rollback model;
+see [`references/dbt-project-and-provider-migrations.md`](references/dbt-project-and-provider-migrations.md).
 
 ### Step 3: Gate schemachange integrity
 
@@ -170,6 +184,9 @@ Expected findings include:
   `BCR_NOT_CHECKED`, `BCR_INVENTORY_MISSING`;
 - `PREFLIGHT_INCOMPLETE`, `STATE_BACKUP_MISSING`,
   `AFFECTED_OBJECTS_UNVERIFIED`, `ZERO_CHANGE_RECEIPT_MISSING`;
+- `PLAN_RECEIPT_UNVERIFIABLE`, `STATE_BACKUP_RECEIPT_UNVERIFIABLE`,
+  `PROVIDER_MIGRATION_INVENTORY_MISSING`, `DBT_PROJECT_DENOMINATOR_UNVERIFIED`,
+  `POST_CHANGE_INVARIANTS_MISSING`;
 - `ROLLBACK_UNTESTED`.
 
 The script is pure and connector-neutral. It reports findings from supplied
@@ -246,3 +263,5 @@ table by hand to silence either finding.
   detailed plan semantics and change-specific rollback boundaries.
 - [`references/source-notes.md`](references/source-notes.md) — primary research
   routes; verify live pages at execution time.
+- [`references/dbt-project-and-provider-migrations.md`](references/dbt-project-and-provider-migrations.md)
+  — provider migration segments and dbt Project live-version preflight.
