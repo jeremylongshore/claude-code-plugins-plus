@@ -13,7 +13,7 @@ description: 'Deploy Snowflake-powered applications with proper connection manag
 
   '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(aws:*), Bash(docker:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

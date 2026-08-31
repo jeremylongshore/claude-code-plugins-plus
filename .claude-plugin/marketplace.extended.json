@@ -8341,7 +8341,7 @@
       "name": "snowflake-pack",
       "source": "./plugins/saas-packs/snowflake-pack",
       "description": "Claude Code skill pack for Snowflake (30 skills)",
-      "version": "1.5.0",
+      "version": "1.6.0",
       "category": "saas-packs",
       "keywords": ["snowflake", "saas", "sdk", "integration"],
       "author": {

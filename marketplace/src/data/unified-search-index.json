@@ -258,6 +258,7 @@
       "Bash(sf:*)",
       "Bash(shellcheck*)",
       "Bash(shopify:*)",
+      "Bash(snow connection test:*)",
       "Bash(snowsql:*)",
       "Bash(sops*)",
       "Bash(sops:*)",
@@ -13341,7 +13342,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.5.0",
+      "version": "1.6.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -72675,7 +72676,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72694,7 +72695,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72715,7 +72716,7 @@
         "Bash(gh:*)"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72732,15 +72733,16 @@
       "allowedTools": [
         "Read",
         "Grep",
-        "Bash(curl:*)"
+        "Bash(curl:*)",
+        "Bash(snow connection test:*)"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
-      "searchText": "snowflake-common-errors 'diagnose and fix common snowflake errors and sql compilation failures. saas-packs read grep bash(curl:*) "
+      "searchText": "snowflake-common-errors 'diagnose and fix common snowflake errors and sql compilation failures. saas-packs read grep bash(curl:*) bash(snow connection test:*) "
     },
     {
       "type": "skill",
@@ -72757,7 +72759,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72779,7 +72781,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72798,7 +72800,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72818,7 +72820,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72840,7 +72842,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72863,7 +72865,7 @@
         "Bash(docker:*)"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72883,7 +72885,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72903,7 +72905,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72921,15 +72923,16 @@
         "Read",
         "Grep",
         "Bash(curl:*)",
+        "Bash(snow connection test:*)",
         "Bash(snowsql:*)"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
-      "searchText": "snowflake-incident-runbook 'execute snowflake incident response with triage, rollback, and postmortem saas-packs read grep bash(curl:*) bash(snowsql:*) "
+      "searchText": "snowflake-incident-runbook 'execute snowflake incident response with triage, rollback, and postmortem saas-packs read grep bash(curl:*) bash(snow connection test:*) bash(snowsql:*) "
     },
     {
       "type": "skill",
@@ -72948,7 +72951,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72967,7 +72970,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72989,7 +72992,7 @@
         "Bash(snowsql:*)"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -73012,7 +73015,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -73034,7 +73037,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -73057,7 +73060,7 @@
         "Bash(vault:*)"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -73077,7 +73080,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -73097,7 +73100,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -73118,7 +73121,7 @@
         "Bash(npx:*)"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -73139,7 +73142,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -73159,7 +73162,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -73178,7 +73181,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -73198,7 +73201,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -73218,7 +73221,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -73238,7 +73241,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -73261,7 +73264,7 @@
         "Bash(git:*)"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -73282,7 +73285,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"

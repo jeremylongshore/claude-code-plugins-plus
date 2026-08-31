@@ -12,7 +12,7 @@ description: 'Implement Snowflake load testing, warehouse scaling, and capacity 
 
   '
 allowed-tools: Read, Write, Edit, Bash(python3:*), Bash(snowsql:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
