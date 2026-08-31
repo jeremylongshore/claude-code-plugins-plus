@@ -1,7 +1,7 @@
 {
   "name": "@intentsolutionsio/snowflake-pack",
-  "version": "2.0.0",
-  "description": "Six evidence-driven Snowflake operator skills for cost, query forensics, pipelines, deployments, strong authentication, and access governance",
+  "version": "2.1.0",
+  "description": "Eight model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, and failover",
   "keywords": [
     "snowflake",
     "data-warehouse",
@@ -9,6 +9,8 @@
     "snowflake-sdk",
     "snowpark",
     "data-platform",
+    "agent-skills",
+    "model-agnostic",
     "claude-code",
     "claude-plugin",
     "tonsofskills"
@@ -29,9 +31,15 @@
     "access": "public"
   },
   "files": [
+    "LICENSE",
     "README.md",
     ".claude-plugin",
-    "skills"
+    "000-docs",
+    "shared",
+    "skills",
+    "!**/__pycache__/**",
+    "!**/*.pyc",
+    "!**/*.pyo"
   ],
   "scripts": {
     "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install snowflake-pack\\\\n  or /plugin install snowflake-pack@claude-code-plugins-plus in Claude Code\\\\n\\\")\""

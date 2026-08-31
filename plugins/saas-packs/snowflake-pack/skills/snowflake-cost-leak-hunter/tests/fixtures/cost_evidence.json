@@ -11,16 +11,21 @@
   "source_max_times": {
     "warehouse_metering": "2026-08-08T09:00:00Z",
     "query_attribution": "2026-08-08T04:00:00Z",
+    "warehouse_load": "2026-08-08T05:00:00Z",
     "serverless_usage": "2026-08-08T06:00:00Z"
   },
   "warehouse_metering": [
     {
+      "start_time": "2026-08-01T00:00:00Z",
+      "end_time": "2026-08-02T00:00:00Z",
       "warehouse_name": "ETL_WH",
       "credits_used_compute": "20.5",
       "credits_attributed_compute_queries": "15.0",
       "credits_used_cloud_services": "0.4"
     },
     {
+      "start_time": "2026-08-02T00:00:00Z",
+      "end_time": "2026-08-03T00:00:00Z",
       "warehouse_name": "BI_WH",
       "credits_used_compute": "10.0",
       "credits_attributed_compute_queries": "9.5",
@@ -30,19 +35,27 @@
   "query_attribution": [
     {
       "query_id": "q1",
-      "query_tag": "team=data",
+      "start_time": "2026-08-03T00:00:00Z",
+      "end_time": "2026-08-03T01:00:00Z",
+      "query_tag_sha256": "68ff5f6d6a07e879c7406d0e43cc6b49a2554113b898a930882af8f802674200",
+      "query_tag_present": true,
       "credits_attributed_compute": "12.0",
       "credits_used_query_acceleration": "0.5"
     },
     {
       "query_id": "q2",
-      "query_tag": "",
+      "start_time": "2026-08-04T00:00:00Z",
+      "end_time": "2026-08-04T01:00:00Z",
+      "query_tag_sha256": null,
+      "query_tag_present": false,
       "credits_attributed_compute": "4.0",
       "credits_used_query_acceleration": "0"
     }
   ],
   "serverless_usage": [
     {
+      "start_time": "2026-08-05T00:00:00Z",
+      "end_time": "2026-08-05T01:00:00Z",
       "service_type": "SNOWPIPE",
       "credits_used": "3.25"
     }

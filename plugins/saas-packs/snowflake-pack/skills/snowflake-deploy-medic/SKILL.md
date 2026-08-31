@@ -14,10 +14,11 @@ description: |
   "driver BCR", or "rollback Snowflake deploy". Use when a production change
   needs a current plan, migration-integrity, toolchain, or rollback gate.
 allowed-tools: Read, Bash(python3:*), Bash(terraform:plan*)
-version: 2.0.0
+argument-hint: "[redacted-deploy-evidence.json]"
+version: 2.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatibility: Designed for Claude Code
+compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection
 tags: [saas, snowflake, terraform, schemachange, deploy, migrations, bcr]
 ---
 
@@ -64,19 +65,29 @@ the versions in a local receipt are observations, not timeless recommendations.
 Collect a timestamped receipt from the exact account, role, backend, and CI
 commit. It should include:
 
-1. Terraform source and locked provider version, Terraform/runtime version,
+1. A preflight record with operator, UTC timestamp, account/backend/workspace
+   identity, state lock/backup, affected-object inventory, plan, BCR, and
+   rollback checks. A green plan does not waive this gate.
+2. Terraform source and locked provider version, Terraform/runtime version,
    backend/workspace identity (without secrets), and parseable state status.
-2. Saved `terraform plan -detailed-exitcode` output: exit code, change count,
+3. Saved `terraform plan -detailed-exitcode` output: exit code, change count,
    resource actions, replacements/destroys, grant/ownership changes, and preview
    features.
-3. For existing grants/objects, the intended resource address, remote identity,
+4. For existing grants/objects, the intended resource address, remote identity,
    import evidence, and post-import plan result.
-4. Schemachange version, migration commit, script type/path/version, stored and
+5. An itemized BCR inventory for the account release window: each ID/source,
+   affected surface, owner, and verified/mitigated/not-applicable disposition.
+6. An affected-object inventory reconciled to plan addresses (empty and
+   explicitly verified for a zero-change plan), plus a verified point-in-time
+   state backup receipt with location, capture time, and SHA-256.
+7. Schemachange version, migration commit, script type/path/version, stored and
    current checksums, change-history status, dry-run/verify output, and out-of-
    order policy if relevant.
-5. Snowflake CLI, connector/driver, Terraform, schemachange, and runtime versions
+8. Snowflake CLI, connector/driver, Terraform, schemachange, and runtime versions
    plus current release-note/BCR sources reviewed.
-6. Rollback or forward-fix test against this exact plan/migration set, including
+9. A zero-change receipt when exit code is `0` and changes are `0`, tied to the
+   saved plan hash and verified affected-object count. Otherwise, a rollback or
+   forward-fix test against this exact plan/migration set, including
    owner, preconditions, validation, and stop condition.
 
 Missing evidence is an explicit finding. A successful command from a different
@@ -91,6 +102,20 @@ Snowflake CLI/client-driver release notes, and current behavior-change notes for
 the target account release window. Do not rely on a cached blog post or a generic
 “latest” label. Keep auth read-only and least-privileged; use key pair/OAuth/
 workload identity/external-browser mechanisms without exposing secrets.
+
+For live metadata, use the pack's shared bounded collector (never pass
+credentials on its command line):
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/../../shared/evidence/collect_snowflake_evidence.py" \
+  --surface query --connection <existing-readonly-profile> \
+  --output ./snowflake-deploy-live-evidence.json
+```
+
+Treat the collector's `collected_at`, SQL hash, source views, row count, and
+non-claims as provenance. It does not replace Terraform state/plan, BCR, or
+backup receipts. A receipt with `truncation_possible: true` cannot prove a
+complete affected-object or dependency inventory.
 
 ### Step 2: Gate Terraform state and preview
 
@@ -142,7 +167,9 @@ Expected findings include:
 - `VERSIONED_CHECKSUM_DRIFT`, `REPEATABLE_CHANGE_DETECTED`,
   `VERSION_COLLISION`;
 - `PROVIDER_PRE_2`, `PROVIDER_PREVIEW_FEATURE`, `TOOLCHAIN_UNVERIFIED`,
-  `BCR_NOT_CHECKED`;
+  `BCR_NOT_CHECKED`, `BCR_INVENTORY_MISSING`;
+- `PREFLIGHT_INCOMPLETE`, `STATE_BACKUP_MISSING`,
+  `AFFECTED_OBJECTS_UNVERIFIED`, `ZERO_CHANGE_RECEIPT_MISSING`;
 - `ROLLBACK_UNTESTED`.
 
 The script is pure and connector-neutral. It reports findings from supplied
@@ -170,10 +197,14 @@ validation must all reconcile.
 - **Toolchain:** exact observed versions and links/dates for current docs/BCRs.
 - **Terraform:** state parseability, detailed exit code, zero-change status,
   grant/import/ownership/replacement risks.
+- **Preflight:** operator/timestamp, BCR inventory, affected objects, and state
+  backup receipt reconciled to the same account and saved plan.
 - **Migrations:** V/R/A classification, checksum/history comparison, collision or
   out-of-order risk, and idempotence evidence.
 - **Decision:** block, review, or ready-for-explicit-approval; explain why.
 - **Rollback:** tested strategy for this exact change set and stop condition.
+- **Zero-change receipt:** saved-plan hash, verified object count, issuance time,
+  and explicit `issued` status when the plan is truly zero-change.
 - **Invariants:** checks required after the approved deployment.
 
 ## Error Handling

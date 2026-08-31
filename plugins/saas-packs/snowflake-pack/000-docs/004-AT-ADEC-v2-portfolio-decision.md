@@ -1,6 +1,7 @@
 # Snowflake v2 Portfolio Decision
 
-**Decision:** accepted
+**Decision:** accepted for v2; amended by
+[`005-RL-RSRC-operator-depth-refresh.md`](005-RL-RSRC-operator-depth-refresh.md)
 **Date:** 2026-08-30
 **Owner:** marketplace CTO
 **Beads:** `claude-zhc5`

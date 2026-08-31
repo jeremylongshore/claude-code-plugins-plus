@@ -13,7 +13,9 @@ c981c39992716a9c8dfd678952ff45a237574e4192f26a3ccbd603471b3c9d5d  plugins/saas-p
 d543f74906821a7fa80ba90dc80d3b6ff7fbdc81078ab0a9d75e45e965b3a5d3  plugins/saas-packs/sentry-pack/skills/sentry-data-handling/eval-spec.yaml
 10d8552fb64a2ec0041cb1f2df07888795beb551b1bfeb683262d40c792b90ff  plugins/saas-packs/snowflake-pack/skills/snowflake-access-guardian/eval-spec.yaml
 74cdd5d9031b68797380e5dff591878b5251d2bfc319a8537f538fa7c06ccb4d  plugins/saas-packs/snowflake-pack/skills/snowflake-cost-leak-hunter/eval-spec.yaml
+4255c5736680811f922612f32d6cfdd476d6d8181a594e82275d6d046d05ed9e  plugins/saas-packs/snowflake-pack/skills/snowflake-data-quality-sentinel/eval-spec.yaml
 2a6df0a994feff8b7cf58f09edd57153a658fb97e3cd376d885457eef1d76c58  plugins/saas-packs/snowflake-pack/skills/snowflake-deploy-medic/eval-spec.yaml
+467d93fab234171e723cfd40a184e8ecde8bdb43f78ab9444578b89e35a2291b  plugins/saas-packs/snowflake-pack/skills/snowflake-failover-readiness-drill/eval-spec.yaml
 928fd2578eeca26d9fb8107ae058bfa1871e6dc88a944b3fac4e44fa24482f19  plugins/saas-packs/snowflake-pack/skills/snowflake-pipeline-guardian/eval-spec.yaml
 226ce240f936972340f04754894a8ef5e532dcc72d5187b16c64aa06a60a817c  plugins/saas-packs/snowflake-pack/skills/snowflake-query-forensics/eval-spec.yaml
 9b3d9bb0cfd1837cdf71d1ea42912a5ccc78b0a7f80d05a583cb0c2588593c24  plugins/saas-packs/snowflake-pack/skills/snowflake-strong-auth-migration-pilot/eval-spec.yaml

@@ -12,7 +12,7 @@ allowed-tools: Read, Write, Bash(python3:*)
 argument-hint: "[query-id-or-evidence-json]"
 model: inherit
 effort: high
-version: 2.0.0
+version: 2.1.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -21,7 +21,7 @@ tags:
   - analytics
   - snowflake
   - performance
-compatibility: Designed for Claude Code
+compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection
 ---
 
 # Snowflake Query Forensics
@@ -81,6 +81,33 @@ Before collection, read
 completed query, read [references/operator-statistics.md](references/operator-statistics.md).
 When Query Insights is available, read
 [references/query-insights-boundaries.md](references/query-insights-boundaries.md).
+
+For bounded live history collection, use the shared read-only collector with an
+approved Snowflake CLI profile:
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/../../shared/evidence/collect_snowflake_evidence.py" \
+  --surface query --connection <approved-readonly-profile> \
+  --output ./snowflake-query-collector.json
+```
+
+Map `datasets.query_history` and `datasets.warehouse_load` into the normalized
+evidence file and retain the collector receipt. Collect `GET_QUERY_OPERATOR_STATS`
+only for the anchored completed query through the operator's approved session; add
+redacted Query Insights rows and their availability/exclusion reason as separate
+datasets. The collector never guesses a query ID, requests `OPERATE`/`MONITOR`, or
+executes a function with side effects.
+If `truncation_possible` is true, narrow or partition the collection window before
+making a regression, workload, or absence claim.
+The history row must carry the same `query_id` as metadata. Warehouse-load rows are
+usable only when their warehouse and interval overlap the target query. Hash
+comparisons require an explicit aligned comparison receipt covering data scope,
+parameters, cache state, and session parameters.
+The analyzer treats a missing collector receipt as unverified and blocks completeness
+and regression claims. When supplied, it verifies the receipt's surface, source views,
+reviewed SQL hash, receipt hash, dataset rows, status, and cap. An error, mismatch,
+missing integrity field, or possible truncation is surfaced in the packet and blocks
+completeness/regression claims.
 
 ## Instructions
 
@@ -186,6 +213,10 @@ Use [references/output-contract.md](references/output-contract.md). Required con
 - top operators by observed time contribution;
 - confirmed observations, derived metrics, and hypotheses in separate sections;
 - Query Insights with their documented limitations;
+- warehouse load and queue correlation for the same interval;
+- query-hash/parameterized-hash comparisons across aligned runs;
+- pruning fractions plus Search Optimization Service (SOS) ROI only when before/after
+  latency or scan evidence and maintenance credits are supplied;
 - comparison to a baseline only when inputs are aligned;
 - one-variable experiment plan with owner approval;
 - explicit statement that no mutation occurred.
@@ -260,6 +291,8 @@ or actually returned no rows.
   defensible interpretations.
 - [Query Insights boundaries](references/query-insights-boundaries.md) — official
   insight types and exclusions.
+- [Load, hash, pruning, and SOS](references/load-hash-and-sos.md) — aligned load,
+  fingerprint, operator, pruning, and Search Optimization evidence.
 - [Output contract](references/output-contract.md) — root-cause packet structure and
   confidence labels.
 - [`scripts/analyze_query_evidence.py`](scripts/analyze_query_evidence.py) — deterministic

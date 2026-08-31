@@ -11,10 +11,11 @@ description: |
   suspended", "dynamic table lag", "dynamic refresh failed", "Snowpipe not
   loading", "SYSTEM$PIPE_STATUS", "duplicate loads", or "schema drift".
 allowed-tools: Read, Bash(python3:*)
-version: 2.0.0
+argument-hint: "[redacted-pipeline-evidence.json]"
+version: 2.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatibility: Designed for Claude Code
+compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection
 tags: [saas, snowflake, pipelines, tasks, streams, dynamic-tables, snowpipe]
 ---
 
@@ -77,10 +78,31 @@ Collect a timestamped, redacted snapshot with:
 6. Snowpipe: raw `SYSTEM$PIPE_STATUS` fields, stage/prefix, notification times,
    load errors, and correlated `COPY_HISTORY` rows.
 7. Duplicate evidence: business key, event/file identity, duplicate count/rate,
-   and retry/replay boundary. Do not include raw customer records.
+   target uniqueness/MERGE semantics, idempotency status, and retry/replay boundary.
+   Include task run history or explicit counts for SKIPPED and overlapping runs,
+   plus notification duplicate counts when available. Do not include raw customer
+   records.
 
 Read [`references/privilege-and-boundaries.md`](references/privilege-and-boundaries.md)
 before requesting additional access.
+
+For model-neutral live control-plane evidence, use the shared read-only collector:
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/../../shared/evidence/collect_snowflake_evidence.py" \
+  --surface pipeline --connection <approved-readonly-profile> \
+  --output ./snowflake-pipeline-collector.json
+```
+
+Pass the collector receipt as `collector_receipt` to the analyzer (or map its
+`datasets.task_history`, `dynamic_table_refresh_history`, and `copy_history` rows
+to nodes). It intentionally cannot infer graph edges or call `SYSTEM$PIPE_STATUS`;
+supply those as separately collected, redacted evidence for the named pipe. If
+`truncation_possible` is true, narrow or partition the window before claiming run
+coverage or absence. An ingested receipt with no edges is incomplete, never a
+healthy graph. The analyzer also binds the receipt to the exact vendored pipeline
+SQL hash and expected Account Usage views; a self-consistent but foreign receipt
+cannot prove completeness.
 
 ## Instructions
 
@@ -131,6 +153,14 @@ from derived findings and includes all supplied dependency chains. Expected find
   problems from file/COPY errors before replaying anything.
 - `DUPLICATE_DELIVERY`: duplicate rows or rate are present. Find the first retry or
   replay boundary and prove target idempotence.
+- `TASK_SKIPPED` / `TASK_OVERLAP`: task history exposes missed or concurrent schedule
+  intervals; reconcile predecessor state, run group, and partial commits before a
+  retry.
+- `IDEMPOTENCY_UNPROVEN`, `DEDUPLICATION_UNVERIFIED`, and `REPLAY_RISK`: the evidence
+  does not prove a stable delivery key, target uniqueness/MERGE behavior, or a bounded
+  replay window. Hold replay and report the exact missing proof.
+- `PIPE_NOTIFICATION_DUPLICATE`: notification identity repeats; reconcile it to file
+  identity and `COPY_HISTORY` before replay.
 
 ### 3. Walk every supplied dependency branch
 
@@ -213,6 +243,8 @@ file identity and target-key idempotence are proven.
   current read-only SQL surfaces for every supported object.
 - [`references/recovery-matrix.md`](references/recovery-matrix.md) — failure
   classes, ordered recovery, data-loss boundaries, and invariants.
+- [`references/replay-and-overlap.md`](references/replay-and-overlap.md) — run
+  overlap/skips, idempotency proof, deduplication, and replay holds.
 - [`references/privilege-and-boundaries.md`](references/privilege-and-boundaries.md)
   — least-privilege, redaction, and advisory-mode rules.
 - [`references/source-notes.md`](references/source-notes.md) — research scope and

@@ -57,6 +57,43 @@ class AuthAnalyzerFixtureTests(unittest.TestCase):
         self.assertTrue(packet["positive_verification"])
         self.assertTrue(packet["negative_verification"])
         self.assertIn("does not alter", packet["rollback"])
+        self.assertFalse(self.report["boundaries"]["edit_authority"])
+        self.assertTrue(self.report["inventory_receipt"]["read_only"])
+        self.assertTrue(self.report["recovery_receipt"]["break_glass"]["verified"])
+
+    def test_break_glass_canary_and_freshness_are_blocking_gates(self):
+        data = json.loads(json.dumps(self.fixture))
+        data.pop("metadata")
+        data["break_glass"]["verified"] = False
+        data["canary"]["negative"] = False
+        categories = {item["category"] for item in analyze(data)["findings"]}
+        self.assertIn("inventory-freshness", categories)
+        self.assertIn("break-glass-unverified", categories)
+        self.assertIn("canary-unverified", categories)
+
+    def test_canary_false_boolean_cannot_be_overridden_by_status_alias(self):
+        data = json.loads(json.dumps(self.fixture))
+        data["canary"].update({"positive": False, "positive_status": "PASS", "negative": False, "negative_status": "DENIED"})
+        categories = {item["category"] for item in analyze(data)["findings"]}
+        self.assertIn("canary-unverified", categories)
+
+    def test_future_proof_and_unordered_window_are_not_accepted(self):
+        data = json.loads(json.dumps(self.fixture))
+        data["break_glass"]["tested_at"] = "2099-01-01T00:00:00Z"
+        data["canary"]["tested_at"] = "2099-01-01T00:00:00Z"
+        data["metadata"]["window_start"] = data["metadata"]["window_end"]
+        data["metadata"]["window_end"] = "2026-08-30T11:00:00Z"
+        categories = {item["category"] for item in analyze(data)["findings"]}
+        self.assertIn("inventory-freshness", categories)
+        self.assertIn("break-glass-unverified", categories)
+        self.assertIn("canary-unverified", categories)
+
+        stale = json.loads(json.dumps(self.fixture))
+        stale["break_glass"]["tested_at"] = "2026-08-29T11:46:00Z"
+        stale["canary"]["tested_at"] = "2026-08-29T11:50:00Z"
+        categories = {item["category"] for item in analyze(stale)["findings"]}
+        self.assertIn("break-glass-unverified", categories)
+        self.assertIn("canary-unverified", categories)
 
     def test_credential_fields_are_rejected(self):
         for field in (
@@ -77,6 +114,15 @@ class AuthAnalyzerFixtureTests(unittest.TestCase):
         ):
             with self.subTest(field=field), self.assertRaises(ValueError):
                 analyze({"users": [{"name": "BAD", "type": "SERVICE", field: "never"}]})
+
+    def test_credential_shaped_values_under_neutral_keys_are_rejected(self):
+        for value in (
+            "password=supersecret",
+            "Authorization: Bearer abcdefghijklmnop",
+            "-----BEGIN PRIVATE KEY-----",
+        ):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                analyze({"users": [{"name": "BAD", "type": "SERVICE", "note": value}]})
 
     def test_malformed_collection_shapes_are_bounded_input_errors(self):
         for data in (

@@ -13326,7 +13326,7 @@
       "slug": "snowflake-pack",
       "name": "snowflake-pack",
       "displayName": "snowflake pack",
-      "description": "Six evidence-driven Snowflake operator skills for cost, query forensics, pipelines, deployments, strong authentication, and access governance",
+      "description": "Eight model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, and failover",
       "category": "saas-packs",
       "keywords": [
         "snowflake",
@@ -13340,7 +13340,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -13348,7 +13348,7 @@
       "verificationScore": 95,
       "verificationGrade": "A",
       "verificationBadge": "gold",
-      "searchText": "snowflake pack six evidence-driven snowflake operator skills for cost, query forensics, pipelines, deployments, strong authentication, and access governance saas-packs snowflake saas sdk integration"
+      "searchText": "snowflake pack eight model-neutral snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, and failover saas-packs snowflake saas sdk integration"
     },
     {
       "type": "plugin",
@@ -72751,16 +72751,15 @@
       "allowedTools": [
         "Read",
         "Write",
-        "Edit",
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "2.0.0",
+      "version": "2.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
-      "searchText": "snowflake-access-guardian audit snowflake effective access and produce a safe least-privilege change packet. trace account-role inheritance, primary and secondary roles, managed-access schemas, ownership, direct-to-user/public grants, orphaned principals, and existing-versus-future-grant conflicts. use when access is unexpectedly broad or denied, a role graph needs review, or an authorization cleanup needs evidence. trigger with phrases like \"snowflake access audit\", \"trace snowflake grants\", \"why can this user read\", \"snowflake rbac drift\", or \"future grants conflict\". saas-packs read write edit bash(python3:*) "
+      "searchText": "snowflake-access-guardian audit snowflake effective access and produce a safe least-privilege change packet. trace account-role inheritance, primary and secondary roles, managed-access schemas, ownership, direct-to-user/public grants, orphaned principals, and existing-versus-future-grant conflicts. use when access is unexpectedly broad or denied, a role graph needs review, or an authorization cleanup needs evidence. trigger with phrases like \"snowflake access audit\", \"trace snowflake grants\", \"why can this user read\", \"snowflake rbac drift\", or \"future grants conflict\". saas-packs read write bash(python3:*) "
     },
     {
       "type": "skill",
@@ -72775,7 +72774,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "2.0.0",
+      "version": "2.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72795,7 +72794,7 @@
         "Bash(terraform:plan*)"
       ],
       "compatibleWith": [],
-      "version": "2.0.0",
+      "version": "2.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72814,7 +72813,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "2.0.0",
+      "version": "2.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72834,7 +72833,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "2.0.0",
+      "version": "2.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72850,17 +72849,15 @@
       "category": "saas-packs",
       "allowedTools": [
         "Read",
-        "Write",
-        "Edit",
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "2.0.0",
+      "version": "2.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
-      "searchText": "snowflake-strong-auth-migration-pilot pilot a snowflake authentication modernization without lockouts or credential exposure. inventory person, service, and legacy_service users; map named workloads to wif, key pair, oauth, or bounded pat; and audit managed mcp/oauth session controls. use when replacing snowflake passwords, reviewing service identities, planning workload identity federation, or scoping mcp oauth. trigger with phrases like \"snowflake auth migration\", \"service user password\", \"snowflake wif\", \"key pair rotation\", or \"mcp oauth role scope\". saas-packs read write edit bash(python3:*) "
+      "searchText": "snowflake-strong-auth-migration-pilot pilot a snowflake authentication modernization without lockouts or credential exposure. inventory person, service, and legacy_service users; map named workloads to wif, key pair, oauth, or bounded pat; and audit managed mcp/oauth session controls. use when replacing snowflake passwords, reviewing service identities, planning workload identity federation, or scoping mcp oauth. trigger with phrases like \"snowflake auth migration\", \"service user password\", \"snowflake wif\", \"key pair rotation\", or \"mcp oauth role scope\". saas-packs read bash(python3:*) "
     },
     {
       "type": "skill",
