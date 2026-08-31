@@ -6,7 +6,7 @@ portfolio is shaped this way.
 
 | Document | Purpose |
 | --- | --- |
-| [001-BL-LICN-license.txt](001-BL-LICN-license.txt) | MIT license |
+| [Repository MIT license](../../../../LICENSE) | Governing license text |
 | [002-RL-RSRC-operator-pain-research.md](002-RL-RSRC-operator-pain-research.md) | Primary-source operator pain taxonomy |
 | [003-RA-REVW-databricks-benchmark.md](003-RA-REVW-databricks-benchmark.md) | Comparative quality audit and 30-skill disposition |
 | [004-AT-ADEC-v2-portfolio-decision.md](004-AT-ADEC-v2-portfolio-decision.md) | CTO decision locking the six-skill v2 portfolio |
