@@ -28,319 +28,264 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Common mistakes and anti-patterns when using Snowflake, with real SQL examples and fixes.
+Audit Snowflake designs and SQL for correctness, cost controls, recoverability, and
+least privilege. Treat sizes, retention periods, and credit quotas as account policy,
+not universal constants, and convert credits to currency only with the customer's
+contract rate rather than a hard-coded public price.
 
-## Pitfall #1: Leaving Warehouses Running (Cost Killer)
+## Prerequisites
 
-**Anti-Pattern:**
+- Read-only access to the relevant Snowflake configuration, SQL, and deployment files.
+- A Snowflake role allowed to inspect the objects under review. Account Usage views can
+  require imported privileges and can have reporting latency.
+- The account edition, retention policy, workload baseline, and approved cost limits.
+- For connection reviews, the driver and identity-provider configuration. Do not request,
+  print, or copy passwords, private keys, tokens, or connection profiles.
+
+Use `Read` for the exact configuration under review and `Grep` for risky constructs such
+as `AUTO_SUSPEND = 0`, `DEFAULT_ROLE = 'ACCOUNTADMIN'`, `SELECT *`, transient production
+tables, and password fields. Redact identifiers if the report will leave the operator's
+trusted environment.
+
+## Instructions
+
+1. Establish scope and evidence. Record account, database, schema, warehouse, and time
+   window without collecting customer row data or credentials.
+2. Inspect the relevant object metadata with the least-privileged role. Prefer documented
+   `SHOW` commands or Account Usage views over assumed `INFORMATION_SCHEMA` objects.
+3. Compare behavior against the workload's measured baseline and account policy. Do not
+   invent dollar costs, table-size thresholds, or credit quotas.
+4. Classify each finding as confirmed, needs runtime evidence, or not applicable. Include
+   the exact object and the evidence query used.
+5. Propose one bounded change at a time. State validation, rollback, and the approval
+   required before changing production objects.
+
+## Pitfall 1: Warehouses That Never Suspend
+
+Warehouses are billed per second, with a 60-second minimum each time one starts. An idle
+warehouse with auto-suspend disabled can consume credits without doing useful work.
 
 ```sql
--- Warehouse with auto_suspend = 0 (never suspends)
-CREATE WAREHOUSE ALWAYS_ON_WH
-  WAREHOUSE_SIZE = 'XLARGE'
-  AUTO_SUSPEND = 0;
--- 16 credits/hour = ~$1,152/day at $3/credit
+-- Inspect first; SHOW WAREHOUSES is the documented account-level interface.
+SHOW WAREHOUSES
+  ->> SELECT "name", "size", "state", "auto_suspend", "auto_resume"
+      FROM $1
+      WHERE "auto_suspend" = 0 OR "auto_suspend" IS NULL;
 ```
 
-**Fix:**
+Set a workload-specific timeout only after measuring queueing and resume behavior:
 
 ```sql
-ALTER WAREHOUSE ALWAYS_ON_WH SET
-  AUTO_SUSPEND = 120,    -- Suspend after 2 min idle
-  AUTO_RESUME = TRUE;    -- Resume on next query
-
--- Audit all warehouses for high auto_suspend
-SELECT name, size, auto_suspend, state
-FROM INFORMATION_SCHEMA.WAREHOUSES
-WHERE auto_suspend > 600 OR auto_suspend = 0;
+ALTER WAREHOUSE ETL_WH SET AUTO_SUSPEND = 120 AUTO_RESUME = TRUE;
 ```
 
----
+Validate representative jobs after the change and restore the previous properties if
+resume latency or job behavior violates the approved service objective.
 
-## Pitfall #2: Using ACCOUNTADMIN for Everything
+## Pitfall 2: Routine Use of ACCOUNTADMIN
 
-**Anti-Pattern:**
-
-```sql
--- Human users with ACCOUNTADMIN default role
-ALTER USER analyst SET DEFAULT_ROLE = 'ACCOUNTADMIN';
--- One bad query can drop production databases
-```
-
-**Fix:**
+Do not make `ACCOUNTADMIN` the default role for analysts or applications. The correct
+number of administrators is an organization-specific governance decision; the invariant
+is least privilege and separately controlled elevation.
 
 ```sql
--- Use least-privilege roles
-ALTER USER analyst SET DEFAULT_ROLE = 'DATA_ANALYST';
-
--- Audit ACCOUNTADMIN usage
-SELECT grantee_name, role
+SELECT grantee_name, role, granted_by
 FROM SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_USERS
 WHERE role = 'ACCOUNTADMIN' AND deleted_on IS NULL;
--- Should be < 3 users, all named admins
 ```
 
----
+Review grants with the security owner, then move routine work to scoped functional roles.
+Never revoke the last controlled administrative path during remediation.
 
-## Pitfall #3: SELECT * on Wide Tables
+## Pitfall 3: Unnecessary `SELECT *`
 
-**Anti-Pattern:**
+Column pruning reduces scanned data on wide columnar tables, but bytes scanned alone does
+not prove a regression. Compare equivalent queries over the same data and warehouse.
 
 ```sql
--- Scans ALL columns (Snowflake stores columnar — unused cols waste I/O)
-SELECT * FROM events;  -- 200 columns, only need 3
+SELECT event_id, event_type, event_timestamp
+FROM analytics.events
+WHERE event_timestamp >= DATEADD(day, -1, CURRENT_TIMESTAMP());
+
+SELECT query_id, bytes_scanned, total_elapsed_time
+FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION(RESULT_LIMIT => 20))
+ORDER BY start_time DESC;
 ```
 
-**Fix:**
+Preserve `SELECT *` only where the consumer intentionally needs the complete schema and
+can tolerate schema expansion.
+
+## Pitfall 4: Clustering Without Evidence
+
+Clustering keys are not required for every table. Snowflake recommends considering them
+for very large tables with selective or sorting queries and a high query-to-DML ratio;
+automatic maintenance consumes credits. There is no universal byte threshold.
 
 ```sql
--- Select only needed columns — dramatically reduces bytes scanned
-SELECT event_id, event_type, event_timestamp FROM events;
-
--- Check column pruning impact
-SELECT bytes_scanned FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION())
-ORDER BY start_time DESC LIMIT 1;
+SELECT SYSTEM$CLUSTERING_INFORMATION(
+  'ANALYTICS.EVENTS',
+  '(EVENT_DATE, CUSTOMER_ID)'
+);
 ```
 
----
+Test a candidate on representative queries, compare query profile and clustering depth,
+and include maintenance credit consumption. Remove the key if the measured benefit does
+not meet the operator's acceptance criteria.
 
-## Pitfall #4: Clustering Keys on Small Tables
+## Pitfall 5: Assuming `MERGE` Is Automatically Idempotent
 
-**Anti-Pattern:**
-
-```sql
--- Clustering key on a 10,000 row table
-ALTER TABLE config_settings CLUSTER BY (category);
--- Costs credits for reclustering with zero performance benefit
-```
-
-**Fix:**
+`MERGE` can be nondeterministic when multiple source rows match one target row, and
+duplicate source rows can produce duplicate inserts when no target row matches. Deduplicate
+on a stable business key before merging and make the selected row deterministic.
 
 ```sql
--- Only cluster tables > 1TB with frequent filter queries
--- Check table size before clustering
-SELECT table_name, row_count, bytes / 1e9 AS gb
-FROM INFORMATION_SCHEMA.TABLES
-WHERE table_name = 'CONFIG_SETTINGS';
--- If < 1 GB, clustering is waste
-
--- Remove unnecessary clustering
-ALTER TABLE config_settings DROP CLUSTERING KEY;
-```
-
----
-
-## Pitfall #5: Not Using MERGE for Idempotent Loads
-
-**Anti-Pattern:**
-
-```sql
--- INSERT creates duplicates on retry
-INSERT INTO dim_orders SELECT * FROM staging_orders;
--- Network blip → retry → duplicate rows
-```
-
-**Fix:**
-
-```sql
--- MERGE is idempotent — safe to retry
 MERGE INTO dim_orders AS target
-USING staging_orders AS source
+USING (
+  SELECT order_id, amount, source_updated_at
+  FROM staging_orders
+  QUALIFY ROW_NUMBER() OVER (
+    PARTITION BY order_id
+    ORDER BY source_updated_at DESC, ingest_sequence DESC
+  ) = 1
+) AS source
 ON target.order_id = source.order_id
-WHEN MATCHED THEN UPDATE SET
-  target.amount = source.amount,
-  target.updated_at = CURRENT_TIMESTAMP()
-WHEN NOT MATCHED THEN INSERT
-  (order_id, amount, created_at)
-VALUES (source.order_id, source.amount, CURRENT_TIMESTAMP());
+WHEN MATCHED AND source.source_updated_at >= target.source_updated_at THEN
+  UPDATE SET amount = source.amount,
+             source_updated_at = source.source_updated_at
+WHEN NOT MATCHED THEN
+  INSERT (order_id, amount, source_updated_at)
+  VALUES (source.order_id, source.amount, source.source_updated_at);
 ```
 
----
+Retry safety depends on stable source data and deterministic match/update logic. Test a
+replay in a disposable table and verify row counts and key uniqueness.
 
-## Pitfall #6: Ignoring Stale Streams
+## Pitfall 6: Letting Streams Become Stale
 
-**Anti-Pattern:**
+Inspect streams with `SHOW STREAMS` or `DESCRIBE STREAM` and consume change records before
+`STALE_AFTER`. A stale stream can lose its unconsumed change records and must be recreated.
 
 ```sql
--- Stream goes stale when retention period is exceeded
--- (source table changes exceed DATA_RETENTION_TIME_IN_DAYS)
--- Result: DATA LOSS — changes between old and new offset are gone
+SHOW STREAMS IN ACCOUNT
+  ->> SELECT "database_name", "schema_name", "name", "stale", "stale_after"
+      FROM $1
+      ORDER BY "stale_after";
 ```
 
-**Fix:**
+`SYSTEM$STREAM_HAS_DATA` can prevent staleness when it returns `FALSE` for an empty stream;
+when it returns `TRUE`, consume the stream in a transaction. Do not blindly raise table
+retention: retention support depends on table type, edition, and account policy.
+
+## Pitfall 7: Excessive Small Load Files
+
+Snowflake recommends roughly 100-250 MB compressed files for efficient parallel bulk and
+Snowpipe loading. This is guidance, not proof that each file becomes a micro-partition.
 
 ```sql
--- Monitor stream staleness
-SELECT stream_name, stale
-FROM INFORMATION_SCHEMA.STREAMS
-WHERE stale = TRUE;
-
--- Increase retention on source tables
-ALTER TABLE raw_orders SET DATA_RETENTION_TIME_IN_DAYS = 14;
-
--- Set up alert for stale streams
-CREATE ALERT stale_stream_alert
-  WAREHOUSE = ADMIN_WH
-  SCHEDULE = '30 MINUTE'
-  IF (EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.STREAMS WHERE stale = TRUE))
-  THEN CALL SYSTEM$SEND_EMAIL(...);
-```
-
----
-
-## Pitfall #7: Loading Many Small Files
-
-**Anti-Pattern:**
-
-```bash
-# 100,000 small files (< 100KB each) in stage
-# Each file = separate micro-partition = metadata overhead
-```
-
-**Fix:**
-
-```sql
--- Combine small files before loading
--- Or use Snowpipe with recommended file sizes (100-250 MB)
-
--- Check COPY history for file size issues
-SELECT file_name, file_size, row_count
+SELECT file_name, file_size, row_count, status
 FROM TABLE(INFORMATION_SCHEMA.COPY_HISTORY(
-  TABLE_NAME => 'MY_TABLE',
-  START_TIME => DATEADD(hours, -24, CURRENT_TIMESTAMP())
+  TABLE_NAME => 'RAW.EVENTS',
+  START_TIME => DATEADD(hour, -24, CURRENT_TIMESTAMP())
 ))
-WHERE file_size < 100000  -- Files under 100KB
 ORDER BY file_size;
 ```
 
----
+Compare queueing time, load duration, and end-to-end freshness before and after changing
+producer batching. Do not expose staged object names outside the approved report.
 
-## Pitfall #8: No Resource Monitors
+## Pitfall 8: Treating Resource Monitors as Complete Cost Control
 
-**Anti-Pattern:**
-
-```sql
--- No resource monitors = unlimited credit consumption
--- A runaway query or always-on warehouse can burn thousands of credits
-```
-
-**Fix:**
+Resource monitors govern warehouse credit usage; they do not govern serverless features
+or Snowflake AI features. Use budgets where supported for serverless resources and retain
+independent usage monitoring. Threshold actions can occur after the exact quota, so use
+an approved buffer.
 
 ```sql
-CREATE RESOURCE MONITOR monthly_budget
-  WITH CREDIT_QUOTA = 2000
-  FREQUENCY = MONTHLY
-  START_TIMESTAMP = IMMEDIATELY
-  TRIGGERS
-    ON 75 PERCENT DO NOTIFY
-    ON 100 PERCENT DO SUSPEND
-    ON 110 PERCENT DO SUSPEND_IMMEDIATE;
-
-ALTER ACCOUNT SET RESOURCE_MONITOR = monthly_budget;
+SHOW WAREHOUSES
+  ->> SELECT "name", "size", "resource_monitor"
+      FROM $1
+      WHERE "resource_monitor" = 'null';
 ```
 
----
+That query does not account for an account-level monitor. Verify account and warehouse
+assignments separately. Choose quota and actions from the organization's credit budget;
+do not paste a fixed quota into production.
 
-## Pitfall #9: Using Transient Tables for Important Data
+## Pitfall 9: Transient Tables for Data That Needs Recovery
 
-**Anti-Pattern:**
+Transient tables have no Fail-safe and support at most one day of Time Travel. Use them
+only when that recovery boundary is explicitly acceptable. Permanent-table retention
+depends on edition and policy, so do not prescribe an unsupported fixed duration.
 
 ```sql
--- Transient tables have NO Fail-safe (7 days of extra recovery)
--- and max 1 day of Time Travel
-CREATE TRANSIENT TABLE critical_orders (...);
--- Data loss risk if table is accidentally dropped after 1 day
+SHOW TABLES IN SCHEMA PROD.CURATED
+  ->> SELECT "name", "kind", "retention_time"
+      FROM $1
+      WHERE "kind" = 'TRANSIENT';
 ```
 
-**Fix:**
+Changing table type or rebuilding data is a production migration. Require an owner,
+backup/replay plan, validation query, and rollback path.
 
-```sql
--- Use permanent tables for important data
-CREATE TABLE critical_orders (...);
-ALTER TABLE critical_orders SET DATA_RETENTION_TIME_IN_DAYS = 14;
+## Pitfall 10: Incorrect Account Identifiers or Weak Authentication
 
--- Use transient only for truly temporary data
-CREATE TRANSIENT TABLE temp_staging_batch (...);
-```
-
----
-
-## Pitfall #10: Wrong Account Identifier Format
-
-**Anti-Pattern:**
+Drivers expect an account identifier, not the full `snowflakecomputing.com` hostname.
+Prefer the organization-name and account-name form documented for the driver; account
+locators remain supported where required by existing configuration.
 
 ```typescript
-// Using the full URL instead of account identifier
-const conn = snowflake.createConnection({
-  account: 'myaccount.us-east-1.snowflakecomputing.com',  // WRONG
+const connection = snowflake.createConnection({
+  account: process.env.SNOWFLAKE_ACCOUNT_IDENTIFIER,
+  authenticator: 'SNOWFLAKE_JWT',
+  privateKeyPath: process.env.SNOWFLAKE_PRIVATE_KEY_PATH,
 });
-// Results in: "Could not connect to Snowflake backend"
 ```
 
-**Fix:**
+The example assumes an administrator-approved key-pair setup and protected private-key
+file. OAuth, external-browser SSO, workload identity federation, and other documented
+methods may be more appropriate. Never put passwords, tokens, or private keys in source.
 
-```typescript
-const conn = snowflake.createConnection({
-  account: 'myorg-myaccount',  // Correct: orgname-accountname format
-});
-// For legacy locator format: 'xy12345.us-east-1' (include region)
-```
+## Error Handling
 
-## Quick Audit Script
+| Condition | Response |
+|---|---|
+| Metadata query is denied | Record the required privilege; do not elevate or switch roles silently. |
+| Account Usage and `SHOW` disagree | Note Account Usage latency and use the live object metadata for the immediate decision. |
+| `MERGE` source is not unique | Stop the load; quarantine duplicate keys and define deterministic precedence. |
+| Stream is stale | Stop downstream assumptions, quantify the missing interval, recreate the stream, and replay from an authoritative source if available. |
+| Cost or performance evidence is incomplete | Mark the finding unconfirmed and request an approved measurement window. |
+| Remediation changes production behavior | Obtain owner approval, capture previous object settings, test, and roll back on the stated criterion. |
 
-```sql
--- Run this monthly to catch common pitfalls
-SELECT 'Always-on warehouses' AS check,
-       COUNT(*) AS issues
-FROM INFORMATION_SCHEMA.WAREHOUSES
-WHERE auto_suspend = 0 OR auto_suspend > 3600
+## Output
 
-UNION ALL
+Return an audit report containing:
 
-SELECT 'ACCOUNTADMIN default role',
-       COUNT(*)
-FROM SNOWFLAKE.ACCOUNT_USAGE.USERS
-WHERE default_role = 'ACCOUNTADMIN' AND disabled = 'false'
+- scope, role, time window, and evidence sources;
+- one row per finding with severity, object, evidence, documented invariant, and confidence;
+- a bounded remediation with owner, approval boundary, validation query, and rollback;
+- credit quantities without currency conversion unless the customer's contract rate was
+  explicitly supplied; and
+- redactions for credentials, customer data, account locators, and sensitive object names.
 
-UNION ALL
+Do not claim an account is safe when relevant metadata was inaccessible.
 
-SELECT 'Stale streams',
-       COUNT(*)
-FROM INFORMATION_SCHEMA.STREAMS
-WHERE stale = TRUE
+## Examples
 
-UNION ALL
+**Warehouse review:** `SHOW WAREHOUSES` finds `AUTO_SUSPEND = 0` on `ETL_WH`.
+Report a confirmed idle-credit risk, recommend a measured timeout, preserve the previous
+setting, and validate two representative ETL runs before accepting the change.
 
-SELECT 'No resource monitor',
-       CASE WHEN COUNT(*) = 0 THEN 1 ELSE 0 END
-FROM INFORMATION_SCHEMA.RESOURCE_MONITORS
+**Load review:** a `MERGE` source contains three rows for one `order_id`. Report the load
+as non-idempotent, stop automatic retry, define a deterministic source ordering, replay
+into a disposable target, and accept only when key uniqueness and result totals match.
 
-UNION ALL
+**Cost review:** warehouses have monitors but a serverless feature is consuming credits.
+Report warehouse controls as present but incomplete, route supported serverless resources
+to budgets, and retain usage alerts; do not assign a dollar value without the account rate.
 
-SELECT 'Tables without clustering (>1TB)',
-       COUNT(*)
-FROM INFORMATION_SCHEMA.TABLES
-WHERE bytes > 1e12
-  AND auto_clustering_on = 'NO';
-```
+## References
 
-## Quick Reference Card
-
-| Pitfall | Detection | Prevention |
-|---------|-----------|------------|
-| Always-on warehouse | `auto_suspend = 0` | Set 60-300s |
-| ACCOUNTADMIN abuse | `GRANTS_TO_USERS` audit | Enforce least privilege |
-| SELECT * | High `bytes_scanned` | Column pruning |
-| Unnecessary clustering | Small table < 1TB | Only cluster large tables |
-| INSERT duplicates | Row count mismatch | Use MERGE |
-| Stale streams | `stale = TRUE` | Increase retention |
-| Small files | COPY_HISTORY file_size | Batch files to 100-250MB |
-| No resource monitor | Account check | Create immediately |
-| Transient for critical data | Table type audit | Use permanent tables |
-| Wrong account format | Connection error | Use `orgname-accountname` |
-
-## Resources
-
-- [Warehouse Considerations](https://docs.snowflake.com/en/user-guide/warehouses-considerations)
-- [Access Control Best Practices](https://docs.snowflake.com/en/user-guide/security-access-control-considerations)
-- [Data Loading Best Practices](https://docs.snowflake.com/en/user-guide/data-load-considerations-prepare)
+Read [the official-source matrix](references/official-sources.md) when validating a
+platform claim, query surface, edition-dependent boundary, or authentication option. It
+maps every pitfall to its current Snowflake primary documentation and states what must be
+verified in the operator's account rather than inferred from this skill.

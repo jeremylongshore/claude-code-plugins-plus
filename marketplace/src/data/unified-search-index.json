@@ -258,6 +258,7 @@
       "Bash(sf:*)",
       "Bash(shellcheck*)",
       "Bash(shopify:*)",
+      "Bash(snow connection test:*)",
       "Bash(snowsql:*)",
       "Bash(sops*)",
       "Bash(sops:*)",
@@ -72732,7 +72733,8 @@
       "allowedTools": [
         "Read",
         "Grep",
-        "Bash(curl:*)"
+        "Bash(curl:*)",
+        "Bash(snow connection test:*)"
       ],
       "compatibleWith": [],
       "version": "1.5.0",
@@ -72740,7 +72742,7 @@
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
-      "searchText": "snowflake-common-errors 'diagnose and fix common snowflake errors and sql compilation failures. saas-packs read grep bash(curl:*) "
+      "searchText": "snowflake-common-errors 'diagnose and fix common snowflake errors and sql compilation failures. saas-packs read grep bash(curl:*) bash(snow connection test:*) "
     },
     {
       "type": "skill",
@@ -72921,6 +72923,7 @@
         "Read",
         "Grep",
         "Bash(curl:*)",
+        "Bash(snow connection test:*)",
         "Bash(snowsql:*)"
       ],
       "compatibleWith": [],
@@ -72929,7 +72932,7 @@
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
-      "searchText": "snowflake-incident-runbook 'execute snowflake incident response with triage, rollback, and postmortem saas-packs read grep bash(curl:*) bash(snowsql:*) "
+      "searchText": "snowflake-incident-runbook 'execute snowflake incident response with triage, rollback, and postmortem saas-packs read grep bash(curl:*) bash(snow connection test:*) bash(snowsql:*) "
     },
     {
       "type": "skill",

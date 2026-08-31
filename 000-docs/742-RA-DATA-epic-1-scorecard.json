@@ -19,12 +19,12 @@
       "ab_error_total": 645,
       "ab_failing": 313,
       "b_failing": 295,
-      "error_files": 805,
-      "error_total": 3929,
+      "error_files": 800,
+      "error_total": 3909,
       "grade_distribution": {
-        "A": 1874,
+        "A": 1879,
         "B": 1115,
-        "C": 479,
+        "C": 474,
         "D": 157,
         "F": 5
       },
@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3130,
-        "tracked_files": 23144
+        "tracked_files": 23149
       }
     },
     "2": {
@@ -90,7 +90,7 @@
           "validator_reported_mixed_denominator_percent": 80.8
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 4166,
+          "error_total_all_validated_surfaces": 4146,
           "fully_compliant_surfaces": 1138,
           "terminal_denominator": {
             "agents": 357,
@@ -109,12 +109,12 @@
           "ab_error_total": 645,
           "ab_failing": 313,
           "b_failing": 295,
-          "error_files": 805,
-          "error_total": 3929,
+          "error_files": 800,
+          "error_total": 3909,
           "grade_distribution": {
-            "A": 1874,
+            "A": 1879,
             "B": 1115,
-            "C": 479,
+            "C": 474,
             "D": 157,
             "F": 5
           },
@@ -131,16 +131,16 @@
       "values": {
         "average_score": 87.2,
         "grade_distribution": {
-          "A": 1874,
+          "A": 1879,
           "B": 1115,
-          "C": 479,
+          "C": 474,
           "D": 157,
           "F": 5
         },
         "grade_percentages": {
-          "A": 51.6,
+          "A": 51.8,
           "B": 30.7,
-          "C": 13.2,
+          "C": 13.1,
           "D": 4.3,
           "F": 0.1
         },
@@ -1870,7 +1870,7 @@
         "invalid_patterns": 0,
         "invisible_files": 21,
         "target_invisible_files": 0,
-        "tracked_files": 23144
+        "tracked_files": 23149
       }
     },
     "47": {
