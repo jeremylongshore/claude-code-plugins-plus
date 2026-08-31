@@ -3,8 +3,8 @@
   "authority": "Blueprint 727 §8; Freshie graded export",
   "source": {
     "path": "freshie/grades.csv",
-    "sha256": "cc914a9f672e6ebcc6117390203906ac77f76f20d827b3e75ca967cb4a79c955",
-    "artifact_count": 3608
+    "sha256": "a46de16f6347a3ec0cd9b036b6ff77349b8778292447a13e104d21ad50c30495",
+    "artifact_count": 3609
   },
   "rule_order": [
     "G0",
@@ -21,7 +21,7 @@
   "counts": {
     "AUTO-MIGRATE": 493,
     "CERTIFY": 0,
-    "CERTIFY-PENDING-EVIDENCE": 2769,
+    "CERTIFY-PENDING-EVIDENCE": 2770,
     "CERTIFY-UPSTREAM": 0,
     "DEEP-REMEDIATE": 2,
     "QUARANTINE": 344
@@ -5472,6 +5472,17 @@
       "path": "plugins/ai-ml/automl-pipeline-builder/skills/building-automl-pipelines/SKILL.md",
       "grade": "A",
       "score": 96,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/ai-ml/cad-dxf-agent/skills/cad-dxf-agent/SKILL.md",
+      "grade": "A",
+      "score": 97,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
