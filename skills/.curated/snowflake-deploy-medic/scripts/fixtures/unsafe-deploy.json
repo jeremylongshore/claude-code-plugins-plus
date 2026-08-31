@@ -1,0 +1,21 @@
+{
+  "terraform": {
+    "provider_source": "snowflakedb/snowflake",
+    "version": "2.20.0",
+    "state": {"parseable": true},
+    "plan": {"exit_code": 2, "changes": 3},
+    "resources": [
+      {"address": "snowflake_grant_privileges_to_account_role.reader", "type": "snowflake_grant_privileges_to_account_role", "existing": true, "action": "create"},
+      {"address": "snowflake_database.app", "type": "snowflake_database", "action": "replace"}
+    ],
+    "preview_features": []
+  },
+  "migrations": [
+    {"path": "V1.0.0__init.sql", "type": "V", "version": "1.0.0", "checksum": "new", "applied_checksum": "old"},
+    {"path": "R__views.sql", "type": "R", "checksum": "new-r", "applied_checksum": "old-r"},
+    {"path": "V1.0.0__copy.sql", "type": "V", "version": "1.0.0", "checksum": "copy", "applied_checksum": ""}
+  ],
+  "tools": {"snowflake_cli": {"version": "3.0.0"}},
+  "bcr": {"checked": false},
+  "rollback": {"tested": false, "strategy": "snapshot exists"}
+}

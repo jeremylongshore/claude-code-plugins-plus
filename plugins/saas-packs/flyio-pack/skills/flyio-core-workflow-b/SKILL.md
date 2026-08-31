@@ -54,7 +54,8 @@ fly postgres connect -a my-db
 
 # Proxy to local machine for dev tools
 fly proxy 5432 -a my-db
-# Now connect: psql postgres://postgres:password@localhost:5432
+# Now connect with the secret-bearing URL supplied by the local proxy
+psql "$DATABASE_URL"
 ```
 
 ### Step 2: Create Persistent Volumes
@@ -94,12 +95,12 @@ fly ssh console -C "df -h /data"
 # Machine-specific: <machine-id>.vm.<app-name>.internal
 
 # Example: connect from app code
-DATABASE_URL=postgres://postgres:password@my-db.internal:5432/my_db
+DATABASE_URL=${FLY_DATABASE_URL}
 ```
 
 ```typescript
 // Access internal services (no public internet)
-const dbUrl = `postgres://postgres:${process.env.DB_PASSWORD}@my-db.internal:5432/mydb`;
+const dbUrl = process.env.DATABASE_URL;
 const apiUrl = `http://my-api.internal:3000/health`;  // Internal HTTP
 ```
 

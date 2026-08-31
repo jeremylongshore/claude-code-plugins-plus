@@ -1,0 +1,44 @@
+{
+  "metadata": {
+    "account": "ORG-ACCOUNT",
+    "role": "DEPLOY_AUDITOR",
+    "repo_sha": "0123456789abcdef0123456789abcdef01234567",
+    "collected_at": "2026-08-30T12:00:00Z",
+    "window_start": "2026-08-30T11:30:00Z",
+    "window_end": "2026-08-30T12:00:00Z"
+  },
+  "terraform": {
+    "provider_source": "snowflakedb/snowflake",
+    "version": "2.20.0",
+    "backend": "s3://redacted-state-bucket/snowflake.tfstate",
+    "workspace": "production",
+    "state": {"parseable": true},
+    "plan": {
+      "exit_code": 0,
+      "changes": 0,
+      "saved_plan_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "generated_at": "2026-08-30T11:55:00Z"
+    },
+    "resources": [],
+    "preview_features": []
+  },
+  "migrations": [
+    {"path": "V1.0.0__init.sql", "type": "V", "version": "1.0.0", "checksum": "same", "applied_checksum": "same"},
+    {"path": "R__views.sql", "type": "R", "checksum": "same-r", "applied_checksum": "same-r"}
+  ],
+  "tools": {"snowflake_cli": {"version": "3.12.0"}, "python_connector": {"version": "3.17.2"}},
+  "bcr": {
+    "checked": true,
+    "id": "BCR-2026-08",
+    "source": "Snowflake behavior change release notes",
+    "checked_at": "2026-08-30T11:45:00Z"
+  },
+  "rollback": {
+    "tested": true,
+    "strategy": "forward fix tested in staging",
+    "owner": "platform-oncall",
+    "stop_condition": "abort on any unexpected grant or replacement",
+    "tested_at": "2026-08-30T11:50:00Z",
+    "plan_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  }
+}

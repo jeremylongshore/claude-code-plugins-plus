@@ -1,10 +1,10 @@
 {
   "generator": "freshie/scripts/promote-to-curated.py",
   "generated_from": "freshie/grades.csv",
-  "run_id": 1,
+  "run_id": 16,
   "threshold": "AB",
   "validated": true,
-  "count": 2037,
+  "count": 2040,
   "skills": [
     {
       "curated_name": "abridge-debug-bundle",
@@ -20616,7 +20616,7 @@
       "plugin": "podium-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "ARD.md",
         "PRD.md",
@@ -20638,7 +20638,7 @@
       "plugin": "podium-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "ARD.md",
         "PRD.md",
@@ -20660,7 +20660,7 @@
       "plugin": "podium-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "ARD.md",
         "PRD.md",
@@ -20682,7 +20682,7 @@
       "plugin": "podium-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "ARD.md",
         "PRD.md",
@@ -20705,7 +20705,7 @@
       "plugin": "podium-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "ARD.md",
         "PRD.md",
@@ -20727,7 +20727,7 @@
       "plugin": "podium-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "ARD.md",
         "PRD.md",
@@ -20749,7 +20749,7 @@
       "plugin": "podium-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "ARD.md",
         "PRD.md",
@@ -20771,7 +20771,7 @@
       "plugin": "podium-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "ARD.md",
         "PRD.md",
@@ -20793,7 +20793,7 @@
       "plugin": "podium-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "ARD.md",
         "PRD.md",
@@ -20815,7 +20815,7 @@
       "plugin": "podium-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "ARD.md",
         "PRD.md",
@@ -22000,7 +22000,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22012,7 +22012,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22024,7 +22024,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22036,7 +22036,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22048,7 +22048,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22060,7 +22060,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22072,7 +22072,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22084,7 +22084,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22096,7 +22096,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22108,7 +22108,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22120,7 +22120,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22132,7 +22132,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22144,7 +22144,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22156,7 +22156,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22168,7 +22168,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22180,7 +22180,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -22192,7 +22192,7 @@
       "plugin": "replit-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md"
       ]
@@ -24862,39 +24862,128 @@
       ]
     },
     {
-      "curated_name": "snowflake-debug-bundle",
-      "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-debug-bundle",
+      "curated_name": "snowflake-access-guardian",
+      "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-access-guardian",
       "category": "saas-packs",
       "plugin": "snowflake-pack",
-      "recorded_grade": "B",
-      "fresh_grade": "B",
-      "run_id": 1,
+      "recorded_grade": "A",
+      "fresh_grade": "A",
+      "run_id": 16,
       "files": [
-        "SKILL.md"
+        "SKILL.md",
+        "eval-spec.yaml",
+        "references/audit-queries.md",
+        "references/authorization-model.md",
+        "references/managed-access-and-future-grants.md",
+        "references/verification-and-rollback.md",
+        "scripts/analyze_access.py",
+        "tests/fixtures/access.json",
+        "tests/test_analyzer.py"
       ]
     },
     {
-      "curated_name": "snowflake-hello-world",
-      "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-hello-world",
+      "curated_name": "snowflake-cost-leak-hunter",
+      "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-cost-leak-hunter",
       "category": "saas-packs",
       "plugin": "snowflake-pack",
-      "recorded_grade": "B",
-      "fresh_grade": "B",
-      "run_id": 1,
+      "recorded_grade": "A",
+      "fresh_grade": "A",
+      "run_id": 16,
       "files": [
-        "SKILL.md"
+        "SKILL.md",
+        "eval-spec.yaml",
+        "references/attribution-and-staleness.md",
+        "references/controls-boundaries.md",
+        "references/output-contract.md",
+        "references/warehouse-and-idle-evidence.md",
+        "scripts/analyze_cost_evidence.py",
+        "tests/fixtures/cost_evidence.json",
+        "tests/fixtures/cost_evidence_partial.json",
+        "tests/test_analyze_cost_evidence.py"
       ]
     },
     {
-      "curated_name": "snowflake-prod-checklist",
-      "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-prod-checklist",
+      "curated_name": "snowflake-deploy-medic",
+      "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-deploy-medic",
       "category": "saas-packs",
       "plugin": "snowflake-pack",
-      "recorded_grade": "B",
-      "fresh_grade": "B",
-      "run_id": 1,
+      "recorded_grade": "A",
+      "fresh_grade": "A",
+      "run_id": 16,
       "files": [
-        "SKILL.md"
+        "SKILL.md",
+        "eval-spec.yaml",
+        "references/schemachange-integrity.md",
+        "references/source-notes.md",
+        "references/terraform-provider-2x.md",
+        "references/toolchain-bcr.md",
+        "references/zero-change-rollback.md",
+        "scripts/analyze_deploy_evidence.py",
+        "scripts/fixtures/clean-preview.json",
+        "scripts/fixtures/unsafe-deploy.json",
+        "scripts/test_analyze_deploy_evidence.py"
+      ]
+    },
+    {
+      "curated_name": "snowflake-pipeline-guardian",
+      "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-pipeline-guardian",
+      "category": "saas-packs",
+      "plugin": "snowflake-pack",
+      "recorded_grade": "A",
+      "fresh_grade": "A",
+      "run_id": 16,
+      "files": [
+        "SKILL.md",
+        "eval-spec.yaml",
+        "references/observability-queries.md",
+        "references/privilege-and-boundaries.md",
+        "references/recovery-matrix.md",
+        "references/source-notes.md",
+        "scripts/analyze_pipeline_state.py",
+        "scripts/fixtures/pipe-schema-duplicates.json",
+        "scripts/fixtures/stale-chain.json",
+        "scripts/test_analyze_pipeline_state.py"
+      ]
+    },
+    {
+      "curated_name": "snowflake-query-forensics",
+      "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-query-forensics",
+      "category": "saas-packs",
+      "plugin": "snowflake-pack",
+      "recorded_grade": "A",
+      "fresh_grade": "A",
+      "run_id": 16,
+      "files": [
+        "SKILL.md",
+        "eval-spec.yaml",
+        "references/history-and-collection.md",
+        "references/operator-statistics.md",
+        "references/output-contract.md",
+        "references/query-insights-boundaries.md",
+        "scripts/analyze_query_evidence.py",
+        "tests/fixtures/query_evidence.json",
+        "tests/fixtures/query_evidence_incomplete.json",
+        "tests/test_analyze_query_evidence.py"
+      ]
+    },
+    {
+      "curated_name": "snowflake-strong-auth-migration-pilot",
+      "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-strong-auth-migration-pilot",
+      "category": "saas-packs",
+      "plugin": "snowflake-pack",
+      "recorded_grade": "A",
+      "fresh_grade": "A",
+      "run_id": 16,
+      "files": [
+        "SKILL.md",
+        "eval-spec.yaml",
+        "references/cutover-and-recovery.md",
+        "references/identity-types-and-inventory.md",
+        "references/mcp-oauth-role-scoping.md",
+        "references/workload-auth-options.md",
+        "scripts/analyze_auth.py",
+        "tests/fixtures/auth.json",
+        "tests/test_analyzer.py"
       ]
     },
     {
@@ -25362,7 +25451,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/errors.md",
@@ -25382,7 +25471,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/errors.md",
@@ -25402,7 +25491,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/auth.md",
@@ -25419,7 +25508,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/ci-workflows.md",
@@ -25436,7 +25525,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/error-reference.md",
@@ -25452,7 +25541,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/audit-queries.md",
@@ -25470,7 +25559,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/deletion-and-export.md",
@@ -25488,7 +25577,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/errors.md",
@@ -25503,7 +25592,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/errors.md",
@@ -25519,7 +25608,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/api-scoping-and-enforcement.md",
@@ -25538,7 +25627,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/examples.md",
@@ -25552,7 +25641,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/diagnostics.md",
@@ -25568,7 +25657,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/examples.md"
@@ -25581,7 +25670,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "eval-spec.yaml",
@@ -25597,7 +25686,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/advanced-examples.md",
@@ -25618,7 +25707,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/errors.md",
@@ -25633,7 +25722,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/backfill-versioning-rollback.md",
@@ -25652,7 +25741,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/configuration-structure.md",
@@ -25668,7 +25757,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/alert-configuration.md",
@@ -25688,7 +25777,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/caching-strategy.md",
@@ -25703,7 +25792,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/ci-cost-security.md",
@@ -25719,7 +25808,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/errors.md",
@@ -25735,7 +25824,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/errors.md",
@@ -25751,7 +25840,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/errors.md",
@@ -25767,7 +25856,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/circuit-breaker.md",
@@ -25785,7 +25874,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/rls-policies.md",
@@ -25800,7 +25889,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/auth-realtime-storage.md",
@@ -25818,7 +25907,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/errors.md",
@@ -25833,7 +25922,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/errors.md",
@@ -25848,7 +25937,7 @@
       "plugin": "supabase-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 1,
+      "run_id": 16,
       "files": [
         "SKILL.md",
         "references/database-webhooks.md",

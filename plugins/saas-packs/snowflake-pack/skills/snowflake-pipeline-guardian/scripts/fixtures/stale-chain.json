@@ -1,0 +1,15 @@
+{
+  "observed_at": "2026-08-30T12:00:00Z",
+  "evidence_source": "sanitized TASK_HISTORY, stream, and dynamic-table fixture",
+  "nodes": [
+    {"id": "raw.orders", "kind": "TABLE", "status": "OK", "change_tracking": true},
+    {"id": "orders_stream", "kind": "STREAM", "status": "STALE", "source": "raw.orders", "stale": true, "stale_reason": "offset is beyond data retention"},
+    {"id": "orders_task", "kind": "TASK", "status": "FAILED", "upstream": ["orders_stream"], "last_error": "stream is stale; task skipped"},
+    {"id": "orders_dt", "kind": "DYNAMIC_TABLE", "status": "FAILED", "upstream": ["orders_task"], "current_lag_minutes": 81, "target_lag_minutes": 10, "last_error": "refresh failed after upstream task"}
+  ],
+  "edges": [
+    {"from": "raw.orders", "to": "orders_stream"},
+    {"from": "orders_stream", "to": "orders_task"},
+    {"from": "orders_task", "to": "orders_dt"}
+  ]
+}

@@ -253,7 +253,7 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY leaderboard;
 import { Pool } from 'pg'
 
 const pool = new Pool({
-  connectionString: 'postgres://postgres.[ref]:[pwd]@aws-0-[region].pooler.supabase.com:6543/postgres',
+  connectionString: process.env.SUPABASE_DATABASE_URL,
   max: 5,  // Keep low in serverless — Supavisor manages the upstream pool
   idleTimeoutMillis: 10000,
 })

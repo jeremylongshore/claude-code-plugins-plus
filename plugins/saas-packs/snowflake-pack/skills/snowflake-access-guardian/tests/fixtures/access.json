@@ -1,0 +1,25 @@
+{
+  "roles": [
+    {"name": "ANALYST", "inherits": ["DATA_READER"]},
+    {"name": "DATA_READER"},
+    {"name": "REPORTING"}
+  ],
+  "users": [
+    {"name": "ALICE", "primary_role": "ANALYST", "roles": ["ANALYST", "REPORTING"], "secondary_roles_mode": "EXPLICIT", "secondary_roles": ["REPORTING"]},
+    {"name": "BOB", "primary_role": "ANALYST", "roles": ["ANALYST"]}
+  ],
+  "managed_access_schemas": ["ANALYTICS.CURATED"],
+  "grants": [
+    {"grantee": "DATA_READER", "grantee_type": "ROLE", "privilege": "SELECT", "object": "ANALYTICS.CURATED.ORDERS", "object_type": "TABLE", "grantor": "SECURITY_OWNER"},
+    {"grantee": "ALICE", "grantee_type": "USER", "privilege": "SELECT", "object": "ANALYTICS.CURATED.ORDERS", "object_type": "TABLE"},
+    {"grantee": "PUBLIC", "grantee_type": "ROLE", "privilege": "USAGE", "object": "ANALYTICS", "object_type": "DATABASE"},
+    {"grantee": "RETIRED_ROLE", "grantee_type": "ROLE", "privilege": "SELECT", "object": "ANALYTICS.CURATED.ORDERS", "object_type": "TABLE"},
+    {"grantee": "REPORTING", "grantee_type": "ROLE", "privilege": "OWNERSHIP", "object": "ANALYTICS.CURATED.OLD_VIEW", "object_type": "VIEW"},
+    {"grantee": "REPORTING", "grantee_type": "ROLE", "privilege": "SELECT", "object": "ANALYTICS.CURATED.ORDERS", "object_type": "TABLE"}
+  ],
+  "future_grants": [
+    {"grantee": "ANALYST", "privilege": "SELECT", "scope": "ANALYTICS", "scope_type": "DATABASE", "object_type": "TABLE"},
+    {"grantee": "ANALYST", "privilege": "SELECT", "scope": "ANALYTICS.CURATED", "scope_type": "SCHEMA", "object_type": "TABLE"},
+    {"grantee": "REPORTING", "privilege": "OWNERSHIP", "scope": "ANALYTICS.CURATED", "scope_type": "SCHEMA", "object_type": "VIEW"}
+  ]
+}

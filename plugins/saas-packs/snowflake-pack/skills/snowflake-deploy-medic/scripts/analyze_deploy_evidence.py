@@ -1,0 +1,507 @@
+#!/usr/bin/env python3
+"""Classify read-only Snowflake deployment evidence.
+
+This is a connector-neutral gate for Terraform, schemachange, Snowflake CLI/
+drivers, and behavior-change review. It does not invoke any of those tools or
+apply a plan. Feed it redacted JSON collected by an operator or CI preview.
+
+Exit codes: 0 for valid input (findings are data), 2 for bad usage/input.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import sys
+from collections import Counter
+from datetime import datetime, timezone
+from typing import Any
+
+
+def _finding(code: str, severity: str, evidence: str, action: str, rank: int) -> dict[str, Any]:
+    return {"code": code, "severity": severity, "evidence": evidence, "read_only_action": action, "recovery_rank": rank}
+
+
+def _major(version: Any) -> int | None:
+    match = re.fullmatch(
+        r"\s*v?(\d+)(?:\.\d+){1,2}(?:[-+][0-9A-Za-z.-]+)?\s*",
+        str(version or ""),
+    )
+    return int(match.group(1)) if match else None
+
+
+def _bool(value: Any) -> bool:
+    return value is True
+
+
+def _nonempty(value: Any) -> bool:
+    return isinstance(value, str) and bool(value.strip())
+
+
+def _exact_version(value: Any) -> bool:
+    return bool(
+        re.fullmatch(
+            r"\s*v?\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?\s*",
+            str(value or ""),
+        )
+    )
+
+
+def _safe_backend(value: Any) -> str | None:
+    if not _nonempty(value):
+        return None
+    text = str(value).strip()
+    lowered = text.casefold()
+    if re.search(r"://[^/\s:@]+:[^@\s/]+@", text):
+        return None
+    if re.search(r"[?&](?:[^=&]*(?:token|secret|password|credential|key)[^=&]*)=", lowered):
+        return None
+    return text
+
+
+def _reject_secret_fields(value: Any, path: str = "input") -> None:
+    if isinstance(value, dict):
+        for key, child in value.items():
+            normalized = re.sub(r"[^a-z0-9]", "", str(key).casefold())
+            if any(
+                fragment in normalized
+                for fragment in (
+                    "password",
+                    "passphrase",
+                    "secret",
+                    "privatekey",
+                    "credential",
+                    "token",
+                    "apikey",
+                    "authorization",
+                    "jwt",
+                )
+            ):
+                raise ValueError(f"credential-bearing field is not accepted: {path}.{key}")
+            _reject_secret_fields(child, f"{path}.{key}")
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            _reject_secret_fields(child, f"{path}[{index}]")
+
+
+def _timestamp(value: Any, field: str) -> datetime | None:
+    if not _nonempty(value):
+        return None
+    try:
+        parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return None
+    return parsed.astimezone(timezone.utc)
+
+
+def validate_input(data: Any) -> dict[str, Any]:
+    if not isinstance(data, dict):
+        raise ValueError("evidence must be a JSON object")
+    for field in ("metadata", "terraform", "tools", "bcr", "rollback"):
+        if field in data and not isinstance(data[field], dict):
+            raise ValueError(f"{field} must be an object")
+    tf = data.get("terraform", {})
+    for field in ("state", "plan"):
+        if field in tf and not isinstance(tf[field], dict):
+            raise ValueError(f"terraform.{field} must be an object")
+    for field in ("resources", "preview_features"):
+        if field in tf and not isinstance(tf[field], list):
+            raise ValueError(f"terraform.{field} must be an array")
+    for index, row in enumerate(tf.get("resources", [])):
+        if not isinstance(row, dict):
+            raise ValueError(f"terraform.resources[{index}] must be an object")
+    if "migrations" in data and not isinstance(data["migrations"], list):
+        raise ValueError("migrations must be an array")
+    for index, row in enumerate(data.get("migrations", [])):
+        if not isinstance(row, dict):
+            raise ValueError(f"migrations[{index}] must be an object")
+    return data
+
+
+def analyze(data: Any) -> dict[str, Any]:
+    data = validate_input(data)
+    _reject_secret_fields(data)
+    findings: list[dict[str, Any]] = []
+    metadata = data.get("metadata", {}) if isinstance(data.get("metadata", {}), dict) else {}
+    tf = data.get("terraform", {}) if isinstance(data.get("terraform", {}), dict) else {}
+    state = tf.get("state", {}) if isinstance(tf.get("state", {}), dict) else {}
+    plan = tf.get("plan", {}) if isinstance(tf.get("plan", {}), dict) else {}
+    provider_version = _major(tf.get("version"))
+    provider_source = str(tf.get("provider_source", ""))
+    backend = _safe_backend(tf.get("backend"))
+
+    missing_provenance: list[str] = []
+    for field in ("account", "role", "repo_sha", "collected_at", "window_start", "window_end"):
+        if not _nonempty(metadata.get(field)):
+            missing_provenance.append(f"metadata.{field}")
+    collected_at = _timestamp(metadata.get("collected_at"), "metadata.collected_at")
+    window_start = _timestamp(metadata.get("window_start"), "metadata.window_start")
+    window_end = _timestamp(metadata.get("window_end"), "metadata.window_end")
+    if collected_at is None:
+        missing_provenance.append("metadata.collected_at(valid timezone timestamp)")
+    elif collected_at > datetime.now(timezone.utc):
+        missing_provenance.append("metadata.collected_at(not in future)")
+    if window_start is None:
+        missing_provenance.append("metadata.window_start(valid timezone timestamp)")
+    if window_end is None:
+        missing_provenance.append("metadata.window_end(valid timezone timestamp)")
+    if window_start is not None and window_end is not None and window_start > window_end:
+        missing_provenance.append("metadata.observation_window(ordered)")
+    if window_end is not None and collected_at is not None and window_end > collected_at:
+        missing_provenance.append("metadata.window_end(no later than collection)")
+    if _nonempty(metadata.get("repo_sha")) and not re.fullmatch(
+        r"[0-9a-fA-F]{40}|[0-9a-fA-F]{64}", metadata["repo_sha"]
+    ):
+        missing_provenance.append("metadata.repo_sha(valid Git SHA)")
+    for field in ("backend", "workspace"):
+        if not _nonempty(tf.get(field)):
+            missing_provenance.append(f"terraform.{field}")
+    if backend is None:
+        missing_provenance.append("terraform.backend(redacted identifier without credentials)")
+    if provider_source.lower() != "snowflakedb/snowflake":
+        missing_provenance.append("terraform.provider_source(snowflakedb/snowflake)")
+    if not _exact_version(tf.get("version")):
+        missing_provenance.append("terraform.version(exact semantic version)")
+    for field in ("saved_plan_sha256", "generated_at"):
+        if not _nonempty(plan.get(field)):
+            missing_provenance.append(f"terraform.plan.{field}")
+    plan_generated_at = _timestamp(plan.get("generated_at"), "terraform.plan.generated_at")
+    if plan_generated_at is None:
+        missing_provenance.append("terraform.plan.generated_at(valid timezone timestamp)")
+    elif collected_at is not None and plan_generated_at > collected_at:
+        missing_provenance.append("terraform.plan.generated_at(no later than collection)")
+    if _nonempty(plan.get("saved_plan_sha256")) and not re.fullmatch(r"[0-9a-fA-F]{64}", plan["saved_plan_sha256"]):
+        missing_provenance.append("terraform.plan.saved_plan_sha256(valid SHA-256)")
+
+    if provider_version is not None and provider_version < 2:
+        findings.append(
+            _finding(
+                "PROVIDER_PRE_2",
+                "critical",
+                f"provider version {tf.get('version')!s}",
+                "Verify the current snowflakedb/snowflake provider support matrix and migrate before trusting a production plan.",
+                10,
+            )
+        )
+    if provider_source and provider_source.lower() != "snowflakedb/snowflake":
+        findings.append(
+            _finding(
+                "PROVIDER_SOURCE_UNEXPECTED",
+                "high",
+                provider_source,
+                "Confirm the provider source and lock file; do not assume a similarly named fork has the same grant/state semantics.",
+                11,
+            )
+        )
+    state_valid = state.get("valid", True)
+    if not state or state.get("parseable") is not True or state_valid is not True:
+        findings.append(
+            _finding(
+                "TERRAFORM_STATE_UNREADABLE",
+                "critical",
+                "state is missing or marked unparseable",
+                "Stop before plan/apply; preserve the state backend receipt and recover a known-good state through the backend's documented recovery path.",
+                12,
+            )
+        )
+
+    preview = tf.get("preview_features", [])
+    if preview:
+        findings.append(
+            _finding(
+                "PROVIDER_PREVIEW_FEATURE",
+                "high",
+                ", ".join(map(str, preview)),
+                "Verify the live provider preview contract, upgrade notes, and rollback path; preview resources are not treated as stable by default.",
+                13,
+            )
+        )
+
+    resources = tf.get("resources", [])
+    for resource in resources:
+        address = str(resource.get("address", "unknown"))
+        resource_type = str(resource.get("type", address.split(".")[0]))
+        existing = _bool(resource.get("existing"))
+        action = str(resource.get("action", "")).lower()
+        import_id = resource.get("import_id") or resource.get("imported_id")
+        is_grant = "grant" in resource_type
+        if is_grant and existing and action in {"create", "replace", ""} and not import_id:
+            findings.append(
+                _finding(
+                    "GRANT_IMPORT_REQUIRED",
+                    "critical",
+                    f"{address}: existing grant resource has no import identity",
+                    "Declare the intended grant resource, obtain its documented import identity, and preview adoption; never hand-edit terraform.tfstate or destroy a grant graph to force adoption.",
+                    20,
+                )
+            )
+        if action in {"replace", "destroy", "delete"} or _bool(resource.get("destroy")):
+            findings.append(
+                _finding(
+                    "DESTRUCTIVE_PLAN_CHANGE",
+                    "critical",
+                    f"{address}: planned action {action or 'destroy'}",
+                    "Require an explicit impact review, backup/rollback evidence, and an approved maintenance window before any apply.",
+                    40,
+                )
+            )
+
+    exit_code = plan.get("exit_code")
+    changes = plan.get("changes")
+    plan_numbers_valid = type(exit_code) is int and type(changes) is int and changes >= 0
+    if not plan_numbers_valid:
+        findings.append(
+            _finding(
+                "PLAN_NOT_VERIFIED",
+                "high",
+                "plan exit_code/change count is missing or not typed as non-boolean integers",
+                "Run a current, saved read-only Terraform plan with detailed exit status and inspect it; do not proceed from configuration alone.",
+                30,
+            )
+        )
+    elif exit_code not in (0, 2):
+        findings.append(
+            _finding(
+                "PLAN_FAILED",
+                "critical",
+                f"terraform plan exit_code={exit_code}",
+                "Fix the plan error and preserve its output; exit code 2 means changes, while another non-zero code is not a valid preview.",
+                31,
+            )
+        )
+    elif changes == 0 and exit_code == 0:
+        # This is a positive receipt, not a finding. It is copied into the report.
+        pass
+    elif changes > 0:
+        findings.append(
+            _finding(
+                "PLAN_HAS_CHANGES",
+                "review",
+                f"{changes} planned change(s), exit_code={exit_code}",
+                "Review every create/update/replace/destroy action, grant ordering, ownership, and state address before approval.",
+                32,
+            )
+        )
+
+    migrations = data.get("migrations", [])
+    versions: Counter[str] = Counter()
+    for migration in migrations:
+        path = str(migration.get("path", "unknown"))
+        mtype = str(migration.get("type", "")).upper()
+        version = str(migration.get("version", ""))
+        if mtype == "V" and version:
+            versions[version] += 1
+            if migration.get("applied_checksum") and migration.get("checksum") != migration.get("applied_checksum"):
+                findings.append(
+                    _finding(
+                        "VERSIONED_CHECKSUM_DRIFT",
+                        "critical",
+                        f"{path}: current checksum differs from applied checksum",
+                        "Do not edit an applied versioned script in place; compare the stored change-history row, restore the original or create a new versioned migration, and record the decision.",
+                        20,
+                    )
+                )
+        if (
+            mtype == "R"
+            and migration.get("applied_checksum")
+            and migration.get("checksum") != migration.get("applied_checksum")
+        ):
+            findings.append(
+                _finding(
+                    "REPEATABLE_CHANGE_DETECTED",
+                    "review",
+                    f"{path}: repeatable checksum changed",
+                    "Confirm the change-history/checksum behavior and idempotence, then preview the intentional rerun; do not treat a repeatable rerun as a versioned migration.",
+                    25,
+                )
+            )
+    for version, count in sorted(versions.items()):
+        if count > 1:
+            findings.append(
+                _finding(
+                    "VERSION_COLLISION",
+                    "critical",
+                    f"version {version} appears {count} times",
+                    "Resolve the migration naming collision before deployment; do not rely on filesystem ordering or an out-of-order flag to choose between two scripts.",
+                    21,
+                )
+            )
+
+    tools = data.get("tools", {}) if isinstance(data.get("tools", {}), dict) else {}
+    missing_tools = [name for name in ("snowflake_cli", "python_connector") if not isinstance(tools.get(name), dict)]
+    if missing_tools:
+        findings.append(
+            _finding(
+                "TOOLCHAIN_UNVERIFIED",
+                "high",
+                "missing evidence: " + ", ".join(missing_tools),
+                "Verify the current Snowflake CLI, connector/driver, Python/runtime, and lockfile compatibility from live release notes before deploy.",
+                35,
+            )
+        )
+    for name in ("snowflake_cli", "python_connector"):
+        evidence = tools.get(name)
+        if isinstance(evidence, dict):
+            version = evidence.get("version")
+            if not _exact_version(version):
+                missing_provenance.append(f"tools.{name}.version(exact)")
+    bcr = data.get("bcr", {}) if isinstance(data.get("bcr", {}), dict) else {}
+    if bcr.get("checked") is not True:
+        findings.append(
+            _finding(
+                "BCR_NOT_CHECKED",
+                "high",
+                "behavior-change review is absent or not marked complete",
+                "Check the current Snowflake behavior-change release notes for the account release window, CLI/driver versions, SQL semantics, and deprecations.",
+                36,
+            )
+        )
+    for field in ("id", "source", "checked_at"):
+        if not _nonempty(bcr.get(field)):
+            missing_provenance.append(f"bcr.{field}")
+    bcr_checked_at = _timestamp(bcr.get("checked_at"), "bcr.checked_at")
+    if bcr_checked_at is None:
+        missing_provenance.append("bcr.checked_at(valid timezone timestamp)")
+    elif collected_at is not None and bcr_checked_at > collected_at:
+        missing_provenance.append("bcr.checked_at(no later than collection)")
+
+    rollback = data.get("rollback", {}) if isinstance(data.get("rollback", {}), dict) else {}
+    if rollback.get("tested") is not True:
+        findings.append(
+            _finding(
+                "ROLLBACK_UNTESTED",
+                "critical",
+                str(rollback.get("strategy") or "no tested rollback receipt"),
+                "Define and test a bounded rollback or forward-fix strategy against the exact plan/migration set; do not call backup existence a rollback test.",
+                50,
+            )
+        )
+    for field in ("strategy", "owner", "stop_condition", "tested_at", "plan_sha256"):
+        if not _nonempty(rollback.get(field)):
+            missing_provenance.append(f"rollback.{field}")
+    rollback_tested_at = _timestamp(rollback.get("tested_at"), "rollback.tested_at")
+    if rollback_tested_at is None:
+        missing_provenance.append("rollback.tested_at(valid timezone timestamp)")
+    elif collected_at is not None and rollback_tested_at > collected_at:
+        missing_provenance.append("rollback.tested_at(no later than collection)")
+    if (
+        _nonempty(rollback.get("plan_sha256"))
+        and _nonempty(plan.get("saved_plan_sha256"))
+        and rollback["plan_sha256"] != plan["saved_plan_sha256"]
+    ):
+        missing_provenance.append("rollback.plan_sha256(matches saved plan)")
+
+    if missing_provenance:
+        findings.append(
+            _finding(
+                "EVIDENCE_PROVENANCE_INCOMPLETE",
+                "critical",
+                ", ".join(sorted(set(missing_provenance))),
+                "Stop: recollect the deployment packet with typed account, role, repository, backend/workspace, saved-plan, tool-version, behavior-change, and rollback receipts.",
+                5,
+            )
+        )
+
+    findings.sort(key=lambda item: (item["recovery_rank"], item["code"]))
+    recovery: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for finding in findings:
+        action = finding["read_only_action"]
+        if action not in seen:
+            seen.add(action)
+            recovery.append({"order": len(recovery) + 1, "for": finding["code"], "action": action})
+    zero_change = plan_numbers_valid and exit_code == 0 and changes == 0
+    release_gate = "pass" if zero_change and not findings else "blocked"
+    return {
+        "schema_version": "1",
+        "zero_change_plan": zero_change,
+        "release_gate": release_gate,
+        "provenance": {
+            "account": metadata.get("account"),
+            "role": metadata.get("role"),
+            "repo_sha": metadata.get("repo_sha"),
+            "collected_at": metadata.get("collected_at"),
+            "observation_window": {
+                "start": metadata.get("window_start"),
+                "end": metadata.get("window_end"),
+            },
+            "backend": backend,
+            "workspace": tf.get("workspace"),
+            "saved_plan_sha256": plan.get("saved_plan_sha256"),
+            "plan_generated_at": plan.get("generated_at"),
+        },
+        "provider": {
+            "source": provider_source or None,
+            "version": tf.get("version"),
+            "major": provider_version,
+        },
+        "toolchain": {
+            name: {"version": tools.get(name, {}).get("version")}
+            for name in ("snowflake_cli", "python_connector")
+            if isinstance(tools.get(name), dict)
+        },
+        "behavior_change_review": {
+            "checked": bcr.get("checked"),
+            "id": bcr.get("id"),
+            "source": bcr.get("source"),
+            "checked_at": bcr.get("checked_at"),
+        },
+        "migration_evidence": [
+            {
+                "path": migration.get("path"),
+                "type": migration.get("type"),
+                "version": migration.get("version"),
+                "checksum_status": (
+                    "match"
+                    if migration.get("applied_checksum")
+                    and migration.get("checksum") == migration.get("applied_checksum")
+                    else "drift"
+                    if migration.get("applied_checksum")
+                    else "not_observed"
+                ),
+            }
+            for migration in migrations
+        ],
+        "rollback_receipt": {
+            "tested": rollback.get("tested"),
+            "strategy": rollback.get("strategy"),
+            "owner": rollback.get("owner"),
+            "stop_condition": rollback.get("stop_condition"),
+            "tested_at": rollback.get("tested_at"),
+            "plan_sha256": rollback.get("plan_sha256"),
+        },
+        "findings": findings,
+        "ordered_recovery": recovery,
+        "post_deploy_invariants": [
+            "The saved Terraform plan is zero-change after adoption, or every remaining change has an approved owner and impact receipt.",
+            "Grant resources resolve to the intended role/object and state imports are reproducible without hand-edited state.",
+            "Versioned migration checksums match change history; repeatable reruns are intentional and idempotent.",
+            "Snowflake CLI, connector/driver, runtime, and behavior-change review are current for this account release window.",
+            "Rollback or forward-fix was tested against the exact plan/migration set and its stop condition is recorded.",
+        ],
+        "limitations": [
+            "This report classifies supplied evidence; it does not invoke Terraform, schemachange, Snowflake CLI, a driver, or Snowflake SQL.",
+            "Provider/tool versions and behavior changes must be verified against current primary release notes at execution time.",
+        ],
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Classify read-only Snowflake deployment evidence")
+    parser.add_argument("--input", "-i", help="JSON input path; default is stdin")
+    args = parser.parse_args()
+    try:
+        raw = open(args.input, encoding="utf-8").read() if args.input else sys.stdin.read()
+        report = analyze(json.loads(raw))
+    except (OSError, json.JSONDecodeError, ValueError, TypeError) as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

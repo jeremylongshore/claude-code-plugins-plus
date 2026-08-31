@@ -2,9 +2,9 @@
   "schema_version": "forge-proof-demotion/v2",
   "status": "immutable-ledger-snapshot",
   "source": "freshie/reports/run-delta-<N>.json forge_proofs snapshot",
-  "source_run_id": 14,
-  "source_tag": "run-14",
-  "source_dolt_commit": "2ljhn79ge74uj1kd7q2chqgo9ne0tulb",
+  "source_run_id": 16,
+  "source_tag": "run-16",
+  "source_dolt_commit": "hbf9dmmvp9366ion1lcq4r871b439op5",
   "records_sha256": "e51e838c989df95d206994831befc7821b594d25bec9b09d699c5792456c787b",
   "records": [
     {

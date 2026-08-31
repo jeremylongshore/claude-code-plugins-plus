@@ -7,7 +7,7 @@ export default defineConfig({
   site: 'https://tonsofskills.com',
   base: '/',
   // NO Astro `redirects` here — deliberately. See /etc/caddy/tonsofskills-redirects.caddy
-  // on the VPS, which serves all 84 as real HTTP 301s.
+  // on the VPS, which serves the generated redirect inventory as real HTTP 301s.
   //
   // Astro's redirects config emits one thin HTML page per entry containing
   // <meta http-equiv="refresh" content="0;url=...">. Adding 81 of them on
@@ -19,7 +19,7 @@ export default defineConfig({
   // Causation was never proven — Google Safe Browsing reported the domain clean
   // throughout — but meta-refresh is the wrong mechanism regardless: a permanent
   // redirect belongs in the HTTP status line, not in markup a crawler has to
-  // execute. Real 301s are faster, keep 85 thin pages out of the crawl surface,
+  // execute. Real 301s are faster, keep those thin pages out of the crawl surface,
   // and pass link equity correctly.
   //
   // If you need a new redirect, add it to the Caddy file — NOT here.

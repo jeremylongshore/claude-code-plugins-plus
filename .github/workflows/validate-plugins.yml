@@ -972,6 +972,9 @@ jobs:
       - name: Validate Internal Links (dist)
         run: node marketplace/scripts/validate-internal-links.mjs
 
+      - name: Validate permanent skill redirect projection
+        run: node --test marketplace/scripts/skill-redirects.test.mjs marketplace/scripts/install-skill-redirects.test.mjs
+
       - name: Smoke Test - Verify Build Output
         run: |
           echo "Running smoke tests on marketplace build output..."
@@ -1666,7 +1669,7 @@ jobs:
 
       - name: Check deterministic marketplace projections
         run: |
-          node --test scripts/generated-content-ci.test.mjs marketplace/scripts/sync-catalog.test.mjs marketplace/scripts/generate-unified-search.test.mjs
+          node --test scripts/generated-content-ci.test.mjs marketplace/scripts/discover-skills.test.mjs marketplace/scripts/md-to-html.test.mjs marketplace/scripts/sync-catalog.test.mjs marketplace/scripts/generate-unified-search.test.mjs
           node marketplace/scripts/discover-skills.mjs --level=full --check
           node marketplace/scripts/sync-catalog.mjs --check
           node marketplace/scripts/generate-unified-search.mjs --check

@@ -101,7 +101,7 @@ class PgvectorStore:
     """pgvector reference implementation. Replace with Pinecone/Weaviate as needed."""
     def __init__(self, dsn: str):
         import psycopg
-        self.dsn = dsn  # e.g. "postgresql://user:pass@host/db" — load from secret store
+        self.dsn = dsn  # Inject the managed connection string at runtime.
 
     async def query(self, embedding: list[float], top_k: int,
                     filter: dict | None = None) -> list[dict]:

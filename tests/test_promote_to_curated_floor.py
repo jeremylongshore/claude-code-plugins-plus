@@ -61,7 +61,10 @@ class PromoteFloorTests(unittest.TestCase):
         self.grades_csv = root / "freshie" / "grades.csv"
         self.grades_csv.parent.mkdir(parents=True)
 
-        self._orig = {k: getattr(pc, k) for k in ("ROOT", "GRADES_CSV", "GRADE_HISTOGRAM", "CURATED_DIR", "MANIFEST", "tracked_files")}
+        self._orig = {
+            k: getattr(pc, k)
+            for k in ("ROOT", "GRADES_CSV", "GRADE_HISTOGRAM", "CURATED_DIR", "MANIFEST", "tracked_files")
+        }
         pc.ROOT = root
         pc.GRADES_CSV = self.grades_csv
         pc.GRADE_HISTOGRAM = root / "freshie" / "grade-histogram.json"
@@ -164,6 +167,69 @@ class PromoteFloorTests(unittest.TestCase):
         self.assertNotEqual(rc, 0)
         self.assertFalse(self.curated.exists(), "no mirror should be created on abort")
 
+    def test_targeted_build_replaces_only_requested_plugin(self):
+        old_target = self.curated / "old-target"
+        old_target.mkdir()
+        (old_target / "SKILL.md").write_text(SKILL_MD.format(name="old-target"), encoding="utf-8")
+        unrelated = self.curated / "unrelated"
+        unrelated.mkdir()
+        unrelated_body = SKILL_MD.format(name="unrelated")
+        (unrelated / "SKILL.md").write_text(unrelated_body, encoding="utf-8")
+
+        existing = json.loads(self.manifest.read_text())
+        existing["skills"].extend(
+            [
+                {
+                    "curated_name": "old-target",
+                    "source_path": "plugins/cat/target-pack/skills/old-target",
+                    "plugin": "target-pack",
+                },
+                {
+                    "curated_name": "unrelated",
+                    "source_path": "plugins/cat/other-pack/skills/unrelated",
+                    "plugin": "other-pack",
+                },
+            ]
+        )
+        existing["count"] = len(existing["skills"])
+        self.manifest.write_text(json.dumps(existing), encoding="utf-8")
+
+        source_path = "plugins/cat/target-pack/skills/new-target"
+        source = self.root / source_path
+        source.mkdir(parents=True)
+        (source / "SKILL.md").write_text(SKILL_MD.format(name="new-target"), encoding="utf-8")
+        candidate = {
+            "skill_path": source_path,
+            "grade": "A",
+            "score": "95",
+            "category": "cat",
+            "plugin": "target-pack",
+            "name": "new-target",
+        }
+        pc.tracked_files = lambda skill_dir: ["SKILL.md"]
+
+        with mock.patch.object(pc, "load_candidates", return_value=[candidate]):
+            rc = pc.build(validate=False, quiet=True, target_plugin="target-pack")
+
+        self.assertEqual(rc, 0)
+        self.assertFalse(old_target.exists())
+        self.assertTrue((self.curated / "new-target" / "SKILL.md").is_file())
+        self.assertEqual((unrelated / "SKILL.md").read_text(), unrelated_body)
+        manifest = json.loads(self.manifest.read_text())
+        names = {entry["curated_name"] for entry in manifest["skills"]}
+        self.assertIn("new-target", names)
+        self.assertIn("unrelated", names)
+        self.assertNotIn("old-target", names)
+
+    def test_targeted_build_with_no_candidates_does_not_mutate_mirror(self):
+        manifest_before = self.manifest.read_bytes()
+        skill_before = (self.existing_dirs[0] / "SKILL.md").read_bytes()
+        with mock.patch.object(pc, "load_candidates", return_value=[]):
+            rc = pc.build(validate=False, quiet=True, target_plugin="target-pack")
+        self.assertNotEqual(rc, 0)
+        self.assertEqual(self.manifest.read_bytes(), manifest_before)
+        self.assertEqual((self.existing_dirs[0] / "SKILL.md").read_bytes(), skill_before)
+
 
 class LoadValidatorDegradeTests(unittest.TestCase):
     """The degrade contract must hold even when the validator hard-exits at
@@ -226,9 +292,7 @@ class TestExternalMirrorDetection(unittest.TestCase):
 
     def test_vendored_subdir_skill_is_detected(self):
         """The regression itself: .codex/skills/<name> sits below the marker."""
-        self.assertTrue(
-            pc.is_external_mirror("plugins/testing/vendor-pack/.codex/skills/vendored")
-        )
+        self.assertTrue(pc.is_external_mirror("plugins/testing/vendor-pack/.codex/skills/vendored"))
 
     def test_direct_mirror_skill_is_detected(self):
         self.assertTrue(pc.is_external_mirror("plugins/testing/vendor-pack/skills/direct"))

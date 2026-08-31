@@ -67,7 +67,7 @@ curl http://localhost:3000/health
 fly proxy 5432 -a my-db &
 
 # Now use local tools against remote Fly Postgres
-psql postgres://postgres:password@localhost:5432/mydb
+psql "$DATABASE_URL"
 npx prisma studio  # Prisma GUI works against proxied DB
 
 # Proxy Redis

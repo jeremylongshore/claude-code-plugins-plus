@@ -7225,8 +7225,8 @@
     {
       "name": "snowflake-pack",
       "source": "./plugins/saas-packs/snowflake-pack",
-      "description": "Claude Code skill pack for Snowflake (30 skills)",
-      "version": "1.6.0",
+      "description": "Six evidence-driven Snowflake operator skills for cost, query forensics, pipelines, deployments, strong authentication, and access governance",
+      "version": "2.0.0",
       "category": "saas-packs",
       "keywords": [
         "snowflake",

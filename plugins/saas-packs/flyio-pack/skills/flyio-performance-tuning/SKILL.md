@@ -97,10 +97,9 @@ curl -w "DNS: %{time_namelookup}s, Connect: %{time_connect}s, Total: %{time_tota
 ```typescript
 // Use connection pooling for Fly Postgres
 // PgBouncer runs on port 5433 (pooled) vs 5432 (direct)
-const pooledUrl = process.env.DATABASE_URL?.replace(':5432/', ':5433/');
+const pooledUrl = databaseConfig.pooledEndpoint;
 
-// Prisma: add pgbouncer=true
-// DATABASE_URL="postgres://user:pass@my-db.internal:5433/db?pgbouncer=true"
+// Enable PgBouncer mode through the client's typed configuration.
 ```
 
 ### Step 5: Tune Concurrency

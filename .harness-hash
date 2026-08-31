@@ -11,6 +11,12 @@ c981c39992716a9c8dfd678952ff45a237574e4192f26a3ccbd603471b3c9d5d  plugins/saas-p
 3a4ae971a3f941de41e94ced00697fc2561a3555af9122d872fca23b29e39bde  plugins/saas-packs/databricks-pack/skills/databricks-uc-migration-pilot/eval-spec.yaml
 7312747954bc4618385908f57a7dd08f7b11fa27ca762cb840e00f8fa800161d  plugins/saas-packs/hubspot-pack/skills/hubspot-warehouse-sync/eval-spec.yaml
 d543f74906821a7fa80ba90dc80d3b6ff7fbdc81078ab0a9d75e45e965b3a5d3  plugins/saas-packs/sentry-pack/skills/sentry-data-handling/eval-spec.yaml
+10d8552fb64a2ec0041cb1f2df07888795beb551b1bfeb683262d40c792b90ff  plugins/saas-packs/snowflake-pack/skills/snowflake-access-guardian/eval-spec.yaml
+74cdd5d9031b68797380e5dff591878b5251d2bfc319a8537f538fa7c06ccb4d  plugins/saas-packs/snowflake-pack/skills/snowflake-cost-leak-hunter/eval-spec.yaml
+2a6df0a994feff8b7cf58f09edd57153a658fb97e3cd376d885457eef1d76c58  plugins/saas-packs/snowflake-pack/skills/snowflake-deploy-medic/eval-spec.yaml
+928fd2578eeca26d9fb8107ae058bfa1871e6dc88a944b3fac4e44fa24482f19  plugins/saas-packs/snowflake-pack/skills/snowflake-pipeline-guardian/eval-spec.yaml
+226ce240f936972340f04754894a8ef5e532dcc72d5187b16c64aa06a60a817c  plugins/saas-packs/snowflake-pack/skills/snowflake-query-forensics/eval-spec.yaml
+9b3d9bb0cfd1837cdf71d1ea42912a5ccc78b0a7f80d05a583cb0c2588593c24  plugins/saas-packs/snowflake-pack/skills/snowflake-strong-auth-migration-pilot/eval-spec.yaml
 4f53213f21724766085a7a4d701b5e8ffd4f30782f67880c87bac7077c0f2796  plugins/saas-packs/supabase-pack/skills/supabase-known-pitfalls/eval-spec.yaml
 81eabecbc8b79a87d105d061bd0f3380e6d74648e412fa46f20885a1abf46160  plugins/skill-enhancers/skill-creator/skills/skill-creator/eval-spec.yaml
 903555ec7e0e7d80db9f18076b50b8b9184a2f0a2b438859d15c9f8757428220  skills/.curated/audit-tests/eval-spec.yaml
@@ -25,5 +31,11 @@ c981c39992716a9c8dfd678952ff45a237574e4192f26a3ccbd603471b3c9d5d  skills/.curate
 7312747954bc4618385908f57a7dd08f7b11fa27ca762cb840e00f8fa800161d  skills/.curated/hubspot-warehouse-sync/eval-spec.yaml
 d543f74906821a7fa80ba90dc80d3b6ff7fbdc81078ab0a9d75e45e965b3a5d3  skills/.curated/sentry-data-handling/eval-spec.yaml
 81eabecbc8b79a87d105d061bd0f3380e6d74648e412fa46f20885a1abf46160  skills/.curated/skill-creator/eval-spec.yaml
+10d8552fb64a2ec0041cb1f2df07888795beb551b1bfeb683262d40c792b90ff  skills/.curated/snowflake-access-guardian/eval-spec.yaml
+74cdd5d9031b68797380e5dff591878b5251d2bfc319a8537f538fa7c06ccb4d  skills/.curated/snowflake-cost-leak-hunter/eval-spec.yaml
+2a6df0a994feff8b7cf58f09edd57153a658fb97e3cd376d885457eef1d76c58  skills/.curated/snowflake-deploy-medic/eval-spec.yaml
+928fd2578eeca26d9fb8107ae058bfa1871e6dc88a944b3fac4e44fa24482f19  skills/.curated/snowflake-pipeline-guardian/eval-spec.yaml
+226ce240f936972340f04754894a8ef5e532dcc72d5187b16c64aa06a60a817c  skills/.curated/snowflake-query-forensics/eval-spec.yaml
+9b3d9bb0cfd1837cdf71d1ea42912a5ccc78b0a7f80d05a583cb0c2588593c24  skills/.curated/snowflake-strong-auth-migration-pilot/eval-spec.yaml
 4f53213f21724766085a7a4d701b5e8ffd4f30782f67880c87bac7077c0f2796  skills/.curated/supabase-known-pitfalls/eval-spec.yaml
 b91ee2d8ee323ac9591cdad232d31dbf639d7d4b2d32cc105dfa4bb05ab83ec8  skills/.curated/validate-skillmd/eval-spec.yaml

@@ -61,7 +61,7 @@ storage.upload_from_text("user_data.json", json.dumps(data))
 ```python
 # BAD — exposed in public Repl
 API_KEY = "sk-live-abc123"
-DATABASE_URL = "postgresql://user:password@host/db"
+DATABASE_URL = "hard-coded connection string"
 
 # GOOD — use Replit Secrets (lock icon in sidebar)
 import os
