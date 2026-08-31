@@ -1,0 +1,128 @@
+---
+name: flexport-cost-tuning
+description: 'Optimize Flexport API usage costs through efficient pagination, caching,
+
+  webhook-driven updates, and monitoring API call volume.
+
+  Trigger: "flexport costs", "flexport API usage", "reduce flexport calls", "flexport
+  billing".
+
+  '
+allowed-tools: Read, Write, Edit
+version: 1.6.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
+---
+# Flexport Cost Tuning
+
+## Overview
+
+Reduce Flexport API costs by minimizing unnecessary calls. Key strategies: use webhooks instead of polling, cache aggressively, maximize page sizes, and batch operations.
+
+## Prerequisites
+
+- Current contract/billing data and provider limits reviewed by the account owner, not inferred from this guide.
+- Aggregate usage metrics, an approved target/data policy, and a named budget owner.
+- Synthetic staging workload plus a rollback switch for caching, polling, or batch changes.
+
+## Output
+
+Record a cost-control receipt with measurement window, aggregate usage, approved optimization, owner decision, expected effect, verification date, and rollback state. Do not include invoices, commercial terms, shipment content, or credentials.
+
+## Error Handling
+
+- Stop a change if it violates freshness, access, retention, or target policy even if it reduces calls.
+- Reduce load and use bounded retries on throttles; do not increase polling after a delivery gap.
+- Revert a cache or webhook switch if reconciliation detects missed or duplicate events.
+
+## Examples
+
+Compare a fictional webhook-driven workflow with a low-frequency staging poll using only request counts and synthetic event delivery. Promote the reduction only if reconciliation proves no missed/duplicate event and the data-access policy remains unchanged.
+
+## Instructions
+
+### Strategy 1: Webhooks Over Polling
+
+```typescript
+// BAD: Polling every 5 minutes (288 API calls/day per shipment)
+setInterval(async () => {
+  const shipment = await flexport(`/shipments/${id}`);
+  if (shipment.data.status !== lastStatus) updateDB(shipment);
+}, 5 * 60 * 1000);
+
+// GOOD: Webhook-driven (0 API calls — Flexport pushes updates)
+app.post('/webhooks/flexport', (req, res) => {
+  const event = req.body;
+  if (event.type === 'shipment.milestone') {
+    updateDB(event.data);  // Only processes real changes
+  }
+  res.sendStatus(200);
+});
+// Savings: 100 shipments * 288 calls/day = 28,800 calls/day eliminated
+```
+
+### Strategy 2: Maximize Page Size
+
+```typescript
+// BAD: Default pagination (per=25)
+// 1000 shipments = 40 API calls
+
+// GOOD: Max pagination (per=100)
+// 1000 shipments = 10 API calls (75% reduction)
+const shipments = await flexport('/shipments?per=100&page=1');
+```
+
+### Strategy 3: Cache with Smart TTLs
+
+| Data Type | Change Frequency | Cache TTL | Impact |
+|-----------|-----------------|-----------|--------|
+| Products | Rarely | 1 hour | ~95% fewer calls |
+| Shipment list | Every few hours | 5 minutes | ~90% fewer calls |
+| Shipment detail | On milestones | Until webhook | ~99% fewer calls |
+| Purchase orders | Daily | 15 minutes | ~85% fewer calls |
+| Freight invoices | Monthly | 1 hour | ~95% fewer calls |
+
+### Strategy 4: Monitor API Usage
+
+```typescript
+// Track API call volume per endpoint
+const apiMetrics = new Map<string, { count: number; lastReset: Date }>();
+
+function trackAPICall(endpoint: string) {
+  const key = endpoint.split('?')[0];  // Strip query params
+  const metric = apiMetrics.get(key) || { count: 0, lastReset: new Date() };
+  metric.count++;
+  apiMetrics.set(key, metric);
+}
+
+// Report daily usage
+function reportUsage() {
+  console.log('=== Flexport API Usage ===');
+  for (const [endpoint, { count }] of apiMetrics) {
+    console.log(`  ${endpoint}: ${count} calls`);
+  }
+}
+```
+
+## Cost Reduction Checklist
+
+- [ ] Replace polling with webhooks for shipment tracking
+- [ ] Use `per=100` on all list endpoints
+- [ ] Cache product catalog (1hr TTL)
+- [ ] Cache shipment data, invalidate on webhooks
+- [ ] Eliminate duplicate calls in page loads
+- [ ] Monitor API call volume weekly
+
+## Resources
+
+- [Flexport Webhook Endpoints](https://apidocs.flexport.com/v2/tag/Webhook-Endpoints/)
+- [Flexport API Reference](https://apidocs.flexport.com/)
+
+## Next Steps
+
+For architecture design, see `flexport-reference-architecture`.
