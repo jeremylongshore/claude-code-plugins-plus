@@ -22,13 +22,13 @@
       "error_files": 775,
       "error_total": 3850,
       "grade_distribution": {
-        "A": 1880,
+        "A": 1882,
         "B": 1112,
         "C": 452,
         "D": 157,
         "F": 5
       },
-      "rows": 3606
+      "rows": 3608
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3106,
-        "tracked_files": 23266
+        "raw_tracked_plugin_skill_files": 3108,
+        "tracked_files": 23316
       }
     },
     "2": {
@@ -91,17 +91,17 @@
         },
         "marketplace_terminal": {
           "error_total_all_validated_surfaces": 4087,
-          "fully_compliant_surfaces": 1140,
+          "fully_compliant_surfaces": 1143,
           "terminal_denominator": {
             "agents": 357,
             "commands": 373,
-            "files": 4929,
+            "files": 4931,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
             "plugin_manifests": 593,
-            "skills": 3606
+            "skills": 3608
           },
           "validated_plugin_manifests": 601,
-          "validator_reported_mixed_denominator_percent": 23.1
+          "validator_reported_mixed_denominator_percent": 23.2
         },
         "skill_rows": {
           "a_error_total": 35,
@@ -112,13 +112,13 @@
           "error_files": 775,
           "error_total": 3850,
           "grade_distribution": {
-            "A": 1880,
+            "A": 1882,
             "B": 1112,
             "C": 452,
             "D": 157,
             "F": 5
           },
-          "rows": 3606
+          "rows": 3608
         }
       }
     },
@@ -131,20 +131,20 @@
       "values": {
         "average_score": 87.3,
         "grade_distribution": {
-          "A": 1880,
+          "A": 1882,
           "B": 1112,
           "C": 452,
           "D": 157,
           "F": 5
         },
         "grade_percentages": {
-          "A": 52.1,
+          "A": 52.2,
           "B": 30.8,
           "C": 12.5,
           "D": 4.4,
           "F": 0.1
         },
-        "rows": 3606
+        "rows": 3608
       }
     },
     "6": {
@@ -161,7 +161,7 @@
         "b_error_total": 604,
         "b_failing": 292,
         "certified_target": 0,
-        "skill_summary_rows": 3606
+        "skill_summary_rows": 3608
       }
     },
     "7": {
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3595,
+        "declared": 3597,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 11,
-        "rows": 3606,
+        "rows": 3608,
         "target_malformed": 0
       }
     },
@@ -286,7 +286,7 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "distinct_values": 52,
+        "distinct_values": 54,
         "invalid_or_empty": 0,
         "target_free_text_values": 0,
         "values": [
@@ -351,7 +351,7 @@
             "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18, a persistent local filesystem (the observe-decide-act loop passes state through local turn files), and ~/.kobiton/.credentials written by /automate:setup — scripts/appium.js reads that file directly and never calls the MCP getCredential tool, so it is required, not a fallback. An authenticated Kobiton MCP connection is additionally useful for device selection."
           },
           {
-            "count": 3290,
+            "count": 3284,
             "value": "Designed for Claude Code"
           },
           {
@@ -431,6 +431,10 @@
             "value": "Designed for Claude Code; the same MCP server also works in Claude Desktop, Cursor, Windsurf, and OpenAI Codex CLI. Requires the mnemos binary on PATH — run mnemos init to wire the MCP server and mnemos doctor to verify."
           },
           {
+            "count": 7,
+            "value": "Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection"
+          },
+          {
             "count": 1,
             "value": "Model-agnostic; requires explicit state/workspace paths, git, jq, Bash, and an authenticated GitHub CLI"
           },
@@ -441,6 +445,10 @@
           {
             "count": 1,
             "value": "Model-agnostic; requires git, jq, and an authenticated GitHub CLI for live GitHub reads"
+          },
+          {
+            "count": 1,
+            "value": "Model-neutral; requires Python 3.10+. Optional collection requires Snowflake CLI with an existing read-only profile."
           },
           {
             "count": 1,
@@ -1148,7 +1156,7 @@
         "answers": [
           {
             "cohort": "curated-mirror",
-            "value": 2055
+            "value": 2057
           },
           {
             "cohort": "curriculum",
@@ -1156,15 +1164,15 @@
           },
           {
             "cohort": "first-party",
-            "value": 2762
+            "value": 2764
           },
           {
             "cohort": "graded",
-            "value": 3606
+            "value": 3608
           },
           {
             "cohort": "marketplace-visible",
-            "value": 3015
+            "value": 3017
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1870,7 +1878,7 @@
         "invalid_patterns": 0,
         "invisible_files": 22,
         "target_invisible_files": 0,
-        "tracked_files": 23266
+        "tracked_files": 23316
       }
     },
     "47": {
@@ -1955,17 +1963,17 @@
       "dimension": "Inventory header versus rows",
       "reproduce": "pnpm run measure:e1 --row=52 --stdout",
       "source": [
-        "freshie/reports/run-delta-18.json",
+        "freshie/reports/run-delta-19.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py"
       ],
       "status": "target_met",
       "values": {
-        "dolt_commit": "8ih5losgj9120patrkdulsml0gtn9clj",
-        "header_total_skills": 3029,
-        "run_id": 18,
+        "dolt_commit": "vdc8inn59b1n0oor6m5hfjesbvnc2nl9",
+        "header_total_skills": 3030,
+        "run_id": 19,
         "skill_row_delta": 0,
-        "skill_rows": 3029,
+        "skill_rows": 3030,
         "target_skill_row_delta": 0
       }
     },
@@ -1976,32 +1984,32 @@
       "source": [
         "freshie/grade-histogram.json",
         "freshie/grades.csv",
-        "freshie/reports/run-delta-18.json"
+        "freshie/reports/run-delta-19.json"
       ],
       "status": "target_met",
       "values": {
-        "compliance_rows": 3606,
-        "export_dolt_commit": "8ih5losgj9120patrkdulsml0gtn9clj",
-        "export_run_id": 18,
-        "grades_csv_rows": 3606,
-        "grades_csv_sha256": "1c3804520f6e036fbb8fed212c20aeddb3b03240b91f397dae911536738b6323",
+        "compliance_rows": 3608,
+        "export_dolt_commit": "vdc8inn59b1n0oor6m5hfjesbvnc2nl9",
+        "export_run_id": 19,
+        "grades_csv_rows": 3608,
+        "grades_csv_sha256": "cc914a9f672e6ebcc6117390203906ac77f76f20d827b3e75ca967cb4a79c955",
         "histogram_grades": {
-          "A": 1880,
+          "A": 1882,
           "B": 1112,
           "C": 452,
           "D": 157,
           "F": 5
         },
-        "histogram_total": 3606,
+        "histogram_total": 3608,
         "immutable_grade_counts": {
-          "A": 1880,
+          "A": 1882,
           "B": 1112,
           "C": 452,
           "D": 157,
           "F": 5
         },
-        "inventory_dolt_commit": "8ih5losgj9120patrkdulsml0gtn9clj",
-        "inventory_run_id": 18,
+        "inventory_dolt_commit": "vdc8inn59b1n0oor6m5hfjesbvnc2nl9",
+        "inventory_run_id": 19,
         "target_lag_runs": 0
       }
     },
@@ -2011,7 +2019,7 @@
       "reproduce": "pnpm run measure:e1 --row=54 --stdout",
       "source": [
         "freshie/reports/legacy-forge-proofs-demotion.json",
-        "freshie/reports/run-delta-18.json",
+        "freshie/reports/run-delta-19.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py",
         "scripts/record-jrig-proofs.mjs"
@@ -2027,9 +2035,9 @@
         "invalid_identities": 0,
         "legacy_e0_records": 3,
         "retained_e2_e3": 0,
-        "source_dolt_commit": "8ih5losgj9120patrkdulsml0gtn9clj",
-        "source_run_id": 18,
-        "source_tag": "run-18",
+        "source_dolt_commit": "vdc8inn59b1n0oor6m5hfjesbvnc2nl9",
+        "source_run_id": 19,
+        "source_tag": "run-19",
         "target_legacy_e0_records": 3,
         "target_unclassified": 0,
         "total_e2_e3": 0,
@@ -2047,7 +2055,7 @@
       "source": [
         "000-docs/807-DR-STND-evaluation-evidence.md",
         "freshie/reports/legacy-forge-proofs-demotion.json",
-        "freshie/reports/run-delta-18.json",
+        "freshie/reports/run-delta-19.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py"
       ],
@@ -2097,7 +2105,9 @@
         "plugins/saas-packs/sentry-pack/skills/sentry-data-handling/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-access-guardian/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-cost-leak-hunter/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-data-quality-sentinel/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-deploy-medic/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-failover-readiness-drill/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-pipeline-guardian/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-query-forensics/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-strong-auth-migration-pilot/eval-spec.yaml",
@@ -2117,7 +2127,9 @@
         "skills/.curated/skill-creator/eval-spec.yaml",
         "skills/.curated/snowflake-access-guardian/eval-spec.yaml",
         "skills/.curated/snowflake-cost-leak-hunter/eval-spec.yaml",
+        "skills/.curated/snowflake-data-quality-sentinel/eval-spec.yaml",
         "skills/.curated/snowflake-deploy-medic/eval-spec.yaml",
+        "skills/.curated/snowflake-failover-readiness-drill/eval-spec.yaml",
         "skills/.curated/snowflake-pipeline-guardian/eval-spec.yaml",
         "skills/.curated/snowflake-query-forensics/eval-spec.yaml",
         "skills/.curated/snowflake-strong-auth-migration-pilot/eval-spec.yaml",
@@ -2126,11 +2138,11 @@
       ],
       "status": "measured",
       "values": {
-        "adoption_percent": 0.64,
-        "curated_copies": 20,
-        "plugin_skill_rows": 3106,
-        "source_eval_specs": 20,
-        "tracked_eval_specs": 40
+        "adoption_percent": 0.71,
+        "curated_copies": 22,
+        "plugin_skill_rows": 3108,
+        "source_eval_specs": 22,
+        "tracked_eval_specs": 44
       }
     },
     "58": {
