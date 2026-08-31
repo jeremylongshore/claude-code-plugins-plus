@@ -25058,7 +25058,7 @@
         "references/verification-and-rollback.md",
         "scripts/analyze_access.py",
         "tests/fixtures/access.json",
-        "tests/test_analyzer.py"
+        "tests/test_access_analyzer.py"
       ]
     },
     {
@@ -25163,7 +25163,7 @@
         "references/workload-auth-options.md",
         "scripts/analyze_auth.py",
         "tests/fixtures/auth.json",
-        "tests/test_analyzer.py"
+        "tests/test_auth_analyzer.py"
       ]
     },
     {
