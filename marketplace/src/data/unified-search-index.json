@@ -33114,7 +33114,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33135,7 +33135,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33155,7 +33155,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33175,7 +33175,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33195,7 +33195,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33215,7 +33215,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33238,7 +33238,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33260,7 +33260,7 @@
         "Bash(kubectl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33280,7 +33280,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33300,7 +33300,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33321,7 +33321,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33345,7 +33345,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33368,7 +33368,7 @@
         "Bash(node:*)"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33390,7 +33390,7 @@
         "Bash(node:*)"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33410,7 +33410,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33430,7 +33430,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33450,7 +33450,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33471,7 +33471,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33491,7 +33491,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33510,7 +33510,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33530,7 +33530,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33550,7 +33550,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33571,7 +33571,7 @@
         "Bash(npm:*)"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -33593,7 +33593,7 @@
         "Bash(ngrok:*)"
       ],
       "compatibleWith": [],
-      "version": "1.13.0",
+      "version": "1.14.0",
       "parentPlugin": {
         "name": "documenso-pack",
         "category": "saas-packs"
@@ -39652,7 +39652,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39673,7 +39673,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39696,7 +39696,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39719,7 +39719,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39740,7 +39740,7 @@
         "Bash(fly:*)"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39762,7 +39762,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39785,7 +39785,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39808,7 +39808,7 @@
         "Bash(docker:*)"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39831,7 +39831,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39854,7 +39854,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39875,7 +39875,7 @@
         "Bash(fly:*)"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39896,7 +39896,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39916,7 +39916,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39936,7 +39936,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39956,7 +39956,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39977,7 +39977,7 @@
         "Bash(fly:*)"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -39999,7 +39999,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -40021,7 +40021,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "flyio-pack",
         "category": "saas-packs"
@@ -63329,7 +63329,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "2.8.0",
+      "version": "2.9.0",
       "parentPlugin": {
         "name": "podium-pack",
         "category": "saas-packs"
@@ -63354,7 +63354,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "2.8.0",
+      "version": "2.9.0",
       "parentPlugin": {
         "name": "podium-pack",
         "category": "saas-packs"
@@ -63379,7 +63379,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "2.8.0",
+      "version": "2.9.0",
       "parentPlugin": {
         "name": "podium-pack",
         "category": "saas-packs"
@@ -63405,7 +63405,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "2.8.0",
+      "version": "2.9.0",
       "parentPlugin": {
         "name": "podium-pack",
         "category": "saas-packs"
@@ -63430,7 +63430,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "2.8.0",
+      "version": "2.9.0",
       "parentPlugin": {
         "name": "podium-pack",
         "category": "saas-packs"
@@ -63455,7 +63455,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "2.8.0",
+      "version": "2.9.0",
       "parentPlugin": {
         "name": "podium-pack",
         "category": "saas-packs"
@@ -63480,7 +63480,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "2.8.0",
+      "version": "2.9.0",
       "parentPlugin": {
         "name": "podium-pack",
         "category": "saas-packs"
@@ -63505,7 +63505,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "2.8.0",
+      "version": "2.9.0",
       "parentPlugin": {
         "name": "podium-pack",
         "category": "saas-packs"
@@ -63529,7 +63529,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "2.8.0",
+      "version": "2.9.0",
       "parentPlugin": {
         "name": "podium-pack",
         "category": "saas-packs"
@@ -63554,7 +63554,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "2.8.0",
+      "version": "2.9.0",
       "parentPlugin": {
         "name": "podium-pack",
         "category": "saas-packs"
@@ -67125,7 +67125,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67144,7 +67144,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67165,7 +67165,7 @@
         "Bash(gh:*)"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67185,7 +67185,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67208,7 +67208,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67230,7 +67230,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67249,7 +67249,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67269,7 +67269,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67291,7 +67291,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67312,7 +67312,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67333,7 +67333,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67355,7 +67355,7 @@
         "Bash(pip:*)"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67375,7 +67375,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67399,7 +67399,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67418,7 +67418,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67440,7 +67440,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67462,7 +67462,7 @@
         "Bash(npx:*)"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67484,7 +67484,7 @@
         "Bash(pip:*)"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67504,7 +67504,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67524,7 +67524,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67544,7 +67544,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67565,7 +67565,7 @@
         "Bash(npx:*)"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67585,7 +67585,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67605,7 +67605,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67624,7 +67624,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67644,7 +67644,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67664,7 +67664,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67684,7 +67684,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67706,7 +67706,7 @@
         "Bash(pip:*)"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -67727,7 +67727,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.13.0",
       "parentPlugin": {
         "name": "replit-pack",
         "category": "saas-packs"
@@ -74087,7 +74087,7 @@
         "Bash(psql:*)"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74110,7 +74110,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74133,7 +74133,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74153,7 +74153,7 @@
         "Bash(gh:*)"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74175,7 +74175,7 @@
         "Bash(npx:*)"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74197,7 +74197,7 @@
         "Bash(supabase:*)"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74222,7 +74222,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74247,7 +74247,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74270,7 +74270,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74293,7 +74293,7 @@
         "Bash(psql:*)"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74316,7 +74316,7 @@
         "Bash(supabase:*)"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74339,7 +74339,7 @@
         "Bash(psql:*)"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74366,7 +74366,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74385,7 +74385,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74409,7 +74409,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74434,7 +74434,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74459,7 +74459,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74482,7 +74482,7 @@
         "Bash(vercel:*)"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74505,7 +74505,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74528,7 +74528,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74552,7 +74552,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74575,7 +74575,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74599,7 +74599,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74624,7 +74624,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74647,7 +74647,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74668,7 +74668,7 @@
         "Bash(npx:*)"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74689,7 +74689,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74712,7 +74712,7 @@
         "Bash(npx supabase:*)"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74739,7 +74739,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"
@@ -74760,7 +74760,7 @@
         "Bash(psql:*)"
       ],
       "compatibleWith": [],
-      "version": "1.53.0",
+      "version": "1.54.0",
       "parentPlugin": {
         "name": "supabase-pack",
         "category": "saas-packs"

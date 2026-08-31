@@ -12,7 +12,7 @@ description: 'Set up local development environment and testing workflow for Docu
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(docker:*), Bash(node:*)
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

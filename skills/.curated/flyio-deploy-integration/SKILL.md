@@ -8,7 +8,7 @@ description: 'Advanced Fly.io deployment strategies including blue-green deploym
 
   '
 allowed-tools: Read, Write, Edit, Bash(fly:*), Bash(curl:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

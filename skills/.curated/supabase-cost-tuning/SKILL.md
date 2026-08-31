@@ -15,7 +15,7 @@ description: 'Optimize Supabase costs through plan selection, database tuning, s
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(supabase:*)
-version: 1.53.0
+version: 1.54.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
