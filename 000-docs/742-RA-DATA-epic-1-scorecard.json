@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3108,
-        "tracked_files": 23316
+        "tracked_files": 23772
       }
     },
     "2": {
@@ -577,8 +577,8 @@
       "cohort": "literal docs.anthropic.com occurrences in tracked text-like files",
       "dimension": "docs.anthropic.com occurrences",
       "measured_proxy": {
-        "files": 173,
-        "occurrences": 487,
+        "files": 189,
+        "occurrences": 521,
         "paths": [
           "000-docs/198-DR-SOPS-03-mcp-reliability.md",
           "000-docs/688-AA-AACR-2026-06-04-wiki-audit.md",
@@ -696,17 +696,33 @@
           "scripts/measure-canonical-surface.mjs",
           "skills/.curated/agent-context-loader/SKILL.md",
           "skills/.curated/agent-safety-preflight/SKILL.md",
+          "skills/.curated/anth-advanced-troubleshooting/SKILL.md",
+          "skills/.curated/anth-architecture-variants/SKILL.md",
           "skills/.curated/anth-ci-integration/SKILL.md",
+          "skills/.curated/anth-common-errors/SKILL.md",
           "skills/.curated/anth-core-workflow-a/SKILL.md",
+          "skills/.curated/anth-core-workflow-b/SKILL.md",
           "skills/.curated/anth-cost-tuning/SKILL.md",
+          "skills/.curated/anth-debug-bundle/SKILL.md",
           "skills/.curated/anth-deploy-integration/SKILL.md",
+          "skills/.curated/anth-enterprise-rbac/SKILL.md",
           "skills/.curated/anth-hello-world/SKILL.md",
+          "skills/.curated/anth-incident-runbook/SKILL.md",
           "skills/.curated/anth-install-auth/SKILL.md",
+          "skills/.curated/anth-known-pitfalls/SKILL.md",
           "skills/.curated/anth-load-scale/SKILL.md",
           "skills/.curated/anth-local-dev-loop/SKILL.md",
+          "skills/.curated/anth-migration-deep-dive/SKILL.md",
           "skills/.curated/anth-multi-env-setup/SKILL.md",
+          "skills/.curated/anth-observability/SKILL.md",
+          "skills/.curated/anth-performance-tuning/SKILL.md",
+          "skills/.curated/anth-policy-guardrails/SKILL.md",
           "skills/.curated/anth-prod-checklist/SKILL.md",
+          "skills/.curated/anth-rate-limits/SKILL.md",
+          "skills/.curated/anth-reference-architecture/SKILL.md",
+          "skills/.curated/anth-reliability-patterns/SKILL.md",
           "skills/.curated/anth-security-basics/SKILL.md",
+          "skills/.curated/anth-upgrade-migration/SKILL.md",
           "skills/.curated/anth-webhooks-events/SKILL.md",
           "skills/.curated/clade-advanced-troubleshooting/SKILL.md",
           "skills/.curated/clade-architecture-variants/SKILL.md",
@@ -877,17 +893,33 @@
         "scripts/measure-canonical-surface.mjs",
         "skills/.curated/agent-context-loader/SKILL.md",
         "skills/.curated/agent-safety-preflight/SKILL.md",
+        "skills/.curated/anth-advanced-troubleshooting/SKILL.md",
+        "skills/.curated/anth-architecture-variants/SKILL.md",
         "skills/.curated/anth-ci-integration/SKILL.md",
+        "skills/.curated/anth-common-errors/SKILL.md",
         "skills/.curated/anth-core-workflow-a/SKILL.md",
+        "skills/.curated/anth-core-workflow-b/SKILL.md",
         "skills/.curated/anth-cost-tuning/SKILL.md",
+        "skills/.curated/anth-debug-bundle/SKILL.md",
         "skills/.curated/anth-deploy-integration/SKILL.md",
+        "skills/.curated/anth-enterprise-rbac/SKILL.md",
         "skills/.curated/anth-hello-world/SKILL.md",
+        "skills/.curated/anth-incident-runbook/SKILL.md",
         "skills/.curated/anth-install-auth/SKILL.md",
+        "skills/.curated/anth-known-pitfalls/SKILL.md",
         "skills/.curated/anth-load-scale/SKILL.md",
         "skills/.curated/anth-local-dev-loop/SKILL.md",
+        "skills/.curated/anth-migration-deep-dive/SKILL.md",
         "skills/.curated/anth-multi-env-setup/SKILL.md",
+        "skills/.curated/anth-observability/SKILL.md",
+        "skills/.curated/anth-performance-tuning/SKILL.md",
+        "skills/.curated/anth-policy-guardrails/SKILL.md",
         "skills/.curated/anth-prod-checklist/SKILL.md",
+        "skills/.curated/anth-rate-limits/SKILL.md",
+        "skills/.curated/anth-reference-architecture/SKILL.md",
+        "skills/.curated/anth-reliability-patterns/SKILL.md",
         "skills/.curated/anth-security-basics/SKILL.md",
+        "skills/.curated/anth-upgrade-migration/SKILL.md",
         "skills/.curated/anth-webhooks-events/SKILL.md",
         "skills/.curated/clade-advanced-troubleshooting/SKILL.md",
         "skills/.curated/clade-architecture-variants/SKILL.md",
@@ -1156,7 +1188,7 @@
         "answers": [
           {
             "cohort": "curated-mirror",
-            "value": 2057
+            "value": 2426
           },
           {
             "cohort": "curriculum",
@@ -1878,7 +1910,7 @@
         "invalid_patterns": 0,
         "invisible_files": 22,
         "target_invisible_files": 0,
-        "tracked_files": 23316
+        "tracked_files": 23772
       }
     },
     "47": {

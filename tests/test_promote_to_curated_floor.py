@@ -8,10 +8,10 @@ Two defects pinned here:
      computes the selection first and ABORTS non-zero — mirror untouched — when
      the selection is empty or below SHRINK_FLOOR_RATIO of the committed
      MANIFEST count. --allow-shrink overrides for a legitimate large drop.
-  2. Degrade contract vs SystemExit (P2): the validator's module-level guard
+  2. Validator import vs SystemExit (P2): the validator's module-level guard
      calls sys.exit(1) when pyyaml is missing; SystemExit inherits BaseException,
-     so load_validator's `except Exception` never caught it and the documented
-     "degrades to recorded grades" fallback silently did not apply.
+     so load_validator's `except Exception` never caught it. The import helper now
+     returns None and production build mode fails closed before mirror mutation.
 
 Run: python3 -m unittest tests.test_promote_to_curated_floor -v
 
@@ -21,7 +21,11 @@ touches the real repo.
 """
 
 import importlib.util
+import csv
+import hashlib
+import io
 import json
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
@@ -60,16 +64,27 @@ class PromoteFloorTests(unittest.TestCase):
 
         self.grades_csv = root / "freshie" / "grades.csv"
         self.grades_csv.parent.mkdir(parents=True)
+        self.grades_csv.write_text("skill_path,grade,score\n", encoding="utf-8")
 
         self._orig = {
             k: getattr(pc, k)
-            for k in ("ROOT", "GRADES_CSV", "GRADE_HISTOGRAM", "CURATED_DIR", "MANIFEST", "tracked_files")
+            for k in (
+                "ROOT",
+                "GRADES_CSV",
+                "GRADE_HISTOGRAM",
+                "CURATED_DIR",
+                "MANIFEST",
+                "tracked_files",
+                "resolve_corpora",
+            )
         }
         pc.ROOT = root
         pc.GRADES_CSV = self.grades_csv
         pc.GRADE_HISTOGRAM = root / "freshie" / "grade-histogram.json"
         pc.CURATED_DIR = self.curated
         pc.MANIFEST = self.manifest
+        pc.resolve_corpora = self._resolve_test_corpora
+        self._sync_histogram()
 
     def tearDown(self):
         for k, v in self._orig.items():
@@ -79,21 +94,75 @@ class PromoteFloorTests(unittest.TestCase):
     # ── helpers ──────────────────────────────────────────────────────────
     def _write_manifest(self, n: int) -> None:
         self.manifest.write_text(
-            json.dumps({"count": n, "skills": [{"curated_name": f"existing-{i}"} for i in range(n)]})
+            json.dumps(
+                {
+                    "count": n,
+                    "skills": [
+                        {
+                            "curated_name": f"existing-{i}",
+                            "source_path": f"plugins/cat/existing/skills/existing-{i}",
+                        }
+                        for i in range(n)
+                    ],
+                }
+            )
         )
 
-    def _make_candidates(self, n: int) -> None:
-        """Write a grades.csv with n A-grade plugin skills whose sources exist."""
+    def _resolve_test_corpora(self, *cohorts):
+        files = {
+            path.relative_to(self.root).as_posix()
+            for path in self.root.glob("plugins/**/SKILL.md")
+        }
+        return {cohort: set(files) for cohort in cohorts}
+
+    def _sync_histogram(self) -> None:
+        raw = self.grades_csv.read_bytes()
+        rows = list(csv.DictReader(io.StringIO(raw.decode("utf-8"), newline="")))
+        counts = {grade: 0 for grade in ("A", "B", "C", "D", "F")}
+        for row in rows:
+            if row.get("grade") in counts:
+                counts[row["grade"]] += 1
+        pc.GRADE_HISTOGRAM.write_text(
+            json.dumps(
+                {
+                    "run_id": 99,
+                    "total": len(rows),
+                    "grades": counts,
+                    "grades_csv_sha256": hashlib.sha256(raw).hexdigest(),
+                }
+            ),
+            encoding="utf-8",
+        )
+
+    def _make_graded_candidates(self, grades: list[str]) -> None:
+        """Write grades.csv rows and matching first-party source skills."""
         lines = ["skill_path,grade,score"]
-        for i in range(n):
+        for i, grade in enumerate(grades):
             sp = f"plugins/cat/plug/skills/cand-{i}"
             src = self.root / sp
             src.mkdir(parents=True, exist_ok=True)
             (src / "SKILL.md").write_text(SKILL_MD.format(name=f"cand-{i}"), encoding="utf-8")
-            lines.append(f"{sp},A,95")
+            lines.append(f"{sp},{grade},{95 - i}")
         self.grades_csv.write_text("\n".join(lines) + "\n")
+        self._sync_histogram()
         # tmp tree is not a git repo — pretend every source tracks its SKILL.md
         pc.tracked_files = lambda skill_dir: ["SKILL.md"]
+
+    def _make_candidates(self, n: int) -> None:
+        """Write a grades.csv with n A-grade plugin skills whose sources exist."""
+        self._make_graded_candidates(["A"] * n)
+
+    def _build_validated(self) -> int:
+        """Exercise the production validation path with a deterministic fake grader."""
+        with (
+            mock.patch.object(pc, "load_validator", return_value=object()),
+            mock.patch.object(pc, "fresh_grade", side_effect=lambda _vss, skill_dir: next(
+                row["grade"]
+                for row in csv.DictReader(self.grades_csv.read_text(encoding="utf-8").splitlines())
+                if self.root / row["skill_path"] == skill_dir
+            )),
+        ):
+            return pc.build(validate=True, quiet=True)
 
     def _mirror_intact(self) -> bool:
         return all(d.is_dir() and (d / "SKILL.md").is_file() for d in self.existing_dirs)
@@ -112,6 +181,82 @@ class PromoteFloorTests(unittest.TestCase):
         self.assertNotEqual(rc, 0)
         self.assertTrue(self._mirror_intact())
 
+    def test_non_object_grade_histogram_refuses_build_and_check(self):
+        sentinel = (self.existing_dirs[0] / "SKILL.md").read_bytes()
+        for malformed in ([], None, "not-an-object"):
+            with self.subTest(malformed=malformed):
+                self.grades_csv.write_text("skill_path,grade,score\n", encoding="utf-8")
+                self._sync_histogram()
+                self.grades_csv.parent.joinpath("grade-histogram.json").write_text(
+                    json.dumps(malformed), encoding="utf-8"
+                )
+                self.assertNotEqual(pc.build(validate=False, quiet=True), 0)
+                self.assertEqual((self.existing_dirs[0] / "SKILL.md").read_bytes(), sentinel)
+                self.assertEqual(pc.check(quiet=True), 1)
+
+    def test_boolean_grade_histogram_run_id_refuses_build_and_check(self):
+        histogram = json.loads(pc.GRADE_HISTOGRAM.read_text(encoding="utf-8"))
+        histogram["run_id"] = True
+        self.grades_csv.write_text("skill_path,grade,score\n", encoding="utf-8")
+        self._sync_histogram()
+        pc.GRADE_HISTOGRAM.write_text(json.dumps(histogram), encoding="utf-8")
+
+        self.assertNotEqual(pc.build(validate=False, quiet=True), 0)
+        self.assertEqual(pc.check(quiet=True), 1)
+
+    def test_resolver_failure_is_a_controlled_refusal(self):
+        with mock.patch.object(pc, "resolve_corpora", side_effect=RuntimeError("resolver unavailable")):
+            self.assertEqual(pc.build(validate=False, quiet=True), 2)
+            self.assertEqual(pc.check(quiet=True), 1)
+
+    def test_invalid_resolver_cohort_shape_is_a_controlled_refusal(self):
+        result = mock.Mock(returncode=0, stdout=json.dumps({"cohorts": []}), stderr="")
+        with mock.patch.object(pc.subprocess, "run", return_value=result):
+            with self.assertRaises(pc.PromotionInvariantError):
+                self._orig["resolve_corpora"]("graded", "first-party")
+
+    def test_non_object_manifest_refuses_check(self):
+        for malformed in ([], None, "not-an-object"):
+            with self.subTest(malformed=malformed):
+                self.manifest.write_text(json.dumps(malformed), encoding="utf-8")
+                self.assertEqual(pc.check(quiet=True), 1)
+
+    def test_root_stray_file_without_manifest_refuses_check(self):
+        for directory in self.existing_dirs:
+            shutil.rmtree(directory)
+        self.manifest.unlink()
+        (self.curated / "stray.txt").write_text("untracked root content", encoding="utf-8")
+
+        self.assertEqual(pc.check(quiet=True), 1)
+
+    def test_malformed_manifest_aborts_before_wipe(self):
+        self._make_candidates(4)
+        sentinel = (self.existing_dirs[0] / "SKILL.md").read_bytes()
+        self.manifest.write_text('{"count": 4, "skills": [', encoding="utf-8")
+
+        rc = pc.build(validate=False, quiet=True)
+
+        self.assertNotEqual(rc, 0)
+        self.assertEqual((self.existing_dirs[0] / "SKILL.md").read_bytes(), sentinel)
+        self.assertEqual(self.manifest.read_text(encoding="utf-8"), '{"count": 4, "skills": [')
+
+    def test_mirror_without_manifest_aborts_before_wipe(self):
+        self._make_candidates(4)
+        self.manifest.unlink()
+
+        rc = pc.build(validate=False, quiet=True)
+
+        self.assertNotEqual(rc, 0)
+        self.assertTrue(self._mirror_intact())
+
+    def test_unavailable_validator_aborts_before_wipe(self):
+        self._make_candidates(4)
+        with mock.patch.object(pc, "load_validator", return_value=None):
+            rc = pc.build(validate=True, quiet=True)
+
+        self.assertNotEqual(rc, 0)
+        self.assertTrue(self._mirror_intact())
+
     def test_selection_below_ratio_floor_aborts(self):
         # committed mirror says 10; the new selection is only 2 (< 50% floor)
         self._write_manifest(10)
@@ -123,6 +268,7 @@ class PromoteFloorTests(unittest.TestCase):
     # ── --allow-shrink is the explicit override ──────────────────────────
     def test_allow_shrink_permits_empty_rebuild(self):
         self.grades_csv.write_text("skill_path,grade,score\n")
+        self._sync_histogram()
         rc = pc.build(validate=False, quiet=True, allow_shrink=True)
         self.assertEqual(rc, 0)
         self.assertFalse(self._mirror_intact(), "--allow-shrink rebuild wipes the old mirror")
@@ -150,8 +296,6 @@ class PromoteFloorTests(unittest.TestCase):
     def test_first_build_without_manifest_builds(self):
         # no committed MANIFEST / mirror at all -> no baseline, only the
         # empty-selection guard applies
-        import shutil
-
         shutil.rmtree(self.curated)
         self._make_candidates(2)
         rc = pc.build(validate=False, quiet=True)
@@ -159,81 +303,177 @@ class PromoteFloorTests(unittest.TestCase):
         self.assertEqual(json.loads(self.manifest.read_text())["count"], 2)
 
     def test_first_build_with_empty_selection_still_aborts(self):
-        import shutil
-
         shutil.rmtree(self.curated)
         self.grades_csv.write_text("skill_path,grade,score\n")
+        self._sync_histogram()
         rc = pc.build(validate=False, quiet=True)
         self.assertNotEqual(rc, 0)
         self.assertFalse(self.curated.exists(), "no mirror should be created on abort")
 
-    def test_targeted_build_replaces_only_requested_plugin(self):
-        old_target = self.curated / "old-target"
-        old_target.mkdir()
-        (old_target / "SKILL.md").write_text(SKILL_MD.format(name="old-target"), encoding="utf-8")
+    def test_historical_check_build_denominator_split_fails_closed(self):
+        """Pin the PR #1400 defect: old check=2 while build would select 3."""
+        shutil.rmtree(self.curated)
+        self._make_candidates(2)
+        self.assertEqual(self._build_validated(), 0)
+        accepted_manifest = self.manifest.read_bytes()
+
+        # Plant the mode-specific cohort difference that the old --check missed:
+        # the grade export and first-party resolver now contain one more A skill,
+        # while every byte represented by the two-entry manifest remains exact.
+        self._make_candidates(3)
+        self.assertEqual(pc.check(quiet=True), 1)
+        self.assertEqual(self.manifest.read_bytes(), accepted_manifest)
+        self.assertFalse((self.curated / "cand-2").exists())
+
+    def test_build_then_check_is_byte_identical_and_rebuild_deterministic(self):
+        shutil.rmtree(self.curated)
+        self._make_graded_candidates(["A", "B"])
+        self.assertEqual(self._build_validated(), 0)
+        first_manifest = self.manifest.read_bytes()
+        first_files = {
+            path.relative_to(self.curated).as_posix(): path.read_bytes()
+            for path in sorted(self.curated.rglob("*"))
+            if path.is_file()
+        }
+
+        self.assertEqual(pc.check(quiet=True), 0)
+        self.assertEqual(self.manifest.read_bytes(), first_manifest)
+        self.assertEqual(self._build_validated(), 0)
+        second_files = {
+            path.relative_to(self.curated).as_posix(): path.read_bytes()
+            for path in sorted(self.curated.rglob("*"))
+            if path.is_file()
+        }
+        self.assertEqual(second_files, first_files)
+
+    def test_non_ab_historical_grades_never_enter_selection_or_manifest(self):
+        shutil.rmtree(self.curated)
+        self._make_graded_candidates(["A", "B", "C", "D", "F"])
+        self.assertEqual(self._build_validated(), 0)
+
+        manifest = json.loads(self.manifest.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["count"], 2)
+        self.assertEqual(manifest["selection"]["count"], 2)
+        self.assertEqual(
+            {entry["source_path"] for entry in manifest["skills"]},
+            {
+                "plugins/cat/plug/skills/cand-0",
+                "plugins/cat/plug/skills/cand-1",
+            },
+        )
+        self.assertTrue(all(entry["recorded_grade"] in {"A", "B"} for entry in manifest["skills"]))
+        self.assertEqual(pc.check(quiet=True), 0)
+
+    def test_external_temp_manifest_path_is_printable(self):
+        outside = Path(tempfile.gettempdir()) / "e834-external" / "MANIFEST.json"
+        self.assertEqual(pc._display_path(outside, self.root), str(outside))
+
+    def test_targeted_build_refreshes_only_requested_plugin(self):
+        shutil.rmtree(self.curated)
+        old_target = self.curated / "target"
+        old_target.mkdir(parents=True)
+        (old_target / "SKILL.md").write_text("stale target copy\n", encoding="utf-8")
         unrelated = self.curated / "unrelated"
         unrelated.mkdir()
         unrelated_body = SKILL_MD.format(name="unrelated")
         (unrelated / "SKILL.md").write_text(unrelated_body, encoding="utf-8")
 
-        existing = json.loads(self.manifest.read_text())
-        existing["skills"].extend(
-            [
-                {
-                    "curated_name": "old-target",
-                    "source_path": "plugins/cat/target-pack/skills/old-target",
-                    "plugin": "target-pack",
-                },
-                {
-                    "curated_name": "unrelated",
-                    "source_path": "plugins/cat/other-pack/skills/unrelated",
-                    "plugin": "other-pack",
-                },
-            ]
+        target_source_path = "plugins/cat/target-pack/skills/target"
+        target_source = self.root / target_source_path
+        target_source.mkdir(parents=True)
+        target_body = SKILL_MD.format(name="target")
+        (target_source / "SKILL.md").write_text(target_body, encoding="utf-8")
+        unrelated_source_path = "plugins/cat/other-pack/skills/unrelated"
+        unrelated_source = self.root / unrelated_source_path
+        unrelated_source.mkdir(parents=True)
+        (unrelated_source / "SKILL.md").write_text(unrelated_body, encoding="utf-8")
+        candidates = [
+            {
+                "skill_path": unrelated_source_path,
+                "grade": "A",
+                "score": "95",
+                "category": "cat",
+                "plugin": "other-pack",
+                "name": "unrelated",
+            },
+            {
+                "skill_path": target_source_path,
+                "grade": "A",
+                "score": "95",
+                "category": "cat",
+                "plugin": "target-pack",
+                "name": "target",
+            },
+        ]
+        candidates.sort(key=lambda candidate: candidate["skill_path"])
+        pc.assign_curated_names(candidates)
+        self.grades_csv.write_text(
+            "skill_path,grade,score\n"
+            f"{unrelated_source_path},A,95\n"
+            f"{target_source_path},A,95\n",
+            encoding="utf-8",
         )
-        existing["count"] = len(existing["skills"])
+        self._sync_histogram()
+        pc.tracked_files = lambda skill_dir: ["SKILL.md"]
+        _, grade_export = pc._load_grade_rows(self.grades_csv)
+        existing = {
+            "generator": "freshie/scripts/promote-to-curated.py",
+            "generated_from": "freshie/grades.csv",
+            "run_id": 99,
+            "threshold": "AB",
+            "validated": True,
+            "grade_export": grade_export,
+            "selection": pc._selection_metadata(candidates),
+            "count": 2,
+            "skills": [
+                {
+                    "curated_name": candidate["curated_name"],
+                    "source_path": candidate["skill_path"],
+                    "category": candidate["category"],
+                    "plugin": candidate["plugin"],
+                    "recorded_grade": candidate["grade"],
+                    "recorded_score": candidate["score"],
+                    "fresh_grade": candidate["grade"],
+                    "run_id": 99,
+                    "files": ["SKILL.md"],
+                }
+                for candidate in candidates
+            ],
+        }
         self.manifest.write_text(json.dumps(existing), encoding="utf-8")
 
-        source_path = "plugins/cat/target-pack/skills/new-target"
-        source = self.root / source_path
-        source.mkdir(parents=True)
-        (source / "SKILL.md").write_text(SKILL_MD.format(name="new-target"), encoding="utf-8")
-        candidate = {
-            "skill_path": source_path,
-            "grade": "A",
-            "score": "95",
-            "category": "cat",
-            "plugin": "target-pack",
-            "name": "new-target",
-        }
-        pc.tracked_files = lambda skill_dir: ["SKILL.md"]
-
-        with mock.patch.object(pc, "load_candidates", return_value=[candidate]):
+        with mock.patch.object(
+            pc,
+            "resolve_promotion_candidates",
+            return_value=(candidates, grade_export),
+        ):
             rc = pc.build(validate=False, quiet=True, target_plugin="target-pack")
 
         self.assertEqual(rc, 0)
-        self.assertFalse(old_target.exists())
-        self.assertTrue((self.curated / "new-target" / "SKILL.md").is_file())
+        self.assertEqual((old_target / "SKILL.md").read_text(), target_body)
         self.assertEqual((unrelated / "SKILL.md").read_text(), unrelated_body)
         manifest = json.loads(self.manifest.read_text())
         names = {entry["curated_name"] for entry in manifest["skills"]}
-        self.assertIn("new-target", names)
+        self.assertIn("target", names)
         self.assertIn("unrelated", names)
-        self.assertNotIn("old-target", names)
 
     def test_targeted_build_with_no_candidates_does_not_mutate_mirror(self):
         manifest_before = self.manifest.read_bytes()
         skill_before = (self.existing_dirs[0] / "SKILL.md").read_bytes()
-        with mock.patch.object(pc, "load_candidates", return_value=[]):
+        _, grade_export = pc._load_grade_rows(self.grades_csv)
+        with mock.patch.object(
+            pc,
+            "resolve_promotion_candidates",
+            return_value=([], grade_export),
+        ):
             rc = pc.build(validate=False, quiet=True, target_plugin="target-pack")
         self.assertNotEqual(rc, 0)
         self.assertEqual(self.manifest.read_bytes(), manifest_before)
         self.assertEqual((self.existing_dirs[0] / "SKILL.md").read_bytes(), skill_before)
 
 
-class LoadValidatorDegradeTests(unittest.TestCase):
-    """The degrade contract must hold even when the validator hard-exits at
-    import time (SystemExit from its missing-pyyaml guard)."""
+class LoadValidatorFailureTests(unittest.TestCase):
+    """Validator import failures must become a controlled build refusal."""
 
     def setUp(self):
         self._tmp = tempfile.TemporaryDirectory()
@@ -243,14 +483,14 @@ class LoadValidatorDegradeTests(unittest.TestCase):
         pc.VALIDATOR = self._orig_validator
         self._tmp.cleanup()
 
-    def test_systemexit_at_import_degrades_to_none(self):
+    def test_systemexit_at_import_returns_none(self):
         fake = Path(self._tmp.name) / "fake_validator.py"
         fake.write_text("import sys\nsys.exit(1)\n")  # same shape as the pyyaml guard
         pc.VALIDATOR = fake
-        # must NOT raise SystemExit; must return None so build degrades
+        # must NOT raise SystemExit; build() converts None into a refusal
         self.assertIsNone(pc.load_validator())
 
-    def test_ordinary_exception_at_import_degrades_to_none(self):
+    def test_ordinary_exception_at_import_returns_none(self):
         fake = Path(self._tmp.name) / "fake_validator.py"
         fake.write_text("raise RuntimeError('kernel schema missing')\n")
         pc.VALIDATOR = fake
