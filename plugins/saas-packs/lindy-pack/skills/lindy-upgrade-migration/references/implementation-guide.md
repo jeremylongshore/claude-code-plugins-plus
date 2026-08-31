@@ -1,178 +1,172 @@
-# Lindy Upgrade Migration - Implementation Guide
+# Lindy Change and Migration Evidence Guide
 
-# Lindy Upgrade & Migration
+Use this guide for configuration changes, restores, template-based recreation,
+and workspace moves. Lindy's workspace UI and retained run evidence are the
+control surfaces; this workflow has no dependency on an SDK, package, API key,
+CLI, or undocumented export endpoint.
 
-## Overview
+## Contents
 
-Guide for safely upgrading Lindy SDK versions and migrating configurations.
+1. [Change record](#change-record)
+2. [Dependency inventory](#dependency-inventory)
+3. [Approval preservation](#approval-preservation)
+4. [Clean test plan](#clean-test-plan)
+5. [Cutover controls](#cutover-controls)
+6. [Rollback proof](#rollback-proof)
+7. [Evidence sufficiency](#evidence-sufficiency)
 
-## Prerequisites
-
-- Current SDK version identified
-- Changelog reviewed for target version
-- Backup of current configuration
-- Test environment available
-
-## Instructions
-
-### Step 1: Check Current Version
-
-```bash
-# Check installed version
-npm list @lindy-ai/sdk
-
-# Check latest available
-npm view @lindy-ai/sdk version
-
-# View changelog
-npm view @lindy-ai/sdk changelog
-```
-
-### Step 2: Review Breaking Changes
-
-```typescript
-// Common breaking changes by version
-
-// v1.x -> v2.x
-// - Client initialization changed
-// Before: new Lindy(apiKey)
-// After:  new Lindy({ apiKey })
-
-// - Agent.run() signature changed
-// Before: agent.run(input)
-// After:  lindy.agents.run(agentId, { input })
-
-// - Events renamed
-// Before: 'complete'
-// After:  'completed'
-```
-
-### Step 3: Update Dependencies
-
-```bash
-# Update to latest
-npm install @lindy-ai/sdk@latest
-
-# Or specific version
-npm install @lindy-ai/sdk@2.0.0
-
-# Check for peer dependency warnings
-npm ls @lindy-ai/sdk
-```
-
-### Step 4: Update Code
-
-```typescript
-// Migration script for v1 -> v2
-
-// Old code (v1)
-import Lindy from '@lindy-ai/sdk';
-const client = new Lindy(process.env.LINDY_API_KEY);
-const result = await client.runAgent('agt_123', 'Hello');
-
-// New code (v2)
-import { Lindy } from '@lindy-ai/sdk';
-const client = new Lindy({ apiKey: process.env.LINDY_API_KEY });
-const result = await client.agents.run('agt_123', { input: 'Hello' });
-```
-
-### Step 5: Run Migration Tests
-
-```typescript
-// tests/migration.test.ts
-import { Lindy } from '@lindy-ai/sdk';
-
-describe('SDK Migration', () => {
-  const lindy = new Lindy({ apiKey: process.env.LINDY_API_KEY });
-
-  test('client initialization works', async () => {
-    const user = await lindy.users.me();
-    expect(user.email).toBeDefined();
-  });
-
-  test('agent operations work', async () => {
-    const agents = await lindy.agents.list();
-    expect(Array.isArray(agents)).toBe(true);
-  });
-
-  test('run operations work', async () => {
-    const result = await lindy.agents.run('agt_test', {
-      input: 'Test migration',
-    });
-    expect(result.output).toBeDefined();
-  });
-});
-```
-
-## Migration Checklist
+## Change Record
 
 ```markdown
-[ ] Backup current configuration
-[ ] Review changelog for breaking changes
-[ ] Update package.json
-[ ] Run npm install
-[ ] Update import statements
-[ ] Update client initialization
-[ ] Update method calls
-[ ] Run test suite
-[ ] Test in staging environment
-[ ] Deploy to production
-[ ] Monitor for issues
+# Lindy change <identifier>
+
+Type: in-place / restore / template recreation / workspace move
+Source workspace: <identifier>
+Target workspace: <identifier or same>
+Workflow: <identifier>
+Change owner: <owner>
+Approver: <approver>
+Rollback owner: <owner>
+Acceptance owner: <owner>
+Rollback Version History entry: <name and observed timestamp>
+
+## Intended differences
+
+- <one bounded change>
+
+## Explicit non-goals
+
+- <out-of-scope workflow or side effect>
+
+## Acceptance criteria
+
+- <observable task result plus destination state>
 ```
 
-## Output
+Refer to secrets by secret-manager record name only. Do not paste secret values,
+OAuth tokens, full webhook URLs, customer payloads, or personal data.
 
-- Updated SDK to target version
-- Migrated code patterns
-- Passing test suite
-- Documented changes
+## Dependency Inventory
 
-## Error Handling
+Inventory source and target separately. A source observation does not establish a
+target fact.
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Import error | Named exports changed | Check new import syntax |
-| Type error | Interface changed | Update TypeScript types |
-| Runtime error | Method signature changed | Check new API |
+| Dependency | Source evidence | Target evidence | Status | Owner |
+|---|---|---|---|---|
+| Trigger type and filters | UI receipt | UI receipt | status | owner |
+| Actions and conditions | version/change review | candidate review | status | owner |
+| Integration identity and scopes | redacted UI receipt | redacted UI receipt | status | owner |
+| Knowledge sources | sanitized inventory | sanitized inventory | status | owner |
+| Human approval | approver and rejection test | approver and rejection test | status | owner |
+| Webhook destination | redacted fingerprint | redacted fingerprint | status | owner |
+| External destinations | sandbox receipt | sandbox receipt | status | owner |
+| Monitoring owner | runbook link | runbook link | status | owner |
+| Rollback route | exercised procedure | exercised procedure | status | owner |
 
-## Examples
+Allowed status values are `VERIFIED`, `FAILED`, `NOT VERIFIED`, and `N/A`. A
+template can accelerate recreation, but its installation does not prove that any
+workspace-bound dependency was transferred or preserved.
 
-### Automated Migration Script
+## Approval Preservation
 
-```bash
-#!/bin/bash
-# migrate-lindy.sh
+For each action requiring human oversight, capture:
 
-echo "Starting Lindy SDK migration..."
+- the action or decision being held;
+- the reviewer identity, group, or role;
+- what context the reviewer receives;
+- the approve, reject, timeout, and unavailable-reviewer paths;
+- whether rejection prevents the downstream side effect; and
+- a clean test receipt for each material path.
 
-# Backup
-cp package.json package.json.backup
-cp -r src src.backup
+Do not equate a visually present approval node with an effective control. Exercise
+the rejection path and verify the protected destination remains unchanged.
 
-# Update
-npm install @lindy-ai/sdk@latest
+## Clean Test Plan
 
-# Run tests
-npm test
+Lindy documents that the Test Panel executes workflows rather than simulating
+them. Route every action to sandboxed destinations and use synthetic values.
 
-if [ $? -eq 0 ]; then
-  echo "Migration successful!"
-  rm -rf src.backup package.json.backup
-else
-  echo "Migration failed. Rolling back..."
-  mv package.json.backup package.json
-  rm -rf src && mv src.backup src
-  npm install
-  exit 1
-fi
+| Case | Input | Expected task path | Expected destination evidence |
+|---|---|---|---|
+| Happy path | minimal valid synthetic event | expected branches complete | one sandbox side effect |
+| Boundary value | maximum approved local size/count | accepted or rejected per contract | bounded result |
+| Malformed input | wrong type or unknown field | validation branch | no external side effect |
+| Missing authorization | disconnected or denied test integration | error branch | no protected side effect |
+| Approval denied | synthetic high-risk action | rejection branch | no protected side effect |
+| Downstream failure | controlled sandbox failure | documented failure branch | observable failure only |
+| Duplicate event | same stable request ID twice | deduplicated behavior | at most one intended side effect |
+| Restore candidate | known-good test fixture | baseline path | baseline destination state |
+
+For every case, retain the Tasks-view task ID, step disposition, timestamps, and a
+sanitized destination receipt. A task status alone does not prove the destination
+effect; a destination effect alone does not prove the intended workflow produced it.
+
+## Cutover Controls
+
+Choose a cutover sequence from the actual architecture:
+
+```text
+approved candidate
+  -> synthetic target verification
+  -> controlled canary
+  -> task and destination reconciliation
+  -> remaining traffic
+  -> acceptance owner decision
 ```
 
-## Resources
+Define the canary size, observation window, stop conditions, and rollback trigger
+in the change record. They are organization decisions, not fixed Lindy values.
 
-- Lindy Changelog
-- Migration Guide
-- SDK Reference
+If old and new workflows can reach the same non-idempotent destination, never feed
+both the same production event. Use routing that has one active owner per event.
+Keep the old workflow and route available until acceptance is documented.
 
-## Next Steps
+For webhook callers, compare the target's generated webhook configuration to the
+source. If a URL or generated secret differs, update the caller through its normal
+secret/configuration deployment. Send the secret only to HTTPS on exact hostname
+`public.lindy.ai` and the approved generated webhook path.
 
-Proceed to Pro tier skills for advanced features.
+## Rollback Proof
+
+### In-place restore
+
+1. Select the recorded known-good entry in Version History.
+2. Review the configuration loaded into the editor.
+3. Save it, creating the new restored version documented by Lindy.
+4. Run the clean rollback tests.
+5. Verify the Tasks view and sandbox destination against the baseline.
+
+### Workspace or routing rollback
+
+1. Stop the candidate from receiving new events without deleting evidence.
+2. Restore the prior approved route and any caller configuration.
+3. Revalidate the prior authentication boundary.
+4. Submit one clean event.
+5. Match its task and destination result to the baseline.
+
+Record partial or failed rollback explicitly. Loading a historical configuration,
+changing routing, or seeing a 2xx response is not by itself rollback proof.
+
+## Evidence Sufficiency
+
+| Claim | Minimum evidence |
+|---|---|
+| Candidate matches intended change | reviewed change record plus target UI receipt |
+| Workflow works | clean task receipt plus expected destination state |
+| Approval is preserved | approve and reject receipts with destination verification |
+| Webhook caller is migrated | target task correlated to unique clean request ID |
+| Restore works | saved restored version plus clean baseline test |
+| Migration is complete | all required dependencies verified and owner acceptance |
+
+If evidence is absent, stale, indirect, or contradictory, the status is
+`NOT VERIFIED` or `FAILED`; it is never silently promoted to `VERIFIED`.
+
+## Official References
+
+- [Version History](https://docs.lindy.ai/testing/version-history)
+- [Test Panel](https://docs.lindy.ai/testing/test-panel)
+- [Tasks](https://docs.lindy.ai/fundamentals/lindy-101/tasks)
+- [Human in the Loop](https://docs.lindy.ai/testing/human-in-the-loop)
+- [Templates](https://docs.lindy.ai/fundamentals/lindy-101/templates)
+- [Workspaces](https://docs.lindy.ai/account-billing/workspaces)
+- [Webhooks](https://docs.lindy.ai/skills/by-lindy/webhooks)

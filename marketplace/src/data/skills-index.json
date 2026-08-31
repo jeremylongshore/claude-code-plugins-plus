@@ -20225,7 +20225,7 @@
     {
       "slug": "lindy-sdk-patterns",
       "name": "lindy-sdk-patterns",
-      "description": "'Lindy AI integration patterns for webhook handling, HTTP actions, and",
+      "description": "'Lindy integration patterns for webhook handling, HTTP actions, and",
       "version": "1.19.0",
       "category": "saas-packs",
       "parentPlugin": "lindy-pack",
@@ -20237,7 +20237,7 @@
     {
       "slug": "lindy-security-basics",
       "name": "lindy-security-basics",
-      "description": "'Implement security best practices for Lindy AI agents and integrations.",
+      "description": "'Implement security best practices for Lindy agents and integrations.",
       "version": "1.19.0",
       "category": "saas-packs",
       "parentPlugin": "lindy-pack",
@@ -36472,7 +36472,7 @@
     }
   ],
   "count": 3039,
-  "generatedAt": "2026-08-30T23:48:14.923Z",
+  "generatedAt": "2026-08-31T00:16:22.458Z",
   "categories": [
     "ai-agency",
     "ai-ml",

@@ -1,18 +1,18 @@
 ---
 name: lindy-sdk-patterns
-description: 'Lindy AI integration patterns for webhook handling, HTTP actions, and
+description: 'Lindy integration patterns for webhook handling, HTTP actions, and
   Run Code.
 
   Use when building integrations, calling Lindy agents from code,
 
   or implementing the Run Code action with Python/JavaScript.
 
-  Trigger with phrases like "lindy SDK patterns", "lindy best practices",
+  Trigger with phrases like "lindy integration patterns", "lindy best practices",
 
-  "lindy API patterns", "lindy Run Code", "lindy HTTP Request".
+  "lindy webhook patterns", "lindy Run Code", "lindy HTTP Request".
 
   '
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+allowed-tools: Read, Write, Edit
 version: 1.19.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -22,212 +22,194 @@ tags:
 - api
 compatibility: Designed for Claude Code
 ---
-# Lindy SDK & Integration Patterns
+# Lindy Integration Patterns
 
 ## Overview
 
-Lindy is primarily a no-code platform. External integration happens through three
-channels: **Webhook triggers** (inbound), **HTTP Request actions** (outbound), and
-**Run Code actions** (inline Python/JS execution via E2B sandbox). This skill covers
-patterns for each.
+Use Lindy's documented integration primitives: **Webhook Received** for inbound
+calls, **HTTP Request** for outbound calls, **Run Code** for bounded transformations,
+and **Send POST Request to Callback** for the documented callback workflow. This is
+not an SDK guide: Lindy's current public documentation does not provide the package,
+client, agent CRUD, streaming, API key, or general API-host surface that older copies
+of this skill claimed.
 
 ## Prerequisites
 
-- Lindy account with active agents
-- Node.js 18+ or Python 3.10+ for webhook receivers
-- Completed `lindy-install-auth` setup
+- Lindy workspace with an editable custom agent
+- An application-owned HTTPS endpoint when outbound calls or callbacks are required
+- A secret manager for the Lindy-generated Webhook Received secret and any separate
+  credential owned by the target application
+- Sanitized test fixtures and access to Tasks/Test Panel
 
-## Pattern 1: Webhook Trigger Integration
+## Authentication and Trust Boundaries
 
-Your application fires webhooks to wake Lindy agents:
+- **Inbound to Lindy:** create the webhook in the Webhook Received trigger, select
+  **Generate Secret**, store the one-time value, and send it as an Authorization
+  bearer value. Use only the generated `public.lindy.ai` webhook URL.
+- **Outbound from Lindy:** configure authentication required by the target service in
+  the HTTP Request action. This is the target service's credential, not a Lindy API
+  key.
+- **Callback:** Lindy's webhook guide documents `callbackUrl` and Send POST Request to
+  Callback, but does not document a Lindy callback signature. Treat callback content
+  as untrusted unless the receiving application establishes its own authenticated
+  boundary; never invent or claim a Lindy signing header.
+- Keep inbound, outbound, and callback credentials distinct. Never put secrets in a
+  prompt, body, query string, task title, log, or Run Code `text` output.
+
+## Instructions
+
+### 1. Configure an Inbound Webhook Received Trigger
+
+1. Add **Webhook Received** and create a named webhook.
+2. Generate its secret and store it immediately; Lindy documents that it is shown
+   once.
+3. Choose follow-up behavior deliberately: same task, new task, or ignore.
+4. Define a minimal request schema and reject oversized/unknown fields in the calling
+   application before sending.
+5. Send a sanitized fixture, then verify the new task in Tasks.
+
+This is a small application wrapper around the documented webhook, not a Lindy SDK:
 
 ```typescript
-// lindy-client.ts — Reusable Lindy webhook trigger client
-class LindyClient {
-  private webhookUrl: string;
-  private secret: string;
+type Intake = { event: 'document.ready'; documentRef: string };
 
-  constructor(webhookUrl: string, secret: string) {
-    this.webhookUrl = webhookUrl;
-    this.secret = secret;
+async function triggerLindyWebhook(input: {
+  webhookUrl: string;
+  webhookSecret: string;
+  payload: Intake;
+}): Promise<number> {
+  const url = new URL(input.webhookUrl);
+  if (
+    url.protocol !== 'https:' ||
+    url.hostname !== 'public.lindy.ai' ||
+    !url.pathname.startsWith('/api/v1/webhooks/') ||
+    url.username ||
+    url.password
+  ) {
+    throw new Error('Refusing an unrecognized Lindy webhook URL');
+  }
+  if (!input.webhookSecret.trim()) throw new Error('Webhook secret is empty');
+  if (!/^doc_[a-z0-9_-]{1,64}$/i.test(input.payload.documentRef)) {
+    throw new Error('Invalid document reference');
   }
 
-  async trigger(payload: Record<string, unknown>): Promise<{ status: number }> {
-    const response = await fetch(this.webhookUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${this.secret}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Lindy webhook failed: ${response.status} ${response.statusText}`);
-    }
-
-    return { status: response.status };
-  }
-
-  async triggerWithCallback(
-    payload: Record<string, unknown>,
-    callbackUrl: string
-  ): Promise<{ status: number }> {
-    return this.trigger({ ...payload, callbackUrl });
-  }
+  const response = await fetch(url, {
+    method: 'POST',
+    redirect: 'error',
+    headers: {
+      Authorization: `Bearer ${input.webhookSecret}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(input.payload),
+  });
+  if (!response.ok) throw new Error(`Webhook rejected with status ${response.status}`);
+  return response.status;
 }
-
-// Usage
-const lindy = new LindyClient(
-  'https://public.lindy.ai/api/v1/webhooks/YOUR_ID',
-  process.env.LINDY_WEBHOOK_SECRET!
-);
-
-await lindy.trigger({ event: 'lead.created', name: 'Jane Doe', email: 'jane@co.com' });
 ```
 
-## Pattern 2: HTTP Request Action (Agent Calling Your API)
+Do not blindly retry an ambiguous response: the public webhook documentation does not
+promise an idempotency key. Check Tasks and the application's operation record before
+a controlled retry.
 
-Configure a Lindy agent to call your API as an action step:
+### 2. Configure an Outbound HTTP Request
 
-**In Lindy Dashboard** — Add HTTP Request action:
+1. Add **HTTP Request** from Popular or By Lindy.
+2. Use a fixed, allowlisted HTTPS URL rather than task-controlled host text.
+3. Select the method and content type required by the target service.
+4. Put the target service's protected credential in the appropriate header.
+5. Constrain the body to named fields from previous steps; omit full source messages,
+   headers, credentials, and unrelated context.
+6. Branch on the documented status-code/response outputs and fail closed on rejected
+   or malformed responses.
 
-- **Method**: POST
-- **URL**: `https://api.yourapp.com/process`
-- **Headers**: `Authorization: Bearer {{your_api_key}}`, `Content-Type: application/json`
-- **Body** (AI Prompt mode):
+### 3. Use Run Code for Bounded Transformation
 
-  ```
-  Send the processed data as JSON with fields matching the API schema.
-  Include: name from {{trigger.data.name}}, analysis from previous step.
-  ```
-
-**Your API endpoint** receives the call:
-
-```typescript
-// Your API receiving Lindy agent calls
-app.post('/process', async (req, res) => {
-  const { name, analysis } = req.body;
-  const result = await processData(name, analysis);
-  res.json({ result, processedAt: new Date().toISOString() });
-});
-```
-
-## Pattern 3: Run Code Action (E2B Sandbox)
-
-Execute Python or JavaScript directly in Lindy workflows. Code runs in isolated
-Firecracker microVMs with ~150ms startup time.
-
-**Python example** (data transformation in a workflow):
+Lindy documents Python/JavaScript variables as strings and exposes `result`, `text`,
+and `stderr` to later steps. Parse, validate, bound, and return only the minimum data:
 
 ```python
-# Run Code action — Python
-# Input variables: raw_data (string from previous step)
 import json
 
-data = json.loads(raw_data)  # Input vars are always strings
+data = json.loads(raw_items)
+if not isinstance(data, list) or len(data) > 100:
+    raise ValueError("raw_items must be a list with at most 100 entries")
 
-# Process
-cleaned = [
-    {"name": item["name"].strip(), "score": float(item["score"])}
-    for item in data["items"]
-    if float(item["score"]) > 0.5
-]
+allowed = []
+for item in data:
+    if not isinstance(item, dict) or set(item) != {"reference", "score"}:
+        raise ValueError("unexpected item schema")
+    reference = item["reference"]
+    score = item["score"]
+    if not isinstance(reference, str) or len(reference) > 64:
+        raise ValueError("invalid reference")
+    if not isinstance(score, (int, float)) or not 0 <= score <= 1:
+        raise ValueError("invalid score")
+    if score >= 0.5:
+        allowed.append({"reference": reference, "score": score})
 
-# Sort by score descending
-cleaned.sort(key=lambda x: x["score"], reverse=True)
-
-# Return value accessible as {{run_code.result}} in next step
-return json.dumps({"filtered_count": len(cleaned), "items": cleaned})
+return {"count": len(allowed), "items": allowed}
 ```
 
-**JavaScript example** (API call + processing):
+Avoid printing input data: printed content becomes `text`. Prefer HTTP Request for
+network calls so URL, authentication, response status, and error branches remain
+visible in the workflow. Do not rely on an undocumented runtime, sandbox vendor,
+startup time, timeout value, or library version; check the current Run Code page.
 
-```text
-// Run Code action — JavaScript
-// Input variables: query (string), api_key (string)
-const response = await fetch(`https://api.example.com/search?q=${query}`, {
-  headers: { 'Authorization': `Bearer ${api_key}` }
-});
-const data = await response.json();
+### 4. Add an Optional Callback Flow
 
-const summary = data.results.map(r => `${r.title}: ${r.snippet}`).join('\n');
-return JSON.stringify({ count: data.results.length, summary });
-```
+Include a fixed application-owned `callbackUrl` only when two-way processing is
+needed, then add **Send POST Request to Callback** as documented. The receiver should
+accept a minimal result schema and stage the result for validation/approval. A
+callback alone must not authorize payments, deletion, access changes, or external
+communications.
 
-**Run Code outputs** (available to subsequent steps):
+### 5. Test the Boundaries
 
-| Output | Contents |
-|--------|----------|
-| `{{run_code.result}}` | Value from `return` statement |
-| `{{run_code.text}}` | stdout from `print()` / `console.log()` |
-| `{{run_code.stderr}}` | Error output for debugging |
-
-**Available Python libraries**: pandas, numpy, scipy, scikit-learn, matplotlib,
-requests, aiohttp, beautifulsoup4, nltk, spacy, openpyxl, python-docx
-
-**Key constraint**: All input variables arrive as strings. Cast explicitly:
-`count = int(count_str)`, `data = json.loads(json_str)`
-
-## Pattern 4: Callback Pattern (Async Two-Way)
-
-Send a `callbackUrl` in your webhook payload. Lindy can respond back using
-the **Send POST Request to Callback** action:
-
-```typescript
-// Your app triggers Lindy with a callback URL
-await lindy.trigger({
-  event: 'analyze.request',
-  data: { text: 'Analyze this quarterly report...' },
-  callbackUrl: 'https://api.yourapp.com/lindy-callback'
-});
-
-// Your callback handler receives Lindy's response
-app.post('/lindy-callback', (req, res) => {
-  const { analysis, sentiment, summary } = req.body;
-  saveAnalysis(analysis);
-  res.sendStatus(200);
-});
-```
-
-## Pattern 5: Retry with Exponential Backoff
-
-```typescript
-async function triggerWithRetry(
-  client: LindyClient,
-  payload: Record<string, unknown>,
-  maxRetries = 3
-): Promise<void> {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      await client.trigger(payload);
-      return;
-    } catch (error: any) {
-      if (attempt === maxRetries) throw error;
-      const delay = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s
-      console.warn(`Retry ${attempt + 1}/${maxRetries} in ${delay}ms`);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-}
-```
+Verify one valid call and negative cases for a missing/wrong bearer secret, wrong
+host, extra/oversized input, outbound 4xx/5xx response, malformed Run Code input, and
+untrusted callback content. The Test Panel executes real actions, so use synthetic
+data, test integrations, and confirmation for side effects.
 
 ## Error Handling
 
-| Pattern | Failure Mode | Solution |
-|---------|-------------|----------|
-| Webhook trigger | 401 Unauthorized | Verify Bearer token matches dashboard secret |
-| HTTP Request action | Target API unreachable | Check URL, verify HTTPS, test with curl |
-| Run Code | Timeout | Avoid infinite loops; keep execution under 30s |
-| Run Code | Import error | Use only pre-installed libraries (see list above) |
-| Callback | Callback URL unreachable | Ensure HTTPS endpoint is publicly accessible |
+| Failure | Fail-closed response |
+|---|---|
+| Webhook returns 401 | Stop; confirm the Lindy-generated secret without printing it |
+| Webhook outcome is ambiguous | Inspect Tasks/operation record before a manual retry |
+| Outbound URL is dynamic or non-HTTPS | Refuse and replace it with an allowlisted endpoint |
+| HTTP response is rejected or malformed | Route to an error branch; do not consume partial data |
+| Run Code input violates schema | Raise an error and inspect only metadata in Tasks |
+| Callback is unauthenticated/untrusted | Quarantine for validation; perform no side effect |
+
+## Output
+
+Return an integration contract containing:
+
+- selected primitive and direction of trust;
+- exact minimal request/response schemas and size/cardinality bounds;
+- URL ownership/allowlist and distinct credential owners;
+- failure, retry, callback, and human-approval behavior;
+- data-minimization and logging rules; and
+- a test receipt covering happy path and every negative boundary above.
+
+## Examples
+
+For a document workflow, the application sends only
+`{"event":"document.ready","documentRef":"doc_sample_001"}` to the exact generated
+webhook URL with its generated bearer secret. Lindy transforms the reference, calls a
+fixed application endpoint with that endpoint's separate credential, and returns a
+minimal status callback. Raw document text, user identity, and either secret never
+enter the payload, prompt, task title, Run Code output, or logs.
 
 ## Resources
 
-- [Calling Any API](https://www.lindy.ai/academy-lessons/calling-any-api)
-- [Run Code Documentation](https://docs.lindy.ai/skills/by-lindy/run-code)
-- [Webhooks Documentation](https://docs.lindy.ai/skills/by-lindy/webhooks)
+- [Webhooks](https://docs.lindy.ai/skills/by-lindy/webhooks)
+- [HTTP Request](https://docs.lindy.ai/skills/by-lindy/http-request)
+- [Run Code](https://docs.lindy.ai/skills/by-lindy/run-code)
+- [Test Panel](https://docs.lindy.ai/testing/test-panel)
+- [Tasks](https://docs.lindy.ai/fundamentals/lindy-101/tasks)
 
 ## Next Steps
 
-Proceed to `lindy-core-workflow-a` for full agent creation workflows.
+Use `lindy-security-basics` to review the resulting credential, connection, approval,
+data, and monitoring boundaries before activating the workflow.

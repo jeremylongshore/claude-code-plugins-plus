@@ -51917,13 +51917,12 @@
       "id": "lindy-sdk-patterns",
       "slug": "lindy-sdk-patterns",
       "name": "lindy-sdk-patterns",
-      "description": "'Lindy AI integration patterns for webhook handling, HTTP actions, and",
+      "description": "'Lindy integration patterns for webhook handling, HTTP actions, and",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
-        "Edit",
-        "Bash(curl:*)"
+        "Edit"
       ],
       "compatibleWith": [],
       "version": "1.19.0",
@@ -51931,20 +51930,19 @@
         "name": "lindy-pack",
         "category": "saas-packs"
       },
-      "searchText": "lindy-sdk-patterns 'lindy ai integration patterns for webhook handling, http actions, and saas-packs read write edit bash(curl:*) "
+      "searchText": "lindy-sdk-patterns 'lindy integration patterns for webhook handling, http actions, and saas-packs read write edit "
     },
     {
       "type": "skill",
       "id": "lindy-security-basics",
       "slug": "lindy-security-basics",
       "name": "lindy-security-basics",
-      "description": "'Implement security best practices for Lindy AI agents and integrations.",
+      "description": "'Implement security best practices for Lindy agents and integrations.",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
-        "Edit",
-        "Bash(curl:*)"
+        "Edit"
       ],
       "compatibleWith": [],
       "version": "1.19.0",
@@ -51952,7 +51950,7 @@
         "name": "lindy-pack",
         "category": "saas-packs"
       },
-      "searchText": "lindy-security-basics 'implement security best practices for lindy ai agents and integrations. saas-packs read write edit bash(curl:*) "
+      "searchText": "lindy-security-basics 'implement security best practices for lindy agents and integrations. saas-packs read write edit "
     },
     {
       "type": "skill",
@@ -51964,8 +51962,7 @@
       "allowedTools": [
         "Read",
         "Write",
-        "Edit",
-        "Bash(curl:*)"
+        "Edit"
       ],
       "compatibleWith": [],
       "version": "1.19.0",
@@ -51973,7 +51970,7 @@
         "name": "lindy-pack",
         "category": "saas-packs"
       },
-      "searchText": "lindy-upgrade-migration 'manage lindy agent configuration changes, platform updates, and migrations. saas-packs read write edit bash(curl:*) "
+      "searchText": "lindy-upgrade-migration 'manage lindy agent configuration changes, platform updates, and migrations. saas-packs read write edit "
     },
     {
       "type": "skill",
@@ -51985,8 +51982,7 @@
       "allowedTools": [
         "Read",
         "Write",
-        "Edit",
-        "Bash(curl:*)"
+        "Edit"
       ],
       "compatibleWith": [],
       "version": "1.19.0",
@@ -51994,7 +51990,7 @@
         "name": "lindy-pack",
         "category": "saas-packs"
       },
-      "searchText": "lindy-webhooks-events 'configure lindy ai webhook triggers, callback patterns, and event handling. saas-packs read write edit bash(curl:*) "
+      "searchText": "lindy-webhooks-events 'configure lindy ai webhook triggers, callback patterns, and event handling. saas-packs read write edit "
     },
     {
       "type": "skill",

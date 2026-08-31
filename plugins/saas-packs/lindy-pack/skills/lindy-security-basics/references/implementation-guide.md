@@ -1,117 +1,64 @@
 # Lindy Security Basics - Implementation Guide
 
-# Lindy Security Basics
+## Direction Matters
 
-## Overview
+The documented Webhook Received secret protects calls **from an application into
+Lindy**. The caller places the Lindy-generated value in the Authorization bearer
+header sent to the generated webhook URL. It is not a callback-verification secret,
+and the public Webhooks guide does not document callback signing or timestamp headers.
 
-Security practices for Lindy AI agent integrations. Lindy creates autonomous AI agents that can access external services, execute actions, and handle data -- making security boundaries and permission controls essential.
+For calls **from Lindy to an application**, use HTTP Request and the authentication
+scheme owned by that application. For Send POST Request to Callback, do not assume a
+platform signature; receive into an application-owned trust boundary and treat the
+content as untrusted until its schema and authorization checks pass.
 
-## Prerequisites
+## Trust-Map Template
 
-- Lindy account with API access
-- Understanding of Lindy's agent execution model
-- Awareness of connected service permissions
+| Path | Source | Destination | Minimal fields | Credential owner | Side effect | Approval | Evidence |
+|---|---|---|---|---|---|---|---|
+| Inbound trigger | Application | Webhook Received | Event enum + stable reference | Lindy-generated secret stored by caller | Create task | N/A | Application receipt + Tasks |
+| Outbound request | Lindy | Application endpoint | Explicit result schema | Target application | Defined by endpoint | Confirmation when consequential | Task + receiver audit metadata |
+| Connected action | Lindy | Selected account | Required action fields | Integration/account owner | Send/update/create/etc. | Ask for Confirmation/draft | Task history |
+| Callback | Lindy | Application receiver | Stable reference + bounded status | Receiver/application | Stage only | Validate before action | Receiver receipt |
 
-## Instructions
+## Review Procedure
 
-### Step 1: API Key Protection
+1. Inventory every trigger, action, Agent Step skill, Run Code block, connected
+   account, Computer, HTTP host, and callback URL.
+2. Mark the fields that cross each edge and remove everything not required.
+3. Confirm the credential belongs to that edge and is not reused elsewhere.
+4. Confirm each action explicitly selects the intended connected account.
+5. Put Ask for Confirmation or draft mode before consequential actions.
+6. Add conditions for unknown/out-of-scope input and a fail-closed error route.
+7. Save a known-good version, then run positive and negative synthetic tests.
+8. Review Tasks and receiver-side audit metadata; do not export task content.
 
-```python
-import os
+## Negative-Test Matrix
 
-# Store Lindy API key securely
-LINDY_API_KEY = os.environ.get("LINDY_API_KEY")
-if not LINDY_API_KEY:
-    raise RuntimeError("LINDY_API_KEY not set")
+| Test | Required result |
+|---|---|
+| Missing/wrong Webhook Received bearer | Rejected; no trusted result |
+| Body has extra field or exceeds bounds | Refused before or at boundary |
+| HTTP Request host differs from allowlist | Refused; no credential sent |
+| Target returns unauthorized/forbidden/rate-limit/server error | Error route; no partial side effect |
+| Prompt asks to reveal a secret or broaden scope | Refusal/escalation; secret remains absent |
+| Consequential action lacks approval | Test fails review; confirmation restored |
+| Callback has unknown field/reference | Quarantined; no downstream action |
+| Computer exposes unrelated saved session | Use dedicated Computer; repeat test |
 
-# For production: use secret manager
-# NEVER commit keys or pass them as CLI arguments
-```
+## Evidence Rules
 
-### Step 2: Agent Permission Boundaries
+Receipts may contain agent/workflow key, test-case key, timestamp, outcome, HTTP
+status class, selected account alias, approver decision, and task link with restricted
+access. Receipts must not contain webhook URLs, bearer values, authorization headers,
+customer content, prompts, block outputs, personal identifiers, or full error bodies.
 
-Lindy agents can connect to external services. Limit what each agent can access.
+## Official References
 
-```python
-# Define explicit permission boundaries per agent
-AGENT_PERMISSIONS = {
-    "email-assistant": {
-        "allowed_services": ["gmail"],
-        "can_send": True,
-        "can_delete": False,
-        "max_emails_per_hour": 20
-    },
-    "data-analyst": {
-        "allowed_services": ["google_sheets"],
-        "can_write": False,  # read-only
-        "can_delete": False
-    }
-}
-
-def validate_agent_action(agent_id: str, action: str, service: str) -> bool:
-    perms = AGENT_PERMISSIONS.get(agent_id, {})
-    if service not in perms.get("allowed_services", []):
-        raise PermissionError(f"Agent {agent_id} not authorized for {service}")
-    if action == "delete" and not perms.get("can_delete", False):
-        raise PermissionError(f"Agent {agent_id} cannot delete")
-    return True
-```
-
-### Step 3: Webhook Signature Verification
-
-```python
-import hmac, hashlib
-
-def verify_lindy_webhook(payload: bytes, signature: str, secret: str) -> bool:
-    expected = hmac.new(secret.encode(), payload, hashlib.sha256).hexdigest()
-    return hmac.compare_digest(expected, signature)
-
-@app.route('/lindy-webhook', methods=['POST'])
-def handle_webhook():
-    signature = request.headers.get('X-Lindy-Signature', '')
-    if not verify_lindy_webhook(request.data, signature, WEBHOOK_SECRET):
-        return {"error": "Invalid signature"}, 401
-    return process_webhook(request.json)
-```
-
-### Step 4: Audit Agent Actions
-
-Log all agent actions for security review and debugging.
-
-```python
-def audit_agent_action(agent_id: str, action: str, target: str, result: str):
-    logger.info("Agent action", extra={
-        "agent_id": agent_id,
-        "action": action,
-        "target": target,
-        "result": result,
-        "timestamp": datetime.utcnow().isoformat()
-    })
-```
-
-## Error Handling
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Agent accesses wrong service | No permission boundaries | Define explicit agent permissions |
-| Fake webhook processed | No signature verification | Verify HMAC signatures |
-| Key exposure | Hardcoded in source | Use environment variables |
-| Runaway agent | No action limits | Set per-hour action quotas |
-
-## Examples
-
-### Permission Check Middleware
-
-```python
-@app.before_request
-def check_agent_permissions():
-    agent_id = request.json.get("agent_id")
-    action = request.json.get("action")
-    service = request.json.get("service")
-    validate_agent_action(agent_id, action, service)
-```
-
-## Resources
-
-- [Lindy API Docs](https://docs.lindy.ai)
-- [Lindy Security](https://www.lindy.ai/security)
+- [Webhooks](https://docs.lindy.ai/skills/by-lindy/webhooks)
+- [HTTP Request](https://docs.lindy.ai/skills/by-lindy/http-request)
+- [Actions and account selection](https://docs.lindy.ai/fundamentals/lindy-101/actions)
+- [Human in Loop](https://docs.lindy.ai/testing/human-in-the-loop)
+- [Computer Use](https://docs.lindy.ai/skills/by-lindy/computer-use)
+- [Test Panel](https://docs.lindy.ai/testing/test-panel)
+- [Tasks](https://docs.lindy.ai/fundamentals/lindy-101/tasks)
