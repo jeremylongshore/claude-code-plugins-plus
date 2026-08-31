@@ -1,0 +1,71 @@
+{
+  "metadata": {
+    "schema_version": "1",
+    "surface": "data-quality",
+    "collected_at": "2026-08-31T12:00:00Z",
+    "window_start": "2026-08-29T12:00:00Z",
+    "window_end": "2026-08-31T11:59:00Z",
+    "collector_receipt_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "requirements": [
+    {
+      "id": "customers-row-count",
+      "object": {"database": "ANALYTICS", "schema": "CURATED", "name": "CUSTOMERS", "type": "TABLE"},
+      "metric": {"database": "SNOWFLAKE", "schema": "CORE", "name": "ROW_COUNT"},
+      "objective": {"mode": "expectation", "name": "has-customers"},
+      "max_result_age_seconds": 3600,
+      "expected_schedule": "TRIGGER_ON_CHANGES",
+      "notification_required": true,
+      "expected_execution_role": "DQ_MONITOR",
+      "required_groups": ["EU", "US"]
+    }
+  ],
+  "associations": [
+    {
+      "requirement_id": "customers-row-count",
+      "reference_id": "ref-customers-row",
+      "schedule": "60 MINUTE",
+      "schedule_status": "SUSPENDED_INSUFFICIENT_PRIVILEGE_TO_EXECUTE_DATA_METRIC_FUNCTION",
+      "schedule_update_pending": true,
+      "notification_status": "DISABLED",
+      "anomaly_status": "TRAINING_IN_PROGRESS",
+      "execution_role": "SYSADMIN",
+      "observed_groups": ["US"]
+    }
+  ],
+  "measurements": [
+    {
+      "requirement_id": "customers-row-count",
+      "reference_id": "ref-customers-row",
+      "measured_at": "2026-08-30T08:00:00Z",
+      "evaluation_status": "SUCCEEDED",
+      "expectation_name": "has-customers",
+      "expectation_violated": true,
+      "anomaly_detected": false,
+      "observed_value": 0,
+      "observed_groups": ["US"]
+    }
+  ],
+  "source_metadata": [
+    {
+      "source": "SNOWFLAKE.LOCAL.DATA_QUALITY_MONITORING_EXPECTATION_STATUS",
+      "kind": "measurement",
+      "status": "collected",
+      "collected_at": "2026-08-31T12:00:00Z",
+      "latest_record_at": "2026-08-30T08:00:00Z",
+      "max_latency_seconds": 1800,
+      "row_count": 1,
+      "error_code": ""
+    },
+    {
+      "source": "SNOWFLAKE.ACCOUNT_USAGE.DATA_QUALITY_MONITORING_USAGE_HISTORY",
+      "kind": "usage",
+      "status": "error",
+      "collected_at": "2026-08-31T12:00:00Z",
+      "latest_record_at": null,
+      "max_latency_seconds": 10800,
+      "row_count": 0,
+      "error_code": "NOT_AUTHORIZED"
+    }
+  ]
+}

@@ -1,10 +1,10 @@
 {
   "generator": "freshie/scripts/promote-to-curated.py",
   "generated_from": "freshie/grades.csv",
-  "run_id": 18,
+  "run_id": 19,
   "threshold": "AB",
   "validated": true,
-  "count": 2055,
+  "count": 2057,
   "skills": [
     {
       "curated_name": "abridge-debug-bundle",
@@ -25048,7 +25048,7 @@
       "plugin": "snowflake-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 18,
+      "run_id": 19,
       "files": [
         "SKILL.md",
         "eval-spec.yaml",
@@ -25070,7 +25070,7 @@
       "plugin": "snowflake-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 18,
+      "run_id": 19,
       "files": [
         "SKILL.md",
         "eval-spec.yaml",
@@ -25088,13 +25088,34 @@
       ]
     },
     {
+      "curated_name": "snowflake-data-quality-sentinel",
+      "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-data-quality-sentinel",
+      "category": "saas-packs",
+      "plugin": "snowflake-pack",
+      "recorded_grade": "A",
+      "fresh_grade": "A",
+      "run_id": 19,
+      "files": [
+        "SKILL.md",
+        "eval-spec.yaml",
+        "references/input-contract.md",
+        "references/source-notes.md",
+        "scripts/analyze_data_quality.py",
+        "scripts/collect_snowflake_evidence.py",
+        "scripts/sql/data-quality.sql",
+        "tests/fixtures/pass.json",
+        "tests/fixtures/problems.json",
+        "tests/test_analyze_data_quality.py"
+      ]
+    },
+    {
       "curated_name": "snowflake-deploy-medic",
       "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-deploy-medic",
       "category": "saas-packs",
       "plugin": "snowflake-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 18,
+      "run_id": 19,
       "files": [
         "SKILL.md",
         "eval-spec.yaml",
@@ -25112,13 +25133,32 @@
       ]
     },
     {
+      "curated_name": "snowflake-failover-readiness-drill",
+      "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-failover-readiness-drill",
+      "category": "saas-packs",
+      "plugin": "snowflake-pack",
+      "recorded_grade": "A",
+      "fresh_grade": "A",
+      "run_id": 19,
+      "files": [
+        "SKILL.md",
+        "eval-spec.yaml",
+        "references/evidence-contract.md",
+        "references/source-notes.md",
+        "scripts/analyze_failover_readiness.py",
+        "scripts/collect_snowflake_evidence.py",
+        "scripts/sql/replication.sql",
+        "scripts/test_analyze_failover_readiness.py"
+      ]
+    },
+    {
       "curated_name": "snowflake-pipeline-guardian",
       "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-pipeline-guardian",
       "category": "saas-packs",
       "plugin": "snowflake-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 18,
+      "run_id": 19,
       "files": [
         "SKILL.md",
         "eval-spec.yaml",
@@ -25142,7 +25182,7 @@
       "plugin": "snowflake-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 18,
+      "run_id": 19,
       "files": [
         "SKILL.md",
         "eval-spec.yaml",
@@ -25166,7 +25206,7 @@
       "plugin": "snowflake-pack",
       "recorded_grade": "A",
       "fresh_grade": "A",
-      "run_id": 18,
+      "run_id": 19,
       "files": [
         "SKILL.md",
         "eval-spec.yaml",
