@@ -14,7 +14,7 @@ description: 'Implement Snowflake reference architecture with medallion pattern 
 
   '
 allowed-tools: Read, Grep
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

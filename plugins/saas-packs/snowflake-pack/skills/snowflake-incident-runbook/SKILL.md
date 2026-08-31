@@ -13,7 +13,7 @@ description: 'Execute Snowflake incident response with triage, rollback, and pos
 
   '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(snow connection test:*), Bash(snowsql:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
