@@ -12,7 +12,7 @@ description: 'Implement security best practices for Lindy agents and integration
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.19.0
+version: 1.20.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
