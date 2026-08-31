@@ -13,7 +13,7 @@ description: 'Apply production-ready patterns for Replit Database, Object Storag
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

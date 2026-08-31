@@ -9,7 +9,7 @@ description: 'Optimize Fly.io application performance with auto-stop/start tunin
 
   '
 allowed-tools: Read, Write, Edit, Bash(fly:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -10,7 +10,7 @@ description: >-
   pooling", "supabase compute upgrade", "supabase CDN storage", "supabase edge
   function regions", "supabase partitioning", "supavisor", "supabase pool mode".
 allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(psql:*), Bash(curl:*), Grep
-version: 1.53.0
+version: 1.54.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
