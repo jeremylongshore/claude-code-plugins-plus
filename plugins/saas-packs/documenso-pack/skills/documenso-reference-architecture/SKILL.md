@@ -13,7 +13,7 @@ description: 'Implement Documenso reference architecture with best-practice proj
 
   '
 allowed-tools: Read, Grep
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

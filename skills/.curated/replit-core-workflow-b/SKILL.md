@@ -13,7 +13,7 @@ description: 'Manage Replit Teams, member permissions, deployment promotion, and
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

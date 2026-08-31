@@ -12,7 +12,7 @@ description: 'Set up local development environment and testing workflow for Docu
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(docker:*), Bash(node:*)
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -143,8 +143,8 @@ services:
       - NEXT_PRIVATE_ENCRYPTION_KEY=local-encryption-key
       - NEXT_PRIVATE_ENCRYPTION_SECONDARY_KEY=local-secondary-key
       - NEXT_PUBLIC_WEBAPP_URL=http://localhost:3000
-      - NEXT_PRIVATE_DATABASE_URL=postgresql://documenso:password@db:5432/documenso
-      - NEXT_PRIVATE_DIRECT_DATABASE_URL=postgresql://documenso:password@db:5432/documenso
+      - NEXT_PRIVATE_DATABASE_URL=${DOCUMENSO_DATABASE_URL}
+      - NEXT_PRIVATE_DIRECT_DATABASE_URL=${DOCUMENSO_DIRECT_DATABASE_URL}
       - NEXT_PRIVATE_SMTP_TRANSPORT=smtp-auth
       - NEXT_PRIVATE_SMTP_HOST=mailhog
       - NEXT_PRIVATE_SMTP_PORT=1025

@@ -56,6 +56,7 @@ import {
   readIndexedArtifact,
 } from '../../scripts/check-generated-artifacts.mjs';
 import { resolveCorpus } from '../../scripts/corpus-resolver.mjs';
+import yaml from '../../scripts/vendor/js-yaml-4.1.1/js-yaml.mjs';
 import { mdToHtml } from './md-to-html.mjs';
 
 const require = createRequire(import.meta.url);
@@ -68,6 +69,9 @@ const PLUGINS_DIR = join(ROOT_DIR, 'plugins');
 const OUTPUT_FILE = join(ROOT_DIR, 'marketplace', 'src', 'data', 'skills-catalog.json');
 const INDEX_FILE = join(ROOT_DIR, 'marketplace', 'src', 'data', 'skills-index.json');
 const MARKETPLACE_CATALOG = join(ROOT_DIR, '.claude-plugin', 'marketplace.extended.json');
+const MAX_FRONTMATTER_CHARACTERS = 256 * 1024;
+const MAX_FRONTMATTER_DEPTH = 64;
+const MAX_FRONTMATTER_NODES = 4096;
 
 // ── Progressive disclosure level ─────────────────────────────────────────
 // L0 (metadata): name + description + parent + version + slug; no body HTML.
@@ -117,101 +121,110 @@ if (LEVEL === 'file') {
 /**
  * Parse YAML frontmatter from markdown content
  */
-function parseFrontmatter(content) {
-  const frontmatterRegex = /^---\n([\s\S]*?)\n---/;
+export function parseFrontmatter(content) {
+  if (typeof content !== 'string') {
+    throw new TypeError('SKILL frontmatter source must be a string');
+  }
+
+  const frontmatterRegex = /^---\r?\n([\s\S]*?)\r?\n---(?=\r?\n|$)/;
   const match = content.match(frontmatterRegex);
 
   if (!match) {
+    if (/^---(?:\r?\n|$)/.test(content)) {
+      throw new Error('unterminated SKILL YAML frontmatter');
+    }
     return null;
   }
-
-  const frontmatterText = match[1];
-  const metadata = {};
-
-  // Simple YAML parser for our known structure
-  const lines = frontmatterText.split('\n');
-  let currentKey = null;
-  let currentValue = '';
-  let inMultiline = false;
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-
-    if (!trimmed) continue;
-
-    // Handle list items — generalized in schema 3.5.0 from the allowed-tools-only
-    // special case so that visibility fields (requires_env, requires_tools,
-    // fallback_for_env, fallback_for_tools) and tags can use block-list form.
-    if (trimmed.startsWith('-')) {
-      if (currentKey) {
-        if (!Array.isArray(metadata[currentKey])) {
-          metadata[currentKey] = [];
-        }
-        metadata[currentKey].push(trimmed.substring(1).trim());
-      }
-      continue;
-    }
-
-    // Handle key: value pairs
-    const colonIndex = trimmed.indexOf(':');
-    if (colonIndex > 0 && !inMultiline) {
-      if (currentKey && currentValue) {
-        metadata[currentKey] = currentValue.trim();
-      }
-
-      currentKey = trimmed.substring(0, colonIndex).trim();
-      const value = trimmed.substring(colonIndex + 1).trim();
-
-      if (value === '|') {
-        // Start of multiline value
-        inMultiline = true;
-        currentValue = '';
-      } else if (value) {
-        currentValue = value;
-      } else {
-        currentValue = '';
-      }
-    } else if (inMultiline) {
-      // Check if this line is a new top-level key (not indented, has colon)
-      // YAML block scalars end when a line appears at the original indentation level
-      const isIndented = line.startsWith(' ') || line.startsWith('\t');
-      if (!isIndented && colonIndex > 0) {
-        // End multiline, save current value, process as new key
-        if (currentKey && currentValue) {
-          metadata[currentKey] = currentValue.trim();
-        }
-        inMultiline = false;
-        currentKey = trimmed.substring(0, colonIndex).trim();
-        const value = trimmed.substring(colonIndex + 1).trim();
-        if (value === '|') {
-          inMultiline = true;
-          currentValue = '';
-        } else if (value) {
-          currentValue = value;
-        } else {
-          currentValue = '';
-        }
-      } else if (trimmed.startsWith('-')) {
-        // End of multiline, start of list
-        if (currentKey && currentValue) {
-          metadata[currentKey] = currentValue.trim();
-        }
-        inMultiline = false;
-        currentKey = 'allowed-tools';
-        metadata[currentKey] = [trimmed.substring(1).trim()];
-      } else {
-        // Append to multiline value
-        currentValue += (currentValue ? ' ' : '') + trimmed;
-      }
-    }
+  if (match[1].length > MAX_FRONTMATTER_CHARACTERS) {
+    throw new RangeError(
+      `invalid SKILL YAML frontmatter: exceeds ${MAX_FRONTMATTER_CHARACTERS} characters`,
+    );
   }
 
-  // Save last key-value pair
-  if (currentKey && currentValue && !Array.isArray(metadata[currentKey])) {
-    metadata[currentKey] = currentValue.trim();
+  let parsed;
+  let depth = 0;
+  let nodeCount = 0;
+  try {
+    // FAILSAFE_SCHEMA deliberately limits the language to mappings, sequences,
+    // and strings. This preserves the discovery script's historical scalar
+    // contract while still giving block scalars and lists real YAML semantics.
+    parsed = yaml.load(match[1], {
+      schema: yaml.FAILSAFE_SCHEMA,
+      json: false, // Duplicate mapping keys are errors, not last-write-wins.
+      onWarning(warning) {
+        throw warning;
+      },
+      listener(event, state) {
+        if (event === 'open') {
+          depth += 1;
+          nodeCount += 1;
+          if (depth > MAX_FRONTMATTER_DEPTH) {
+            throw new RangeError(`YAML nesting exceeds ${MAX_FRONTMATTER_DEPTH} levels`);
+          }
+          if (nodeCount > MAX_FRONTMATTER_NODES) {
+            throw new RangeError(`YAML document exceeds ${MAX_FRONTMATTER_NODES} nodes`);
+          }
+          return;
+        }
+
+        // SKILL metadata has no need for graph semantics. Rejecting every
+        // anchor also makes every alias impossible, before the parsed graph is
+        // copied or projected, and avoids non-cyclic alias-expansion bombs.
+        if (state.anchor !== null) {
+          throw new TypeError('YAML anchors and aliases are not supported');
+        }
+        depth -= 1;
+      },
+    });
+  } catch (error) {
+    throw new Error(`invalid SKILL YAML frontmatter: ${error.message}`, { cause: error });
   }
 
-  return metadata;
+  if (!isPlainMapping(parsed)) {
+    throw new TypeError('invalid SKILL YAML frontmatter: root must be a mapping');
+  }
+
+  return copySafeYamlValue(parsed, '$frontmatter');
+}
+
+const UNSAFE_MAPPING_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
+function isPlainMapping(value) {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function copySafeYamlValue(value, path, ancestors = new Set()) {
+  if (value === null || typeof value === 'string') return value;
+
+  if (Array.isArray(value)) {
+    if (ancestors.has(value)) {
+      throw new TypeError(`invalid SKILL YAML frontmatter: cyclic alias at ${path}`);
+    }
+    ancestors.add(value);
+    const result = value.map((item, index) => copySafeYamlValue(item, `${path}[${index}]`, ancestors));
+    ancestors.delete(value);
+    return result;
+  }
+
+  if (!isPlainMapping(value)) {
+    throw new TypeError(`invalid SKILL YAML frontmatter: unsupported value at ${path}`);
+  }
+  if (ancestors.has(value)) {
+    throw new TypeError(`invalid SKILL YAML frontmatter: cyclic alias at ${path}`);
+  }
+
+  ancestors.add(value);
+  const result = {};
+  for (const [key, child] of Object.entries(value)) {
+    if (UNSAFE_MAPPING_KEYS.has(key)) {
+      throw new TypeError(`invalid SKILL YAML frontmatter: unsafe mapping key ${JSON.stringify(key)}`);
+    }
+    result[key] = copySafeYamlValue(child, `${path}.${key}`, ancestors);
+  }
+  ancestors.delete(value);
+  return result;
 }
 
 /**
@@ -281,15 +294,71 @@ function getPluginMetadata(pluginDir) {
  * Each item is trimmed; surrounding quotes are stripped. Empty entries dropped.
  * Returns [] for missing/empty values.
  */
-function normalizeListField(value) {
+export function normalizeListField(value, fieldName) {
   if (value === undefined || value === null || value === '') return [];
-  if (Array.isArray(value)) return value.map(v => String(v).trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
+  if (Array.isArray(value)) {
+    return value
+      .map((item, index) => {
+        if (typeof item !== 'string') {
+          throw new TypeError(`frontmatter ${fieldName}[${index}] must be a string`);
+        }
+        return item.trim().replace(/^['"]|['"]$/g, '');
+      })
+      .filter(Boolean);
+  }
   if (typeof value === 'string') {
     let s = value.trim();
     if (s.startsWith('[') && s.endsWith(']')) s = s.slice(1, -1);
     return s.split(',').map(p => p.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
   }
-  return [];
+  throw new TypeError(`frontmatter ${fieldName} must be a string or a list of strings`);
+}
+
+function optionalStringField(metadata, fieldName, fallback) {
+  const value = metadata[fieldName];
+  if (value === undefined || value === null || value === '') return fallback;
+  if (typeof value !== 'string') {
+    throw new TypeError(`frontmatter ${fieldName} must be a string`);
+  }
+  return value;
+}
+
+export function normalizeDescription(value) {
+  if (typeof value !== 'string') {
+    throw new TypeError('frontmatter description must be a string');
+  }
+
+  // Descriptions are public card/search metadata, not Markdown bodies. YAML
+  // block scalars may contain source-formatting newlines, but every consumer
+  // expects one searchable line. Preserve the complete semantic value while
+  // normalizing presentation whitespace at this projection boundary.
+  return value.replace(/\s+/gu, ' ').trim();
+}
+
+export function resolveSkillVersion(metadata) {
+  const nested = metadata.metadata;
+  if (nested !== undefined && nested !== null && !isPlainMapping(nested)) {
+    throw new TypeError('frontmatter metadata must be a mapping');
+  }
+
+  const directVersion = optionalStringField(metadata, 'version', '');
+  const nestedVersion = nested ? optionalStringField(nested, 'version', '') : '';
+  if (directVersion && nestedVersion && directVersion !== nestedVersion) {
+    throw new TypeError('frontmatter version conflicts with metadata.version');
+  }
+  return directVersion || nestedVersion || '1.0.0';
+}
+
+function normalizeAuthor(value) {
+  if (value === undefined || value === null || value === '') return '';
+  if (typeof value === 'string') return value;
+  if (!isPlainMapping(value) || typeof value.name !== 'string') {
+    throw new TypeError('frontmatter author must be a string or a mapping with a string name');
+  }
+  if (value.email !== undefined && value.email !== null && typeof value.email !== 'string') {
+    throw new TypeError('frontmatter author.email must be a string');
+  }
+  return value.email ? `${value.name} <${value.email}>` : value.name;
 }
 
 /**
@@ -338,7 +407,7 @@ function processSkillFile(filePath, opts = {}) {
     // Skipped entirely in metadataOnly mode — mdToHtml is the slow step.
     const contentMatch = metadataOnly
       ? null
-      : content.match(/^---\n[\s\S]*?\n---\n([\s\S]*)$/);
+      : content.match(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)([\s\S]*)$/);
     const markdownContent = contentMatch ? contentMatch[1].trim() : '';
 
     // Find parent plugin directory (go up until we find .claude-plugin).
@@ -396,53 +465,41 @@ function processSkillFile(filePath, opts = {}) {
     const relativePath = relative(ROOT_DIR, filePath);
 
     // Generate slug from name
-    const slug = generateSlug(frontmatter.name || 'unnamed-skill');
+    const name = optionalStringField(frontmatter, 'name', 'Unnamed Skill');
+    const description = normalizeDescription(optionalStringField(frontmatter, 'description', ''));
+    const version = resolveSkillVersion(frontmatter);
+    const license = optionalStringField(frontmatter, 'license', 'MIT');
+    const slug = generateSlug(name || 'unnamed-skill');
 
     // Ensure allowedTools is always an array
-    let allowedTools = frontmatter['allowed-tools'] || [];
-    if (typeof allowedTools === 'string') {
-      allowedTools = allowedTools.split(',').map(t => t.trim());
-    }
-    if (!Array.isArray(allowedTools)) {
-      allowedTools = [];
-    }
+    const allowedTools = normalizeListField(frontmatter['allowed-tools'], 'allowed-tools');
 
     // Normalize author to string
-    let authorStr = frontmatter.author || pluginMetadata.author || '';
-    if (typeof authorStr === 'object' && authorStr.name) {
-      authorStr = authorStr.email
-        ? `${authorStr.name} <${authorStr.email}>`
-        : authorStr.name;
-    }
+    const authorStr = normalizeAuthor(frontmatter.author ?? pluginMetadata.author);
 
     // Parse compatible-with field
-    let compatibleWith = frontmatter['compatible-with'] || [];
-    if (typeof compatibleWith === 'string') {
-      compatibleWith = compatibleWith.split(',').map(p => p.trim().toLowerCase());
-    }
-    if (!Array.isArray(compatibleWith)) {
-      compatibleWith = [];
-    }
+    const compatibleWith = normalizeListField(frontmatter['compatible-with'], 'compatible-with')
+      .map(value => value.toLowerCase());
 
     // Visibility fields (schema 3.5.0) — normalized to JS arrays from any of
     // block-list / inline-array / CSV forms. All optional; default [].
     const visibility = {
-      requires_env: normalizeListField(frontmatter.requires_env),
-      requires_tools: normalizeListField(frontmatter.requires_tools),
-      fallback_for_env: normalizeListField(frontmatter.fallback_for_env),
-      fallback_for_tools: normalizeListField(frontmatter.fallback_for_tools),
+      requires_env: normalizeListField(frontmatter.requires_env, 'requires_env'),
+      requires_tools: normalizeListField(frontmatter.requires_tools, 'requires_tools'),
+      fallback_for_env: normalizeListField(frontmatter.fallback_for_env, 'fallback_for_env'),
+      fallback_for_tools: normalizeListField(frontmatter.fallback_for_tools, 'fallback_for_tools'),
     };
 
     return {
       slug,
-      name: frontmatter.name || 'Unnamed Skill',
-      description: frontmatter.description || '',
+      name,
+      description,
       allowedTools,
       compatibleWith,
       visibility,
-      version: frontmatter.version || '1.0.0',
+      version,
       author: authorStr,
-      license: frontmatter.license || 'MIT',
+      license,
       content: metadataOnly ? '' : mdToHtml(markdownContent),
       parentPlugin: {
         name: pluginMetadata.name,

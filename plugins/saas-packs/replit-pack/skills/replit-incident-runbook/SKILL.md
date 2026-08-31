@@ -13,7 +13,7 @@ description: 'Execute Replit incident response: triage deployment failures, data
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

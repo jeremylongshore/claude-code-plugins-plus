@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "query_id": "01running-example",
+    "account": "ORG-ACCOUNT",
+    "role": "QUERY_AUDITOR",
+    "experiment_owner": "warehouse-performance-oncall",
+    "history_source": "INFORMATION_SCHEMA.QUERY_HISTORY",
+    "history_source_max_time": "2026-08-30T10:59:00Z",
+    "collected_at": "2026-08-30T11:00:00Z"
+  },
+  "query_history": {
+    "execution_status": "running",
+    "warehouse_name": "ETL_WH",
+    "queued_overload_time_ms": 0
+  },
+  "operators": [],
+  "query_insights": []
+}

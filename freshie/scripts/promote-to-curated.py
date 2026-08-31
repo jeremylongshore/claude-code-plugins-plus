@@ -64,6 +64,7 @@ Usage
 -----
   Requires the repository Node 20+ runtime on PATH for canonical cohort resolution.
   python3 freshie/scripts/promote-to-curated.py            # rebuild skills/.curated/
+  python3 freshie/scripts/promote-to-curated.py --plugin snowflake-pack
   python3 freshie/scripts/promote-to-curated.py --check    # CI: exit 1 if stale vs source
   python3 freshie/scripts/promote-to-curated.py --no-validate   # skip the in-process regrade
 """
@@ -184,11 +185,7 @@ def resolve_corpora(*cohorts: str) -> Dict[str, set[str]]:
         raise RuntimeError(f"corpus resolver failed for {', '.join(cohorts)}: {result.stderr.strip()}")
     try:
         payload = json.loads(result.stdout)
-        resolved = (
-            {cohorts[0]: payload}
-            if len(cohorts) == 1
-            else payload["cohorts"]
-        )
+        resolved = {cohorts[0]: payload} if len(cohorts) == 1 else payload["cohorts"]
     except (json.JSONDecodeError, KeyError, TypeError) as exc:
         raise RuntimeError(f"corpus resolver returned invalid JSON: {exc}") from exc
     output: Dict[str, set[str]] = {}
@@ -451,17 +448,33 @@ def _prior_manifest_count() -> Optional[int]:
         return None
 
 
-def build(validate: bool = True, quiet: bool = False, allow_shrink: bool = False) -> int:
+def build(
+    validate: bool = True,
+    quiet: bool = False,
+    allow_shrink: bool = False,
+    target_plugin: Optional[str] = None,
+) -> int:
     candidates = load_candidates(GRADES_CSV)
+    assign_curated_names(candidates)
+    if target_plugin:
+        normalized_target = target_plugin.removeprefix("./")
+        candidates = [
+            candidate
+            for candidate in candidates
+            if candidate["plugin"] == target_plugin or _plugin_root(candidate["skill_path"]) == normalized_target
+        ]
+        if not candidates:
+            print(f"error: no A/B curated candidates found for plugin {target_plugin!r}", file=sys.stderr)
+            return 2
     if not quiet:
-        print(f"selection: {len(candidates)} A/B plugin skills (own, source present)")
+        scope = f" for {target_plugin}" if target_plugin else ""
+        print(f"selection: {len(candidates)} A/B plugin skills{scope} (own, source present)")
 
     vss = load_validator() if validate else None
     if validate and vss is None:
         validate = False  # degrade: recorded grade only
 
     run_id = _run_id()
-    assign_curated_names(candidates)
 
     # Phase 1 — compute the full selection WITHOUT touching the mirror, so the
     # shrink floor below can abort with skills/.curated/ intact.
@@ -500,7 +513,7 @@ def build(validate: bool = True, quiet: bool = False, allow_shrink: bool = False
     # validator API drift nulling every fresh grade) converges on a tiny/empty
     # selection. Refuse to wipe ~1,881 published skills over one of those.
     prior_count = _prior_manifest_count()
-    if not allow_shrink:
+    if not allow_shrink and not target_plugin:
         floor = int(prior_count * SHRINK_FLOOR_RATIO) if prior_count else 0
         if len(promoted) == 0 or (prior_count and len(promoted) < floor):
             baseline = (
@@ -519,20 +532,44 @@ def build(validate: bool = True, quiet: bool = False, allow_shrink: bool = False
             )
             return 2
 
-    # Phase 2 — wipe and rebuild. Deletions/downgrades propagate, like
-    # build-cowork-zips.mjs.
-    if CURATED_DIR.exists():
-        shutil.rmtree(CURATED_DIR)
-    CURATED_DIR.mkdir(parents=True)
+    promoted_target_count = len(promoted)
+
+    # Phase 2 — full builds wipe/rebuild. A targeted build replaces exactly one
+    # plugin's rows and directories while preserving every unrelated mirror.
+    retained: List[Dict] = []
+    if target_plugin:
+        if not MANIFEST.exists():
+            print("error: targeted promotion requires an existing MANIFEST.json", file=sys.stderr)
+            return 2
+        existing = json.loads(MANIFEST.read_text())
+        normalized_target = target_plugin.removeprefix("./")
+        target_entries = [
+            entry
+            for entry in existing.get("skills", [])
+            if entry.get("plugin") == target_plugin
+            or _plugin_root(str(entry.get("source_path", ""))) == normalized_target
+        ]
+        retained = [entry for entry in existing.get("skills", []) if entry not in target_entries]
+        for entry in target_entries:
+            destination = CURATED_DIR / entry["curated_name"]
+            if destination.exists():
+                shutil.rmtree(destination)
+    else:
+        if CURATED_DIR.exists():
+            shutil.rmtree(CURATED_DIR)
+        CURATED_DIR.mkdir(parents=True)
 
     for entry in promoted:
         src_dir = ROOT / entry["source_path"]
         dest_dir = CURATED_DIR / entry["curated_name"]
+        if dest_dir.exists():
+            shutil.rmtree(dest_dir)
         for rel in entry["files"]:
             dst = dest_dir / rel
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(src_dir / rel, dst)
 
+    promoted = retained + promoted
     promoted.sort(key=lambda p: p["curated_name"])
     manifest = {
         "generator": "freshie/scripts/promote-to-curated.py",
@@ -546,7 +583,10 @@ def build(validate: bool = True, quiet: bool = False, allow_shrink: bool = False
     MANIFEST.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
 
     if not quiet:
-        print(f"promoted: {len(promoted)} → skills/.curated/")
+        if target_plugin:
+            print(f"promoted: {promoted_target_count} for {target_plugin} ({len(promoted)} total) → skills/.curated/")
+        else:
+            print(f"promoted: {len(promoted)} → skills/.curated/")
         if validate:
             print(f"dropped (fresh grade < B / unparseable): {dropped_grade}")
         if dropped_empty:
@@ -660,16 +700,27 @@ def main() -> int:
         "empty or far below the committed MANIFEST count (build mode).",
     )
     ap.add_argument("--quiet", action="store_true", help="Only print on error.")
-    ap.add_argument("--repo-root", type=Path, default=ROOT,
-                    help="repository root containing plugin sources (default: this checkout)")
-    ap.add_argument("--grades-csv", type=Path, default=None,
-                    help="override the grade export used for selection")
-    ap.add_argument("--grade-histogram", type=Path, default=None,
-                    help="override the grade histogram used for manifest provenance")
-    ap.add_argument("--curated-dir", type=Path, default=None,
-                    help="override the generated curated-mirror destination")
-    ap.add_argument("--corpus-resolver", type=Path, default=None,
-                    help="override the corpus resolver (used by hermetic integration fixtures)")
+    ap.add_argument(
+        "--plugin",
+        help="replace only one plugin's curated mirror rows (plugin name or repo-relative root)",
+    )
+    ap.add_argument(
+        "--repo-root",
+        type=Path,
+        default=ROOT,
+        help="repository root containing plugin sources (default: this checkout)",
+    )
+    ap.add_argument("--grades-csv", type=Path, default=None, help="override the grade export used for selection")
+    ap.add_argument(
+        "--grade-histogram", type=Path, default=None, help="override the grade histogram used for manifest provenance"
+    )
+    ap.add_argument("--curated-dir", type=Path, default=None, help="override the generated curated-mirror destination")
+    ap.add_argument(
+        "--corpus-resolver",
+        type=Path,
+        default=None,
+        help="override the corpus resolver (used by hermetic integration fixtures)",
+    )
     args = ap.parse_args()
     ROOT = args.repo_root.resolve()
     GRADES_CSV = args.grades_csv or ROOT / "freshie" / "grades.csv"
@@ -678,9 +729,16 @@ def main() -> int:
     MANIFEST = CURATED_DIR / "MANIFEST.json"
     VALIDATOR = ROOT / "scripts" / "validate-skills-schema.py"
     CORPUS_RESOLVER = args.corpus_resolver or ROOT / "scripts" / "corpus-resolver.mjs"
+    if args.check and args.plugin:
+        ap.error("--plugin cannot be combined with --check")
     if args.check:
         return check(quiet=args.quiet)
-    return build(validate=not args.no_validate, quiet=args.quiet, allow_shrink=args.allow_shrink)
+    return build(
+        validate=not args.no_validate,
+        quiet=args.quiet,
+        allow_shrink=args.allow_shrink,
+        target_plugin=args.plugin,
+    )
 
 
 if __name__ == "__main__":

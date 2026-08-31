@@ -8,6 +8,9 @@ dist/
 coverage/
 **/coverage/
 
+# Exact upstream distribution; hash-pinned by generated-content-ci.test.mjs.
+scripts/vendor/js-yaml-4.1.1/js-yaml.mjs
+
 # Lockfiles + archives
 pnpm-lock.yaml
 package-lock.json

@@ -8,7 +8,7 @@ description: 'Execute Fly.io production deployment checklist with health checks,
 
   '
 allowed-tools: Read, Bash(fly:*), Bash(curl:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

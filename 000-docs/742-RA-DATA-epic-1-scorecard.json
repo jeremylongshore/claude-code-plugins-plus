@@ -16,19 +16,19 @@
     "values": {
       "a_error_total": 35,
       "a_failing": 18,
-      "ab_error_total": 645,
-      "ab_failing": 313,
-      "b_failing": 295,
-      "error_files": 800,
-      "error_total": 3909,
+      "ab_error_total": 639,
+      "ab_failing": 310,
+      "b_failing": 292,
+      "error_files": 775,
+      "error_total": 3850,
       "grade_distribution": {
-        "A": 1879,
-        "B": 1115,
-        "C": 474,
+        "A": 1880,
+        "B": 1112,
+        "C": 452,
         "D": 157,
         "F": 5
       },
-      "rows": 3630
+      "rows": 3606
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3130,
-        "tracked_files": 23149
+        "raw_tracked_plugin_skill_files": 3106,
+        "tracked_files": 23266
       }
     },
     "2": {
@@ -90,35 +90,35 @@
           "validator_reported_mixed_denominator_percent": 80.8
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 4146,
-          "fully_compliant_surfaces": 1138,
+          "error_total_all_validated_surfaces": 4087,
+          "fully_compliant_surfaces": 1140,
           "terminal_denominator": {
             "agents": 357,
             "commands": 373,
-            "files": 4953,
+            "files": 4929,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
             "plugin_manifests": 593,
-            "skills": 3630
+            "skills": 3606
           },
           "validated_plugin_manifests": 601,
-          "validator_reported_mixed_denominator_percent": 23
+          "validator_reported_mixed_denominator_percent": 23.1
         },
         "skill_rows": {
           "a_error_total": 35,
           "a_failing": 18,
-          "ab_error_total": 645,
-          "ab_failing": 313,
-          "b_failing": 295,
-          "error_files": 800,
-          "error_total": 3909,
+          "ab_error_total": 639,
+          "ab_failing": 310,
+          "b_failing": 292,
+          "error_files": 775,
+          "error_total": 3850,
           "grade_distribution": {
-            "A": 1879,
-            "B": 1115,
-            "C": 474,
+            "A": 1880,
+            "B": 1112,
+            "C": 452,
             "D": 157,
             "F": 5
           },
-          "rows": 3630
+          "rows": 3606
         }
       }
     },
@@ -129,22 +129,22 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "average_score": 87.2,
+        "average_score": 87.3,
         "grade_distribution": {
-          "A": 1879,
-          "B": 1115,
-          "C": 474,
+          "A": 1880,
+          "B": 1112,
+          "C": 452,
           "D": 157,
           "F": 5
         },
         "grade_percentages": {
-          "A": 51.8,
-          "B": 30.7,
-          "C": 13.1,
-          "D": 4.3,
+          "A": 52.1,
+          "B": 30.8,
+          "C": 12.5,
+          "D": 4.4,
           "F": 0.1
         },
-        "rows": 3630
+        "rows": 3606
       }
     },
     "6": {
@@ -156,12 +156,12 @@
       "values": {
         "a_error_total": 35,
         "a_failing": 18,
-        "ab_error_total": 645,
-        "ab_failing": 313,
-        "b_error_total": 610,
-        "b_failing": 295,
+        "ab_error_total": 639,
+        "ab_failing": 310,
+        "b_error_total": 604,
+        "b_failing": 292,
         "certified_target": 0,
-        "skill_summary_rows": 3630
+        "skill_summary_rows": 3606
       }
     },
     "7": {
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3619,
+        "declared": 3595,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 11,
-        "rows": 3630,
+        "rows": 3606,
         "target_malformed": 0
       }
     },
@@ -351,7 +351,7 @@
             "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18, a persistent local filesystem (the observe-decide-act loop passes state through local turn files), and ~/.kobiton/.credentials written by /automate:setup — scripts/appium.js reads that file directly and never calls the MCP getCredential tool, so it is required, not a fallback. An authenticated Kobiton MCP connection is additionally useful for device selection."
           },
           {
-            "count": 3314,
+            "count": 3290,
             "value": "Designed for Claude Code"
           },
           {
@@ -1148,7 +1148,7 @@
         "answers": [
           {
             "cohort": "curated-mirror",
-            "value": 2037
+            "value": 2055
           },
           {
             "cohort": "curriculum",
@@ -1156,15 +1156,15 @@
           },
           {
             "cohort": "first-party",
-            "value": 2786
+            "value": 2762
           },
           {
             "cohort": "graded",
-            "value": 3630
+            "value": 3606
           },
           {
             "cohort": "marketplace-visible",
-            "value": 3039
+            "value": 3015
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1595,7 +1595,7 @@
         "distinct_actions": 8,
         "mutable_uses": [],
         "target_mutable_uses": 0,
-        "total_uses": 36
+        "total_uses": 38
       }
     },
     "37": {
@@ -1868,9 +1868,9 @@
       "values": {
         "allowlist_patterns": 10,
         "invalid_patterns": 0,
-        "invisible_files": 21,
+        "invisible_files": 22,
         "target_invisible_files": 0,
-        "tracked_files": 23149
+        "tracked_files": 23266
       }
     },
     "47": {
@@ -1955,17 +1955,17 @@
       "dimension": "Inventory header versus rows",
       "reproduce": "pnpm run measure:e1 --row=52 --stdout",
       "source": [
-        "freshie/reports/run-delta-14.json",
+        "freshie/reports/run-delta-18.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py"
       ],
       "status": "target_met",
       "values": {
-        "dolt_commit": "2ljhn79ge74uj1kd7q2chqgo9ne0tulb",
-        "header_total_skills": 3053,
-        "run_id": 14,
+        "dolt_commit": "8ih5losgj9120patrkdulsml0gtn9clj",
+        "header_total_skills": 3029,
+        "run_id": 18,
         "skill_row_delta": 0,
-        "skill_rows": 3053,
+        "skill_rows": 3029,
         "target_skill_row_delta": 0
       }
     },
@@ -1976,32 +1976,32 @@
       "source": [
         "freshie/grade-histogram.json",
         "freshie/grades.csv",
-        "freshie/reports/run-delta-14.json"
+        "freshie/reports/run-delta-18.json"
       ],
       "status": "target_met",
       "values": {
-        "compliance_rows": 3630,
-        "export_dolt_commit": "2ljhn79ge74uj1kd7q2chqgo9ne0tulb",
-        "export_run_id": 14,
-        "grades_csv_rows": 3630,
-        "grades_csv_sha256": "72fbb289e8451d9a4bbe95cae0b9a1797588c0197589f94ddd1cde48241e4ef0",
+        "compliance_rows": 3606,
+        "export_dolt_commit": "8ih5losgj9120patrkdulsml0gtn9clj",
+        "export_run_id": 18,
+        "grades_csv_rows": 3606,
+        "grades_csv_sha256": "1c3804520f6e036fbb8fed212c20aeddb3b03240b91f397dae911536738b6323",
         "histogram_grades": {
-          "A": 1872,
-          "B": 1117,
-          "C": 479,
+          "A": 1880,
+          "B": 1112,
+          "C": 452,
           "D": 157,
           "F": 5
         },
-        "histogram_total": 3630,
+        "histogram_total": 3606,
         "immutable_grade_counts": {
-          "A": 1872,
-          "B": 1117,
-          "C": 479,
+          "A": 1880,
+          "B": 1112,
+          "C": 452,
           "D": 157,
           "F": 5
         },
-        "inventory_dolt_commit": "2ljhn79ge74uj1kd7q2chqgo9ne0tulb",
-        "inventory_run_id": 14,
+        "inventory_dolt_commit": "8ih5losgj9120patrkdulsml0gtn9clj",
+        "inventory_run_id": 18,
         "target_lag_runs": 0
       }
     },
@@ -2011,7 +2011,7 @@
       "reproduce": "pnpm run measure:e1 --row=54 --stdout",
       "source": [
         "freshie/reports/legacy-forge-proofs-demotion.json",
-        "freshie/reports/run-delta-14.json",
+        "freshie/reports/run-delta-18.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py",
         "scripts/record-jrig-proofs.mjs"
@@ -2027,9 +2027,9 @@
         "invalid_identities": 0,
         "legacy_e0_records": 3,
         "retained_e2_e3": 0,
-        "source_dolt_commit": "2ljhn79ge74uj1kd7q2chqgo9ne0tulb",
-        "source_run_id": 14,
-        "source_tag": "run-14",
+        "source_dolt_commit": "8ih5losgj9120patrkdulsml0gtn9clj",
+        "source_run_id": 18,
+        "source_tag": "run-18",
         "target_legacy_e0_records": 3,
         "target_unclassified": 0,
         "total_e2_e3": 0,
@@ -2047,7 +2047,7 @@
       "source": [
         "000-docs/807-DR-STND-evaluation-evidence.md",
         "freshie/reports/legacy-forge-proofs-demotion.json",
-        "freshie/reports/run-delta-14.json",
+        "freshie/reports/run-delta-18.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py"
       ],
@@ -2095,6 +2095,12 @@
         "plugins/saas-packs/databricks-pack/skills/databricks-uc-migration-pilot/eval-spec.yaml",
         "plugins/saas-packs/hubspot-pack/skills/hubspot-warehouse-sync/eval-spec.yaml",
         "plugins/saas-packs/sentry-pack/skills/sentry-data-handling/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-access-guardian/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-cost-leak-hunter/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-deploy-medic/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-pipeline-guardian/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-query-forensics/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-strong-auth-migration-pilot/eval-spec.yaml",
         "plugins/saas-packs/supabase-pack/skills/supabase-known-pitfalls/eval-spec.yaml",
         "plugins/skill-enhancers/skill-creator/skills/skill-creator/eval-spec.yaml",
         "skills/.curated/audit-tests/eval-spec.yaml",
@@ -2109,16 +2115,22 @@
         "skills/.curated/hubspot-warehouse-sync/eval-spec.yaml",
         "skills/.curated/sentry-data-handling/eval-spec.yaml",
         "skills/.curated/skill-creator/eval-spec.yaml",
+        "skills/.curated/snowflake-access-guardian/eval-spec.yaml",
+        "skills/.curated/snowflake-cost-leak-hunter/eval-spec.yaml",
+        "skills/.curated/snowflake-deploy-medic/eval-spec.yaml",
+        "skills/.curated/snowflake-pipeline-guardian/eval-spec.yaml",
+        "skills/.curated/snowflake-query-forensics/eval-spec.yaml",
+        "skills/.curated/snowflake-strong-auth-migration-pilot/eval-spec.yaml",
         "skills/.curated/supabase-known-pitfalls/eval-spec.yaml",
         "skills/.curated/validate-skillmd/eval-spec.yaml"
       ],
       "status": "measured",
       "values": {
-        "adoption_percent": 0.45,
-        "curated_copies": 14,
-        "plugin_skill_rows": 3130,
-        "source_eval_specs": 14,
-        "tracked_eval_specs": 28
+        "adoption_percent": 0.64,
+        "curated_copies": 20,
+        "plugin_skill_rows": 3106,
+        "source_eval_specs": 20,
+        "tracked_eval_specs": 40
       }
     },
     "58": {

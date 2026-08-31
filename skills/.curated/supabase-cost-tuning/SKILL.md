@@ -15,7 +15,7 @@ description: 'Optimize Supabase costs through plan selection, database tuning, s
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(supabase:*)
-version: 1.53.0
+version: 1.54.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -90,8 +90,8 @@ For storage, compress images client-side before upload and schedule an orphan-cl
 Prefer pooling and code fixes over a compute upgrade. Route direct `pg` connections (migrations, ORMs) through the Supavisor pooler URL instead of scaling the instance:
 
 ```typescript
-// Direct:   postgresql://postgres:pw@db.xxx.supabase.co:5432/postgres
-// Pooled:   postgresql://postgres:pw@db.xxx.supabase.co:6543/postgres
+// Direct endpoint: db.xxx.supabase.co on port 5432
+// Pooled endpoint: db.xxx.supabase.co on port 6543
 ```
 
 Cut Edge Function cost by keeping imports lightweight (dynamic-import heavy libraries only on the paths that need them) and caching expensive results across warm invocations. Add a lightweight usage-tracking table plus a daily materialized-view summary for spend visibility. See [full compute and Edge Function code](references/optimization.md) for the pooling config, cold-start patterns, and usage-monitoring schema (Step 3 section).

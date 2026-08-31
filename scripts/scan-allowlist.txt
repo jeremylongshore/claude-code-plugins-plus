@@ -104,6 +104,7 @@ plugins/productivity/j-rig/**:hook-definition  the sinker/line/hook 3-layer arch
 
 # ── Reviewed defensive scanner signatures. ──
 plugins/security/agent-safety-preflight/scripts/agent_preflight_lite.py:outbound-network  defensive scanner regex detects curl/wget install chains; it does not perform network calls
+plugins/saas-packs/snowflake-pack/skills/snowflake-cost-leak-hunter/scripts/analyze_cost_evidence.py:outbound-network  Reviewer Jeremy Longshore; expires 2027-08-31; Python stdlib urlsplit validates local strings only and performs no network I/O
 
 # ── databricks-streaming-guardian: the PreToolUse guard IS the skill's purpose. ──
 # The pack's only blocking hook. It intercepts Bash and BLOCKS a DROP/CREATE-OR-

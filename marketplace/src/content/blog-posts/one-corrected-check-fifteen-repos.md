@@ -84,7 +84,7 @@ if not any(re.search(rf"\b{term}\b", lower) for term in surface_terms):
     findings.append("description never explains the visible bar, panel, pill, or widget")
 ```
 
-Two more term lists do the load-bearing work. An interaction list (`open`, `click`, `select`, `copy`, `install`, `focus`, `refresh`, `preview`, `sort`, `scan`, and about a dozen more) fails a description that "gives no concrete user interaction or visible behavior." A boundary list (`no `, `never `, `only `, `without `, `offline`, `local`, `private`, `fixed `) fails one that "gives no privacy, network, data, or write boundary." A description can be four fluent sentences about nothing and still fail both.
+Two more term lists do the load-bearing work. An interaction list (`open`, `click`, `select`, `copy`, `install`, `focus`, `refresh`, `preview`, `sort`, `scan`, and about a dozen more) fails a description that "gives no concrete user interaction or visible behavior." A boundary list (`no`, `never`, `only`, `without`, `offline`, `local`, `private`, `fixed`) fails one that "gives no privacy, network, data, or write boundary." The first four and `fixed` are matched as whole words followed by a space. A description can be four fluent sentences about nothing and still fail both.
 
 Then there is a banned-phrase list inside the gate, nine entries: `cutting-edge`, `game-changer`, `game-changing`, `revolutionary`, `supercharge`, `seamless`, `robust solution`, `unlock your`, `take your productivity to the next level`. I run the same instrument against this blog's prose from a JSON deny-list, and the overlap is not coincidence. Both lists exist because the same generator produces both kinds of copy.
 

@@ -5158,7 +5158,7 @@
       "name": "supabase-pack",
       "source": "./plugins/saas-packs/supabase-pack",
       "description": "Complete Supabase integration skill pack with 30 skills covering authentication, database, storage, realtime, edge functions, and production operations. Flagship+ tier vendor pack.",
-      "version": "1.53.0",
+      "version": "1.54.0",
       "category": "saas-packs",
       "keywords": [
         "supabase",
@@ -5354,7 +5354,7 @@
       "name": "replit-pack",
       "source": "./plugins/saas-packs/replit-pack",
       "description": "Complete Replit integration skill pack with 30 skills covering cloud IDE, deployments, AI assistance, and collaborative coding. Flagship+ tier vendor pack.",
-      "version": "1.12.0",
+      "version": "1.13.0",
       "category": "saas-packs",
       "keywords": [
         "replit",
@@ -5903,7 +5903,7 @@
       "name": "documenso-pack",
       "source": "./plugins/saas-packs/documenso-pack",
       "description": "Complete Documenso integration skill pack with 24 skills covering document signing, templates, workflows, and e-signature automation. Flagship tier vendor pack.",
-      "version": "1.13.0",
+      "version": "1.14.0",
       "category": "saas-packs",
       "keywords": [
         "documenso",
@@ -6677,7 +6677,7 @@
       "name": "flyio-pack",
       "source": "./plugins/saas-packs/flyio-pack",
       "description": "Claude Code skill pack for Fly.io (18 skills)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": [
         "flyio",
@@ -7039,7 +7039,7 @@
       "name": "podium-pack",
       "source": "./plugins/saas-packs/podium-pack",
       "description": "Claude Code skill pack for Podium (10 production-engineer skills covering OAuth, webhook reliability, rate-limit survival, call transcripts, webchat, review automation, history export, RAG context, multi-location routing, contact dedup)",
-      "version": "2.8.0",
+      "version": "2.9.0",
       "category": "saas-packs",
       "keywords": [
         "podium",
@@ -7225,8 +7225,8 @@
     {
       "name": "snowflake-pack",
       "source": "./plugins/saas-packs/snowflake-pack",
-      "description": "Claude Code skill pack for Snowflake (30 skills)",
-      "version": "1.6.0",
+      "description": "Six evidence-driven Snowflake operator skills for cost, query forensics, pipelines, deployments, strong authentication, and access governance",
+      "version": "2.0.0",
       "category": "saas-packs",
       "keywords": [
         "snowflake",

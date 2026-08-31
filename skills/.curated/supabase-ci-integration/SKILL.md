@@ -11,7 +11,7 @@ description: |
   Trigger with phrases like "supabase CI", "supabase GitHub Actions",
   "supabase deploy pipeline", "CI supabase migrations", "supabase preview branches".
 allowed-tools: Write, Bash(npx:*), Bash(gh:*)
-version: 1.53.0
+version: 1.54.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

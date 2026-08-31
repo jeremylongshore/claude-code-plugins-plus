@@ -1,0 +1,58 @@
+{
+  "metadata": {
+    "account": "ORG-ACCOUNT",
+    "role": "COST_AUDITOR",
+    "review_owner": "finops-oncall",
+    "approval_boundary": "FinOps owner plus Snowflake platform approver",
+    "window_start": "2026-08-01T00:00:00Z",
+    "window_end": "2026-08-08T00:00:00Z",
+    "generated_at": "2026-08-08T12:00:00Z"
+  },
+  "source_max_times": {
+    "warehouse_metering": "2026-08-08T09:00:00Z",
+    "query_attribution": "2026-08-08T04:00:00Z",
+    "serverless_usage": "2026-08-08T06:00:00Z"
+  },
+  "warehouse_metering": [
+    {
+      "warehouse_name": "ETL_WH",
+      "credits_used_compute": "20.5",
+      "credits_attributed_compute_queries": "15.0",
+      "credits_used_cloud_services": "0.4"
+    },
+    {
+      "warehouse_name": "BI_WH",
+      "credits_used_compute": "10.0",
+      "credits_attributed_compute_queries": "9.5",
+      "credits_used_cloud_services": "0.1"
+    }
+  ],
+  "query_attribution": [
+    {
+      "query_id": "q1",
+      "query_tag": "team=data",
+      "credits_attributed_compute": "12.0",
+      "credits_used_query_acceleration": "0.5"
+    },
+    {
+      "query_id": "q2",
+      "query_tag": "",
+      "credits_attributed_compute": "4.0",
+      "credits_used_query_acceleration": "0"
+    }
+  ],
+  "serverless_usage": [
+    {
+      "service_type": "SNOWPIPE",
+      "credits_used": "3.25"
+    }
+  ],
+  "credit_rates": {
+    "warehouse": {
+      "unit_price": "2.75",
+      "currency": "USD",
+      "provenance": "customer contract rate card row WH-2026",
+      "invoice_reconciled": false
+    }
+  }
+}

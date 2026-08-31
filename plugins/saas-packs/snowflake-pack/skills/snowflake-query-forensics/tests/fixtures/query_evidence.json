@@ -1,0 +1,77 @@
+{
+  "metadata": {
+    "query_id": "01abc-example",
+    "account": "ORG-ACCOUNT",
+    "role": "QUERY_AUDITOR",
+    "experiment_owner": "warehouse-performance-oncall",
+    "history_source": "SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY",
+    "history_source_max_time": "2026-08-30T10:30:00Z",
+    "collected_at": "2026-08-30T11:00:00Z"
+  },
+  "query_history": {
+    "execution_status": "success",
+    "warehouse_name": "ETL_WH",
+    "query_hash": "hash-1",
+    "query_parameterized_hash": "phash-1",
+    "total_elapsed_time_ms": 153000,
+    "bytes_scanned": 1048576,
+    "partitions_scanned": 100,
+    "partitions_total": 1000,
+    "bytes_spilled_to_local_storage": 2048,
+    "bytes_spilled_to_remote_storage": 8192,
+    "compilation_time_ms": 500,
+    "execution_time_ms": 120000,
+    "queued_overload_time_ms": 30000,
+    "queued_provisioning_time_ms": 0,
+    "queued_repair_time_ms": 0,
+    "transaction_blocked_time_ms": 2500
+  },
+  "operators": [
+    {
+      "operator_id": 3,
+      "operator_type": "Join",
+      "operator_statistics": {
+        "input_rows": 100,
+        "output_rows": 500,
+        "spilling": {
+          "bytes_spilled_local_storage": 2048,
+          "bytes_spilled_remote_storage": 8192
+        },
+        "pruning": {
+          "partitions_scanned": 100,
+          "partitions_total": 100
+        }
+      },
+      "execution_time_breakdown": {
+        "overall_percentage": 67.5
+      },
+      "operator_attributes": {
+        "redacted": true
+      }
+    },
+    {
+      "operator_id": 4,
+      "operator_type": "TableScan",
+      "operator_statistics": {
+        "input_rows": 500,
+        "output_rows": 100,
+        "pruning": {
+          "partitions_scanned": 20,
+          "partitions_total": 100
+        }
+      },
+      "execution_time_breakdown": {
+        "overall_percentage": 20
+      },
+      "operator_attributes": {
+        "redacted": true
+      }
+    }
+  ],
+  "query_insights": [
+    {
+      "type_id": "QUERY_INSIGHT_REMOTE_SPILLAGE",
+      "message": "Remote spillage detected"
+    }
+  ]
+}

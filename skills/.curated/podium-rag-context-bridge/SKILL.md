@@ -10,7 +10,7 @@ description: Bridge a live Podium call transcript or webchat turn to an LLM by f
   Trigger with "podium rag", "podium llm context", "podium transcript to llm", "podium retrieval",
   "podium vector search", "podium real-time context", "podium agent grounding".
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Bash(python3:*), Bash(psql:*), Grep
-version: 2.8.0
+version: 2.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code
@@ -101,7 +101,7 @@ class PgvectorStore:
     """pgvector reference implementation. Replace with Pinecone/Weaviate as needed."""
     def __init__(self, dsn: str):
         import psycopg
-        self.dsn = dsn  # e.g. "postgresql://user:pass@host/db" — load from secret store
+        self.dsn = dsn  # Inject the managed connection string at runtime.
 
     async def query(self, embedding: list[float], top_k: int,
                     filter: dict | None = None) -> list[dict]:

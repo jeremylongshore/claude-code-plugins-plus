@@ -12,7 +12,7 @@ description: 'Manage incident response for Documenso integration issues.
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(kubectl:*), Grep
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

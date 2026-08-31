@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -7,6 +8,20 @@ import { compareSkillNamesOrdinal } from '../marketplace/scripts/discover-skills
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const WORKFLOW = readFileSync(`${ROOT}/.github/workflows/validate-plugins.yml`, 'utf8');
+const PACKAGE = JSON.parse(readFileSync(`${ROOT}/package.json`, 'utf8'));
+const GENERATED_CONTENT_COMMAND = PACKAGE.scripts['validate:generated-content'];
+const PARSER_SECURITY_SUITES = [
+  'marketplace/scripts/discover-skills.test.mjs',
+  'marketplace/scripts/md-to-html.test.mjs',
+];
+const DISCOVER_SKILLS = readFileSync(`${ROOT}/marketplace/scripts/discover-skills.mjs`, 'utf8');
+const VENDORED_JS_YAML = `${ROOT}/scripts/vendor/js-yaml-4.1.1/js-yaml.mjs`;
+const VENDORED_JS_YAML_SHA256 = 'efbc45850bf15f0c8ee3434983f512be656002d7507dc292c7ade4449b5d57fa';
+const VENDORED_JS_YAML_PATH = 'scripts/vendor/js-yaml-4.1.1/js-yaml.mjs';
+
+function countLiteral(text, value) {
+  return text.split(value).length - 1;
+}
 
 function jobBlock(name) {
   const marker = `  ${name}:\n`;
@@ -28,13 +43,65 @@ test('generated content drift job is unconditional, credential-free, and exact',
   assert.doesNotMatch(block, /(?:npm|pnpm)\s+(?:ci|install)/);
   assert.match(
     block,
-    /node --test scripts\/generated-content-ci\.test\.mjs marketplace\/scripts\/sync-catalog\.test\.mjs marketplace\/scripts\/generate-unified-search\.test\.mjs/,
+    /node --test scripts\/generated-content-ci\.test\.mjs marketplace\/scripts\/discover-skills\.test\.mjs marketplace\/scripts\/md-to-html\.test\.mjs marketplace\/scripts\/sync-catalog\.test\.mjs marketplace\/scripts\/generate-unified-search\.test\.mjs/,
   );
+  for (const suite of PARSER_SECURITY_SUITES) {
+    assert.equal(
+      countLiteral(block, suite),
+      1,
+      `${suite} must run exactly once in the workflow job`,
+    );
+  }
   assert.match(block, /node marketplace\/scripts\/discover-skills\.mjs --level=full --check/);
   assert.match(block, /node marketplace\/scripts\/sync-catalog\.mjs --check/);
   assert.match(block, /node marketplace\/scripts\/generate-unified-search\.mjs --check/);
   assert.doesNotMatch(block, /--level=metadata/);
   assert.doesNotMatch(block, /(?:npm|pnpm)\s+(?:publish|pack)|git\s+(?:tag|push)/);
+});
+
+test('generated content parser uses the pinned install-free YAML implementation', () => {
+  assert.match(
+    DISCOVER_SKILLS,
+    /import yaml from '\.\.\/\.\.\/scripts\/vendor\/js-yaml-4\.1\.1\/js-yaml\.mjs';/,
+  );
+  assert.doesNotMatch(DISCOVER_SKILLS, /(?:from|require\()\s*['"]js-yaml['"]/);
+  assert.equal(
+    createHash('sha256').update(readFileSync(VENDORED_JS_YAML)).digest('hex'),
+    VENDORED_JS_YAML_SHA256,
+    'vendored js-yaml bytes must match the reviewed 4.1.1 distribution',
+  );
+  assert.match(
+    readFileSync(`${ROOT}/scripts/vendor/js-yaml-4.1.1/LICENSE`, 'utf8'),
+    /Permission is hereby granted, free of charge/,
+  );
+  for (const ignoreFile of ['.prettierignore', 'eslint.config.mjs']) {
+    const ignoreConfig = readFileSync(`${ROOT}/${ignoreFile}`, 'utf8');
+    assert.equal(
+      countLiteral(ignoreConfig, VENDORED_JS_YAML_PATH),
+      1,
+      `${ignoreFile} must preserve the pinned upstream bytes with one exact exclusion`,
+    );
+  }
+});
+
+test('canonical generated content command executes parser security suites exactly once', () => {
+  assert.equal(typeof GENERATED_CONTENT_COMMAND, 'string');
+  assert.match(
+    GENERATED_CONTENT_COMMAND,
+    /node --test scripts\/generated-content-ci\.test\.mjs marketplace\/scripts\/discover-skills\.test\.mjs marketplace\/scripts\/md-to-html\.test\.mjs marketplace\/scripts\/sync-catalog\.test\.mjs/,
+  );
+  for (const suite of PARSER_SECURITY_SUITES) {
+    assert.equal(
+      countLiteral(GENERATED_CONTENT_COMMAND, suite),
+      1,
+      `${suite} must run exactly once in validate:generated-content`,
+    );
+  }
+  assert.match(
+    GENERATED_CONTENT_COMMAND,
+    /node marketplace\/scripts\/discover-skills\.mjs --level=full --check/,
+  );
+  assert.match(GENERATED_CONTENT_COMMAND, /node marketplace\/scripts\/sync-catalog\.mjs --check/);
 });
 
 test('generated content drift is aggregated exactly once without a new context', () => {
