@@ -47,3 +47,19 @@ evidence; it is not a reason to switch to `ACCOUNTADMIN`.
 Every output includes the collection timestamp, SQL SHA-256, source views,
 datasets, row count, sanitized errors, and explicit non-claims. The domain skill
 still decides whether the evidence is complete and fresh enough for its job.
+
+## Bundle integrity
+
+`collect_snowflake_evidence.py` and the SQL files in `shared/evidence/` are the
+canonical sources. Each skill bundles a physical copy of that collector and its
+reviewed SQL template so an installed skill remains self-contained. Check the
+eight copies with:
+
+```bash
+python3 shared/evidence/sync_bundled_collectors.py --check
+```
+
+An explicit regeneration uses `--write`; it refuses unexpected skills, SQL
+templates, symlinks, or other packaging-shape drift, and verifies byte parity
+after writing. The collector receipt's `sql_sha256` continues to identify the
+exact reviewed template used by a bundled copy.

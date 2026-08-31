@@ -764,6 +764,14 @@ jobs:
         with:
           python-version: '3.12'
 
+      # Snowflake skills are self-contained packages: each bundled collector
+      # and its reviewed SQL template must remain an exact copy of the shared
+      # canonical source. Keep this fail-closed check in the existing Python
+      # gate so package drift cannot pass merely because unit tests are green.
+      - name: Verify Snowflake collector bundle integrity
+        if: matrix.test-type == 'python-tests'
+        run: python3 plugins/saas-packs/snowflake-pack/shared/evidence/sync_bundled_collectors.py --check
+
       - name: Install Python test dependencies
         if: matrix.test-type == 'python-tests'
         run: |

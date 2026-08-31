@@ -14,22 +14,17 @@ SPEC = importlib.util.spec_from_file_location("collect_snowflake_evidence", SCRI
 assert SPEC and SPEC.loader
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
+SYNC_SCRIPT = HERE.parent / "sync_bundled_collectors.py"
+SYNC_SPEC = importlib.util.spec_from_file_location("sync_bundled_collectors", SYNC_SCRIPT)
+assert SYNC_SPEC and SYNC_SPEC.loader
+SYNC_MODULE = importlib.util.module_from_spec(SYNC_SPEC)
+SYNC_SPEC.loader.exec_module(SYNC_MODULE)
 
 
 class CollectorTests(unittest.TestCase):
     def test_installed_skills_bundle_the_canonical_collector(self) -> None:
         canonical = SCRIPT.read_bytes()
         canonical_sql = {path.name: path.read_bytes() for path in sorted((SCRIPT.parent / "sql").glob("*.sql"))}
-        expected_sql = {
-            "snowflake-access-guardian": "access.sql",
-            "snowflake-cost-leak-hunter": "cost.sql",
-            "snowflake-data-quality-sentinel": "data-quality.sql",
-            "snowflake-deploy-medic": "query.sql",
-            "snowflake-failover-readiness-drill": "replication.sql",
-            "snowflake-pipeline-guardian": "pipeline.sql",
-            "snowflake-query-forensics": "query.sql",
-            "snowflake-strong-auth-migration-pilot": "auth.sql",
-        }
         skills_dir = SCRIPT.parents[2] / "skills"
         bundled = sorted(skills_dir.glob("*/scripts/collect_snowflake_evidence.py"))
         self.assertEqual(len(bundled), 8)
@@ -37,7 +32,7 @@ class CollectorTests(unittest.TestCase):
             with self.subTest(skill=path.parents[1].name):
                 self.assertEqual(path.read_bytes(), canonical)
                 bundled_sql = {item.name: item.read_bytes() for item in sorted((path.parent / "sql").glob("*.sql"))}
-                filename = expected_sql[path.parents[1].name]
+                filename = SYNC_MODULE.BUNDLES[path.parents[1].name]
                 self.assertEqual(bundled_sql, {filename: canonical_sql[filename]})
 
     def test_all_tracked_surfaces_pass_read_only_gate(self) -> None:
