@@ -23,17 +23,17 @@ CANONICAL_SQL = SHARED_EVIDENCE / "sql"
 SKILLS_DIR = Path("skills")
 
 # Keep this map explicit: it is the packaging contract, including the SQL
-# template provenance for every self-contained skill copy.  The query template
+# template provenance for every self-contained skill copy. The query template
 # is deliberately shared by deploy-medic and query-forensics.
-BUNDLES: dict[str, str] = {
-    "snowflake-access-guardian": "access.sql",
-    "snowflake-cost-leak-hunter": "cost.sql",
-    "snowflake-data-quality-sentinel": "data-quality.sql",
-    "snowflake-deploy-medic": "query.sql",
-    "snowflake-failover-readiness-drill": "replication.sql",
-    "snowflake-pipeline-guardian": "pipeline.sql",
-    "snowflake-query-forensics": "query.sql",
-    "snowflake-strong-auth-migration-pilot": "auth.sql",
+BUNDLES: dict[str, tuple[str, ...]] = {
+    "snowflake-access-guardian": ("access.sql", "access-current.sql", "access-future.sql"),
+    "snowflake-cost-leak-hunter": ("cost.sql",),
+    "snowflake-data-quality-sentinel": ("data-quality.sql",),
+    "snowflake-deploy-medic": ("query.sql",),
+    "snowflake-failover-readiness-drill": ("replication.sql",),
+    "snowflake-pipeline-guardian": ("pipeline.sql",),
+    "snowflake-query-forensics": ("query.sql", "query-operator-stats.sql", "query-insights.sql"),
+    "snowflake-strong-auth-migration-pilot": ("auth.sql", "auth-current.sql"),
 }
 
 
@@ -92,9 +92,10 @@ def _source_issues(root: Path) -> list[str]:
     collector = _path(root, CANONICAL_COLLECTOR)
     sql_dir = _path(root, CANONICAL_SQL)
     _regular_file(collector, "canonical collector", issues)
+    expected_templates = {filename for templates in BUNDLES.values() for filename in templates}
     if _directory(sql_dir, "canonical SQL directory", issues):
-        _unexpected_entries(sql_dir, set(BUNDLES.values()), "canonical SQL", issues)
-        for filename in sorted(set(BUNDLES.values())):
+        _unexpected_entries(sql_dir, expected_templates, "canonical SQL", issues)
+        for filename in sorted(expected_templates):
             _regular_file(sql_dir / filename, f"canonical SQL template ({filename})", issues)
     return issues
 
@@ -106,7 +107,7 @@ def _destination_issues(root: Path, *, allow_missing: bool = False) -> list[str]
         return issues
 
     _unexpected_entries(skills, set(BUNDLES), "Snowflake skill", issues, allow_missing=allow_missing)
-    for skill, filename in sorted(BUNDLES.items()):
+    for skill, filenames in sorted(BUNDLES.items()):
         skill_dir = skills / skill
         if not _directory(skill_dir, f"skill directory ({skill})", issues, allow_missing=True):
             continue
@@ -129,13 +130,20 @@ def _destination_issues(root: Path, *, allow_missing: bool = False) -> list[str]
                         f"{scripts_dir / 'collect_snowflake_evidence.py'}"
                     )
         if sql_dir.is_dir() and not sql_dir.is_symlink():
-            _unexpected_entries(sql_dir, {filename}, f"bundled SQL ({skill})", issues, allow_missing=allow_missing)
-            _regular_file(
-                sql_dir / filename,
-                f"bundled SQL template ({skill}/{filename})",
+            _unexpected_entries(
+                sql_dir,
+                set(filenames),
+                f"bundled SQL ({skill})",
                 issues,
                 allow_missing=allow_missing,
             )
+            for filename in filenames:
+                _regular_file(
+                    sql_dir / filename,
+                    f"bundled SQL template ({skill}/{filename})",
+                    issues,
+                    allow_missing=allow_missing,
+                )
         _regular_file(
             skill_dir / "scripts" / "collect_snowflake_evidence.py",
             f"bundled collector ({skill})",
@@ -159,14 +167,15 @@ def check_tree(root: Path = PACK_ROOT) -> list[str]:
             if bundled.is_file() and not bundled.is_symlink() and bundled.read_bytes() != canonical_bytes:
                 issues.append(f"bundled collector drifts from canonical source ({skill}): {bundled}")
     if canonical_sql_dir.is_dir() and not canonical_sql_dir.is_symlink():
-        for skill, filename in BUNDLES.items():
-            source = canonical_sql_dir / filename
-            bundled = _path(root, SKILLS_DIR / skill / "scripts" / "sql" / filename)
-            if source.is_file() and not source.is_symlink() and bundled.is_file() and not bundled.is_symlink():
-                if bundled.read_bytes() != source.read_bytes():
-                    issues.append(
-                        f"bundled SQL template drifts from canonical source ({skill}/{filename}): {bundled}"
-                    )
+        for skill, filenames in BUNDLES.items():
+            for filename in filenames:
+                source = canonical_sql_dir / filename
+                bundled = _path(root, SKILLS_DIR / skill / "scripts" / "sql" / filename)
+                if source.is_file() and not source.is_symlink() and bundled.is_file() and not bundled.is_symlink():
+                    if bundled.read_bytes() != source.read_bytes():
+                        issues.append(
+                            f"bundled SQL template drifts from canonical source ({skill}/{filename}): {bundled}"
+                        )
     return issues
 
 
@@ -196,12 +205,13 @@ def write_tree(root: Path = PACK_ROOT) -> None:
     sql_dir = _path(root, CANONICAL_SQL)
     collector_bytes = collector.read_bytes()
     collector_mode = collector.stat().st_mode
-    for skill, filename in BUNDLES.items():
+    for skill, filenames in BUNDLES.items():
         collector_target = _path(root, SKILLS_DIR / skill / "scripts" / "collect_snowflake_evidence.py")
-        sql_target = _path(root, SKILLS_DIR / skill / "scripts" / "sql" / filename)
-        source_sql = sql_dir / filename
         _write_atomic(collector_target, collector_bytes, collector_mode)
-        _write_atomic(sql_target, source_sql.read_bytes(), source_sql.stat().st_mode)
+        for filename in filenames:
+            sql_target = _path(root, SKILLS_DIR / skill / "scripts" / "sql" / filename)
+            source_sql = sql_dir / filename
+            _write_atomic(sql_target, source_sql.read_bytes(), source_sql.stat().st_mode)
 
     issues = check_tree(root)
     if issues:
@@ -232,7 +242,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     print(
         f"collector bundle check passed: {len(BUNDLES)} skills, "
-        f"{len(set(BUNDLES.values()))} SQL templates"
+        f"{len({filename for templates in BUNDLES.values() for filename in templates})} SQL templates"
     )
     return 0
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import hashlib
 import json
 import subprocess
 import sys
@@ -158,6 +159,32 @@ class AuthAnalyzerFixtureTests(unittest.TestCase):
         self.assertEqual(result.returncode, 2)
         self.assertIn("users must be an array", result.stderr)
         self.assertNotIn("Traceback", result.stderr)
+
+    def test_login_history_and_current_historical_users_are_bounded(self):
+        data = json.loads(json.dumps(self.fixture))
+        data["current_users"] = data["users"]
+        data["historical_users"] = data["users"]
+        data["login_history"] = [{
+            "user_name_sha256": "a" * 64,
+            "event_timestamp": "2026-08-30T11:55:00Z",
+            "event_type": "LOGIN",
+            "is_success": True,
+            "first_authentication_factor": "PASSWORD",
+        }]
+        data["login_history_receipt"] = {"schema_version": "1", "surface": "auth", "status": "collected", "truncation_possible": False, "source_views": ["SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY"], "collected_at": data["metadata"]["collected_at"], "sql_sha256": "sha256:" + "0" * 64, "template_sha256": "sha256:" + "0" * 64, "rendered_sql_sha256": "sha256:" + "0" * 64}
+        receipt_body = dict(data["login_history_receipt"])
+        data["login_history_receipt"]["receipt_sha256"] = "sha256:" + hashlib.sha256(json.dumps(receipt_body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
+        data["enforcement_windows"] = [{"name": "pilot", "start": "2026-08-30T11:45:00Z", "end": "2026-08-30T12:00:00Z"}]
+        report = analyze(data)
+        self.assertEqual(report["identity_evidence_reconciliation"]["users"]["status"], "MATCHED")
+        self.assertFalse(report["identity_evidence_reconciliation"]["login_history"]["issues"])
+        self.assertFalse(report["completeness_claim_blocked"])
+        data["login_history_receipt"]["receipt_sha256"] = "sha256:" + "0" * 64
+        tampered = analyze(data)
+        self.assertIn("collector-receipt-unverifiable", {item["category"] for item in tampered["findings"]})
+        data["login_history"][0]["user_name"] = "ALICE"
+        with self.assertRaises(ValueError):
+            analyze(data)
 
 
 if __name__ == "__main__":

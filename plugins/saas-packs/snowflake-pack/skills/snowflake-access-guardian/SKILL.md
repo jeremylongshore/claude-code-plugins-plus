@@ -35,6 +35,10 @@ access semantics, secondary-role assumptions, and future-grant precedence.
 - A named principal/object/privilege question, account/role identity, UTC
   collection timestamp, observation window, and explicit freshness bound. Live
   Snowflake checks remain the operator's responsibility.
+- Both current operator-scoped `SHOW` snapshots and historical Account Usage
+  rows for roles, grants, and future grants, with a receipt for each. The
+  analyzer blocks complete-graph and absence claims when sets disagree, are
+  missing, stale, errored, or potentially truncated.
 - Timestamped positive (allowed action) and negative (denied action) receipts
   captured under the same primary/secondary-role context; missing proof is
   `NOT_PROVEN`, never an inferred denial.
@@ -81,7 +85,8 @@ approved local change packet; never to apply Snowflake mutations.
      --output ./snowflake-access-live-evidence.json
    ```
 
-   Reconcile that historical receipt with current `SHOW` output; collector
+   Reconcile that historical receipt with `access-current` and
+   `access-future --database <validated-identifier>` output; collector
    permission failures remain evidence gaps and are never solved by escalating
    to `ACCOUNTADMIN`. If `truncation_possible` is true, partition the grant
    inventory before making any absence or completeness claim.

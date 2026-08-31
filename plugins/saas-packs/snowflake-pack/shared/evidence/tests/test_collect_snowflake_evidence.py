@@ -32,15 +32,24 @@ class CollectorTests(unittest.TestCase):
             with self.subTest(skill=path.parents[1].name):
                 self.assertEqual(path.read_bytes(), canonical)
                 bundled_sql = {item.name: item.read_bytes() for item in sorted((path.parent / "sql").glob("*.sql"))}
-                filename = SYNC_MODULE.BUNDLES[path.parents[1].name]
-                self.assertEqual(bundled_sql, {filename: canonical_sql[filename]})
+                filenames = SYNC_MODULE.BUNDLES[path.parents[1].name]
+                self.assertEqual(bundled_sql, {filename: canonical_sql[filename] for filename in filenames})
 
     def test_all_tracked_surfaces_pass_read_only_gate(self) -> None:
-        for surface in MODULE.SURFACES:
+        for surface in {**MODULE.SURFACES, **MODULE.SUBSURFACES}:
             with self.subTest(surface=surface):
-                path, sql, sources = MODULE.load_surface(surface)
+                query_id = "01abc-example" if surface in {"query-operator-stats", "query-insights"} else None
+                database = "ANALYTICS" if surface == "access-future" else None
+                path, template_sql, sql, sources, _ = MODULE.render_surface(
+                    surface,
+                    query_id=query_id,
+                    database=database,
+                )
                 self.assertTrue(path.is_file())
                 self.assertTrue(sources)
+                if template_sql != sql:
+                    self.assertNotIn("__QUERY_ID__", sql)
+                    self.assertNotIn("__DATABASE_IDENTIFIER__", sql)
                 MODULE.validate_read_only_sql(sql)
                 for source in sources:
                     self.assertIn(source, sql)
@@ -143,6 +152,95 @@ class CollectorTests(unittest.TestCase):
         self.assertIn("--local-only", command)
         self.assertFalse(any(flag in command for flag in ("--password", "--token", "--private-key-file")))
         self.assertEqual(captured["kwargs"]["timeout"], 120)
+
+    def test_selector_subsurfaces_reject_sql_fragments(self):
+        for value in ("01abc'; DROP TABLE X;--", "01abc\nSELECT 1", "' OR '1'='1"):
+            with self.subTest(value=value), self.assertRaises(MODULE.CollectionError):
+                MODULE.render_surface("query-operator-stats", query_id=value)
+        for value in ("ANALYTICS.PUBLIC; DROP TABLE X", "db.schema", "'quoted'"):
+            with self.subTest(value=value), self.assertRaises(MODULE.CollectionError):
+                MODULE.render_surface("access-future", database=value)
+        with self.assertRaises(MODULE.CollectionError):
+            MODULE.render_surface("query-operator-stats")
+
+    def test_dynamic_selector_receipt_preserves_template_and_rendered_provenance(self):
+        path, template, rendered, sources, selector = MODULE.render_surface(
+            "query-insights", query_id="01abc-example"
+        )
+        self.assertNotEqual(template, rendered)
+        self.assertIn("01abc-example", rendered)
+        receipt = MODULE.build_receipt(
+            "query-insights",
+            "readonly",
+            rendered,
+            sources,
+            raw=[],
+            template_sql=template,
+            template_path=path,
+            selector=selector,
+        )
+        self.assertEqual(receipt["sql_sha256"], receipt["template_sha256"])
+        self.assertNotEqual(receipt["template_sha256"], receipt["rendered_sql_sha256"])
+        self.assertRegex(receipt["selector_fingerprint"], r"^sha256:[0-9a-f]{64}$")
+        self.assertEqual(receipt["source_metadata"]["template"], "query-insights.sql")
+        self.assertEqual(receipt["source_metadata"]["selector"], {"query_id": True})
+        self.assertNotIn("01abc-example", json.dumps(receipt["source_metadata"]))
+
+    def test_dynamic_runner_removes_rendered_selector_file(self):
+        captured = {}
+
+        def runner(command, **kwargs):
+            captured["path"] = Path(command[3])
+            captured["sql"] = captured["path"].read_text(encoding="utf-8")
+            return subprocess.CompletedProcess(command, 0, stdout="[]", stderr="")
+
+        receipt, code = MODULE.execute_surface(
+            "query-operator-stats", "readonly-profile", query_id="01abc-example", runner=runner
+        )
+        self.assertEqual(code, 0)
+        self.assertIn("01abc-example", captured["sql"])
+        self.assertFalse(captured["path"].exists())
+        self.assertNotEqual(captured["path"].parent, MODULE.SQL_DIR)
+        self.assertEqual(receipt["source_metadata"]["selector"], {"query_id": True})
+        self.assertNotIn("01abc-example", json.dumps(receipt["source_metadata"]))
+
+    def test_dynamic_collection_never_mutates_package_tree_on_failure_timeout_or_bad_json(self):
+        before = {path.name: path.read_bytes() for path in MODULE.SQL_DIR.iterdir()}
+
+        def failing(command, **kwargs):
+            self.assertNotEqual(Path(command[3]).parent, MODULE.SQL_DIR)
+            return subprocess.CompletedProcess(command, 7, stdout="", stderr="permission denied")
+
+        MODULE.execute_surface("query-insights", "readonly", query_id="01abc-example", runner=failing)
+
+        def timeout(command, **kwargs):
+            self.assertNotEqual(Path(command[3]).parent, MODULE.SQL_DIR)
+            raise subprocess.TimeoutExpired(command, 120)
+
+        MODULE.execute_surface("query-insights", "readonly", query_id="01abc-example", runner=timeout)
+
+        def invalid_json(command, **kwargs):
+            self.assertNotEqual(Path(command[3]).parent, MODULE.SQL_DIR)
+            return subprocess.CompletedProcess(command, 0, stdout="not-json", stderr="")
+
+        with self.assertRaises(MODULE.CollectionError):
+            MODULE.execute_surface("query-insights", "readonly", query_id="01abc-example", runner=invalid_json)
+        after = {path.name: path.read_bytes() for path in MODULE.SQL_DIR.iterdir()}
+        self.assertEqual(before, after)
+
+    def test_unexpected_runner_oserror_still_cleans_selector_file(self):
+        before = {path.name: path.read_bytes() for path in MODULE.SQL_DIR.iterdir()}
+        captured = {}
+
+        def runner(command, **kwargs):
+            captured["path"] = Path(command[3])
+            self.assertTrue(captured["path"].exists())
+            raise PermissionError("runner unavailable")
+
+        with self.assertRaises(PermissionError):
+            MODULE.execute_surface("query-operator-stats", "readonly", query_id="01abc-example", runner=runner)
+        self.assertFalse(captured["path"].exists())
+        self.assertEqual(before, {path.name: path.read_bytes() for path in MODULE.SQL_DIR.iterdir()})
 
     def test_failed_collection_is_sanitized_and_still_receipted(self) -> None:
         def runner(command, **kwargs):

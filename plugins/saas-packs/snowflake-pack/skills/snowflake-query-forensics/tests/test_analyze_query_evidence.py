@@ -52,6 +52,24 @@ class QueryEvidenceTests(unittest.TestCase):
         body.pop("receipt_sha256", None)
         receipt["receipt_sha256"] = f"sha256:{hashlib.sha256(COLLECTOR.canonical_json(body)).hexdigest()}"
 
+    def valid_subsurface_receipt(self, surface: str, data: dict) -> dict:
+        query_id = data["metadata"]["query_id"]
+        path, template_sql, rendered_sql, sources, selector = COLLECTOR.render_surface(
+            surface,
+            query_id=query_id,
+        )
+        return COLLECTOR.build_receipt(
+            surface,
+            "readonly",
+            rendered_sql,
+            sources,
+            raw=[],
+            collected_at=data["metadata"]["collected_at"],
+            template_sql=template_sql,
+            template_path=path,
+            selector=selector,
+        )
+
     def test_separates_observations_ratios_and_hypotheses(self) -> None:
         result = MODULE.analyze(self.load_fixture("query_evidence.json"))
         self.assertTrue(result["completeness_claim_blocked"])
@@ -297,6 +315,55 @@ class QueryEvidenceTests(unittest.TestCase):
             self.assertEqual(result["collector_receipt_assessment"]["status"], "unverifiable")
             self.assertTrue(result["completeness_claim_blocked"])
             self.assertTrue(any("collector receipt unverifiable" in item for item in result["warnings"]))
+
+    def test_query_id_is_opaque_and_source_freshness_is_bounded(self) -> None:
+        injection = self.load_fixture("query_evidence.json")
+        injection["metadata"]["query_id"] = "01abc;DROP"
+        with self.assertRaises(MODULE.EvidenceError):
+            MODULE.analyze(injection)
+        stale = self.load_fixture("query_evidence.json")
+        stale["metadata"]["source_max_age_seconds"] = 60
+        result = MODULE.analyze(stale)
+        self.assertEqual(result["source_freshness"]["status"], "STALE")
+        self.assertTrue(result["completeness_claim_blocked"])
+
+    def test_subsurface_receipt_cannot_bind_another_query_or_truncation(self) -> None:
+        data = self.load_fixture("query_evidence.json")
+        data["operator_stats_receipt"] = {
+            "status": "collected", "truncation_possible": False,
+            "selector": "different-query", "collected_at": data["metadata"]["collected_at"],
+        }
+        result = MODULE.analyze(data)
+        self.assertEqual(result["operator_stats_receipt_assessment"]["status"], "unverifiable")
+        self.assertTrue(result["completeness_claim_blocked"])
+
+    def test_valid_subsurface_receipts_are_cryptographically_bound(self) -> None:
+        data = self.load_fixture("query_evidence.json")
+        data["collector_receipt"] = self.valid_receipt(data)
+        data["operator_stats_receipt"] = self.valid_subsurface_receipt("query-operator-stats", data)
+        data["query_insights_receipt"] = self.valid_subsurface_receipt("query-insights", data)
+        result = MODULE.analyze(data)
+        self.assertEqual(result["operator_stats_receipt_assessment"]["status"], "verified")
+        self.assertEqual(result["query_insights_receipt_assessment"]["status"], "verified")
+        self.assertFalse(result["completeness_claim_blocked"])
+
+    def test_subsurface_receipt_schema_template_or_hash_tamper_blocks_completeness(self) -> None:
+        for mutation in ("schema", "template", "hash"):
+            data = self.load_fixture("query_evidence.json")
+            data["collector_receipt"] = self.valid_receipt(data)
+            receipt = self.valid_subsurface_receipt("query-operator-stats", data)
+            if mutation == "schema":
+                receipt["schema_version"] = "2"
+                self.rehash_receipt(receipt)
+            elif mutation == "template":
+                receipt["source_metadata"]["template"] = "query-insights.sql"
+                self.rehash_receipt(receipt)
+            else:
+                receipt["receipt_sha256"] = "sha256:" + "0" * 64
+            data["operator_stats_receipt"] = receipt
+            result = MODULE.analyze(data)
+            self.assertEqual(result["operator_stats_receipt_assessment"]["status"], "unverifiable")
+            self.assertTrue(result["completeness_claim_blocked"])
 
     def test_rejects_sql_shaped_query_hash(self) -> None:
         data = self.load_fixture("query_evidence.json")

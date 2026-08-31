@@ -6,9 +6,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -17,8 +19,15 @@ from typing import Any, Callable
 HERE = Path(__file__).resolve().parent
 SQL_DIR = HERE / "sql"
 SURFACES = {
-    "access": ("access.sql", ["SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_ROLES", "SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_USERS"]),
-    "auth": ("auth.sql", ["SNOWFLAKE.ACCOUNT_USAGE.USERS"]),
+    "access": (
+        "access.sql",
+        [
+            "SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_ROLES",
+            "SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_USERS",
+            "SNOWFLAKE.ACCOUNT_USAGE.ROLES",
+        ],
+    ),
+    "auth": ("auth.sql", ["SNOWFLAKE.ACCOUNT_USAGE.USERS", "SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY"]),
     "cost": (
         "cost.sql",
         [
@@ -52,6 +61,13 @@ SURFACES = {
     ),
     "replication": ("replication.sql", ["SNOWFLAKE.ACCOUNT_USAGE.REPLICATION_GROUP_REFRESH_HISTORY"]),
 }
+SUBSURFACES = {
+    "access-current": ("access-current.sql", ["SHOW GRANTS ON ACCOUNT"], None),
+    "access-future": ("access-future.sql", ["SHOW FUTURE GRANTS"], "database"),
+    "auth-current": ("auth-current.sql", ["SHOW USERS"], None),
+    "query-operator-stats": ("query-operator-stats.sql", ["GET_QUERY_OPERATOR_STATS"], "query_id"),
+    "query-insights": ("query-insights.sql", ["SNOWFLAKE.ACCOUNT_USAGE.QUERY_INSIGHTS"], "query_id"),
+}
 FORBIDDEN_SQL = {
     "ALTER",
     "CALL",
@@ -75,6 +91,9 @@ FORBIDDEN_SQL = {
 }
 SAFE_START = {"DESCRIBE", "SELECT", "SHOW", "WITH"}
 PROFILE_RE = re.compile(r"^[A-Za-z0-9_.-]{1,128}$")
+QUERY_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,255}$")
+IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_$]{0,254}$")
+SELECTOR_MARKERS = {"query_id": "__QUERY_ID__", "database": "__DATABASE_IDENTIFIER__"}
 SENSITIVE_KEYS = {
     "api_key",
     "authorization",
@@ -161,11 +180,17 @@ def validate_read_only_sql(sql: str) -> None:
             raise CollectionError("every SQL statement must start with SELECT, WITH, SHOW, or DESCRIBE")
 
 
-def load_surface(surface: str) -> tuple[Path, str, list[str]]:
-    try:
+def _surface_spec(surface: str) -> tuple[str, list[str], str | None]:
+    if surface in SURFACES:
         filename, sources = SURFACES[surface]
-    except KeyError as exc:
-        raise CollectionError(f"unsupported surface: {surface}") from exc
+        return filename, sources, None
+    if surface in SUBSURFACES:
+        return SUBSURFACES[surface]
+    raise CollectionError(f"unsupported surface: {surface}")
+
+
+def load_surface(surface: str) -> tuple[Path, str, list[str]]:
+    filename, sources, _ = _surface_spec(surface)
     path = SQL_DIR / filename
     if not path.is_file():
         raise CollectionError(f"surface is not bundled in this installed skill: {surface}")
@@ -174,6 +199,37 @@ def load_surface(surface: str) -> tuple[Path, str, list[str]]:
         raise CollectionError(f"NUL byte in SQL file: {path}")
     validate_read_only_sql(sql)
     return path, sql, sources
+
+
+def render_surface(
+    surface: str,
+    *,
+    query_id: str | None = None,
+    database: str | None = None,
+) -> tuple[Path, str, str, list[str], dict[str, str]]:
+    """Render a reviewed template using only validated opaque selectors."""
+
+    path, template_sql, sources = load_surface(surface)
+    _, _, selector_name = _surface_spec(surface)
+    selector: dict[str, str] = {}
+    if selector_name == "query_id":
+        if query_id is None or not QUERY_ID_RE.fullmatch(query_id):
+            raise CollectionError("query_id must be an opaque identifier, not SQL or a free-form fragment")
+        selector["query_id"] = query_id
+    elif selector_name == "database":
+        if database is None or not IDENTIFIER_RE.fullmatch(database):
+            raise CollectionError("database must be one unquoted Snowflake identifier, not SQL or a fragment")
+        selector["database"] = database
+    elif query_id is not None or database is not None:
+        raise CollectionError(f"surface {surface} does not accept a selector")
+    rendered_sql = template_sql
+    for name, marker in SELECTOR_MARKERS.items():
+        if name in selector:
+            rendered_sql = rendered_sql.replace(marker, selector[name])
+        elif marker in rendered_sql:
+            raise CollectionError(f"surface {surface} requires selector: {name}")
+    validate_read_only_sql(rendered_sql)
+    return path, template_sql, rendered_sql, sources, selector
 
 
 def normalize_cli_json(raw: Any) -> tuple[dict[str, list[dict[str, Any]]], int]:
@@ -215,6 +271,9 @@ def build_receipt(
     raw: Any | None = None,
     collected_at: str | None = None,
     error: dict[str, Any] | None = None,
+    template_sql: str | None = None,
+    template_path: Path | None = None,
+    selector: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     datasets: dict[str, list[dict[str, Any]]] = {}
     row_count = 0
@@ -223,17 +282,38 @@ def build_receipt(
     limits = re.findall(r"\bLIMIT\s+(\d+)\b", sql, flags=re.IGNORECASE)
     row_limit = int(limits[-1]) if limits else None
     truncation_possible = row_limit is not None and row_count >= row_limit
+    canonical_template = template_sql if template_sql is not None else sql
+    template_hash = f"sha256:{hashlib.sha256(canonical_template.encode('utf-8')).hexdigest()}"
+    rendered_hash = f"sha256:{hashlib.sha256(sql.encode('utf-8')).hexdigest()}"
+    selector_fingerprint = None
+    if selector:
+        selector_fingerprint = f"sha256:{hashlib.sha256(canonical_json(selector)).hexdigest()}"
+    selector_metadata = {name: True for name in (selector or {})}
     receipt = {
         "schema_version": "1",
         "surface": surface,
         "status": "error" if error else "collected",
         "collected_at": collected_at or utc_now(),
         "connection_profile": connection,
-        "sql_sha256": f"sha256:{hashlib.sha256(sql.encode('utf-8')).hexdigest()}",
+        # Keep sql_sha256 as the reviewed template hash for v1 consumers. The
+        # rendered hash and selector identity are additive for dynamic paths.
+        "sql_sha256": template_hash,
+        "template_sha256": template_hash,
+        "rendered_sql_sha256": rendered_hash,
+        "selector_fingerprint": selector_fingerprint,
+        "source_metadata": {
+            "template": template_path.name if template_path is not None else None,
+            "source_views": list(sources),
+            # Selector values may identify customer objects or query activity;
+            # expose only presence and bind the opaque value via its digest.
+            "selector": selector_metadata,
+        },
         "source_views": sources,
         "row_count": row_count,
         "row_limit": row_limit,
         "truncation_possible": truncation_possible,
+        "dataset_row_limits": {name: row_limit for name in datasets} if row_limit is not None else {},
+        "dataset_truncation_possible": {name: truncation_possible for name in datasets},
         "datasets": datasets,
         "errors": [error] if error else [],
         "non_claims": [
@@ -252,44 +332,93 @@ def execute_surface(
     surface: str,
     connection: str,
     *,
+    query_id: str | None = None,
+    database: str | None = None,
     runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
 ) -> tuple[dict[str, Any], int]:
     if not PROFILE_RE.fullmatch(connection):
         raise CollectionError("connection profile must use only letters, digits, dot, underscore, or hyphen")
-    path, sql, sources = load_surface(surface)
-    command = [
-        "snow",
-        "sql",
-        "--filename",
-        str(path),
-        "--connection",
-        connection,
-        "--format",
-        "JSON_EXT",
-        "--silent",
-        "--enhanced-exit-codes",
-        "--local-only",
-    ]
+    path, template_sql, sql, sources, selector = render_surface(
+        surface,
+        query_id=query_id,
+        database=database,
+    )
+    temporary_path: Path | None = None
+    def cleanup() -> None:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
     try:
-        completed = runner(command, capture_output=True, text=True, timeout=120, check=False)
-    except FileNotFoundError:
-        error = {"code": "SNOW_CLI_NOT_FOUND", "message": "Snowflake CLI executable 'snow' was not found"}
-        return build_receipt(surface, connection, sql, sources, error=error), 2
-    except subprocess.TimeoutExpired:
-        error = {"code": "SNOW_CLI_TIMEOUT", "message": "Snowflake CLI collection exceeded 120 seconds"}
-        return build_receipt(surface, connection, sql, sources, error=error), 5
-    if completed.returncode != 0:
-        error = {
-            "code": "SNOW_CLI_FAILED",
-            "exit_code": completed.returncode,
-            "message": sanitize_text(completed.stderr or completed.stdout or "Snowflake CLI failed"),
-        }
-        return build_receipt(surface, connection, sql, sources, error=error), completed.returncode
-    try:
-        raw = json.loads(completed.stdout)
-    except json.JSONDecodeError as exc:
-        raise CollectionError("Snowflake CLI did not return valid JSON_EXT output") from exc
-    return build_receipt(surface, connection, sql, sources, raw=raw), 0
+        command_path = path
+        if sql != template_sql:
+            # Dynamic SQL belongs in the OS temp directory. Installed skill trees
+            # may be read-only and must remain byte/entry-identical after a run.
+            descriptor, temporary_name = tempfile.mkstemp(prefix=f"snowflake-{path.stem}-", suffix=".sql")
+            temporary_path = Path(temporary_name)
+            with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+                handle.write(sql)
+            command_path = temporary_path
+
+        command = [
+            "snow",
+            "sql",
+            "--filename",
+            str(command_path),
+            "--connection",
+            connection,
+            "--format",
+            "JSON_EXT",
+            "--silent",
+            "--enhanced-exit-codes",
+            "--local-only",
+        ]
+        try:
+            completed = runner(command, capture_output=True, text=True, timeout=120, check=False)
+        except FileNotFoundError:
+            error = {"code": "SNOW_CLI_NOT_FOUND", "message": "Snowflake CLI executable 'snow' was not found"}
+            return (
+                build_receipt(
+                    surface, connection, sql, sources, error=error,
+                    template_sql=template_sql, template_path=path, selector=selector,
+                ),
+                2,
+            )
+        except subprocess.TimeoutExpired:
+            error = {"code": "SNOW_CLI_TIMEOUT", "message": "Snowflake CLI collection exceeded 120 seconds"}
+            return (
+                build_receipt(
+                    surface, connection, sql, sources, error=error,
+                    template_sql=template_sql, template_path=path, selector=selector,
+                ),
+                5,
+            )
+        if completed.returncode != 0:
+            error = {
+                "code": "SNOW_CLI_FAILED",
+                "exit_code": completed.returncode,
+                "message": sanitize_text(completed.stderr or completed.stdout or "Snowflake CLI failed"),
+            }
+            return (
+                build_receipt(
+                    surface, connection, sql, sources, error=error,
+                    template_sql=template_sql, template_path=path, selector=selector,
+                ),
+                completed.returncode,
+            )
+        try:
+            raw = json.loads(completed.stdout)
+        except json.JSONDecodeError as exc:
+            raise CollectionError("Snowflake CLI did not return valid JSON_EXT output") from exc
+        return (
+            build_receipt(
+                surface, connection, sql, sources, raw=raw,
+                template_sql=template_sql, template_path=path, selector=selector,
+            ),
+            0,
+        )
+    finally:
+        # One outer guarantee covers runner OSError/exception and even failures
+        # while creating or writing the rendered selector file.
+        cleanup()
 
 
 def write_receipt(receipt: dict[str, Any], output: Path | None) -> None:
@@ -305,25 +434,49 @@ def write_receipt(receipt: dict[str, Any], output: Path | None) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    bundled_surfaces = sorted(surface for surface, (filename, _) in SURFACES.items() if (SQL_DIR / filename).is_file())
+    bundled_surfaces = sorted(
+        surface
+        for surface in {**SURFACES, **SUBSURFACES}
+        if _surface_spec(surface)[0] and (SQL_DIR / _surface_spec(surface)[0]).is_file()
+    )
     parser.add_argument("--surface", choices=bundled_surfaces, required=True)
     parser.add_argument("--connection", help="Existing Snowflake CLI profile name")
     parser.add_argument("--output", type=Path, help="JSON receipt path; stdout when omitted")
     parser.add_argument("--input-json", type=Path, help="Normalize saved Snowflake CLI JSON_EXT instead of connecting")
+    parser.add_argument("--query-id", help="Opaque completed query ID for query operator/insight sub-surfaces")
+    parser.add_argument("--database", help="One unquoted database identifier for the access-future sub-surface")
     parser.add_argument("--validate-only", action="store_true", help="Validate the reviewed SQL and exit")
     args = parser.parse_args(argv)
     try:
-        _, sql, sources = load_surface(args.surface)
+        path, template_sql, sql, sources, selector = render_surface(
+            args.surface,
+            query_id=args.query_id,
+            database=args.database,
+        )
         if args.validate_only:
             return 0
         if args.input_json:
             raw = json.loads(args.input_json.read_text(encoding="utf-8"))
-            receipt = build_receipt(args.surface, "offline-input", sql, sources, raw=raw)
+            receipt = build_receipt(
+                args.surface,
+                "offline-input",
+                sql,
+                sources,
+                raw=raw,
+                template_sql=template_sql,
+                template_path=path,
+                selector=selector,
+            )
             code = 0
         else:
             if not args.connection:
                 parser.error("--connection is required unless --input-json or --validate-only is used")
-            receipt, code = execute_surface(args.surface, args.connection)
+            receipt, code = execute_surface(
+                args.surface,
+                args.connection,
+                query_id=args.query_id,
+                database=args.database,
+            )
         write_receipt(receipt, args.output)
         return code
     except (CollectionError, OSError, json.JSONDecodeError) as exc:

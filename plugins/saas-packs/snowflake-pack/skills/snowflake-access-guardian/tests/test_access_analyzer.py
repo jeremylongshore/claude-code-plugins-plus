@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import importlib.util
 import subprocess
 import sys
 import tempfile
@@ -9,6 +10,14 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "scripts"))
 from analyze_access import analyze  # noqa: E402
+
+COLLECTOR_SPEC = importlib.util.spec_from_file_location(
+    "collect_snowflake_evidence",
+    HERE.parents[2] / "shared" / "evidence" / "collect_snowflake_evidence.py",
+)
+assert COLLECTOR_SPEC and COLLECTOR_SPEC.loader
+COLLECTOR = importlib.util.module_from_spec(COLLECTOR_SPEC)
+COLLECTOR_SPEC.loader.exec_module(COLLECTOR)
 
 SCRIPT = HERE.parent / "scripts" / "analyze_access.py"
 
@@ -169,6 +178,30 @@ class AccessAnalyzerFixtureTests(unittest.TestCase):
         self.assertEqual(result.returncode, 2)
         self.assertIn("users must be an array", result.stderr)
         self.assertNotIn("Traceback", result.stderr)
+
+    def test_current_and_historical_snapshots_reconcile_or_block(self):
+        data = json.loads(json.dumps(self.fixture))
+        data["current_roles"] = data["roles"]
+        data["current_grants"] = data["grants"]
+        data["current_future_grants"] = data["future_grants"]
+        data["historical_grants"] = data["grants"]
+        data["historical_future_grants"] = data["future_grants"]
+        data["historical_roles"] = data["roles"]
+        current_path, current_sql, current_sources = COLLECTOR.load_surface("access-current")
+        data["current_receipt"] = COLLECTOR.build_receipt("access-current", "readonly", current_sql, current_sources, raw=[], collected_at=data["metadata"]["collected_at"])
+        future_path, future_template, future_sql, future_sources, future_selector = COLLECTOR.render_surface("access-future", database="ANALYTICS")
+        data["future_receipt"] = COLLECTOR.build_receipt("access-future", "readonly", future_sql, future_sources, raw=[], collected_at=data["metadata"]["collected_at"], template_sql=future_template, template_path=future_path, selector=future_selector)
+        report = analyze(data, "ALICE", "ANALYTICS.CURATED.ORDERS", "SELECT")
+        self.assertEqual(report["access_evidence_reconciliation"]["grants"]["status"], "MATCHED")
+        self.assertFalse(report["completeness_claim_blocked"])
+        data["current_grants"] = data["grants"][:-1]
+        report = analyze(data, "ALICE", "ANALYTICS.CURATED.ORDERS", "SELECT")
+        self.assertEqual(report["access_evidence_reconciliation"]["grants"]["status"], "MISMATCH")
+        self.assertTrue(report["completeness_claim_blocked"])
+        data["current_grants"] = data["grants"]
+        data["current_receipt"]["receipt_sha256"] = "sha256:" + "0" * 64
+        report = analyze(data, "ALICE", "ANALYTICS.CURATED.ORDERS", "SELECT")
+        self.assertTrue(any(item["category"] == "collector-receipt-unverifiable" for item in report["findings"]))
 
 
 if __name__ == "__main__":

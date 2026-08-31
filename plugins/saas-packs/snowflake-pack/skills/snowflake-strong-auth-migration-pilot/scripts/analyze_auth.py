@@ -137,6 +137,89 @@ def finding(fid: str, severity: str, category: str, subject: str, detail: str, *
     return result
 
 
+def _snapshot_rows(doc: dict, names: tuple[str, ...], path: str) -> tuple[list[dict] | None, str | None]:
+    for name in names:
+        if name in doc:
+            return rows(doc, name), name
+    return None, None
+
+
+def _identity_key(row: dict) -> str:
+    return upper(row.get("name") or row.get("user_name_sha256") or row.get("user"))
+
+
+def _reconcile_users(current: list[dict] | None, historical: list[dict] | None) -> dict:
+    left = {_identity_key(row) for row in current or [] if _identity_key(row)}
+    right = {_identity_key(row) for row in historical or [] if _identity_key(row)}
+    if current is None or historical is None:
+        status = "NOT_SUPPLIED"
+    elif left == right:
+        status = "MATCHED"
+    else:
+        status = "MISMATCH"
+    return {
+        "status": status,
+        "current_count": len(left) if current is not None else None,
+        "historical_count": len(right) if historical is not None else None,
+        "current_only": sorted(left - right)[:100],
+        "historical_only": sorted(right - left)[:100],
+    }
+
+
+def _validate_login_history(value: object, collected_at: datetime | None, window_start: datetime | None, window_end: datetime | None) -> tuple[list[dict], list[str]]:
+    if value is None:
+        return [], ["LOGIN_HISTORY rows not supplied"]
+    if not isinstance(value, list) or not all(isinstance(row, dict) for row in value):
+        raise ValueError("login_history must be an array of objects")
+    issues: list[str] = []
+    for index, row in enumerate(value):
+        keys = {re.sub(r"[^a-z0-9]", "", str(key).casefold()) for key in row}
+        if (
+            "username" in keys
+            or "clientip" in keys
+            or "ipaddress" in keys
+            or "connection" in keys
+            or "clientprivatelinkid" in keys
+            or any(key.endswith("factorid") for key in keys)
+        ):
+            raise ValueError(f"login_history[{index}] contains raw identity/network/authenticator material")
+        user_hash = row.get("user_name_sha256") or row.get("user_hash")
+        if not isinstance(user_hash, str) or not re.fullmatch(r"(?:sha256:)?[0-9a-fA-F]{64}", user_hash):
+            issues.append(f"login_history[{index}].user_name_sha256 is missing or not a SHA-256 digest")
+        event_at = timestamp(row.get("event_timestamp") or row.get("event_time"))
+        if event_at is None:
+            issues.append(f"login_history[{index}].event_timestamp is invalid")
+        elif (collected_at and event_at > collected_at) or (window_end and event_at > window_end) or (window_start and event_at < window_start):
+            issues.append(f"login_history[{index}] is outside the bounded observation window")
+        if not norm(row.get("event_type")):
+            issues.append(f"login_history[{index}].event_type is missing")
+    return value, issues
+
+
+def _receipt_status(value: object, label: str) -> dict:
+    if value is None:
+        return {"status": "NOT_SUPPLIED", "complete": False, "issues": [f"{label} receipt not supplied"]}
+    if not isinstance(value, dict):
+        return {"status": "UNVERIFIABLE", "complete": False, "issues": [f"{label} receipt is not an object"]}
+    issues = []
+    expected_surfaces = {"LOGIN_HISTORY": {"auth", "auth-current"}}
+    if value.get("schema_version") != "1": issues.append("schema_version is not 1")
+    if value.get("surface") not in expected_surfaces.get(label, set()): issues.append("surface is not an auth collector surface")
+    if value.get("status") != "collected": issues.append("status is not collected")
+    if value.get("errors"): issues.append("collector reported an error")
+    if value.get("truncation_possible") is not False: issues.append("truncation_possible is not false")
+    for field in ("sql_sha256", "template_sha256", "rendered_sql_sha256"):
+        if not isinstance(value.get(field), str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", value[field]):
+            issues.append(f"{field} is missing or malformed")
+    body = dict(value)
+    supplied_hash = body.pop("receipt_sha256", None)
+    canonical_body = json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    expected_hash = f"sha256:{hashlib.sha256(canonical_body).hexdigest()}"
+    if supplied_hash != expected_hash: issues.append("receipt_sha256 is missing or invalid")
+    if timestamp(value.get("collected_at")) is None or timestamp(value.get("collected_at")) > datetime.now(timezone.utc): issues.append("collected_at is invalid or in the future")
+    return {"status": "VERIFIED" if not issues else "UNVERIFIABLE", "complete": not issues, "issues": issues}
+
+
 def choose_target(options: list[str]) -> str:
     for candidate in TARGET_PRIORITY:
         if candidate in options:
@@ -211,6 +294,63 @@ def analyze(doc: dict) -> dict:
                 + ". Recollect the read-only identity/workload inventory with a bounded observation window.",
             )
         )
+
+    current_users, current_users_field = _snapshot_rows(doc, ("current_users", "current_show_users"), "current_users")
+    historical_users, historical_users_field = _snapshot_rows(doc, ("historical_users", "account_usage_users"), "historical_users")
+    if historical_users is None and "historical_users" not in doc and "account_usage_users" not in doc:
+        historical_users = users
+    user_reconciliation = _reconcile_users(current_users, historical_users)
+    login_history, login_history_issues = _validate_login_history(
+        doc.get("login_history"), collected_at, window_start, window_end
+    )
+    login_receipt = _receipt_status(
+        doc.get("login_history_receipt", doc.get("auth_history_receipt")), "LOGIN_HISTORY"
+    )
+    raw_login_receipt = doc.get("login_history_receipt", doc.get("auth_history_receipt"))
+    receipt_at = timestamp(raw_login_receipt.get("collected_at")) if isinstance(raw_login_receipt, dict) else None
+    if collected_at is not None and receipt_at is not None and receipt_at > collected_at:
+        login_receipt["status"] = "UNVERIFIABLE"
+        login_receipt["complete"] = False
+        login_receipt["issues"].append("collected_at is later than report collection")
+    completeness_claim_blocked = user_reconciliation["status"] != "MATCHED" or not login_receipt["complete"] or bool(login_history_issues)
+    if user_reconciliation["status"] == "NOT_SUPPLIED":
+        findings.append(finding("user-reconciliation-missing", "high", "identity-reconciliation-missing", "users", "Current SHOW USERS and historical user inventory were not both supplied; retirement and migration completeness are blocked."))
+    elif user_reconciliation["status"] == "MISMATCH":
+        findings.append(finding("user-reconciliation-mismatch", "high", "identity-reconciliation-mismatch", "users", "Current and historical user inventories differ; investigate account changes and source latency before migration."))
+    if login_history_issues:
+        findings.append(finding("login-history-evidence-incomplete", "high", "login-history-evidence", "LOGIN_HISTORY", "LOGIN_HISTORY evidence is missing, out of window, or privacy-invalid: " + "; ".join(login_history_issues[:10])))
+    if not login_receipt["complete"]:
+        findings.append(finding("login-history-receipt-unverifiable", "high", "collector-receipt-unverifiable", "LOGIN_HISTORY", "The LOGIN_HISTORY collector receipt is missing, errored, stale, or potentially truncated; do not claim complete authentication coverage."))
+
+    enforcement_windows = doc.get("enforcement_windows", [])
+    if not isinstance(enforcement_windows, list):
+        raise ValueError("enforcement_windows must be an array")
+    previous_end = None
+    for index, item in enumerate(enforcement_windows):
+        if not isinstance(item, dict):
+            raise ValueError(f"enforcement_windows[{index}] must be an object")
+        start = timestamp(item.get("start"))
+        end = timestamp(item.get("end")) if item.get("end") is not None else collected_at
+        if start is None or end is None or start > end or (collected_at is not None and end > collected_at):
+            findings.append(finding(f"enforcement-window-invalid-{index}", "high", "enforcement-window-invalid", norm(item.get("name")) or str(index), "Enforcement window is missing valid UTC bounds, is reversed, or extends beyond collection; canary evidence cannot be generalized."))
+            completeness_claim_blocked = True
+        if previous_end is not None and start is not None and start < previous_end:
+            findings.append(finding(f"enforcement-window-overlap-{index}", "high", "enforcement-window-overlap", norm(item.get("name")) or str(index), "Enforcement windows overlap or are out of order; reconcile the approved canary/change timeline."))
+            completeness_claim_blocked = True
+        if end is not None:
+            previous_end = end
+    if not enforcement_windows:
+        findings.append(finding("enforcement-window-missing", "high", "enforcement-window-missing", "migration", "No bounded enforcement window was supplied; do not infer canary or retirement coverage from an undated receipt."))
+        completeness_claim_blocked = True
+    canary_at = timestamp(canary.get("tested_at"))
+    if enforcement_windows and canary_at is not None and not any(
+        timestamp(item.get("start")) is not None
+        and timestamp(item.get("start")) <= canary_at <= (timestamp(item.get("end")) or collected_at or canary_at)
+        for item in enforcement_windows
+        if isinstance(item, dict)
+    ):
+        findings.append(finding("canary-outside-enforcement-window", "high", "enforcement-window-context", "canary", "Canary timestamp is outside every approved enforcement window; do not generalize it to migration coverage."))
+        completeness_claim_blocked = True
 
     if (
         break_glass.get("verified") is not True
@@ -638,6 +778,20 @@ def analyze(doc: dict) -> dict:
                 "No identity, integration, policy, password, key, token, or role was changed by this analyzer."
             ],
         },
+        "identity_evidence_reconciliation": {
+            "users": user_reconciliation,
+            "current_users_field": current_users_field,
+            "historical_users_field": historical_users_field,
+            "login_history": {
+                "row_count": len(login_history),
+                "issues": login_history_issues,
+                "source": "SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY",
+                "documented_latency": "up to 120 minutes",
+            },
+            "login_history_receipt": login_receipt,
+        },
+        "enforcement_windows": enforcement_windows,
+        "completeness_claim_blocked": completeness_claim_blocked,
         "recovery_receipt": {
             "break_glass": break_glass,
             "canary": canary,

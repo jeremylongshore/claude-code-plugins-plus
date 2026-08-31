@@ -48,6 +48,9 @@ compute.
   warehouse when operator statistics are required.
 - A completed query within the documented operator-stat retrieval window for operator
   analysis.
+- Separate query-ID-bound receipts for `GET_QUERY_OPERATOR_STATS` and Query Insights
+  when those datasets are supplied. Opaque IDs, source freshness, receipt integrity,
+  row caps, and truncation are validated before operator completeness is claimed.
 - A writable local working directory. Use `Write` only for new local evidence and
   report artifacts; never use it to alter SQL or Snowflake state.
 
@@ -95,7 +98,8 @@ Map `datasets.query_history` and `datasets.warehouse_load` into the normalized
 evidence file and retain the collector receipt. Collect `GET_QUERY_OPERATOR_STATS`
 only for the anchored completed query through the operator's approved session; add
 redacted Query Insights rows and their availability/exclusion reason as separate
-datasets. The collector never guesses a query ID, requests `OPERATE`/`MONITOR`, or
+datasets (or use the selector-gated collector sub-surfaces with the exact opaque
+query ID). The collector never guesses a query ID, requests `OPERATE`/`MONITOR`, or
 executes a function with side effects.
 If `truncation_possible` is true, narrow or partition the collection window before
 making a regression, workload, or absence claim.

@@ -23,6 +23,7 @@ EXPECTED_COLLECTOR_SOURCES = [
     "SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_LOAD_HISTORY",
 ]
 HASH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$")
+QUERY_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,255}$")
 SQL_HASH_PREFIXES = {
     "SELECT",
     "WITH",
@@ -45,6 +46,53 @@ def validate_hash(value: Any, field: str) -> str:
     if value.split(".", 1)[0].upper() in SQL_HASH_PREFIXES:
         raise EvidenceError(f"{field} must be an opaque query hash, not SQL or free-form text")
     return value
+
+
+def validate_query_id(value: Any, field: str) -> str:
+    if not isinstance(value, str) or not QUERY_ID_RE.fullmatch(value):
+        raise EvidenceError(f"{field} must be an opaque Snowflake query ID")
+    if any(token in value.upper() for token in ("SELECT", "UNION", "DROP", "--", "/*", "*/", ";", "'")):
+        raise EvidenceError(f"{field} must be an opaque Snowflake query ID, not SQL")
+    return value
+
+
+def validate_subsurface_receipt(value: Any, label: str, surface: str, query_id: str, evaluation_time: datetime) -> dict[str, Any]:
+    if value is None:
+        return {"status": "not_supplied", "complete": False, "issues": [f"{label} receipt not supplied"]}
+    if not isinstance(value, dict):
+        return {"status": "unverifiable", "complete": False, "issues": [f"{label} receipt is not an object"]}
+    issues: list[str] = []
+    if value.get("schema_version") != "1": issues.append("schema_version is not 1")
+    if value.get("surface") != surface: issues.append(f"surface is not {surface}")
+    if value.get("status") != "collected": issues.append("status is not collected")
+    if value.get("errors"): issues.append("collector reported an error")
+    if value.get("truncation_possible") is not False: issues.append("truncation_possible is not false")
+    metadata = value.get("source_metadata")
+    if not isinstance(metadata, dict) or metadata.get("selector") != {"query_id": True}:
+        issues.append("source_metadata.selector is not the privacy-safe query_id binding")
+    if not isinstance(metadata, dict) or metadata.get("template") != f"{surface}.sql":
+        issues.append(f"source_metadata.template is not {surface}.sql")
+    selector_body = {"query_id": query_id}
+    expected_fingerprint = f"sha256:{hashlib.sha256(_canonical_json(selector_body)).hexdigest()}"
+    if value.get("selector_fingerprint") != expected_fingerprint:
+        issues.append("selector_fingerprint does not match metadata.query_id")
+    for field in ("sql_sha256", "template_sha256", "rendered_sql_sha256"):
+        if not isinstance(value.get(field), str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", value[field]):
+            issues.append(f"{field} is missing or malformed")
+    if value.get("sql_sha256") != value.get("template_sha256"):
+        issues.append("sql_sha256 does not match template_sha256")
+    try:
+        if parse_time(value.get("collected_at"), f"{label}.collected_at") > evaluation_time:
+            issues.append("collected_at is after evaluation time")
+    except EvidenceError:
+        issues.append("collected_at is invalid")
+    supplied_receipt_hash = value.get("receipt_sha256")
+    body = dict(value)
+    body.pop("receipt_sha256", None)
+    expected_receipt_hash = f"sha256:{hashlib.sha256(_canonical_json(body)).hexdigest()}"
+    if supplied_receipt_hash != expected_receipt_hash:
+        issues.append("receipt_sha256 is missing or invalid")
+    return {"status": "verified" if not issues else "unverifiable", "complete": not issues, "issues": issues}
 
 
 def _canonical_json(value: Any) -> bytes:
@@ -328,13 +376,14 @@ def hash_comparison(data: dict[str, Any], warnings: list[str]) -> list[dict[str,
             invalid = True
             continue
         fingerprint = validate_hash(fingerprint, f"query_runs[{index}].query_fingerprint")
+        run_id = validate_query_id(row.get("query_id"), f"query_runs[{index}].query_id")
         if alignment is not None and row.get("warehouse_name") != alignment.get("warehouse_name"):
             warnings.append(f"query_runs[{index}]: warehouse does not match aligned comparison receipt")
             invalid = True
             continue
         value = decimal_value(elapsed, f"query_runs[{index}].total_elapsed_time_ms")
         group_key = str(fingerprint)
-        groups.setdefault(group_key, []).append((value, row.get("query_id")))
+        groups.setdefault(group_key, []).append((value, run_id))
     if invalid:
         return []
     if not groups:
@@ -410,11 +459,9 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(history, dict):
         raise EvidenceError("query_history must be an object")
     query_id = metadata.get("query_id")
-    if not isinstance(query_id, str) or not query_id.strip():
-        raise EvidenceError("metadata.query_id is required")
+    query_id = validate_query_id(query_id, "metadata.query_id")
     history_query_id = history.get("query_id")
-    if not isinstance(history_query_id, str) or not history_query_id.strip():
-        raise EvidenceError("query_history.query_id is required")
+    history_query_id = validate_query_id(history_query_id, "query_history.query_id")
     if history_query_id != query_id:
         raise EvidenceError("metadata.query_id must match query_history.query_id")
     for field in ("query_hash", "query_parameterized_hash"):
@@ -445,6 +492,24 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
     hypotheses: list[dict[str, str]] = []
     warnings: list[str] = []
     collector_receipt = validate_collector_receipt(data, warnings, collected_at)
+    operator_receipt = validate_subsurface_receipt(
+        data.get("operator_stats_receipt", data.get("operator_collection_receipt")),
+        "operator statistics", "query-operator-stats",
+        query_id,
+        collected_at,
+    )
+    insights_receipt = validate_subsurface_receipt(
+        data.get("query_insights_receipt", data.get("insights_collection_receipt")),
+        "Query Insights", "query-insights",
+        query_id,
+        collected_at,
+    )
+    source_max_age = metadata.get("source_max_age_seconds", 2700)
+    if type(source_max_age) is not int or source_max_age <= 0:
+        raise EvidenceError("metadata.source_max_age_seconds must be a positive integer")
+    source_freshness_ok = observed_age <= source_max_age
+    if not source_freshness_ok:
+        warnings.append("query history source exceeds the declared freshness bound")
     experiment_owner = str(metadata["experiment_owner"])
     query_start = query_end = None
     if data.get("warehouse_load"):
@@ -552,6 +617,8 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
         )
     top_operators: list[dict[str, str]] = []
     for index, operator in enumerate(operators):
+        if operator.get("query_id") is not None and validate_query_id(operator["query_id"], f"operators[{index}].query_id") != query_id:
+            raise EvidenceError(f"operators[{index}].query_id must match metadata.query_id")
         operator_id = str(operator.get("operator_id", index))
         operator_type = str(operator.get("operator_type") or "unknown")
         statistics = operator.get("operator_statistics") or {}
@@ -677,6 +744,8 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
     top_operators.sort(key=lambda item: Decimal(item["overall_percentage"]), reverse=True)
 
     for index, insight in enumerate(insights):
+        if insight.get("query_id") is not None and validate_query_id(insight["query_id"], f"query_insights[{index}].query_id") != query_id:
+            raise EvidenceError(f"query_insights[{index}].query_id must match metadata.query_id")
         type_id = insight.get("type_id")
         if not isinstance(type_id, str) or not type_id.strip():
             raise EvidenceError(f"query_insights[{index}].type_id is required")
@@ -742,7 +811,22 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
         "warehouse_load_summary": warehouse_load,
         "query_hash_comparison": hash_comparison_rows,
         "collector_receipt_assessment": collector_receipt,
-        "completeness_claim_blocked": not collector_receipt["complete"],
+        "operator_stats_receipt_assessment": operator_receipt,
+        "query_insights_receipt_assessment": insights_receipt,
+        "source_freshness": {
+            "observed_age_seconds": as_text(observed_age),
+            "max_age_seconds": source_max_age,
+            "status": "FRESH" if source_freshness_ok else "STALE",
+            "documented_latency": "QUERY_HISTORY up to 45 minutes; Query Insights up to 90 minutes",
+        },
+        "completeness_claim_blocked": (
+            not collector_receipt["complete"]
+            or not source_freshness_ok
+            or ("operator_stats_receipt" in data and not operator_receipt["complete"])
+            or ("operator_collection_receipt" in data and not operator_receipt["complete"])
+            or ("query_insights_receipt" in data and not insights_receipt["complete"])
+            or ("insights_collection_receipt" in data and not insights_receipt["complete"])
+        ),
         "search_optimization_roi": sos_roi,
         "query_insights_coverage": insight_coverage,
         "one_variable_experiment": {

@@ -34,13 +34,14 @@ class CollectorBundleTests(unittest.TestCase):
         MODULE.write_tree(self.root)
         self.assertEqual(MODULE.check_tree(self.root), [])
         canonical = (self.root / MODULE.CANONICAL_COLLECTOR).read_bytes()
-        for skill, filename in MODULE.BUNDLES.items():
+        for skill, filenames in MODULE.BUNDLES.items():
             skill_root = self.root / MODULE.SKILLS_DIR / skill / "scripts"
             self.assertEqual((skill_root / "collect_snowflake_evidence.py").read_bytes(), canonical)
-            self.assertEqual(
-                (skill_root / "sql" / filename).read_bytes(),
-                (self.root / MODULE.CANONICAL_SQL / filename).read_bytes(),
-            )
+            for filename in filenames:
+                self.assertEqual(
+                    (skill_root / "sql" / filename).read_bytes(),
+                    (self.root / MODULE.CANONICAL_SQL / filename).read_bytes(),
+                )
 
     def test_check_fails_closed_on_missing_extra_and_drift(self) -> None:
         MODULE.write_tree(self.root)

@@ -19,6 +19,13 @@ payloads. `row_limit` and `truncation_possible` in every receipt expose the revi
 cap; a receipt at the cap is partial until a narrower query or pagination proves
 completeness.
 
+The access and auth surfaces have explicit current-state companions:
+`access-current` (`SHOW GRANTS ON ACCOUNT`), `access-future` (a validated database
+identifier), and `auth-current` (`SHOW USERS`). These operator-scoped snapshots must
+be reconciled with Account Usage history; current/history disagreement blocks absence
+and completeness claims. Account Usage `ROLES` and `LOGIN_HISTORY` are historical
+and may lag by up to 120 minutes, so retain collection timestamps and source views.
+
 Query and cost surfaces never export raw `USER_NAME` or `QUERY_TAG`. They emit
 Snowflake-side `user_name_sha256`/`query_tag_sha256` values and
 `query_tag_present` instead. Offline evidence must use the same pseudonymized fields;
@@ -26,9 +33,19 @@ raw identity or tag fields are rejected.
 
 The `cost` and `query` surfaces include `WAREHOUSE_LOAD_HISTORY` rows so queue
 pressure can be reconciled with attribution and query latency. Operator statistics
-(`GET_QUERY_OPERATOR_STATS`) and `QUERY_INSIGHTS` require a concrete query ID and
-are supplied as a separately redacted dataset to the domain analyzer; the collector
-does not guess an ID or broaden privileges. Likewise, pipeline `SYSTEM$PIPE_STATUS`
+(`GET_QUERY_OPERATOR_STATS`) and `QUERY_INSIGHTS` are selector-gated sub-surfaces:
+
+```bash
+python3 shared/evidence/collect_snowflake_evidence.py --surface query-operator-stats \
+  --query-id 01example --connection readonly-observer
+python3 shared/evidence/collect_snowflake_evidence.py --surface query-insights \
+  --query-id 01example --connection readonly-observer
+```
+
+Query IDs and database identifiers are opaque validated values, never SQL fragments.
+Operator statistics require a completed query and the platform retrieval window;
+Query History can lag by up to 45 minutes and Query Insights by up to 90 minutes.
+Their receipts remain separately scoped and must match the target query. Likewise, pipeline `SYSTEM$PIPE_STATUS`
 is collected only for an explicitly named pipe by the operator and is never replayed.
 
 The runner invokes only:
