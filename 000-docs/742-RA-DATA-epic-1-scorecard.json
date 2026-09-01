@@ -22,13 +22,13 @@
       "error_files": 775,
       "error_total": 3850,
       "grade_distribution": {
-        "A": 1882,
+        "A": 1883,
         "B": 1112,
         "C": 452,
         "D": 157,
         "F": 5
       },
-      "rows": 3608
+      "rows": 3609
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3108,
-        "tracked_files": 23776
+        "raw_tracked_plugin_skill_files": 3109,
+        "tracked_files": 23784
       }
     },
     "2": {
@@ -53,9 +53,9 @@
       "status": "measured",
       "target_status": "pass",
       "values": {
-        "distinct_names": 442,
+        "distinct_names": 443,
         "duplicate_names": [],
-        "entries": 442
+        "entries": 443
       }
     },
     "3": {
@@ -80,27 +80,27 @@
       "values": {
         "agent_lane": {
           "error_total_all_validated_surfaces": 236,
-          "fully_compliant_surfaces": 768,
+          "fully_compliant_surfaces": 769,
           "terminal_denominator": {
             "agents": 357,
-            "files": 950,
+            "files": 951,
             "label": "agents_plus_plugin_manifests",
-            "plugin_manifests": 593
+            "plugin_manifests": 594
           },
-          "validator_reported_mixed_denominator_percent": 80.8
+          "validator_reported_mixed_denominator_percent": 80.9
         },
         "marketplace_terminal": {
           "error_total_all_validated_surfaces": 4087,
-          "fully_compliant_surfaces": 1143,
+          "fully_compliant_surfaces": 1145,
           "terminal_denominator": {
             "agents": 357,
             "commands": 373,
-            "files": 4931,
+            "files": 4933,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
-            "plugin_manifests": 593,
-            "skills": 3608
+            "plugin_manifests": 594,
+            "skills": 3609
           },
-          "validated_plugin_manifests": 601,
+          "validated_plugin_manifests": 602,
           "validator_reported_mixed_denominator_percent": 23.2
         },
         "skill_rows": {
@@ -112,13 +112,13 @@
           "error_files": 775,
           "error_total": 3850,
           "grade_distribution": {
-            "A": 1882,
+            "A": 1883,
             "B": 1112,
             "C": 452,
             "D": 157,
             "F": 5
           },
-          "rows": 3608
+          "rows": 3609
         }
       }
     },
@@ -131,7 +131,7 @@
       "values": {
         "average_score": 87.3,
         "grade_distribution": {
-          "A": 1882,
+          "A": 1883,
           "B": 1112,
           "C": 452,
           "D": 157,
@@ -144,7 +144,7 @@
           "D": 4.4,
           "F": 0.1
         },
-        "rows": 3608
+        "rows": 3609
       }
     },
     "6": {
@@ -161,7 +161,7 @@
         "b_error_total": 604,
         "b_failing": 292,
         "certified_target": 0,
-        "skill_summary_rows": 3608
+        "skill_summary_rows": 3609
       }
     },
     "7": {
@@ -212,7 +212,7 @@
       "values": {
         "agent_errors": 236,
         "agent_files": 357,
-        "reported_compliance_percent": 80.8,
+        "reported_compliance_percent": 80.9,
         "target_errors": 0,
         "target_percent_max": 100
       }
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3597,
+        "declared": 3598,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 11,
-        "rows": 3608,
+        "rows": 3609,
         "target_malformed": 0
       }
     },
@@ -367,7 +367,7 @@
             "value": "Designed for Claude Code, Codex, Cursor, and GitHub Copilot; works in any agent that can read project files and fetch a URL."
           },
           {
-            "count": 2,
+            "count": 3,
             "value": "Designed for Claude Code, also compatible with Codex and OpenClaw"
           },
           {
@@ -1188,7 +1188,7 @@
         "answers": [
           {
             "cohort": "curated-mirror",
-            "value": 2426
+            "value": 2427
           },
           {
             "cohort": "curriculum",
@@ -1196,15 +1196,15 @@
           },
           {
             "cohort": "first-party",
-            "value": 2764
+            "value": 2765
           },
           {
             "cohort": "graded",
-            "value": 3608
+            "value": 3609
           },
           {
             "cohort": "marketplace-visible",
-            "value": 3017
+            "value": 3018
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1910,7 +1910,7 @@
         "invalid_patterns": 0,
         "invisible_files": 22,
         "target_invisible_files": 0,
-        "tracked_files": 23776
+        "tracked_files": 23784
       }
     },
     "47": {
@@ -2001,11 +2001,11 @@
       ],
       "status": "target_met",
       "values": {
-        "dolt_commit": "vdc8inn59b1n0oor6m5hfjesbvnc2nl9",
-        "header_total_skills": 3030,
+        "dolt_commit": "ui4r79m97pkp5dk37a5v5rtfu355avl1",
+        "header_total_skills": 3031,
         "run_id": 19,
         "skill_row_delta": 0,
-        "skill_rows": 3030,
+        "skill_rows": 3031,
         "target_skill_row_delta": 0
       }
     },
@@ -2020,27 +2020,27 @@
       ],
       "status": "target_met",
       "values": {
-        "compliance_rows": 3608,
-        "export_dolt_commit": "vdc8inn59b1n0oor6m5hfjesbvnc2nl9",
+        "compliance_rows": 3609,
+        "export_dolt_commit": "ui4r79m97pkp5dk37a5v5rtfu355avl1",
         "export_run_id": 19,
-        "grades_csv_rows": 3608,
-        "grades_csv_sha256": "cc914a9f672e6ebcc6117390203906ac77f76f20d827b3e75ca967cb4a79c955",
+        "grades_csv_rows": 3609,
+        "grades_csv_sha256": "a46de16f6347a3ec0cd9b036b6ff77349b8778292447a13e104d21ad50c30495",
         "histogram_grades": {
-          "A": 1882,
+          "A": 1883,
           "B": 1112,
           "C": 452,
           "D": 157,
           "F": 5
         },
-        "histogram_total": 3608,
+        "histogram_total": 3609,
         "immutable_grade_counts": {
-          "A": 1882,
+          "A": 1883,
           "B": 1112,
           "C": 452,
           "D": 157,
           "F": 5
         },
-        "inventory_dolt_commit": "vdc8inn59b1n0oor6m5hfjesbvnc2nl9",
+        "inventory_dolt_commit": "ui4r79m97pkp5dk37a5v5rtfu355avl1",
         "inventory_run_id": 19,
         "target_lag_runs": 0
       }
@@ -2067,7 +2067,7 @@
         "invalid_identities": 0,
         "legacy_e0_records": 3,
         "retained_e2_e3": 0,
-        "source_dolt_commit": "vdc8inn59b1n0oor6m5hfjesbvnc2nl9",
+        "source_dolt_commit": "ui4r79m97pkp5dk37a5v5rtfu355avl1",
         "source_run_id": 19,
         "source_tag": "run-19",
         "target_legacy_e0_records": 3,
@@ -2172,7 +2172,7 @@
       "values": {
         "adoption_percent": 0.71,
         "curated_copies": 22,
-        "plugin_skill_rows": 3108,
+        "plugin_skill_rows": 3109,
         "source_eval_specs": 22,
         "tracked_eval_specs": 44
       }

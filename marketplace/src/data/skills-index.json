@@ -4659,6 +4659,18 @@
       "fallback_for_tools": []
     },
     {
+      "slug": "cad-dxf-agent",
+      "name": "cad-dxf-agent",
+      "description": "Analyzes DXF drawings deterministically — ADA/IBC code compliance, drawing health and QA, quantity takeoff, plain-English summaries, RFI generation, and room/zone detection — with no LLM or API key. Use when a user has a .dxf file and wants to check code compliance, audit drawing quality, pull quantities, summarize a drawing, generate RFIs, or detect rooms and areas. Trigger with \"analyze this DXF\", \"check compliance\", \"drawing health\", \"quantity takeoff\", \"summarize this drawing\", \"generate RFIs\", \"detect zones\", or \"/cad-dxf-agent\".",
+      "version": "0.1.0",
+      "category": "ai-ml",
+      "parentPlugin": "cad-dxf-agent",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
       "slug": "calculating-crypto-taxes",
       "name": "calculating-crypto-taxes",
       "description": "Calculate cryptocurrency tax obligations with cost basis tracking, capital gains computation, and Form 8949 generation. Use when calculating crypto taxes, generating tax reports, comparing cost basis methods, or identifying taxable events. Trigger with phrases like \"calculate crypto taxes\", \"generate tax report\", \"cost basis FIFO\", \"capital gains\", \"Form 8949\", or \"crypto taxable events\".",
@@ -36207,8 +36219,8 @@
       "fallback_for_tools": []
     }
   ],
-  "count": 3017,
-  "generatedAt": "2026-08-31T22:26:03.196Z",
+  "count": 3018,
+  "generatedAt": "2026-09-01T04:43:10.190Z",
   "categories": [
     "ai-agency",
     "ai-ml",

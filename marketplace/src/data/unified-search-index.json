@@ -5,10 +5,10 @@
     "generator": "marketplace/scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 439,
-    "totalSkills": 3017,
+    "totalPlugins": 440,
+    "totalSkills": 3018,
     "totalDocs": 24,
-    "totalItems": 3480,
+    "totalItems": 3482,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -85,6 +85,8 @@
       "Bash(bq:*)",
       "Bash(brew:*)",
       "Bash(bun:*)",
+      "Bash(cad-analyze:*)",
+      "Bash(cad-revision:*)",
       "Bash(cargo:*)",
       "Bash(cat:*)",
       "Bash(chmod:*)",
@@ -398,6 +400,7 @@
       "adk-samples",
       "adobe",
       "advisor",
+      "aec",
       "agencies",
       "agency",
       "agent",
@@ -559,6 +562,7 @@
       "business-continuity",
       "cache",
       "caching",
+      "cad",
       "calculator",
       "calendar",
       "call-center",
@@ -769,8 +773,10 @@
       "dolthub",
       "download",
       "dr",
+      "drawing-intelligence",
       "drift",
       "drift-detection",
+      "dxf",
       "e-commerce",
       "e-signature",
       "e2e",
@@ -1521,6 +1527,7 @@
       "sync",
       "synthetic-monitoring",
       "tags",
+      "takeoff",
       "task-breakdown",
       "task-management",
       "task-router",
@@ -1699,7 +1706,7 @@
     "totalHooks": 27,
     "pluginsWithAgents": 90,
     "pluginsWithHooks": 19,
-    "officialPlugins": 389,
+    "officialPlugins": 390,
     "communityPlugins": 50,
     "communityContributors": 39
   },
@@ -3294,6 +3301,34 @@
       "verificationGrade": "A",
       "verificationBadge": "gold",
       "searchText": "ci cd pipeline builder build ci/cd pipelines for github actions, gitlab ci, jenkins, and more devops ci-cd github-actions gitlab-ci jenkins devops automation"
+    },
+    {
+      "type": "plugin",
+      "id": "cad-dxf-agent",
+      "slug": "cad-dxf-agent",
+      "name": "cad-dxf-agent",
+      "displayName": "cad dxf agent",
+      "description": "Deterministic DXF drawing analysis for compliance, drawing QA, quantity takeoff, summaries, RFIs, and room/zone detection — no LLM or API key required.",
+      "category": "ai-ml",
+      "keywords": [
+        "dxf",
+        "cad",
+        "compliance",
+        "takeoff",
+        "drawing-intelligence",
+        "aec"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "authorType": "official",
+      "version": "0.1.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 1,
+      "searchText": "cad dxf agent deterministic dxf drawing analysis for compliance, drawing qa, quantity takeoff, summaries, rfis, and room/zone detection — no llm or api key required. ai-ml dxf cad compliance takeoff drawing-intelligence aec"
     },
     {
       "type": "plugin",
@@ -23555,6 +23590,31 @@
         "category": "ai-agency"
       },
       "searchText": "buzz-social social media strategy and post drafting — hn posts, twitter/x threads, linkedin posts, reddit comments, and developer community content. use when asked to \"write a hn post\", \"draft social posts\", \"help us post on twitter\", or \"create a social launch plan\". ai-agency read bash glob grep webfetch websearch askuserquestion "
+    },
+    {
+      "type": "skill",
+      "id": "cad-dxf-agent",
+      "slug": "cad-dxf-agent",
+      "name": "cad-dxf-agent",
+      "description": "Analyzes DXF drawings deterministically — ADA/IBC code compliance, drawing health and QA, quantity takeoff, plain-English summaries, RFI generation, and room/zone detection — with no LLM or API key. Use when a user has a .dxf file and wants to check code compliance, audit drawing quality, pull quantities, summarize a drawing, generate RFIs, or detect rooms and areas. Trigger with \"analyze this DXF\", \"check compliance\", \"drawing health\", \"quantity takeoff\", \"summarize this drawing\", \"generate RFIs\", \"detect zones\", or \"/cad-dxf-agent\".",
+      "category": "ai-ml",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Bash(cad-analyze:*)",
+        "Bash(cad-revision:*)",
+        "Bash(pip:*)",
+        "Bash(python:*)",
+        "Bash(python3:*)",
+        "AskUserQuestion"
+      ],
+      "compatibleWith": [],
+      "version": "0.1.0",
+      "parentPlugin": {
+        "name": "cad-dxf-agent",
+        "category": "ai-ml"
+      },
+      "searchText": "cad-dxf-agent analyzes dxf drawings deterministically — ada/ibc code compliance, drawing health and qa, quantity takeoff, plain-english summaries, rfi generation, and room/zone detection — with no llm or api key. use when a user has a .dxf file and wants to check code compliance, audit drawing quality, pull quantities, summarize a drawing, generate rfis, or detect rooms and areas. trigger with \"analyze this dxf\", \"check compliance\", \"drawing health\", \"quantity takeoff\", \"summarize this drawing\", \"generate rfis\", \"detect zones\", or \"/cad-dxf-agent\". ai-ml read glob bash(cad-analyze:*) bash(cad-revision:*) bash(pip:*) bash(python:*) bash(python3:*) askuserquestion "
     },
     {
       "type": "skill",
