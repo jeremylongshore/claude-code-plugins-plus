@@ -22,13 +22,13 @@
       "error_files": 775,
       "error_total": 3850,
       "grade_distribution": {
-        "A": 1882,
+        "A": 1884,
         "B": 1112,
         "C": 452,
         "D": 157,
         "F": 5
       },
-      "rows": 3608
+      "rows": 3610
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3108,
-        "tracked_files": 23772
+        "raw_tracked_plugin_skill_files": 3110,
+        "tracked_files": 23886
       }
     },
     "2": {
@@ -91,14 +91,14 @@
         },
         "marketplace_terminal": {
           "error_total_all_validated_surfaces": 4087,
-          "fully_compliant_surfaces": 1143,
+          "fully_compliant_surfaces": 1144,
           "terminal_denominator": {
             "agents": 357,
             "commands": 373,
-            "files": 4931,
+            "files": 4933,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
             "plugin_manifests": 593,
-            "skills": 3608
+            "skills": 3610
           },
           "validated_plugin_manifests": 601,
           "validator_reported_mixed_denominator_percent": 23.2
@@ -112,13 +112,13 @@
           "error_files": 775,
           "error_total": 3850,
           "grade_distribution": {
-            "A": 1882,
+            "A": 1884,
             "B": 1112,
             "C": 452,
             "D": 157,
             "F": 5
           },
-          "rows": 3608
+          "rows": 3610
         }
       }
     },
@@ -131,7 +131,7 @@
       "values": {
         "average_score": 87.3,
         "grade_distribution": {
-          "A": 1882,
+          "A": 1884,
           "B": 1112,
           "C": 452,
           "D": 157,
@@ -141,10 +141,10 @@
           "A": 52.2,
           "B": 30.8,
           "C": 12.5,
-          "D": 4.4,
+          "D": 4.3,
           "F": 0.1
         },
-        "rows": 3608
+        "rows": 3610
       }
     },
     "6": {
@@ -161,7 +161,7 @@
         "b_error_total": 604,
         "b_failing": 292,
         "certified_target": 0,
-        "skill_summary_rows": 3608
+        "skill_summary_rows": 3610
       }
     },
     "7": {
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3597,
+        "declared": 3599,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 11,
-        "rows": 3608,
+        "rows": 3610,
         "target_malformed": 0
       }
     },
@@ -286,7 +286,7 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "distinct_values": 54,
+        "distinct_values": 56,
         "invalid_or_empty": 0,
         "target_free_text_values": 0,
         "values": [
@@ -431,8 +431,16 @@
             "value": "Designed for Claude Code; the same MCP server also works in Claude Desktop, Cursor, Windsurf, and OpenAI Codex CLI. Requires the mnemos binary on PATH — run mnemos init to wire the MCP server and mnemos doctor to verify."
           },
           {
+            "count": 1,
+            "value": "Model-agnostic workflow; requires Python 3.10+ and redacted provider-side evidence"
+          },
+          {
             "count": 7,
             "value": "Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection"
+          },
+          {
+            "count": 1,
+            "value": "Model-agnostic workflow; requires Python 3.10+; optional Snowflake session for operator-run read-only evidence collection"
           },
           {
             "count": 1,
@@ -1188,7 +1196,7 @@
         "answers": [
           {
             "cohort": "curated-mirror",
-            "value": 2426
+            "value": 2428
           },
           {
             "cohort": "curriculum",
@@ -1196,15 +1204,15 @@
           },
           {
             "cohort": "first-party",
-            "value": 2764
+            "value": 2766
           },
           {
             "cohort": "graded",
-            "value": 3608
+            "value": 3610
           },
           {
             "cohort": "marketplace-visible",
-            "value": 3017
+            "value": 3019
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1910,7 +1918,7 @@
         "invalid_patterns": 0,
         "invisible_files": 22,
         "target_invisible_files": 0,
-        "tracked_files": 23772
+        "tracked_files": 23886
       }
     },
     "47": {
@@ -2012,27 +2020,29 @@
     "53": {
       "cohort": "tracked grade exports against the latest immutable Freshie run receipt",
       "dimension": "Tracked export lag",
+      "reason_code": "FRESHIE_GRADE_EXPORT_DRIFT",
       "reproduce": "pnpm run measure:e1 --row=53 --stdout",
+      "required_inputs": ["a same-run grade export and immutable Freshie receipt"],
       "source": [
         "freshie/grade-histogram.json",
         "freshie/grades.csv",
         "freshie/reports/run-delta-19.json"
       ],
-      "status": "target_met",
+      "status": "partial",
       "values": {
         "compliance_rows": 3608,
-        "export_dolt_commit": "vdc8inn59b1n0oor6m5hfjesbvnc2nl9",
-        "export_run_id": 19,
+        "export_dolt_commit": "3sq6cn86ijmjqdm0hp2sob0ppo5fi15i",
+        "export_run_id": 20,
         "grades_csv_rows": 3608,
-        "grades_csv_sha256": "cc914a9f672e6ebcc6117390203906ac77f76f20d827b3e75ca967cb4a79c955",
+        "grades_csv_sha256": "f1ae2fcec19876bd8600da9b75b3fffa245c8e239a56aa9a34bf8498118de32a",
         "histogram_grades": {
-          "A": 1882,
+          "A": 1884,
           "B": 1112,
           "C": 452,
           "D": 157,
           "F": 5
         },
-        "histogram_total": 3608,
+        "histogram_total": 3610,
         "immutable_grade_counts": {
           "A": 1882,
           "B": 1112,
@@ -2140,6 +2150,8 @@
         "plugins/saas-packs/snowflake-pack/skills/snowflake-data-quality-sentinel/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-deploy-medic/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-failover-readiness-drill/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-governance-coverage-auditor/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-native-app-release-sheriff/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-pipeline-guardian/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-query-forensics/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-strong-auth-migration-pilot/eval-spec.yaml",
@@ -2162,6 +2174,8 @@
         "skills/.curated/snowflake-data-quality-sentinel/eval-spec.yaml",
         "skills/.curated/snowflake-deploy-medic/eval-spec.yaml",
         "skills/.curated/snowflake-failover-readiness-drill/eval-spec.yaml",
+        "skills/.curated/snowflake-governance-coverage-auditor/eval-spec.yaml",
+        "skills/.curated/snowflake-native-app-release-sheriff/eval-spec.yaml",
         "skills/.curated/snowflake-pipeline-guardian/eval-spec.yaml",
         "skills/.curated/snowflake-query-forensics/eval-spec.yaml",
         "skills/.curated/snowflake-strong-auth-migration-pilot/eval-spec.yaml",
@@ -2170,11 +2184,11 @@
       ],
       "status": "measured",
       "values": {
-        "adoption_percent": 0.71,
-        "curated_copies": 22,
-        "plugin_skill_rows": 3108,
-        "source_eval_specs": 22,
-        "tracked_eval_specs": 44
+        "adoption_percent": 0.77,
+        "curated_copies": 24,
+        "plugin_skill_rows": 3110,
+        "source_eval_specs": 24,
+        "tracked_eval_specs": 48
       }
     },
     "58": {

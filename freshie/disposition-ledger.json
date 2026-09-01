@@ -3,8 +3,8 @@
   "authority": "Blueprint 727 §8; Freshie graded export",
   "source": {
     "path": "freshie/grades.csv",
-    "sha256": "cc914a9f672e6ebcc6117390203906ac77f76f20d827b3e75ca967cb4a79c955",
-    "artifact_count": 3608
+    "sha256": "f1ae2fcec19876bd8600da9b75b3fffa245c8e239a56aa9a34bf8498118de32a",
+    "artifact_count": 3610
   },
   "rule_order": [
     "G0",
@@ -21,7 +21,7 @@
   "counts": {
     "AUTO-MIGRATE": 493,
     "CERTIFY": 0,
-    "CERTIFY-PENDING-EVIDENCE": 2769,
+    "CERTIFY-PENDING-EVIDENCE": 2771,
     "CERTIFY-UPSTREAM": 0,
     "DEEP-REMEDIATE": 2,
     "QUARANTINE": 344
@@ -34429,7 +34429,7 @@
     {
       "path": "plugins/saas-packs/snowflake-pack/skills/snowflake-cost-leak-hunter/SKILL.md",
       "grade": "A",
-      "score": 96,
+      "score": 94,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -34463,6 +34463,28 @@
       "path": "plugins/saas-packs/snowflake-pack/skills/snowflake-failover-readiness-drill/SKILL.md",
       "grade": "A",
       "score": 95,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/snowflake-pack/skills/snowflake-governance-coverage-auditor/SKILL.md",
+      "grade": "A",
+      "score": 96,
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
+      "reason_codes": [
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/saas-packs/snowflake-pack/skills/snowflake-native-app-release-sheriff/SKILL.md",
+      "grade": "A",
+      "score": 93,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
