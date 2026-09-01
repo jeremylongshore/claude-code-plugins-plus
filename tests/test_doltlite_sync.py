@@ -7,6 +7,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+import urllib.parse
 from pathlib import Path
 from unittest import mock
 
@@ -289,8 +290,9 @@ class DoltLiteSyncTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             self.make_source(root / "inventory.sqlite")
+            credentialed_url = urllib.parse.urlunsplit(("https", "user:placeholder@example.test", "/repo", "", ""))
             with self.assertRaisesRegex(MODULE.SyncError, "must not embed credentials"):
-                self.sync(root, remote_url="https://user:secret@example.test/repo")
+                self.sync(root, remote_url=credentialed_url)
             self.assertFalse((root / "target.db").exists())
 
     def test_schema_and_column_drift_require_explicit_approval(self):
