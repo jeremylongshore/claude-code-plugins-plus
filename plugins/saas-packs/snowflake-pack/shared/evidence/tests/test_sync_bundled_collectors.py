@@ -29,6 +29,11 @@ class CollectorBundleTests(unittest.TestCase):
     def test_repository_tree_passes_and_has_exact_bundle_count(self) -> None:
         self.assertEqual(MODULE.check_tree(MODULE.PACK_ROOT), [])
         self.assertEqual(len(MODULE.BUNDLES), 8)
+        self.assertEqual(len(MODULE.EXPECTED_SKILLS), 10)
+        self.assertEqual(set(MODULE.BUNDLES), MODULE.EXPECTED_SKILLS - {
+            "snowflake-governance-coverage-auditor",
+            "snowflake-native-app-release-sheriff",
+        })
 
     def test_writer_reconstructs_self_contained_copies(self) -> None:
         MODULE.write_tree(self.root)

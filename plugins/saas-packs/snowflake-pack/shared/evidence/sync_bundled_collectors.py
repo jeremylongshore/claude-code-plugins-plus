@@ -45,6 +45,15 @@ BUNDLES: dict[str, tuple[str, ...]] = {
     "snowflake-strong-auth-migration-pilot": ("auth.sql", "auth-current.sql"),
 }
 
+# The pack can contain skills whose evidence is local-artifact based or whose
+# collector has a distinct contract. Keep the directory allowlist separate
+# from BUNDLES so those skills are not forced to ship a fake copy of the shared
+# account-evidence collector.
+EXPECTED_SKILLS = set(BUNDLES) | {
+    "snowflake-governance-coverage-auditor",
+    "snowflake-native-app-release-sheriff",
+}
+
 
 def _path(root: Path, relative: Path) -> Path:
     return root / relative
@@ -115,7 +124,7 @@ def _destination_issues(root: Path, *, allow_missing: bool = False) -> list[str]
     if not _directory(skills, "skills directory", issues, allow_missing=allow_missing):
         return issues
 
-    _unexpected_entries(skills, set(BUNDLES), "Snowflake skill", issues, allow_missing=allow_missing)
+    _unexpected_entries(skills, EXPECTED_SKILLS, "Snowflake skill", issues, allow_missing=True)
     for skill, filenames in sorted(BUNDLES.items()):
         skill_dir = skills / skill
         if not _directory(skill_dir, f"skill directory ({skill})", issues, allow_missing=True):

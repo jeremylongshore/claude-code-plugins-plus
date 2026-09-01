@@ -45,6 +45,22 @@ def npm_pack_files(pack: Path) -> set[str]:
 
 
 class SnowflakePackIntegrityTests(unittest.TestCase):
+    def test_pack_has_only_the_research_approved_operator_skills(self) -> None:
+        expected = {
+            "snowflake-access-guardian",
+            "snowflake-cost-leak-hunter",
+            "snowflake-data-quality-sentinel",
+            "snowflake-deploy-medic",
+            "snowflake-failover-readiness-drill",
+            "snowflake-governance-coverage-auditor",
+            "snowflake-native-app-release-sheriff",
+            "snowflake-pipeline-guardian",
+            "snowflake-query-forensics",
+            "snowflake-strong-auth-migration-pilot",
+        }
+        actual = {entry.name for entry in (PACK / "skills").iterdir() if entry.is_dir()}
+        self.assertEqual(actual, expected)
+
     def test_retired_database_is_absent(self) -> None:
         self.assertFalse(STALE_DATABASE.exists())
 
