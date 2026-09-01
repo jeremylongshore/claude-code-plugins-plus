@@ -276,9 +276,7 @@ def validate_supplemental_receipts(
 
         template_path = Path(__file__).resolve().parent / "sql" / template_name
         expected_hash = (
-            f"sha256:{hashlib.sha256(template_path.read_bytes()).hexdigest()}"
-            if template_path.is_file()
-            else None
+            f"sha256:{hashlib.sha256(template_path.read_bytes()).hexdigest()}" if template_path.is_file() else None
         )
         for field in ("sql_sha256", "template_sha256", "rendered_sql_sha256"):
             if receipt.get(field) != expected_hash:
@@ -360,7 +358,9 @@ def reject_secret_fields(value: Any, path: str = "input") -> None:
             reject_secret_fields(child, f"{path}[{index}]")
     elif isinstance(value, str):
         parsed = urlsplit(value.strip())
-        if parsed.scheme in {"http", "https"} and (parsed.query or parsed.fragment or parsed.username or parsed.password):
+        if parsed.scheme in {"http", "https"} and (
+            parsed.query or parsed.fragment or parsed.username or parsed.password
+        ):
             raise EvidenceError(f"URL-bearing evidence is not accepted at {path}")
 
 
@@ -525,9 +525,7 @@ def assess_surface_inventory(
         privilege = safe_text(row.get("privilege_status", "verified"), f"{prefix}.privilege_status")
         source = safe_text(row.get("source", surface), f"{prefix}.source")
         if source != EXPECTED_SURFACE_SOURCES[surface]:
-            raise EvidenceError(
-                f"{prefix}.source does not match the reviewed source for {surface}"
-            )
+            raise EvidenceError(f"{prefix}.source does not match the reviewed source for {surface}")
         truncated = row.get("truncated", False)
         if not isinstance(truncated, bool):
             raise EvidenceError(f"{prefix}.truncated must be boolean")
@@ -536,9 +534,7 @@ def assess_surface_inventory(
         documented_latency: Decimal | None = None
         freshness_status = "unknown"
         if row.get("documented_latency_hours") is not None:
-            documented_latency = decimal_value(
-                row["documented_latency_hours"], f"{prefix}.documented_latency_hours"
-            )
+            documented_latency = decimal_value(row["documented_latency_hours"], f"{prefix}.documented_latency_hours")
         if row.get("latest_timestamp") is not None:
             latest = parse_time(row["latest_timestamp"], f"{prefix}.latest_timestamp")
             if latest > generated:
@@ -566,8 +562,14 @@ def assess_surface_inventory(
                 "The surface is marked available but has no latest source timestamp; freshness is unverifiable.",
             )
         if status != "available":
-            code = "COST_ADAPTIVE_REGION_UNAVAILABLE" if surface == "adaptive_usage" and status == "region_unavailable" else "COST_SURFACE_MISSING"
-            add_finding(findings, code, "warning", surface, f"Surface availability is {status}; absence is not zero usage.")
+            code = (
+                "COST_ADAPTIVE_REGION_UNAVAILABLE"
+                if surface == "adaptive_usage" and status == "region_unavailable"
+                else "COST_SURFACE_MISSING"
+            )
+            add_finding(
+                findings, code, "warning", surface, f"Surface availability is {status}; absence is not zero usage."
+            )
         if privilege == "error":
             add_finding(
                 findings,
@@ -1659,13 +1661,15 @@ def render_markdown(result: dict[str, Any]) -> str:
     for surface, assessment in sorted(result["supplemental_receipt_assessments"].items()):
         issues = "; ".join(assessment["issues"]) or "none"
         lines.append(f"| {surface} | {assessment['status']} | {issues} |")
-    lines.extend([
-        "",
-        "## Typed cost ledger",
-        "",
-        "| Entry | Domain | Role | Amount | Additive | Freshness | Availability | Invoice |",
-        "|---|---|---|---:|---|---|---|---|",
-    ])
+    lines.extend(
+        [
+            "",
+            "## Typed cost ledger",
+            "",
+            "| Entry | Domain | Role | Amount | Additive | Freshness | Availability | Invoice |",
+            "|---|---|---|---:|---|---|---|---|",
+        ]
+    )
     for item in result["cost_ledger"]:
         lines.append(
             f"| {item['entry_id']} | {item['domain']} | {item['ledger_role']} | "
@@ -1675,22 +1679,24 @@ def render_markdown(result: dict[str, Any]) -> str:
         )
     lines.extend(
         [
-        "",
-        "## Findings",
-        "",
-        "| Code | Severity | Surface | Evidence boundary |",
-        "|---|---|---|---|",
+            "",
+            "## Findings",
+            "",
+            "| Code | Severity | Surface | Evidence boundary |",
+            "|---|---|---|---|",
         ]
     )
     for item in result["findings"]:
         lines.append(f"| {item['code']} | {item['severity']} | {item['surface']} | {item['message']} |")
-    lines.extend([
-        "",
-        "## Confirmed observations",
-        "",
-        "| Metric | Credits | Source boundary |",
-        "|---|---:|---|",
-    ])
+    lines.extend(
+        [
+            "",
+            "## Confirmed observations",
+            "",
+            "| Metric | Credits | Source boundary |",
+            "|---|---:|---|",
+        ]
+    )
     for item in result["confirmed_observations"]:
         lines.append(f"| {item['metric']} | {item['credits']} | {item['source']} |")
     lines.extend(["", "## Estimated amounts", ""])

@@ -38,12 +38,8 @@ SHA256 = re.compile(r"^sha256:[0-9a-f]{64}$")
 OPAQUE_KEY = re.compile(r"^(?:asset|policy|tag|scenario)_[a-z0-9][a-z0-9_-]{0,126}$")
 SQL_DIR = Path(__file__).resolve().parent / "sql"
 SURFACE_CONTRACTS = {
-    "denominator": [
-        ("governance-denominator.sql", "SNOWFLAKE.ACCOUNT_USAGE.TABLES+COLUMNS")
-    ],
-    "tag_references": [
-        ("governance-tag-references.sql", "SNOWFLAKE.ACCOUNT_USAGE.TAG_REFERENCES")
-    ],
+    "denominator": [("governance-denominator.sql", "SNOWFLAKE.ACCOUNT_USAGE.TABLES+COLUMNS")],
+    "tag_references": [("governance-tag-references.sql", "SNOWFLAKE.ACCOUNT_USAGE.TAG_REFERENCES")],
     "policy_references": [
         (
             "governance-policy-references.sql",
@@ -76,9 +72,7 @@ SECRET_KEYS = (
     "credential",
 )
 SECRET_VALUES = (
-    re.compile(
-        r"(?i)\b(?:password|secret|token|api[_ -]?key|authorization)\b\s*[:=]\s*\S+"
-    ),
+    re.compile(r"(?i)\b(?:password|secret|token|api[_ -]?key|authorization)\b\s*[:=]\s*\S+"),
     re.compile(r"(?i)\bbearer\s+[A-Za-z0-9._~+/=-]{8,}"),
     re.compile(r"-----BEGIN(?: [A-Z0-9]+)? PRIVATE KEY-----"),
 )
@@ -96,9 +90,7 @@ FORBIDDEN_EXPORT_KEYS = {
 
 
 def _canonical(value: object) -> bytes:
-    return json.dumps(
-        value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
-    ).encode()
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
 
 
 def _hash(value: object) -> str:
@@ -144,9 +136,7 @@ def _strings(value: object, path: str) -> list[str]:
 def _opaque(value: object, path: str) -> str:
     key = str(value or "").strip()
     if not OPAQUE_KEY.fullmatch(key):
-        raise ValueError(
-            f"{path} must be an opaque key such as asset_42, not an object name"
-        )
+        raise ValueError(f"{path} must be an opaque key such as asset_42, not an object name")
     return key
 
 
@@ -155,20 +145,14 @@ def reject_secrets(value: object, path: str = "input") -> None:
         for key, child in value.items():
             normalized = "".join(char for char in str(key).casefold() if char.isalnum())
             if any(fragment in normalized for fragment in SECRET_KEYS):
-                raise ValueError(
-                    f"credential-bearing field is not accepted: {path}.{key}"
-                )
+                raise ValueError(f"credential-bearing field is not accepted: {path}.{key}")
             if normalized in {item.replace("_", "") for item in FORBIDDEN_EXPORT_KEYS}:
-                raise ValueError(
-                    f"raw identity or sensitive metadata field is not accepted: {path}.{key}"
-                )
+                raise ValueError(f"raw identity or sensitive metadata field is not accepted: {path}.{key}")
             reject_secrets(child, f"{path}.{key}")
     elif isinstance(value, list):
         for index, child in enumerate(value):
             reject_secrets(child, f"{path}[{index}]")
-    elif isinstance(value, str) and any(
-        pattern.search(value) for pattern in SECRET_VALUES
-    ):
+    elif isinstance(value, str) and any(pattern.search(value) for pattern in SECRET_VALUES):
         raise ValueError(f"credential-shaped value is not accepted: {path}")
 
 
@@ -207,17 +191,9 @@ def _receipt(
         issues.append("row_count does not match the bound dataset")
     row_limit = value.get("row_limit")
     raw_row_count = value.get("raw_row_count")
-    if (
-        not isinstance(row_limit, int)
-        or isinstance(row_limit, bool)
-        or not 1 <= row_limit <= MAX_ASSETS
-    ):
+    if not isinstance(row_limit, int) or isinstance(row_limit, bool) or not 1 <= row_limit <= MAX_ASSETS:
         issues.append("row_limit is invalid")
-    if (
-        not isinstance(raw_row_count, int)
-        or isinstance(raw_row_count, bool)
-        or raw_row_count < len(dataset)
-    ):
+    if not isinstance(raw_row_count, int) or isinstance(raw_row_count, bool) or raw_row_count < len(dataset):
         issues.append("raw_row_count is invalid")
     contract = next(
         (item for item in SURFACE_CONTRACTS[name] if item[1] == value.get("source")),
@@ -226,9 +202,7 @@ def _receipt(
     if contract is None:
         issues.append("source does not match the surface contract")
     else:
-        template_hash = (
-            f"sha256:{hashlib.sha256((SQL_DIR / contract[0]).read_bytes()).hexdigest()}"
-        )
+        template_hash = f"sha256:{hashlib.sha256((SQL_DIR / contract[0]).read_bytes()).hexdigest()}"
         if value.get("template_sha256") != template_hash:
             issues.append("template_sha256 does not match the bundled template")
     if not SHA256.fullmatch(str(value.get("rendered_sql_sha256") or "")):
@@ -239,11 +213,7 @@ def _receipt(
     if value.get("dataset_sha256") != expected_dataset_hash:
         issues.append("dataset_sha256 does not match the analyzer rows")
     selector_metadata = value.get("source_metadata")
-    selector = (
-        selector_metadata.get("selector")
-        if isinstance(selector_metadata, dict)
-        else None
-    )
+    selector = selector_metadata.get("selector") if isinstance(selector_metadata, dict) else None
     selector_ok = selector == {"database": True} or (
         isinstance(selector, dict)
         and selector.get("database") is True
@@ -253,15 +223,9 @@ def _receipt(
         and set(selector) == {"database", "objects"}
     )
     if value.get("source") == "BOUNDED.INFORMATION_SCHEMA.POLICY_REFERENCES":
-        selector_ok = (
-            selector_ok
-            and isinstance(selector, dict)
-            and isinstance(selector.get("objects"), int)
-        )
+        selector_ok = selector_ok and isinstance(selector, dict) and isinstance(selector.get("objects"), int)
     if not selector_ok:
-        issues.append(
-            "source_metadata selector is not the privacy-safe database binding"
-        )
+        issues.append("source_metadata selector is not the privacy-safe database binding")
     elif isinstance(row_limit, int) and isinstance(raw_row_count, int):
         partitions = selector.get("objects", 1)
         if raw_row_count > row_limit * partitions:
@@ -269,9 +233,7 @@ def _receipt(
     if not SHA256.fullmatch(str(value.get("selector_fingerprint") or "")):
         issues.append("selector_fingerprint is missing or malformed")
     try:
-        collected_at = _timestamp(
-            value.get("collected_at"), f"receipts.{name}.collected_at"
-        )
+        collected_at = _timestamp(value.get("collected_at"), f"receipts.{name}.collected_at")
         age_hours = (assessed_at - collected_at).total_seconds() / 3600
         wall_age_hours = (wall_clock - collected_at).total_seconds() / 3600
         if age_hours < 0:
@@ -282,8 +244,7 @@ def _receipt(
             issues.append("collected_at is after the current wall clock")
         elif wall_age_hours > max_age_hours:
             issues.append(
-                f"receipt is stale against the current wall clock "
-                f"({wall_age_hours:.2f}h > {max_age_hours:.2f}h)"
+                f"receipt is stale against the current wall clock ({wall_age_hours:.2f}h > {max_age_hours:.2f}h)"
             )
     except ValueError:
         collected_at = None
@@ -299,9 +260,7 @@ def _receipt(
         "status": "VERIFIED" if not issues else "UNVERIFIABLE",
         "issues": issues,
         "age_hours": round(age_hours, 3) if age_hours is not None else None,
-        "collected_at": (
-            collected_at.isoformat().replace("+00:00", "Z") if collected_at else None
-        ),
+        "collected_at": (collected_at.isoformat().replace("+00:00", "Z") if collected_at else None),
         "source": value.get("source"),
         "template_sha256": value.get("template_sha256"),
         "dataset_sha256": value.get("dataset_sha256"),
@@ -321,22 +280,13 @@ def _classification_state(
     issues: list[str] = []
     last_classified = None
     if row.get("last_classified_on"):
-        last_classified = _timestamp(
-            row["last_classified_on"], "classifications.last_classified_on"
-        )
+        last_classified = _timestamp(row["last_classified_on"], "classifications.last_classified_on")
     last_attempt = None
     if row.get("last_attempt_on"):
-        last_attempt = _timestamp(
-            row["last_attempt_on"], "classifications.last_attempt_on"
-        )
+        last_attempt = _timestamp(row["last_attempt_on"], "classifications.last_attempt_on")
     if row.get("error_present") not in (True, False, None):
         raise ValueError("classifications.error_present must be boolean")
-    if (
-        last_attempt
-        and last_classified
-        and last_attempt > last_classified
-        and row.get("error_present") is True
-    ):
+    if last_attempt and last_classified and last_attempt > last_classified and row.get("error_present") is True:
         status = "FAILED"
         issues.append("last classification attempt failed after the last success")
     if status in {"CLASSIFIED", "REVIEWED"}:
@@ -368,9 +318,7 @@ def _entity_keys(row: dict) -> tuple[str, ...]:
     return normalized
 
 
-def _effective_policies(
-    rows: list[dict], kind: str
-) -> tuple[list[dict], list[dict], list[dict]]:
+def _effective_policies(rows: list[dict], kind: str) -> tuple[list[dict], list[dict], list[dict]]:
     active = [row for row in rows if row["policy_status"] == "ACTIVE"]
     direct = [row for row in active if row["assignment"] == "DIRECT"]
     tagged = [row for row in active if row["assignment"] == "TAG"]
@@ -407,9 +355,7 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
     wall_clock = wall_clock.astimezone(timezone.utc)
     edition = _upper(metadata.get("edition"))
     if edition not in EDITION_RANK:
-        raise ValueError(
-            "metadata.edition must be STANDARD, ENTERPRISE, BUSINESS_CRITICAL, or VPS"
-        )
+        raise ValueError("metadata.edition must be STANDARD, ENTERPRISE, BUSINESS_CRITICAL, or VPS")
     preview_features = {
         _upper(item)
         for item in _strings(
@@ -450,22 +396,13 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
         if domain not in {"COLUMN", "TABLE", "VIEW"}:
             raise ValueError(f"assets[{index}].domain is invalid")
         required = {
-            _upper(item)
-            for item in _strings(
-                row.get("required_controls", []), f"assets[{index}].required_controls"
-            )
+            _upper(item) for item in _strings(row.get("required_controls", []), f"assets[{index}].required_controls")
         }
         unknown = required - POLICY_KINDS
         if unknown:
-            raise ValueError(
-                f"assets[{index}] has unsupported controls: {sorted(unknown)}"
-            )
-        if not isinstance(row.get("require_tag"), bool) or not isinstance(
-            row.get("require_classification"), bool
-        ):
-            raise ValueError(
-                f"assets[{index}] tag/classification requirements must be boolean"
-            )
+            raise ValueError(f"assets[{index}] has unsupported controls: {sorted(unknown)}")
+        if not isinstance(row.get("require_tag"), bool) or not isinstance(row.get("require_classification"), bool):
+            raise ValueError(f"assets[{index}] tag/classification requirements must be boolean")
         asset_map[key] = {
             "asset_key": key,
             "domain": domain,
@@ -478,9 +415,7 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
     for index, row in enumerate(tags):
         key = _opaque(row.get("asset_key"), f"tags[{index}].asset_key")
         if key not in asset_map:
-            raise ValueError(
-                f"tags[{index}] references an asset outside the denominator"
-            )
+            raise ValueError(f"tags[{index}] references an asset outside the denominator")
         tag_key = _opaque(row.get("tag_key"), f"tags[{index}].tag_key")
         method = _upper(row.get("apply_method"))
         if method not in {"CLASSIFIED", "MANUAL", "PROPAGATED", "INHERITED", "LEGACY"}:
@@ -491,21 +426,15 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
     for index, row in enumerate(classifications):
         key = _opaque(row.get("asset_key"), f"classifications[{index}].asset_key")
         if key not in asset_map:
-            raise ValueError(
-                f"classifications[{index}] references an asset outside the denominator"
-            )
-        state, issues = _classification_state(
-            row, assessed_at, wall_clock, classification_max_age
-        )
+            raise ValueError(f"classifications[{index}] references an asset outside the denominator")
+        state, issues = _classification_state(row, assessed_at, wall_clock, classification_max_age)
         classifications_by_asset[key].append({"state": state, "issues": issues})
 
     policies_by_asset: dict[str, list[dict]] = defaultdict(list)
     for index, row in enumerate(policies):
         key = _opaque(row.get("asset_key"), f"policies[{index}].asset_key")
         if key not in asset_map:
-            raise ValueError(
-                f"policies[{index}] references an asset outside the denominator"
-            )
+            raise ValueError(f"policies[{index}] references an asset outside the denominator")
         kind = _upper(row.get("policy_kind"))
         if kind not in POLICY_KINDS:
             raise ValueError(f"policies[{index}].policy_kind is invalid")
@@ -521,9 +450,7 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
             "policy_kind": kind,
             "assignment": assignment,
             "policy_status": status,
-            "entity_key_hashes": (
-                list(_entity_keys(row)) if kind == "AGGREGATION_POLICY" else []
-            ),
+            "entity_key_hashes": (list(_entity_keys(row)) if kind == "AGGREGATION_POLICY" else []),
         }
         policies_by_asset[key].append(normalized)
 
@@ -531,23 +458,14 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
     for index, row in enumerate(simulations):
         key = _opaque(row.get("asset_key"), f"policy_context[{index}].asset_key")
         if key not in asset_map:
-            raise ValueError(
-                f"policy_context[{index}] references an asset outside the denominator"
-            )
-        scenario = _opaque(
-            row.get("scenario_key"), f"policy_context[{index}].scenario_key"
-        )
+            raise ValueError(f"policy_context[{index}] references an asset outside the denominator")
+        scenario = _opaque(row.get("scenario_key"), f"policy_context[{index}].scenario_key")
         status = _upper(row.get("status"))
         if status not in {"PASS", "FAIL", "ERROR"}:
             raise ValueError(f"policy_context[{index}].status is invalid")
-        simulated_at = _timestamp(
-            row.get("simulated_at"), f"policy_context[{index}].simulated_at"
-        )
+        simulated_at = _timestamp(row.get("simulated_at"), f"policy_context[{index}].simulated_at")
         kinds = {
-            _upper(item)
-            for item in _strings(
-                row.get("policy_kinds", []), f"policy_context[{index}].policy_kinds"
-            )
+            _upper(item) for item in _strings(row.get("policy_kinds", []), f"policy_context[{index}].policy_kinds")
         }
         if kinds - POLICY_KINDS:
             raise ValueError(f"policy_context[{index}] has unsupported policy kinds")
@@ -558,10 +476,7 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
                 "scenario_key": scenario,
                 "status": status,
                 "policy_kinds": sorted(kinds),
-                "fresh": (
-                    0 <= age_hours <= receipt_max_age
-                    and 0 <= wall_age_hours <= receipt_max_age
-                ),
+                "fresh": (0 <= age_hours <= receipt_max_age and 0 <= wall_age_hours <= receipt_max_age),
             }
         )
 
@@ -591,29 +506,22 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
         )
         for name in required_surfaces
     }
-    required_policy_kinds = {
-        kind for asset in asset_map.values() for kind in asset["required_controls"]
-    }
+    required_policy_kinds = {kind for asset in asset_map.values() for kind in asset["required_controls"]}
     policy_source = (
         receipts_doc.get("policy_references", {}).get("source")
         if isinstance(receipts_doc.get("policy_references"), dict)
         else None
     )
-    unsupported_policy_kinds = required_policy_kinds - POLICY_SOURCE_CAPABILITIES.get(
-        policy_source, set()
-    )
+    unsupported_policy_kinds = required_policy_kinds - POLICY_SOURCE_CAPABILITIES.get(policy_source, set())
     if unsupported_policy_kinds:
         policy_receipt = receipt_assessments["policy_references"]
         policy_receipt["issues"].append(
-            "source cannot prove required policy kinds: "
-            + ", ".join(sorted(unsupported_policy_kinds))
+            "source cannot prove required policy kinds: " + ", ".join(sorted(unsupported_policy_kinds))
         )
         policy_receipt["status"] = "UNVERIFIABLE"
     for assessment in receipt_assessments.values():
         assessment["issues"] = sorted(set(assessment["issues"]))
-    evidence_complete = all(
-        item["status"] == "VERIFIED" for item in receipt_assessments.values()
-    )
+    evidence_complete = all(item["status"] == "VERIFIED" for item in receipt_assessments.values())
 
     findings: list[dict] = []
     coverage_rows: list[dict] = []
@@ -635,9 +543,7 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
                 "REVIEWED": 4,
                 "CLASSIFIED": 5,
             }
-            classification_state = min(
-                classification_states, key=lambda item: order.get(item, -1)
-            )
+            classification_state = min(classification_states, key=lambda item: order.get(item, -1))
         if asset["require_tag"] and tag_state == "MISSING":
             asset_findings.append("TAG_MISSING")
             findings.append(
@@ -661,9 +567,7 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
                     "detail": f"classification state is {classification_state}",
                 }
             )
-        if (
-            asset["require_classification"] or asset["required_controls"]
-        ) and not edition_ok:
+        if (asset["require_classification"] or asset["required_controls"]) and not edition_ok:
             asset_findings.append("EDITION_BOUNDARY")
             findings.append(
                 {
@@ -676,9 +580,7 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
 
         controls: list[dict] = []
         for kind in asset["required_controls"]:
-            candidates = [
-                row for row in policies_by_asset[key] if row["policy_kind"] == kind
-            ]
+            candidates = [row for row in policies_by_asset[key] if row["policy_kind"] == kind]
             broken = [row for row in candidates if row["policy_status"] != "ACTIVE"]
             effective, shadowed, cumulative = _effective_policies(candidates, kind)
             preview_blocked = bool(
@@ -686,33 +588,20 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
                 and kind in PREVIEW_TAG_POLICIES
                 and f"TAG_BASED_{kind}" not in preview_features
             )
-            state = (
-                "COVERED"
-                if effective and not preview_blocked and not broken and edition_ok
-                else "UNCOVERED"
-            )
+            state = "COVERED" if effective and not preview_blocked and not broken and edition_ok else "UNCOVERED"
             if broken:
                 state = "MISCONFIGURED"
             if preview_blocked:
                 state = "PREVIEW_NOT_ENABLED"
-            if (
-                any(row["assignment"] == "TAG" for row in effective)
-                and not tags_by_asset[key]
-            ):
+            if any(row["assignment"] == "TAG" for row in effective) and not tags_by_asset[key]:
                 state = "TAG_EVIDENCE_MISSING"
             controls.append(
                 {
                     "policy_kind": kind,
                     "state": state,
-                    "effective_policy_keys": sorted(
-                        row["policy_key"] for row in effective
-                    ),
-                    "shadowed_policy_keys": sorted(
-                        row["policy_key"] for row in shadowed
-                    ),
-                    "cumulative_tag_policy_keys": sorted(
-                        row["policy_key"] for row in cumulative
-                    ),
+                    "effective_policy_keys": sorted(row["policy_key"] for row in effective),
+                    "shadowed_policy_keys": sorted(row["policy_key"] for row in shadowed),
+                    "cumulative_tag_policy_keys": sorted(row["policy_key"] for row in cumulative),
                 }
             )
             if shadowed or cumulative:
@@ -725,12 +614,8 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
                             if kind != "AGGREGATION_POLICY" or not cumulative
                             else "ENTITY_KEY_EXCEPTION"
                         ),
-                        "shadowed_policy_keys": sorted(
-                            row["policy_key"] for row in shadowed
-                        ),
-                        "cumulative_policy_keys": sorted(
-                            row["policy_key"] for row in cumulative
-                        ),
+                        "shadowed_policy_keys": sorted(row["policy_key"] for row in shadowed),
+                        "cumulative_policy_keys": sorted(row["policy_key"] for row in cumulative),
                     }
                 )
             if state != "COVERED":
@@ -749,9 +634,7 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
         good_simulations = [
             row
             for row in simulation_by_asset[key]
-            if row["status"] == "PASS"
-            and row["fresh"]
-            and required_kinds <= set(row["policy_kinds"])
+            if row["status"] == "PASS" and row["fresh"] and required_kinds <= set(row["policy_kinds"])
         ]
         simulation_state = "PROVEN" if good_simulations else "NOT_PROVEN"
         if required_kinds and simulation_state != "PROVEN":
@@ -767,9 +650,7 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
             {
                 "asset_key": key,
                 "status": simulation_state,
-                "scenario_keys": sorted(
-                    row["scenario_key"] for row in good_simulations
-                ),
+                "scenario_keys": sorted(row["scenario_key"] for row in good_simulations),
             }
         )
         coverage_rows.append(
@@ -795,9 +676,7 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
         )
     failed_assets = sum(row["coverage_status"] == "FAIL" for row in coverage_rows)
     simulations_proven = all(
-        row["status"] == "PROVEN"
-        for row in simulation_rows
-        if asset_map[row["asset_key"]]["required_controls"]
+        row["status"] == "PROVEN" for row in simulation_rows if asset_map[row["asset_key"]]["required_controls"]
     )
     verified = evidence_complete and failed_assets == 0 and simulations_proven
     findings.sort(
@@ -831,9 +710,7 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
             "policy_context_proven": simulations_proven,
         },
         "coverage": coverage_rows,
-        "precedence": sorted(
-            precedence_rows, key=lambda row: (row["asset_key"], row["policy_kind"])
-        ),
+        "precedence": sorted(precedence_rows, key=lambda row: (row["asset_key"], row["policy_kind"])),
         "policy_context": simulation_rows,
         "receipts": receipt_assessments,
         "findings": findings,
@@ -850,9 +727,7 @@ def analyze(doc: dict, *, now: datetime | None = None) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--input", required=True, type=Path, help="sanitized governance evidence JSON"
-    )
+    parser.add_argument("--input", required=True, type=Path, help="sanitized governance evidence JSON")
     parser.add_argument("--out", type=Path, help="write the JSON report to this path")
     args = parser.parse_args()
     try:

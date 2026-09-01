@@ -30,10 +30,14 @@ class CollectorBundleTests(unittest.TestCase):
         self.assertEqual(MODULE.check_tree(MODULE.PACK_ROOT), [])
         self.assertEqual(len(MODULE.BUNDLES), 8)
         self.assertEqual(len(MODULE.EXPECTED_SKILLS), 10)
-        self.assertEqual(set(MODULE.BUNDLES), MODULE.EXPECTED_SKILLS - {
-            "snowflake-governance-coverage-auditor",
-            "snowflake-native-app-release-sheriff",
-        })
+        self.assertEqual(
+            set(MODULE.BUNDLES),
+            MODULE.EXPECTED_SKILLS
+            - {
+                "snowflake-governance-coverage-auditor",
+                "snowflake-native-app-release-sheriff",
+            },
+        )
 
     def test_writer_reconstructs_self_contained_copies(self) -> None:
         MODULE.write_tree(self.root)
@@ -74,13 +78,7 @@ class CollectorBundleTests(unittest.TestCase):
 
     def test_check_fails_closed_on_missing_bundle_directory(self) -> None:
         MODULE.write_tree(self.root)
-        shutil.rmtree(
-            self.root
-            / MODULE.SKILLS_DIR
-            / "snowflake-query-forensics"
-            / "scripts"
-            / "sql"
-        )
+        shutil.rmtree(self.root / MODULE.SKILLS_DIR / "snowflake-query-forensics" / "scripts" / "sql")
 
         issues = MODULE.check_tree(self.root)
         self.assertTrue(any("missing bundled SQL directory" in issue for issue in issues))

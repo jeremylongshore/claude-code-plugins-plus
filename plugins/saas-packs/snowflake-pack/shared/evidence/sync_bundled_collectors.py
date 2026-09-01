@@ -135,17 +135,14 @@ def _destination_issues(root: Path, *, allow_missing: bool = False) -> list[str]
         _directory(sql_dir, f"bundled SQL directory ({skill})", issues, allow_missing=allow_missing)
         if scripts_dir.is_dir() and not scripts_dir.is_symlink():
             collector_names = {
-                entry.name
-                for entry in scripts_dir.iterdir()
-                if entry.name.startswith("collect_snowflake_evidence")
+                entry.name for entry in scripts_dir.iterdir() if entry.name.startswith("collect_snowflake_evidence")
             }
             if collector_names != {"collect_snowflake_evidence.py"}:
                 for name in sorted(collector_names - {"collect_snowflake_evidence.py"}):
                     issues.append(f"unexpected bundled collector entry ({skill}): {scripts_dir / name}")
                 if "collect_snowflake_evidence.py" not in collector_names:
                     issues.append(
-                        f"missing bundled collector entry ({skill}): "
-                        f"{scripts_dir / 'collect_snowflake_evidence.py'}"
+                        f"missing bundled collector entry ({skill}): {scripts_dir / 'collect_snowflake_evidence.py'}"
                     )
         if sql_dir.is_dir() and not sql_dir.is_symlink():
             _unexpected_entries(

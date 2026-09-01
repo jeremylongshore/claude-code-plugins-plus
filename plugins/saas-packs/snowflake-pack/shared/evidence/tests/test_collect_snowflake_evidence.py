@@ -86,7 +86,14 @@ class CollectorTests(unittest.TestCase):
         self.assertNotIn("RESULT_SCAN", pipeline)
         self.assertNotIn("RESULT_SCAN", replication)
         projected = MODULE.strip_sql_comments_and_strings(pipeline + replication)
-        for forbidden in ("allowed_accounts", "account_locator", "owner", "DETAILS", "definition", "notification_channel"):
+        for forbidden in (
+            "allowed_accounts",
+            "account_locator",
+            "owner",
+            "DETAILS",
+            "definition",
+            "notification_channel",
+        ):
             with self.subTest(field=forbidden):
                 self.assertNotIn(forbidden, projected)
         data_quality = MODULE.strip_sql_comments_and_strings(MODULE.load_surface("data-quality-current")[1]).upper()
@@ -186,16 +193,10 @@ class CollectorTests(unittest.TestCase):
         self.assertTrue(receipt["truncation_possible"])
 
     def test_receipt_detects_aggregate_multi_dataset_limit(self) -> None:
-        raw = [
-            {"EVIDENCE": {"_dataset": "queries", "id": str(index)}}
-            for index in range(500)
-        ] + [
-            {"EVIDENCE": {"_dataset": "warehouses", "id": str(index)}}
-            for index in range(500)
+        raw = [{"EVIDENCE": {"_dataset": "queries", "id": str(index)}} for index in range(500)] + [
+            {"EVIDENCE": {"_dataset": "warehouses", "id": str(index)}} for index in range(500)
         ]
-        receipt = MODULE.build_receipt(
-            "query", "readonly", "SELECT 1 LIMIT 1000", ["QUERY_HISTORY"], raw=raw
-        )
+        receipt = MODULE.build_receipt("query", "readonly", "SELECT 1 LIMIT 1000", ["QUERY_HISTORY"], raw=raw)
         self.assertTrue(receipt["truncation_possible"])
         self.assertFalse(any(receipt["dataset_truncation_possible"].values()))
 
@@ -240,9 +241,7 @@ class CollectorTests(unittest.TestCase):
             MODULE.render_surface("query-operator-stats")
 
     def test_dynamic_selector_receipt_preserves_template_and_rendered_provenance(self):
-        path, template, rendered, sources, selector = MODULE.render_surface(
-            "query-insights", query_id="01abc-example"
-        )
+        path, template, rendered, sources, selector = MODULE.render_surface("query-insights", query_id="01abc-example")
         self.assertNotEqual(template, rendered)
         self.assertIn("01abc-example", rendered)
         receipt = MODULE.build_receipt(
@@ -341,9 +340,7 @@ class CollectorTests(unittest.TestCase):
                 stderr=f"query {selector} was not visible in database ANALYTICS",
             )
 
-        receipt, code = MODULE.execute_surface(
-            "query-insights", "readonly", query_id=selector, runner=runner
-        )
+        receipt, code = MODULE.execute_surface("query-insights", "readonly", query_id=selector, runner=runner)
         self.assertEqual(code, 5)
         rendered = json.dumps(receipt)
         self.assertNotIn(selector, rendered)

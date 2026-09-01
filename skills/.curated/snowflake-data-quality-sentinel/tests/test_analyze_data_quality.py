@@ -243,10 +243,7 @@ class DataQualityAnalyzerTests(unittest.TestCase):
         report = analyzer.analyze(data)
         self.assertEqual(report["quality_status"], "INCONCLUSIVE")
         self.assertEqual(report["monitoring_status"], "FAIL")
-        self.assertTrue(
-            {"DQ_CURRENT_ASSOCIATION_NOT_ACTIVE", "DQ_CURRENT_NOTIFICATION_DISABLED"}
-            <= self.codes(report)
-        )
+        self.assertTrue({"DQ_CURRENT_ASSOCIATION_NOT_ACTIVE", "DQ_CURRENT_NOTIFICATION_DISABLED"} <= self.codes(report))
 
     def test_stale_current_state_blocks_monitoring_claim(self):
         data = self.fixture("pass.json")

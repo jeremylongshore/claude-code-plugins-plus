@@ -68,15 +68,31 @@ SUBSURFACES = {
     "cost-adaptive": ("cost-adaptive.sql", ["SNOWFLAKE.ACCOUNT_USAGE.QUERY_METERING_HISTORY"], None),
     "cost-ai-functions": ("cost-ai-functions.sql", ["SNOWFLAKE.ACCOUNT_USAGE.CORTEX_AI_FUNCTIONS_USAGE_HISTORY"], None),
     "cost-budgets": ("cost-budgets.sql", ["SHOW SNOWFLAKE.CORE.BUDGET"], None),
-    "cost-internal-transfer": ("cost-internal-transfer.sql", ["SNOWFLAKE.ACCOUNT_USAGE.INTERNAL_DATA_TRANSFER_HISTORY"], None),
+    "cost-internal-transfer": (
+        "cost-internal-transfer.sql",
+        ["SNOWFLAKE.ACCOUNT_USAGE.INTERNAL_DATA_TRANSFER_HISTORY"],
+        None,
+    ),
     "cost-resource-monitors": ("cost-resource-monitors.sql", ["SHOW RESOURCE MONITORS"], None),
     "cost-storage": ("cost-storage.sql", ["SNOWFLAKE.ACCOUNT_USAGE.STORAGE_USAGE"], None),
     "cost-transfer": ("cost-transfer.sql", ["SNOWFLAKE.ACCOUNT_USAGE.DATA_TRANSFER_HISTORY"], None),
-    "data-quality-current": ("data-quality-current.sql", ["SNOWFLAKE.ACCOUNT_USAGE.DATA_METRIC_FUNCTION_REFERENCES"], None),
-    "pipeline-current": ("pipeline-current.sql", ["SHOW TASKS", "SHOW STREAMS", "SHOW DYNAMIC TABLES", "SHOW PIPES"], None),
+    "data-quality-current": (
+        "data-quality-current.sql",
+        ["SNOWFLAKE.ACCOUNT_USAGE.DATA_METRIC_FUNCTION_REFERENCES"],
+        None,
+    ),
+    "pipeline-current": (
+        "pipeline-current.sql",
+        ["SHOW TASKS", "SHOW STREAMS", "SHOW DYNAMIC TABLES", "SHOW PIPES"],
+        None,
+    ),
     "query-operator-stats": ("query-operator-stats.sql", ["GET_QUERY_OPERATOR_STATS"], "query_id"),
     "query-insights": ("query-insights.sql", ["SNOWFLAKE.ACCOUNT_USAGE.QUERY_INSIGHTS"], "query_id"),
-    "replication-current": ("replication-current.sql", ["SHOW REPLICATION GROUPS", "INFORMATION_SCHEMA.REPLICATION_GROUP_REFRESH_PROGRESS_ALL"], None),
+    "replication-current": (
+        "replication-current.sql",
+        ["SHOW REPLICATION GROUPS", "INFORMATION_SCHEMA.REPLICATION_GROUP_REFRESH_PROGRESS_ALL"],
+        None,
+    ),
 }
 FORBIDDEN_SQL = {
     "ALTER",
@@ -200,9 +216,7 @@ def reject_secret_fields(value: Any, path: str = "result") -> None:
                 )
                 raise CollectionError(f"{category} is not accepted: {path}.{key}")
             if normalized in FORBIDDEN_RAW_METADATA_KEYS:
-                raise CollectionError(
-                    f"raw filter/group/endpoint field is not accepted: {path}.{key}"
-                )
+                raise CollectionError(f"raw filter/group/endpoint field is not accepted: {path}.{key}")
             reject_secret_fields(child, f"{path}.{key}")
     elif isinstance(value, list):
         for index, child in enumerate(value):
@@ -316,12 +330,8 @@ def normalize_cli_json(
                     f"unexpected fields: {', '.join(unexpected)}"
                 )
             user_hash = payload.get("user_name_sha256")
-            if not isinstance(user_hash, str) or not re.fullmatch(
-                r"(?:sha256:)?[0-9a-fA-F]{64}", user_hash
-            ):
-                raise CollectionError(
-                    f"rows[{index}].user_name_sha256 is missing or not a SHA-256 digest"
-                )
+            if not isinstance(user_hash, str) or not re.fullmatch(r"(?:sha256:)?[0-9a-fA-F]{64}", user_hash):
+                raise CollectionError(f"rows[{index}].user_name_sha256 is missing or not a SHA-256 digest")
         reject_secret_fields(payload, f"rows[{index}]")
         payload = dict(payload)
         dataset = str(payload.pop("_dataset", "rows"))
@@ -357,15 +367,11 @@ def build_receipt(
             datasets.setdefault("data_quality_current", [])
     limits = re.findall(r"\bLIMIT\s+(\d+)\b", sql, flags=re.IGNORECASE)
     row_limit = int(limits[-1]) if limits else None
-    dataset_truncation = {
-        name: row_limit is not None and len(rows) >= row_limit for name, rows in datasets.items()
-    }
+    dataset_truncation = {name: row_limit is not None and len(rows) >= row_limit for name, rows in datasets.items()}
     # A LIMIT applies to a statement's result set, not independently to each
     # logical dataset encoded in that result. Conservatively fail closed when
     # the aggregate output reaches the reviewed limit as well.
-    truncation_possible = any(dataset_truncation.values()) or (
-        row_limit is not None and row_count >= row_limit
-    )
+    truncation_possible = any(dataset_truncation.values()) or (row_limit is not None and row_count >= row_limit)
     canonical_template = template_sql if template_sql is not None else sql
     template_hash = f"sha256:{hashlib.sha256(canonical_template.encode('utf-8')).hexdigest()}"
     rendered_hash = f"sha256:{hashlib.sha256(sql.encode('utf-8')).hexdigest()}"
@@ -428,9 +434,11 @@ def execute_surface(
         database=database,
     )
     temporary_path: Path | None = None
+
     def cleanup() -> None:
         if temporary_path is not None:
             temporary_path.unlink(missing_ok=True)
+
     try:
         command_path = path
         if sql != template_sql:
@@ -461,8 +469,14 @@ def execute_surface(
             error = {"code": "SNOW_CLI_NOT_FOUND", "message": "Snowflake CLI executable 'snow' was not found"}
             return (
                 build_receipt(
-                    surface, connection, sql, sources, error=error,
-                    template_sql=template_sql, template_path=path, selector=selector,
+                    surface,
+                    connection,
+                    sql,
+                    sources,
+                    error=error,
+                    template_sql=template_sql,
+                    template_path=path,
+                    selector=selector,
                 ),
                 2,
             )
@@ -470,8 +484,14 @@ def execute_surface(
             error = {"code": "SNOW_CLI_TIMEOUT", "message": "Snowflake CLI collection exceeded 120 seconds"}
             return (
                 build_receipt(
-                    surface, connection, sql, sources, error=error,
-                    template_sql=template_sql, template_path=path, selector=selector,
+                    surface,
+                    connection,
+                    sql,
+                    sources,
+                    error=error,
+                    template_sql=template_sql,
+                    template_path=path,
+                    selector=selector,
                 ),
                 5,
             )
@@ -486,8 +506,14 @@ def execute_surface(
             }
             return (
                 build_receipt(
-                    surface, connection, sql, sources, error=error,
-                    template_sql=template_sql, template_path=path, selector=selector,
+                    surface,
+                    connection,
+                    sql,
+                    sources,
+                    error=error,
+                    template_sql=template_sql,
+                    template_path=path,
+                    selector=selector,
                 ),
                 completed.returncode,
             )
@@ -497,8 +523,14 @@ def execute_surface(
             raise CollectionError("Snowflake CLI did not return valid JSON_EXT output") from exc
         return (
             build_receipt(
-                surface, connection, sql, sources, raw=raw,
-                template_sql=template_sql, template_path=path, selector=selector,
+                surface,
+                connection,
+                sql,
+                sources,
+                raw=raw,
+                template_sql=template_sql,
+                template_path=path,
+                selector=selector,
             ),
             0,
         )

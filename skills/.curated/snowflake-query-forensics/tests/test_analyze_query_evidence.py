@@ -330,8 +330,10 @@ class QueryEvidenceTests(unittest.TestCase):
     def test_subsurface_receipt_cannot_bind_another_query_or_truncation(self) -> None:
         data = self.load_fixture("query_evidence.json")
         data["operator_stats_receipt"] = {
-            "status": "collected", "truncation_possible": False,
-            "selector": "different-query", "collected_at": data["metadata"]["collected_at"],
+            "status": "collected",
+            "truncation_possible": False,
+            "selector": "different-query",
+            "collected_at": data["metadata"]["collected_at"],
         }
         result = MODULE.analyze(data)
         self.assertEqual(result["operator_stats_receipt_assessment"]["status"], "unverifiable")

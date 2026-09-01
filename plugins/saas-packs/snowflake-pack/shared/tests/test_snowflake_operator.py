@@ -17,28 +17,18 @@ sys.path.insert(0, str(SHARED))
 import snowflake_operator as operator  # noqa: E402
 
 FIXTURES = {
-    "cost-leak": PACK_ROOT
-    / "skills/snowflake-cost-leak-hunter/tests/fixtures/cost_evidence.json",
-    "data-quality": PACK_ROOT
-    / "skills/snowflake-data-quality-sentinel/tests/fixtures/pass.json",
-    "pipeline-triage": PACK_ROOT
-    / "skills/snowflake-pipeline-guardian/scripts/fixtures/stale-chain.json",
-    "query-id-forensics": PACK_ROOT
-    / "skills/snowflake-query-forensics/tests/fixtures/query_evidence.json",
-    "deploy-preflight": PACK_ROOT
-    / "skills/snowflake-deploy-medic/scripts/fixtures/clean-preview.json",
-    "access-review": PACK_ROOT
-    / "skills/snowflake-access-guardian/tests/fixtures/access.json",
+    "cost-leak": PACK_ROOT / "skills/snowflake-cost-leak-hunter/tests/fixtures/cost_evidence.json",
+    "data-quality": PACK_ROOT / "skills/snowflake-data-quality-sentinel/tests/fixtures/pass.json",
+    "pipeline-triage": PACK_ROOT / "skills/snowflake-pipeline-guardian/scripts/fixtures/stale-chain.json",
+    "query-id-forensics": PACK_ROOT / "skills/snowflake-query-forensics/tests/fixtures/query_evidence.json",
+    "deploy-preflight": PACK_ROOT / "skills/snowflake-deploy-medic/scripts/fixtures/clean-preview.json",
+    "access-review": PACK_ROOT / "skills/snowflake-access-guardian/tests/fixtures/access.json",
     # This real pack fixture is intentionally invalid for the failover schema. It
     # proves that the wrapper preserves analyzer failures as well as successes.
-    "failover-readiness": PACK_ROOT
-    / "skills/snowflake-deploy-medic/scripts/fixtures/clean-preview.json",
-    "governance-coverage": PACK_ROOT
-    / "skills/snowflake-governance-coverage-auditor/tests/fixtures/gaps.json",
-    "native-app-release": PACK_ROOT
-    / "skills/snowflake-native-app-release-sheriff/tests/fixtures/clean-qa.json",
-    "strong-auth": PACK_ROOT
-    / "skills/snowflake-strong-auth-migration-pilot/tests/fixtures/auth.json",
+    "failover-readiness": PACK_ROOT / "skills/snowflake-deploy-medic/scripts/fixtures/clean-preview.json",
+    "governance-coverage": PACK_ROOT / "skills/snowflake-governance-coverage-auditor/tests/fixtures/gaps.json",
+    "native-app-release": PACK_ROOT / "skills/snowflake-native-app-release-sheriff/tests/fixtures/clean-qa.json",
+    "strong-auth": PACK_ROOT / "skills/snowflake-strong-auth-migration-pilot/tests/fixtures/auth.json",
 }
 
 APPROVED_COMMANDS = {
@@ -75,20 +65,14 @@ def run(*arguments: object, timeout: int = 30) -> subprocess.CompletedProcess[by
     )
 
 
-def direct_command(
-    command: str, fixture: Path, *extra: object
-) -> subprocess.CompletedProcess[bytes]:
+def direct_command(command: str, fixture: Path, *extra: object) -> subprocess.CompletedProcess[bytes]:
     spec = operator.COMMANDS[command]
     script = operator.resolve_script(spec)
-    input_arguments = (
-        [fixture] if spec.input_flag is None else [spec.input_flag, fixture]
-    )
+    input_arguments = [fixture] if spec.input_flag is None else [spec.input_flag, fixture]
     return run(script, *input_arguments, *extra)
 
 
-def wrapper_command(
-    command: str, fixture: Path, *extra: object
-) -> subprocess.CompletedProcess[bytes]:
+def wrapper_command(command: str, fixture: Path, *extra: object) -> subprocess.CompletedProcess[bytes]:
     return run(OPERATOR, command, "--input", fixture, *extra)
 
 
@@ -153,14 +137,10 @@ class SnowflakeOperatorTests(unittest.TestCase):
             fixture = FIXTURES[command]
             direct = direct_command(command, fixture)
             self.assertEqual(direct.returncode, 0, direct.stderr.decode())
-            with self.subTest(
-                command=command
-            ), tempfile.TemporaryDirectory() as directory:
+            with self.subTest(command=command), tempfile.TemporaryDirectory() as directory:
                 output = Path(directory) / "nested" / "report.json"
                 wrapped = wrapper_command(command, fixture, "--output", output)
-                self.assertEqual(
-                    wrapped.returncode, direct.returncode, wrapped.stderr.decode()
-                )
+                self.assertEqual(wrapped.returncode, direct.returncode, wrapped.stderr.decode())
                 self.assertEqual(wrapped.stdout, b"")
                 self.assertEqual(output.read_bytes(), direct.stdout)
                 leftovers = list(output.parent.glob(f".{output.name}.*.tmp"))
@@ -196,12 +176,8 @@ class SnowflakeOperatorTests(unittest.TestCase):
                     self.assertEqual(wrapped.returncode, direct.returncode)
                     self.assertEqual(wrapped.stdout, direct.stdout)
                     self.assertEqual(wrapped.stderr, direct.stderr)
-                    self.assertEqual(
-                        wrapped_json.read_bytes(), direct_json.read_bytes()
-                    )
-                    self.assertEqual(
-                        wrapped_markdown.read_bytes(), direct_markdown.read_bytes()
-                    )
+                    self.assertEqual(wrapped_json.read_bytes(), direct_json.read_bytes())
+                    self.assertEqual(wrapped_markdown.read_bytes(), direct_markdown.read_bytes())
 
     def test_native_output_flags_and_access_selectors_are_translated(self) -> None:
         commands = {
@@ -239,9 +215,7 @@ class SnowflakeOperatorTests(unittest.TestCase):
                     self.assertEqual(wrapped.stderr, direct.stderr)
                     self.assertEqual(wrapped_output.exists(), direct_output.exists())
                     if direct_output.exists():
-                        self.assertEqual(
-                            wrapped_output.read_bytes(), direct_output.read_bytes()
-                        )
+                        self.assertEqual(wrapped_output.read_bytes(), direct_output.read_bytes())
 
     def test_failover_output_option_is_translated(self) -> None:
         spec = operator.COMMANDS["failover-readiness"]

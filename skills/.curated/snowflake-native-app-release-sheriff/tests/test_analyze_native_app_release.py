@@ -24,9 +24,7 @@ def canonical_hash(value: object) -> str:
     return (
         "sha256:"
         + hashlib.sha256(
-            json.dumps(
-                value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
-            ).encode()
+            json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
         ).hexdigest()
     )
 
@@ -77,9 +75,7 @@ def seal_all(data: dict) -> None:
             "candidate_version": candidate,
             "candidate_patch": patch,
             "change_kind": data["package"]["change_kind"],
-            "consumer_disclosure": copy.deepcopy(
-                data["manifest"]["consumer_disclosure"]
-            ),
+            "consumer_disclosure": copy.deepcopy(data["manifest"]["consumer_disclosure"]),
             "previous_manifest_sha256": previous_manifest["source_sha256"],
             "candidate_manifest_sha256": candidate_manifest["source_sha256"],
             "previous_manifest_normalized_sha256": canonical_hash(previous_manifest),
@@ -156,6 +152,18 @@ class NativeAppReleaseTests(unittest.TestCase):
         self.assertFalse(report["security_scan"]["scan_required_for_targets"])
         self.assertEqual(report["dry_run_packet"]["mode"], "READ_ONLY_DRY_RUN")
 
+    def test_source_review_rejects_lookalike_snowflake_hosts(self):
+        for url in (
+            "https://docs.snowflake.com.evil.example/native-apps",
+            "https://docs.snowflake.com@evil.example/native-apps",
+            "http://docs.snowflake.com/native-apps",
+        ):
+            with self.subTest(url=url):
+                data = load_clean()
+                data["source_review"][0]["url"] = url
+                with self.assertRaisesRegex(ValueError, "official Snowflake documentation URL"):
+                    analyzer.analyze(data)
+
     def test_output_is_deterministic_and_hash_bound(self):
         first = analyzer.analyze(load_clean())
         second = analyzer.analyze(load_clean())
@@ -176,9 +184,7 @@ class NativeAppReleaseTests(unittest.TestCase):
             self.assertIn("SCAN_NOT_APPROVED", codes(report))
             data["security_scan"]["review_status"] = "APPROVED"
             seal_all(data)
-            self.assertEqual(
-                analyzer.analyze(data)["gate"], "READY_FOR_EXPLICIT_APPROVAL"
-            )
+            self.assertEqual(analyzer.analyze(data)["gate"], "READY_FOR_EXPLICIT_APPROVAL")
 
     def test_in_progress_and_rejected_scan_always_block(self):
         for status, expected in (
@@ -196,9 +202,7 @@ class NativeAppReleaseTests(unittest.TestCase):
         seal_all(data)
         report = analyzer.analyze(data)
         self.assertIn("CHANNEL_VERSION_LIMIT", codes(report))
-        self.assertEqual(
-            report["channels"][0]["projected_versions"], ["V0", "V1", "V2"]
-        )
+        self.assertEqual(report["channels"][0]["projected_versions"], ["V0", "V1", "V2"])
 
     def test_retirement_request_is_not_completion(self):
         data = load_clean()
@@ -214,13 +218,9 @@ class NativeAppReleaseTests(unittest.TestCase):
         ]
         seal_all(data)
         self.assertIn("RETIREMENT_ASYNCHRONOUS_PENDING", codes(analyzer.analyze(data)))
-        data["retirements"][0].update(
-            {"state": "COMPLETE", "consumers_remaining": 0, "running_code_remaining": 0}
-        )
+        data["retirements"][0].update({"state": "COMPLETE", "consumers_remaining": 0, "running_code_remaining": 0})
         seal_all(data)
-        self.assertNotIn(
-            "RETIREMENT_ASYNCHRONOUS_PENDING", codes(analyzer.analyze(data))
-        )
+        self.assertNotIn("RETIREMENT_ASYNCHRONOUS_PENDING", codes(analyzer.analyze(data)))
 
     def test_application_role_replace_is_a_grant_loss_blocker(self):
         data = load_clean()
@@ -233,9 +233,7 @@ class NativeAppReleaseTests(unittest.TestCase):
     def test_setup_restart_and_statement_idempotence_fail_closed(self):
         data = load_clean()
         data["setup_script"]["restart_from_beginning_tested"] = False
-        data["setup_script"]["statements"][1].update(
-            {"operation": "CREATE_OR_REPLACE", "idempotent": False}
-        )
+        data["setup_script"]["statements"][1].update({"operation": "CREATE_OR_REPLACE", "idempotent": False})
         seal_all(data)
         found = codes(analyzer.analyze(data))
         self.assertTrue(
@@ -258,9 +256,9 @@ class NativeAppReleaseTests(unittest.TestCase):
         data["manifest"]["candidate"]["privileges"].append(
             {"name": "CREATE WAREHOUSE", "description": "Create app warehouse"}
         )
-        data["manifest"]["candidate"]["app_specs"][0][
-            "definition_sha256"
-        ] = "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+        data["manifest"]["candidate"]["app_specs"][0]["definition_sha256"] = (
+            "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+        )
         data["manifest"]["consumer_disclosure"] = {
             "privilege_delta_reviewed": False,
             "app_spec_delta_reviewed": False,
@@ -323,9 +321,7 @@ class NativeAppReleaseTests(unittest.TestCase):
         self.assertIn("ROLLBACK_PACKET_INCOMPLETE", codes(analyzer.analyze(data)))
 
     def test_adversarial_receipt_mutations_are_detected_without_resealing(self):
-        cases = json.loads(
-            (HERE / "fixtures" / "adversarial-cases.json").read_text(encoding="utf-8")
-        )
+        cases = json.loads((HERE / "fixtures" / "adversarial-cases.json").read_text(encoding="utf-8"))
         for case in cases:
             data = load_clean()
             target = data
@@ -350,9 +346,7 @@ class NativeAppReleaseTests(unittest.TestCase):
 
     def test_tampered_manifest_payload_breaks_artifact_receipt(self):
         data = load_clean()
-        data["manifest"]["candidate"]["privileges"][0][
-            "description"
-        ] = "silently changed"
+        data["manifest"]["candidate"]["privileges"][0]["description"] = "silently changed"
         report = analyzer.analyze(data)
         self.assertIn("ARTIFACT_RECEIPT_UNVERIFIABLE", codes(report))
 
@@ -384,9 +378,7 @@ class NativeAppReleaseTests(unittest.TestCase):
             seal_all(data)
             data["manifest"]["consumer_disclosure"][field] = True
             with self.subTest(field=field):
-                self.assertIn(
-                    "ARTIFACT_RECEIPT_UNVERIFIABLE", codes(analyzer.analyze(data))
-                )
+                self.assertIn("ARTIFACT_RECEIPT_UNVERIFIABLE", codes(analyzer.analyze(data)))
 
     def test_change_kind_mutation_breaks_artifact_receipt(self):
         data = load_clean()
@@ -416,16 +408,14 @@ class NativeAppReleaseTests(unittest.TestCase):
                 )
 
         data = load_clean()
-        data["setup_script"][
-            "test_receipt_sha256"
-        ] = "sha256:4444444444444444444444444444444444444444444444444444444444444444"
-        seal_all(data)
-        data["setup_script"][
-            "test_receipt_sha256"
-        ] = "sha256:5555555555555555555555555555555555555555555555555555555555555555"
-        self.assertIn(
-            "SETUP_PARSER_RECEIPT_UNVERIFIABLE", codes(analyzer.analyze(data))
+        data["setup_script"]["test_receipt_sha256"] = (
+            "sha256:4444444444444444444444444444444444444444444444444444444444444444"
         )
+        seal_all(data)
+        data["setup_script"]["test_receipt_sha256"] = (
+            "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+        )
+        self.assertIn("SETUP_PARSER_RECEIPT_UNVERIFIABLE", codes(analyzer.analyze(data)))
 
     def test_consistently_backdated_and_resealed_packet_is_wall_clock_stale(self):
         data = load_clean()
@@ -433,9 +423,7 @@ class NativeAppReleaseTests(unittest.TestCase):
         observed_at = "2026-08-31T19:55:00Z"
         data["setup_script"]["parser_receipt"]["collected_at"] = observed_at
         data["artifact_receipt"]["collected_at"] = observed_at
-        data["security_scan"].update(
-            {"collected_at": observed_at, "observed_at": observed_at}
-        )
+        data["security_scan"].update({"collected_at": observed_at, "observed_at": observed_at})
         data["channels"][0]["observed_at"] = observed_at
         data["channel_receipt"]["collected_at"] = observed_at
         data["cohorts"][0]["observed_at"] = observed_at

@@ -84,10 +84,7 @@ class CostEvidenceTests(unittest.TestCase):
     def valid_supplemental_receipt(self, data: dict, surface: str) -> dict:
         collector_surface, dataset = MODULE.SUPPLEMENTAL_RECEIPT_SURFACES[surface]
         rows = MODULE._supplemental_input_rows(data, surface)
-        receipt_rows = [
-            {key: value for key, value in row.items() if key != "covered_domains"}
-            for row in rows
-        ]
+        receipt_rows = [{key: value for key, value in row.items() if key != "covered_domains"} for row in rows]
         raw = [{"EVIDENCE": {"_dataset": dataset, **row}} for row in receipt_rows]
         path, sql, sources = COLLECTOR.load_surface(collector_surface)
         return COLLECTOR.build_receipt(
@@ -103,8 +100,7 @@ class CostEvidenceTests(unittest.TestCase):
 
     def add_supplemental_receipts(self, data: dict) -> None:
         data["supplemental_receipts"] = {
-            surface: self.valid_supplemental_receipt(data, surface)
-            for surface in MODULE.SUPPLEMENTAL_RECEIPT_SURFACES
+            surface: self.valid_supplemental_receipt(data, surface) for surface in MODULE.SUPPLEMENTAL_RECEIPT_SURFACES
         }
 
     def test_classifies_observed_estimated_and_at_risk_separately(self) -> None:
@@ -450,8 +446,7 @@ class CostEvidenceTests(unittest.TestCase):
         self.assertTrue(result["completeness_claim_blocked"])
         self.assertTrue(
             any(
-                finding["code"] == "COST_SURFACE_MISSING"
-                and finding["surface"] == "data_transfer_usage"
+                finding["code"] == "COST_SURFACE_MISSING" and finding["surface"] == "data_transfer_usage"
                 for finding in result["findings"]
             )
         )
@@ -562,7 +557,18 @@ class CostEvidenceTests(unittest.TestCase):
                 MODULE.analyze(data)
 
     def test_supplemental_sql_is_bounded_read_only_and_redacted(self) -> None:
-        forbidden = ("ALTER ", "CALL ", "CREATE ", "DELETE ", "DROP ", "GRANT ", "INSERT ", "MERGE ", "REVOKE ", "UPDATE ")
+        forbidden = (
+            "ALTER ",
+            "CALL ",
+            "CREATE ",
+            "DELETE ",
+            "DROP ",
+            "GRANT ",
+            "INSERT ",
+            "MERGE ",
+            "REVOKE ",
+            "UPDATE ",
+        )
         for name in SUPPLEMENTAL_SQL:
             path = COST_SQL_DIR / name
             self.assertTrue(path.is_file(), name)

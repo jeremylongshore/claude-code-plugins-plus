@@ -293,9 +293,7 @@ def finding(code: str, severity: str, evidence: str, action: str) -> dict[str, s
     return {"code": code, "severity": severity, "evidence": evidence, "read_only_action": action}
 
 
-def _current_state_receipt_findings(
-    receipt: Any, current: Any, as_of: datetime
-) -> list[tuple[str, str]]:
+def _current_state_receipt_findings(receipt: Any, current: Any, as_of: datetime) -> list[tuple[str, str]]:
     """Validate and bind the near-live state to the exact bundled collector receipt."""
     if not isinstance(receipt, dict):
         return [("CURRENT_STATE_RECEIPT_UNVERIFIABLE", "current_state_receipt is missing or not an object")]
@@ -400,7 +398,9 @@ def _current_state_receipt_findings(
         observed = None
         findings.append(("CURRENT_STATE_PAYLOAD_MISMATCH", "current_state.observed_at is invalid"))
     if collected is not None and observed != collected:
-        findings.append(("CURRENT_STATE_PAYLOAD_MISMATCH", "current_state.observed_at does not match receipt collected_at"))
+        findings.append(
+            ("CURRENT_STATE_PAYLOAD_MISMATCH", "current_state.observed_at does not match receipt collected_at")
+        )
     max_age = current.get("max_age_minutes")
     if type(max_age) is not int or not 0 < max_age <= CURRENT_MAX_AGE_MINUTES:
         findings.append(
@@ -412,9 +412,13 @@ def _current_state_receipt_findings(
     elif collected is not None and (as_of - collected).total_seconds() > max_age * 60:
         findings.append(("CURRENT_STATE_RECEIPT_STALE", f"current-state receipt age exceeds {max_age} minutes"))
     if current.get("groups") != datasets.get("failover_groups"):
-        findings.append(("CURRENT_STATE_PAYLOAD_MISMATCH", "current_state.groups does not match receipt failover_groups"))
+        findings.append(
+            ("CURRENT_STATE_PAYLOAD_MISMATCH", "current_state.groups does not match receipt failover_groups")
+        )
     if current.get("progress") != datasets.get("replication_progress"):
-        findings.append(("CURRENT_STATE_PAYLOAD_MISMATCH", "current_state.progress does not match receipt replication_progress"))
+        findings.append(
+            ("CURRENT_STATE_PAYLOAD_MISMATCH", "current_state.progress does not match receipt replication_progress")
+        )
     return findings
 
 
@@ -442,7 +446,9 @@ def _current_state_findings(data: dict[str, Any], groups: list[dict[str, Any]]) 
             findings.append(("CURRENT_STATE_UNVERIFIABLE", f"duplicate current group {name}"))
         current_by_name[name] = row
     progress_names = {
-        str(row.get("group_name")) for row in progress_rows if isinstance(row.get("group_name"), str) and row["group_name"]
+        str(row.get("group_name"))
+        for row in progress_rows
+        if isinstance(row.get("group_name"), str) and row["group_name"]
     }
     for group in groups:
         name = str(group.get("name", "unnamed"))
@@ -506,9 +512,7 @@ def analyze(data: Any) -> dict[str, Any]:
             evidence,
             "Recollect a complete, hash-verifiable replication receipt through the approved read-only collector before making a readiness decision.",
         )
-    for code, evidence in _current_state_receipt_findings(
-        current_state_receipt, data.get("current_state"), as_of
-    ):
+    for code, evidence in _current_state_receipt_findings(current_state_receipt, data.get("current_state"), as_of):
         add(
             code,
             "critical",

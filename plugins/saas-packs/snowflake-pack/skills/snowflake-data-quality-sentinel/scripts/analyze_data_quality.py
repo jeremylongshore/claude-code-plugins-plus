@@ -752,9 +752,7 @@ def normalize_document(data: Any) -> dict[str, Any]:
             raise EvidenceError("current_state.observed_at cannot be after metadata.collected_at")
         current_associations = current_state["associations"]
         current_notifications = current_state["notifications"]
-        if not isinstance(current_associations, list) or any(
-            not isinstance(row, dict) for row in current_associations
-        ):
+        if not isinstance(current_associations, list) or any(not isinstance(row, dict) for row in current_associations):
             raise EvidenceError("current_state.associations must be an array of objects")
         if not isinstance(current_notifications, list) or any(
             not isinstance(row, dict) for row in current_notifications
@@ -920,7 +918,9 @@ def analyze(data: Any) -> dict[str, Any]:
             )
         )
     elif current_state["observed_at"] is not None:
-        current_age = int((collected_at - parse_time(current_state["observed_at"], "current_state.observed_at")).total_seconds())
+        current_age = int(
+            (collected_at - parse_time(current_state["observed_at"], "current_state.observed_at")).total_seconds()
+        )
         if current_age > current_state["max_age_seconds"]:
             findings.append(
                 finding(

@@ -98,16 +98,40 @@ EXPECTED_PIPELINE_DATASETS = {"task_history", "dynamic_table_refresh_history", "
 EXPECTED_CURRENT_SOURCES = ["SHOW TASKS", "SHOW STREAMS", "SHOW DYNAMIC TABLES", "SHOW PIPES"]
 EXPECTED_CURRENT_DATASETS = {
     "task_current": {
-        "database_name", "schema_name", "name", "id", "state", "predecessors", "schedule", "last_committed_on",
+        "database_name",
+        "schema_name",
+        "name",
+        "id",
+        "state",
+        "predecessors",
+        "schedule",
+        "last_committed_on",
     },
     "stream_current": {
-        "database_name", "schema_name", "name", "table_name", "stale", "stale_after", "invalid",
+        "database_name",
+        "schema_name",
+        "name",
+        "table_name",
+        "stale",
+        "stale_after",
+        "invalid",
     },
     "dynamic_table_current": {
-        "database_name", "schema_name", "name", "scheduling_state", "target_lag", "refresh_mode", "warehouse",
+        "database_name",
+        "schema_name",
+        "name",
+        "scheduling_state",
+        "target_lag",
+        "refresh_mode",
+        "warehouse",
     },
     "pipe_current": {
-        "database_name", "schema_name", "name", "type", "invalid_reason", "last_ingested_timestamp",
+        "database_name",
+        "schema_name",
+        "name",
+        "type",
+        "invalid_reason",
+        "last_ingested_timestamp",
     },
 }
 CURRENT_DATASET_KINDS = {
@@ -117,10 +141,26 @@ CURRENT_DATASET_KINDS = {
     "pipe_current": "PIPE",
 }
 CURRENT_RECEIPT_FIELDS = {
-    "schema_version", "surface", "status", "collected_at", "connection_profile", "sql_sha256",
-    "template_sha256", "rendered_sql_sha256", "selector_fingerprint", "source_metadata", "source_views",
-    "row_count", "row_limit", "truncation_possible", "dataset_row_limits", "dataset_truncation_possible",
-    "datasets", "errors", "non_claims", "receipt_sha256",
+    "schema_version",
+    "surface",
+    "status",
+    "collected_at",
+    "connection_profile",
+    "sql_sha256",
+    "template_sha256",
+    "rendered_sql_sha256",
+    "selector_fingerprint",
+    "source_metadata",
+    "source_views",
+    "row_count",
+    "row_limit",
+    "truncation_possible",
+    "dataset_row_limits",
+    "dataset_truncation_possible",
+    "datasets",
+    "errors",
+    "non_claims",
+    "receipt_sha256",
 }
 MAX_CURRENT_RECEIPT_AGE_MINUTES = 15
 MAX_CURRENT_RECEIPT_ROWS = 10_000
@@ -299,16 +339,12 @@ def _current_state_receipt_assessment(
         elif age_seconds > MAX_CURRENT_RECEIPT_AGE_MINUTES * 60:
             issues.append("current_state_receipt is stale for the fixed freshness bound")
 
-    expected_dataset_limits = {
-        name: MAX_CURRENT_RECEIPT_ROWS for name in sorted(EXPECTED_CURRENT_DATASETS)
-    }
+    expected_dataset_limits = {name: MAX_CURRENT_RECEIPT_ROWS for name in sorted(EXPECTED_CURRENT_DATASETS)}
     if (
         receipt.get("row_limit") != MAX_CURRENT_RECEIPT_ROWS
         or receipt.get("dataset_row_limits") != expected_dataset_limits
     ):
-        issues.append(
-            "current_state_receipt cap metadata does not match the reviewed bounded SHOW template"
-        )
+        issues.append("current_state_receipt cap metadata does not match the reviewed bounded SHOW template")
     if receipt.get("truncation_possible") is not False:
         issues.append("current_state_receipt is truncated or has an unknown truncation state")
 
@@ -329,7 +365,9 @@ def _current_state_receipt_assessment(
                 issues.append(f"current_state_receipt {dataset}[{row_index}] must be an object")
                 continue
             if set(row) - allowed_fields:
-                issues.append(f"current_state_receipt {dataset}[{row_index}] contains fields outside the reviewed projection")
+                issues.append(
+                    f"current_state_receipt {dataset}[{row_index}] contains fields outside the reviewed projection"
+                )
             receipt_rows.append((dataset, row))
 
     row_count = receipt.get("row_count")
@@ -544,8 +582,12 @@ def _state_envelope_issues(snapshot: dict[str, Any], observed_at: datetime | Non
         reconciliation["history_nodes"] = len(history_nodes)
         reconciliation["history_latest_at"] = history.get("latest_at")
     if current_present and history_present and reconciliation["current_nodes"] and reconciliation["history_nodes"]:
-        current_by_id = {str(node["id"]): node for node in current.get("nodes", []) if isinstance(node, dict) and node.get("id")}
-        history_by_id = {str(node["id"]): node for node in history.get("nodes", []) if isinstance(node, dict) and node.get("id")}
+        current_by_id = {
+            str(node["id"]): node for node in current.get("nodes", []) if isinstance(node, dict) and node.get("id")
+        }
+        history_by_id = {
+            str(node["id"]): node for node in history.get("nodes", []) if isinstance(node, dict) and node.get("id")
+        }
         for node_id in sorted(set(current_by_id) & set(history_by_id)):
             current_status = str(current_by_id[node_id].get("status", current_by_id[node_id].get("state", ""))).upper()
             history_status = str(history_by_id[node_id].get("status", history_by_id[node_id].get("state", ""))).upper()

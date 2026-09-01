@@ -166,7 +166,9 @@ def _reconcile_users(current: list[dict] | None, historical: list[dict] | None) 
     }
 
 
-def _validate_login_history(value: object, collected_at: datetime | None, window_start: datetime | None, window_end: datetime | None) -> tuple[list[dict], list[str]]:
+def _validate_login_history(
+    value: object, collected_at: datetime | None, window_start: datetime | None, window_end: datetime | None
+) -> tuple[list[dict], list[str]]:
     if value is None:
         return [], ["LOGIN_HISTORY rows not supplied"]
     if not isinstance(value, list) or not all(isinstance(row, dict) for row in value):
@@ -189,7 +191,11 @@ def _validate_login_history(value: object, collected_at: datetime | None, window
         event_at = timestamp(row.get("event_timestamp") or row.get("event_time"))
         if event_at is None:
             issues.append(f"login_history[{index}].event_timestamp is invalid")
-        elif (collected_at and event_at > collected_at) or (window_end and event_at > window_end) or (window_start and event_at < window_start):
+        elif (
+            (collected_at and event_at > collected_at)
+            or (window_end and event_at > window_end)
+            or (window_start and event_at < window_start)
+        ):
             issues.append(f"login_history[{index}] is outside the bounded observation window")
         if not norm(row.get("event_type")):
             issues.append(f"login_history[{index}].event_type is missing")
@@ -208,20 +214,17 @@ def _receipt_status(value: object, label: str, *, expected_rows: list[dict] | No
     if value.get("surface") not in expected_surfaces.get(label, set()):
         issues.append("surface is not the historical auth collector surface")
     source_views = value.get("source_views")
-    if (
-        not isinstance(source_views, list)
-        or "SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY" not in source_views
-    ):
+    if not isinstance(source_views, list) or "SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY" not in source_views:
         issues.append("source_views does not prove SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY")
     datasets = value.get("datasets")
     receipt_rows = datasets.get("login_history") if isinstance(datasets, dict) else None
     if not isinstance(receipt_rows, list) or not all(isinstance(row, dict) for row in receipt_rows):
         issues.append("datasets.login_history is missing or malformed")
     elif expected_rows is not None:
+
         def canonical(rows_value: list[dict]) -> list[str]:
             return sorted(
-                json.dumps(row, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-                for row in rows_value
+                json.dumps(row, sort_keys=True, separators=(",", ":"), ensure_ascii=False) for row in rows_value
             )
 
         if canonical(receipt_rows) != canonical(expected_rows):
@@ -241,7 +244,9 @@ def _receipt_status(value: object, label: str, *, expected_rows: list[dict] | No
     expected_hash = f"sha256:{hashlib.sha256(canonical_body).hexdigest()}"
     if supplied_hash != expected_hash:
         issues.append("receipt_sha256 is missing or invalid")
-    if timestamp(value.get("collected_at")) is None or timestamp(value.get("collected_at")) > datetime.now(timezone.utc):
+    if timestamp(value.get("collected_at")) is None or timestamp(value.get("collected_at")) > datetime.now(
+        timezone.utc
+    ):
         issues.append("collected_at is invalid or in the future")
     return {"status": "VERIFIED" if not issues else "UNVERIFIABLE", "complete": not issues, "issues": issues}
 
@@ -322,7 +327,9 @@ def analyze(doc: dict) -> dict:
         )
 
     current_users, current_users_field = _snapshot_rows(doc, ("current_users", "current_show_users"), "current_users")
-    historical_users, historical_users_field = _snapshot_rows(doc, ("historical_users", "account_usage_users"), "historical_users")
+    historical_users, historical_users_field = _snapshot_rows(
+        doc, ("historical_users", "account_usage_users"), "historical_users"
+    )
     if historical_users is None and "historical_users" not in doc and "account_usage_users" not in doc:
         historical_users = users
     user_reconciliation = _reconcile_users(current_users, historical_users)
@@ -340,15 +347,50 @@ def analyze(doc: dict) -> dict:
         login_receipt["status"] = "UNVERIFIABLE"
         login_receipt["complete"] = False
         login_receipt["issues"].append("collected_at is later than report collection")
-    completeness_claim_blocked = user_reconciliation["status"] != "MATCHED" or not login_receipt["complete"] or bool(login_history_issues)
+    completeness_claim_blocked = (
+        user_reconciliation["status"] != "MATCHED" or not login_receipt["complete"] or bool(login_history_issues)
+    )
     if user_reconciliation["status"] == "NOT_SUPPLIED":
-        findings.append(finding("user-reconciliation-missing", "high", "identity-reconciliation-missing", "users", "Current SHOW USERS and historical user inventory were not both supplied; retirement and migration completeness are blocked."))
+        findings.append(
+            finding(
+                "user-reconciliation-missing",
+                "high",
+                "identity-reconciliation-missing",
+                "users",
+                "Current SHOW USERS and historical user inventory were not both supplied; retirement and migration completeness are blocked.",
+            )
+        )
     elif user_reconciliation["status"] == "MISMATCH":
-        findings.append(finding("user-reconciliation-mismatch", "high", "identity-reconciliation-mismatch", "users", "Current and historical user inventories differ; investigate account changes and source latency before migration."))
+        findings.append(
+            finding(
+                "user-reconciliation-mismatch",
+                "high",
+                "identity-reconciliation-mismatch",
+                "users",
+                "Current and historical user inventories differ; investigate account changes and source latency before migration.",
+            )
+        )
     if login_history_issues:
-        findings.append(finding("login-history-evidence-incomplete", "high", "login-history-evidence", "LOGIN_HISTORY", "LOGIN_HISTORY evidence is missing, out of window, or privacy-invalid: " + "; ".join(login_history_issues[:10])))
+        findings.append(
+            finding(
+                "login-history-evidence-incomplete",
+                "high",
+                "login-history-evidence",
+                "LOGIN_HISTORY",
+                "LOGIN_HISTORY evidence is missing, out of window, or privacy-invalid: "
+                + "; ".join(login_history_issues[:10]),
+            )
+        )
     if not login_receipt["complete"]:
-        findings.append(finding("login-history-receipt-unverifiable", "high", "collector-receipt-unverifiable", "LOGIN_HISTORY", "The LOGIN_HISTORY collector receipt is missing, errored, stale, or potentially truncated; do not claim complete authentication coverage."))
+        findings.append(
+            finding(
+                "login-history-receipt-unverifiable",
+                "high",
+                "collector-receipt-unverifiable",
+                "LOGIN_HISTORY",
+                "The LOGIN_HISTORY collector receipt is missing, errored, stale, or potentially truncated; do not claim complete authentication coverage.",
+            )
+        )
 
     enforcement_windows = doc.get("enforcement_windows", [])
     if not isinstance(enforcement_windows, list):
@@ -360,24 +402,60 @@ def analyze(doc: dict) -> dict:
         start = timestamp(item.get("start"))
         end = timestamp(item.get("end")) if item.get("end") is not None else collected_at
         if start is None or end is None or start > end or (collected_at is not None and end > collected_at):
-            findings.append(finding(f"enforcement-window-invalid-{index}", "high", "enforcement-window-invalid", norm(item.get("name")) or str(index), "Enforcement window is missing valid UTC bounds, is reversed, or extends beyond collection; canary evidence cannot be generalized."))
+            findings.append(
+                finding(
+                    f"enforcement-window-invalid-{index}",
+                    "high",
+                    "enforcement-window-invalid",
+                    norm(item.get("name")) or str(index),
+                    "Enforcement window is missing valid UTC bounds, is reversed, or extends beyond collection; canary evidence cannot be generalized.",
+                )
+            )
             completeness_claim_blocked = True
         if previous_end is not None and start is not None and start < previous_end:
-            findings.append(finding(f"enforcement-window-overlap-{index}", "high", "enforcement-window-overlap", norm(item.get("name")) or str(index), "Enforcement windows overlap or are out of order; reconcile the approved canary/change timeline."))
+            findings.append(
+                finding(
+                    f"enforcement-window-overlap-{index}",
+                    "high",
+                    "enforcement-window-overlap",
+                    norm(item.get("name")) or str(index),
+                    "Enforcement windows overlap or are out of order; reconcile the approved canary/change timeline.",
+                )
+            )
             completeness_claim_blocked = True
         if end is not None:
             previous_end = end
     if not enforcement_windows:
-        findings.append(finding("enforcement-window-missing", "high", "enforcement-window-missing", "migration", "No bounded enforcement window was supplied; do not infer canary or retirement coverage from an undated receipt."))
+        findings.append(
+            finding(
+                "enforcement-window-missing",
+                "high",
+                "enforcement-window-missing",
+                "migration",
+                "No bounded enforcement window was supplied; do not infer canary or retirement coverage from an undated receipt.",
+            )
+        )
         completeness_claim_blocked = True
     canary_at = timestamp(canary.get("tested_at"))
-    if enforcement_windows and canary_at is not None and not any(
-        timestamp(item.get("start")) is not None
-        and timestamp(item.get("start")) <= canary_at <= (timestamp(item.get("end")) or collected_at or canary_at)
-        for item in enforcement_windows
-        if isinstance(item, dict)
+    if (
+        enforcement_windows
+        and canary_at is not None
+        and not any(
+            timestamp(item.get("start")) is not None
+            and timestamp(item.get("start")) <= canary_at <= (timestamp(item.get("end")) or collected_at or canary_at)
+            for item in enforcement_windows
+            if isinstance(item, dict)
+        )
     ):
-        findings.append(finding("canary-outside-enforcement-window", "high", "enforcement-window-context", "canary", "Canary timestamp is outside every approved enforcement window; do not generalize it to migration coverage."))
+        findings.append(
+            finding(
+                "canary-outside-enforcement-window",
+                "high",
+                "enforcement-window-context",
+                "canary",
+                "Canary timestamp is outside every approved enforcement window; do not generalize it to migration coverage.",
+            )
+        )
         completeness_claim_blocked = True
 
     if (

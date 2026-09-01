@@ -56,7 +56,9 @@ def validate_query_id(value: Any, field: str) -> str:
     return value
 
 
-def validate_subsurface_receipt(value: Any, label: str, surface: str, query_id: str, evaluation_time: datetime) -> dict[str, Any]:
+def validate_subsurface_receipt(
+    value: Any, label: str, surface: str, query_id: str, evaluation_time: datetime
+) -> dict[str, Any]:
     if value is None:
         return {"status": "not_supplied", "complete": False, "issues": [f"{label} receipt not supplied"]}
     if not isinstance(value, dict):
@@ -499,13 +501,15 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
     collector_receipt = validate_collector_receipt(data, warnings, collected_at)
     operator_receipt = validate_subsurface_receipt(
         data.get("operator_stats_receipt", data.get("operator_collection_receipt")),
-        "operator statistics", "query-operator-stats",
+        "operator statistics",
+        "query-operator-stats",
         query_id,
         collected_at,
     )
     insights_receipt = validate_subsurface_receipt(
         data.get("query_insights_receipt", data.get("insights_collection_receipt")),
-        "Query Insights", "query-insights",
+        "Query Insights",
+        "query-insights",
         query_id,
         collected_at,
     )
@@ -622,7 +626,10 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
         )
     top_operators: list[dict[str, str]] = []
     for index, operator in enumerate(operators):
-        if operator.get("query_id") is not None and validate_query_id(operator["query_id"], f"operators[{index}].query_id") != query_id:
+        if (
+            operator.get("query_id") is not None
+            and validate_query_id(operator["query_id"], f"operators[{index}].query_id") != query_id
+        ):
             raise EvidenceError(f"operators[{index}].query_id must match metadata.query_id")
         operator_id = str(operator.get("operator_id", index))
         operator_type = str(operator.get("operator_type") or "unknown")
@@ -749,7 +756,10 @@ def analyze(data: dict[str, Any]) -> dict[str, Any]:
     top_operators.sort(key=lambda item: Decimal(item["overall_percentage"]), reverse=True)
 
     for index, insight in enumerate(insights):
-        if insight.get("query_id") is not None and validate_query_id(insight["query_id"], f"query_insights[{index}].query_id") != query_id:
+        if (
+            insight.get("query_id") is not None
+            and validate_query_id(insight["query_id"], f"query_insights[{index}].query_id") != query_id
+        ):
             raise EvidenceError(f"query_insights[{index}].query_id must match metadata.query_id")
         type_id = insight.get("type_id")
         if not isinstance(type_id, str) or not type_id.strip():

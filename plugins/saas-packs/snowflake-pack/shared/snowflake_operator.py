@@ -66,33 +66,22 @@ COMMANDS: dict[str, CommandSpec] = {
         selectors=("principal", "object", "privilege"),
     ),
     "strong-auth": CommandSpec(
-        script=(
-            "skills/snowflake-strong-auth-migration-pilot/scripts/analyze_auth.py"
-        ),
+        script=("skills/snowflake-strong-auth-migration-pilot/scripts/analyze_auth.py"),
         description="Plan a non-password authentication migration pilot.",
         output_flag="--out",
     ),
     "failover-readiness": CommandSpec(
-        script=(
-            "skills/snowflake-failover-readiness-drill/scripts/"
-            "analyze_failover_readiness.py"
-        ),
+        script=("skills/snowflake-failover-readiness-drill/scripts/analyze_failover_readiness.py"),
         description="Assess failover and failback evidence readiness.",
         output_flag="--output",
     ),
     "governance-coverage": CommandSpec(
-        script=(
-            "skills/snowflake-governance-coverage-auditor/scripts/"
-            "analyze_governance_coverage.py"
-        ),
+        script=("skills/snowflake-governance-coverage-auditor/scripts/analyze_governance_coverage.py"),
         description="Audit governance coverage evidence.",
         output_flag="--out",
     ),
     "native-app-release": CommandSpec(
-        script=(
-            "skills/snowflake-native-app-release-sheriff/scripts/"
-            "analyze_native_app_release.py"
-        ),
+        script=("skills/snowflake-native-app-release-sheriff/scripts/analyze_native_app_release.py"),
         description="Evaluate native app release evidence.",
         output_flag="--output",
     ),
@@ -111,9 +100,7 @@ def resolve_script(spec: CommandSpec) -> Path:
     try:
         candidate.relative_to(pack_root)
     except ValueError as exc:
-        raise OperatorError(
-            f"registered script escapes the Snowflake pack: {spec.script}"
-        ) from exc
+        raise OperatorError(f"registered script escapes the Snowflake pack: {spec.script}") from exc
     if not candidate.is_file():
         raise OperatorError(f"registered script is missing: {spec.script}")
     return candidate
@@ -123,20 +110,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
     for name, spec in COMMANDS.items():
-        command_parser = subparsers.add_parser(
-            name, help=spec.description, description=spec.description
-        )
+        command_parser = subparsers.add_parser(name, help=spec.description, description=spec.description)
         if spec.passthrough:
-            command_parser.epilog = (
-                "All following options are handled by the shared collector."
-            )
+            command_parser.epilog = "All following options are handled by the shared collector."
             continue
-        command_parser.add_argument(
-            "--input", required=True, type=Path, help="sanitized evidence JSON"
-        )
-        command_parser.add_argument(
-            "--output", type=Path, help="write the JSON report atomically"
-        )
+        command_parser.add_argument("--input", required=True, type=Path, help="sanitized evidence JSON")
+        command_parser.add_argument("--output", type=Path, help="write the JSON report atomically")
         if spec.markdown_flag:
             command_parser.add_argument(
                 "--markdown-output",

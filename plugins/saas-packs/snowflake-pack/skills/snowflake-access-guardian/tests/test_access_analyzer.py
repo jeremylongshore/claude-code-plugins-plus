@@ -188,9 +188,28 @@ class AccessAnalyzerFixtureTests(unittest.TestCase):
         data["historical_future_grants"] = data["future_grants"]
         data["historical_roles"] = data["roles"]
         current_path, current_sql, current_sources = COLLECTOR.load_surface("access-current")
-        data["current_receipt"] = COLLECTOR.build_receipt("access-current", "readonly", current_sql, current_sources, raw=[], collected_at=data["metadata"]["collected_at"])
-        future_path, future_template, future_sql, future_sources, future_selector = COLLECTOR.render_surface("access-future", database="ANALYTICS")
-        data["future_receipt"] = COLLECTOR.build_receipt("access-future", "readonly", future_sql, future_sources, raw=[], collected_at=data["metadata"]["collected_at"], template_sql=future_template, template_path=future_path, selector=future_selector)
+        data["current_receipt"] = COLLECTOR.build_receipt(
+            "access-current",
+            "readonly",
+            current_sql,
+            current_sources,
+            raw=[],
+            collected_at=data["metadata"]["collected_at"],
+        )
+        future_path, future_template, future_sql, future_sources, future_selector = COLLECTOR.render_surface(
+            "access-future", database="ANALYTICS"
+        )
+        data["future_receipt"] = COLLECTOR.build_receipt(
+            "access-future",
+            "readonly",
+            future_sql,
+            future_sources,
+            raw=[],
+            collected_at=data["metadata"]["collected_at"],
+            template_sql=future_template,
+            template_path=future_path,
+            selector=future_selector,
+        )
         report = analyze(data, "ALICE", "ANALYTICS.CURATED.ORDERS", "SELECT")
         self.assertEqual(report["access_evidence_reconciliation"]["grants"]["status"], "MATCHED")
         self.assertFalse(report["completeness_claim_blocked"])

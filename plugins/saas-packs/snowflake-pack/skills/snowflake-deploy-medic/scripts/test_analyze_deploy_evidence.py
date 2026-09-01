@@ -19,9 +19,12 @@ class DeployAnalyzerTests(unittest.TestCase):
     def rehash(self, value):
         body = dict(value)
         body.pop("receipt_sha256", None)
-        value["receipt_sha256"] = "sha256:" + hashlib.sha256(
-            json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
-        ).hexdigest()
+        value["receipt_sha256"] = (
+            "sha256:"
+            + hashlib.sha256(
+                json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+            ).hexdigest()
+        )
 
     def test_unsafe_fixture_finds_adoption_checksum_and_release_risks(self):
         report = analyzer.analyze(self.load("unsafe-deploy.json"))

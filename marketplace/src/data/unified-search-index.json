@@ -6,9 +6,9 @@
   },
   "stats": {
     "totalPlugins": 439,
-    "totalSkills": 3017,
+    "totalSkills": 3019,
     "totalDocs": 24,
-    "totalItems": 3480,
+    "totalItems": 3482,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -13326,7 +13326,7 @@
       "slug": "snowflake-pack",
       "name": "snowflake-pack",
       "displayName": "snowflake pack",
-      "description": "Eight model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, and failover",
+      "description": "Ten model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, failover, and Native Apps",
       "category": "saas-packs",
       "keywords": [
         "snowflake",
@@ -13340,15 +13340,15 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "2.1.0",
+      "version": "2.2.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
-      "skillCount": 8,
+      "skillCount": 10,
       "verificationScore": 95,
       "verificationGrade": "A",
       "verificationBadge": "gold",
-      "searchText": "snowflake pack eight model-neutral snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, and failover saas-packs snowflake saas sdk integration"
+      "searchText": "snowflake pack ten model-neutral snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, failover, and native apps saas-packs snowflake saas sdk integration"
     },
     {
       "type": "plugin",
@@ -72766,7 +72766,7 @@
       "id": "snowflake-cost-leak-hunter",
       "slug": "snowflake-cost-leak-hunter",
       "name": "snowflake-cost-leak-hunter",
-      "description": "Audit Snowflake warehouse and query-attribution evidence to locate idle compute, unallocated or untagged usage, query-acceleration spend, and serverless visibility gaps without guessing prices or savings. Use when a Snowflake bill increased, a team needs chargeback/showback evidence, warehouse credits appear unexplained, or an operator asks which usage merits investigation. Trigger with \"Snowflake bill increased\", \"find idle Snowflake credits\", \"Snowflake cost attribution\", or \"untagged Snowflake spend\". Do not use to change warehouse size, suspend compute, create resource monitors, or claim invoice reconciliation.",
+      "description": "Audit Snowflake warehouse, serverless, Adaptive, storage, transfer, and AI cost evidence with a typed ledger that prevents double counting and exposes freshness, attribution, control, and invoice boundaries. Use when a Snowflake bill increased, a team needs chargeback/showback evidence, credits appear unexplained, or an operator asks which usage merits investigation. Trigger with \"Snowflake bill increased\", \"find idle Snowflake credits\", \"Snowflake cost attribution\", or \"untagged Snowflake spend\". Do not use to mutate cost controls or claim savings.",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -72774,12 +72774,12 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "2.1.0",
+      "version": "2.2.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
-      "searchText": "snowflake-cost-leak-hunter audit snowflake warehouse and query-attribution evidence to locate idle compute, unallocated or untagged usage, query-acceleration spend, and serverless visibility gaps without guessing prices or savings. use when a snowflake bill increased, a team needs chargeback/showback evidence, warehouse credits appear unexplained, or an operator asks which usage merits investigation. trigger with \"snowflake bill increased\", \"find idle snowflake credits\", \"snowflake cost attribution\", or \"untagged snowflake spend\". do not use to change warehouse size, suspend compute, create resource monitors, or claim invoice reconciliation. saas-packs read write bash(python3:*) "
+      "searchText": "snowflake-cost-leak-hunter audit snowflake warehouse, serverless, adaptive, storage, transfer, and ai cost evidence with a typed ledger that prevents double counting and exposes freshness, attribution, control, and invoice boundaries. use when a snowflake bill increased, a team needs chargeback/showback evidence, credits appear unexplained, or an operator asks which usage merits investigation. trigger with \"snowflake bill increased\", \"find idle snowflake credits\", \"snowflake cost attribution\", or \"untagged snowflake spend\". do not use to mutate cost controls or claim savings. saas-packs read write bash(python3:*) "
     },
     {
       "type": "skill",
@@ -72793,7 +72793,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "2.1.0",
+      "version": "2.2.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72813,7 +72813,7 @@
         "Bash(terraform:plan*)"
       ],
       "compatibleWith": [],
-      "version": "2.1.0",
+      "version": "2.2.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72838,6 +72838,45 @@
         "category": "saas-packs"
       },
       "searchText": "snowflake-failover-readiness-drill assess snowflake replication and failover-group readiness without performing a refresh, promotion, redirect, cancellation, resume, failover, or failback. use when defining rpo/rto, preparing or reviewing a business critical disaster- recovery exercise, diagnosing replication history, checking cross-group object dependencies, or verifying an operator-executed failover/failback receipt. produces a deterministic readiness verdict, evidence gaps, abort gates, and an operator runbook boundary. trigger with \"snowflake failover drill\", \"replication group rpo\", \"secondary refresh failed\", \"account failover\", \"failback proof\", or \"client redirect validation\". saas-packs read bash(python3:*) "
+    },
+    {
+      "type": "skill",
+      "id": "snowflake-governance-coverage-auditor",
+      "slug": "snowflake-governance-coverage-auditor",
+      "name": "snowflake-governance-coverage-auditor",
+      "description": "Audit whether a declared Snowflake sensitive-asset denominator has effective classification, tags, and masking, row-access, projection, join, or aggregation policy coverage. Resolve direct-versus-tag precedence, classification failures, evidence visibility, edition/preview limits, and POLICY_CONTEXT dry-run proof. Use when a governance dashboard's coverage claim needs independent evidence or sensitive Snowflake assets may be unprotected. Trigger with phrases like \"Snowflake governance coverage\", \"find unprotected sensitive columns\", \"audit Snowflake policies\", or \"verify tag-based policy coverage\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Bash(python3:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "snowflake-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "snowflake-governance-coverage-auditor audit whether a declared snowflake sensitive-asset denominator has effective classification, tags, and masking, row-access, projection, join, or aggregation policy coverage. resolve direct-versus-tag precedence, classification failures, evidence visibility, edition/preview limits, and policy_context dry-run proof. use when a governance dashboard's coverage claim needs independent evidence or sensitive snowflake assets may be unprotected. trigger with phrases like \"snowflake governance coverage\", \"find unprotected sensitive columns\", \"audit snowflake policies\", or \"verify tag-based policy coverage\". saas-packs read write bash(python3:*) "
+    },
+    {
+      "type": "skill",
+      "id": "snowflake-native-app-release-sheriff",
+      "slug": "snowflake-native-app-release-sheriff",
+      "name": "snowflake-native-app-release-sheriff",
+      "description": "Preflight a provider-side Snowflake Native App version or patch from redacted manifest, setup-script, security-scan, release-channel, upgrade-cohort, and rollback evidence. Use when preflighting registration or a Native App release, when a setup retry or application-role change may break grants, when privilege or App Spec requests changed, or when a channel is at its version limit. Emits a deterministic release gate and dry-run remediation/rollback packet. It never publishes, registers, upgrades, drops, grants, changes a release directive, or runs mutating SQL. Trigger with \"Native App release preflight\", \"setup script idempotence\", \"application package scan status\", \"release channel version limit\", \"App Spec delta\", or \"Native App rollback cohort\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)"
+      ],
+      "compatibleWith": [],
+      "version": "2.2.0",
+      "parentPlugin": {
+        "name": "snowflake-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "snowflake-native-app-release-sheriff preflight a provider-side snowflake native app version or patch from redacted manifest, setup-script, security-scan, release-channel, upgrade-cohort, and rollback evidence. use when preflighting registration or a native app release, when a setup retry or application-role change may break grants, when privilege or app spec requests changed, or when a channel is at its version limit. emits a deterministic release gate and dry-run remediation/rollback packet. it never publishes, registers, upgrades, drops, grants, changes a release directive, or runs mutating sql. trigger with \"native app release preflight\", \"setup script idempotence\", \"application package scan status\", \"release channel version limit\", \"app spec delta\", or \"native app rollback cohort\". saas-packs read bash(python3:*) "
     },
     {
       "type": "skill",

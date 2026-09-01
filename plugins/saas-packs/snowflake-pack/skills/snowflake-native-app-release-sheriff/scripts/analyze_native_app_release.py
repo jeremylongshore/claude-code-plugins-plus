@@ -11,7 +11,6 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
 
 SCHEMA_VERSION = "1"
 CHANGE_KINDS = {"VERSION", "PATCH"}
@@ -57,9 +56,7 @@ SENSITIVE_VALUE_RE = re.compile(
     r"(?i)(?:password|passphrase|secret|token|authorization|api[_-]?key)\s*[:=]|"
     r"bearer\s+[a-z0-9._~-]{8,}|-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"
 )
-PRESIGNED_URL_RE = re.compile(
-    r"https?://\S+[?&](?:X-Amz-|X-Goog-|sig=|signature=)", re.IGNORECASE
-)
+PRESIGNED_URL_RE = re.compile(r"https?://\S+[?&](?:X-Amz-|X-Goog-|sig=|signature=)", re.IGNORECASE)
 
 REMEDIATION = {
     "SOURCE_REVIEW_INCOMPLETE": "Review the missing official Snowflake topic and record its URL and UTC timestamp.",
@@ -101,9 +98,7 @@ REMEDIATION = {
 
 
 def canonical_bytes(value: Any) -> bytes:
-    return json.dumps(
-        value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
-    ).encode("utf-8")
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
 
 
 def receipt_hash(value: dict[str, Any]) -> str:
@@ -154,9 +149,7 @@ def parse_timestamp(value: Any, field: str) -> datetime:
     try:
         parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
     except ValueError as exc:
-        raise ValueError(
-            f"{field} must be a timezone-aware ISO 8601 timestamp"
-        ) from exc
+        raise ValueError(f"{field} must be a timezone-aware ISO 8601 timestamp") from exc
     if parsed.tzinfo is None:
         raise ValueError(f"{field} must include a timezone")
     if parsed > datetime.now(parsed.tzinfo) + timedelta(minutes=1):
@@ -270,10 +263,7 @@ def validate_bound_receipt(
         problems.append("source mismatch")
     if receipt.get("artifact_sha256") != expected_artifact:
         problems.append("candidate artifact mismatch")
-    if (
-        type(receipt.get("row_count")) is not int
-        or receipt.get("row_count") != expected_count
-    ):
+    if type(receipt.get("row_count")) is not int or receipt.get("row_count") != expected_count:
         problems.append("row_count mismatch")
     if receipt.get("truncated") is not False:
         problems.append("receipt is truncated or truncation is not false")
@@ -286,9 +276,7 @@ def validate_bound_receipt(
     elif hash_value != receipt_hash(receipt):
         problems.append("receipt_sha256 does not match receipt contents")
     try:
-        collected = parse_timestamp(
-            receipt.get("collected_at"), f"{label}.collected_at"
-        )
+        collected = parse_timestamp(receipt.get("collected_at"), f"{label}.collected_at")
         if collected > as_of:
             problems.append("collected_at is after as_of")
         if collected > wall_clock + timedelta(minutes=1):
@@ -346,9 +334,7 @@ def normalize_manifest(value: Any, field: str) -> dict[str, Any]:
     }
     if set(manifest) != expected:
         raise ValueError(f"{field} must contain exactly {sorted(expected)}")
-    manifest_version = require_int(
-        manifest.get("manifest_version"), f"{field}.manifest_version", 1
-    )
+    manifest_version = require_int(manifest.get("manifest_version"), f"{field}.manifest_version", 1)
     setup_script = require_string(manifest.get("setup_script"), f"{field}.setup_script")
 
     privileges = unique_named(manifest.get("privileges"), f"{field}.privileges")
@@ -358,12 +344,8 @@ def normalize_manifest(value: Any, field: str) -> dict[str, Any]:
             raise ValueError(f"{field}.privileges[{index}] contains unexpected fields")
         normalized_privileges.append(
             {
-                "name": require_string(
-                    item.get("name"), f"{field}.privileges[{index}].name"
-                ),
-                "description": require_string(
-                    item.get("description"), f"{field}.privileges[{index}].description"
-                ),
+                "name": require_string(item.get("name"), f"{field}.privileges[{index}].name"),
+                "description": require_string(item.get("description"), f"{field}.privileges[{index}].description"),
             }
         )
 
@@ -372,21 +354,14 @@ def normalize_manifest(value: Any, field: str) -> dict[str, Any]:
     for index, item in enumerate(references):
         if set(item) != {"name", "object_type", "privileges"}:
             raise ValueError(f"{field}.references[{index}] contains unexpected fields")
-        privileges_value = require_list(
-            item.get("privileges"), f"{field}.references[{index}].privileges"
-        )
+        privileges_value = require_list(item.get("privileges"), f"{field}.references[{index}].privileges")
         reference_privileges = sorted(
-            {
-                require_string(entry, f"{field}.references[{index}].privileges")
-                for entry in privileges_value
-            }
+            {require_string(entry, f"{field}.references[{index}].privileges") for entry in privileges_value}
         )
         normalized_references.append(
             {
                 "name": item["name"],
-                "object_type": require_string(
-                    item.get("object_type"), f"{field}.references[{index}].object_type"
-                ),
+                "object_type": require_string(item.get("object_type"), f"{field}.references[{index}].object_type"),
                 "privileges": reference_privileges,
             }
         )
@@ -399,12 +374,8 @@ def normalize_manifest(value: Any, field: str) -> dict[str, Any]:
         normalized_specs.append(
             {
                 "name": item["name"],
-                "type": require_string(
-                    item.get("type"), f"{field}.app_specs[{index}].type"
-                ),
-                "sequence": require_int(
-                    item.get("sequence"), f"{field}.app_specs[{index}].sequence", 0
-                ),
+                "type": require_string(item.get("type"), f"{field}.app_specs[{index}].type"),
+                "sequence": require_int(item.get("sequence"), f"{field}.app_specs[{index}].sequence", 0),
                 "definition_sha256": require_hash(
                     item.get("definition_sha256"),
                     f"{field}.app_specs[{index}].definition_sha256",
@@ -412,9 +383,7 @@ def normalize_manifest(value: Any, field: str) -> dict[str, Any]:
             }
         )
     return {
-        "source_sha256": require_hash(
-            manifest.get("source_sha256"), f"{field}.source_sha256"
-        ),
+        "source_sha256": require_hash(manifest.get("source_sha256"), f"{field}.source_sha256"),
         "manifest_version": manifest_version,
         "setup_script": setup_script,
         "privileges": sorted(normalized_privileges, key=lambda row: row["name"]),
@@ -427,17 +396,13 @@ def named_map(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     return {row["name"]: row for row in rows}
 
 
-def diff_names(
-    previous: list[dict[str, Any]], candidate: list[dict[str, Any]]
-) -> dict[str, list[str]]:
+def diff_names(previous: list[dict[str, Any]], candidate: list[dict[str, Any]]) -> dict[str, list[str]]:
     old = named_map(previous)
     new = named_map(candidate)
     return {
         "added": sorted(set(new) - set(old)),
         "removed": sorted(set(old) - set(new)),
-        "changed": sorted(
-            name for name in set(old) & set(new) if old[name] != new[name]
-        ),
+        "changed": sorted(name for name in set(old) & set(new) if old[name] != new[name]),
     }
 
 
@@ -461,25 +426,14 @@ def validate_source_review(
             raise ValueError(f"source_review contains duplicate topic {topic!r}")
         seen.add(topic)
         url = require_string(row.get("url"), f"source_review[{index}].url")
-        parsed = urlparse(url)
-        if parsed.scheme != "https" or parsed.netloc != "docs.snowflake.com":
-            raise ValueError(
-                f"source_review[{index}].url must be an official Snowflake documentation URL"
-            )
-        reviewed_text = require_string(
-            row.get("reviewed_at"), f"source_review[{index}].reviewed_at"
-        )
-        reviewed_at = parse_timestamp(
-            reviewed_text, f"source_review[{index}].reviewed_at"
-        )
+        if not re.match(r"\Ahttps://docs\.snowflake\.com(?:/|\Z)", url):
+            raise ValueError(f"source_review[{index}].url must be an official Snowflake documentation URL")
+        reviewed_text = require_string(row.get("reviewed_at"), f"source_review[{index}].reviewed_at")
+        reviewed_at = parse_timestamp(reviewed_text, f"source_review[{index}].reviewed_at")
         if reviewed_at > as_of:
-            raise ValueError(
-                f"source_review[{index}].reviewed_at cannot be after as_of"
-            )
+            raise ValueError(f"source_review[{index}].reviewed_at cannot be after as_of")
         if reviewed_at > wall_clock + timedelta(minutes=1):
-            raise ValueError(
-                f"source_review[{index}].reviewed_at cannot be in the wall-clock future"
-            )
+            raise ValueError(f"source_review[{index}].reviewed_at cannot be in the wall-clock future")
         if as_of - reviewed_at > timedelta(days=30):
             add_finding(
                 findings,
@@ -563,42 +517,24 @@ def analyze(data: Any) -> dict[str, Any]:
         raise ValueError(f"package must contain exactly {sorted(package_fields)}")
     normalized_package = {
         "name": require_string(package.get("name"), "package.name"),
-        "candidate_version": require_string(
-            package.get("candidate_version"), "package.candidate_version"
-        ),
-        "candidate_patch": require_int(
-            package.get("candidate_patch"), "package.candidate_patch"
-        ),
-        "change_kind": require_string(
-            package.get("change_kind"), "package.change_kind"
-        ).upper(),
-        "artifact_sha256": require_hash(
-            package.get("artifact_sha256"), "package.artifact_sha256"
-        ),
+        "candidate_version": require_string(package.get("candidate_version"), "package.candidate_version"),
+        "candidate_patch": require_int(package.get("candidate_patch"), "package.candidate_patch"),
+        "change_kind": require_string(package.get("change_kind"), "package.change_kind").upper(),
+        "artifact_sha256": require_hash(package.get("artifact_sha256"), "package.artifact_sha256"),
     }
     if normalized_package["change_kind"] not in CHANGE_KINDS:
         raise ValueError("package.change_kind must be VERSION or PATCH")
 
-    source_review = validate_source_review(
-        root.get("source_review"), as_of, wall_clock, findings
-    )
+    source_review = validate_source_review(root.get("source_review"), as_of, wall_clock, findings)
 
     manifest_root = require_object(root.get("manifest"), "manifest")
     if set(manifest_root) != {"previous", "candidate", "consumer_disclosure"}:
         raise ValueError("manifest contains unexpected or missing fields")
-    previous_manifest = normalize_manifest(
-        manifest_root.get("previous"), "manifest.previous"
-    )
-    candidate_manifest = normalize_manifest(
-        manifest_root.get("candidate"), "manifest.candidate"
-    )
-    disclosure = require_object(
-        manifest_root.get("consumer_disclosure"), "manifest.consumer_disclosure"
-    )
+    previous_manifest = normalize_manifest(manifest_root.get("previous"), "manifest.previous")
+    candidate_manifest = normalize_manifest(manifest_root.get("candidate"), "manifest.candidate")
+    disclosure = require_object(manifest_root.get("consumer_disclosure"), "manifest.consumer_disclosure")
     if set(disclosure) != {"privilege_delta_reviewed", "app_spec_delta_reviewed"}:
-        raise ValueError(
-            "manifest.consumer_disclosure contains unexpected or missing fields"
-        )
+        raise ValueError("manifest.consumer_disclosure contains unexpected or missing fields")
     privilege_reviewed = require_bool(
         disclosure.get("privilege_delta_reviewed"),
         "manifest.consumer_disclosure.privilege_delta_reviewed",
@@ -607,15 +543,9 @@ def analyze(data: Any) -> dict[str, Any]:
         disclosure.get("app_spec_delta_reviewed"),
         "manifest.consumer_disclosure.app_spec_delta_reviewed",
     )
-    privilege_delta = diff_names(
-        previous_manifest["privileges"], candidate_manifest["privileges"]
-    )
-    reference_delta = diff_names(
-        previous_manifest["references"], candidate_manifest["references"]
-    )
-    app_spec_delta = diff_names(
-        previous_manifest["app_specs"], candidate_manifest["app_specs"]
-    )
+    privilege_delta = diff_names(previous_manifest["privileges"], candidate_manifest["privileges"])
+    reference_delta = diff_names(previous_manifest["references"], candidate_manifest["references"])
+    app_spec_delta = diff_names(previous_manifest["app_specs"], candidate_manifest["app_specs"])
     privilege_changed = any(privilege_delta.values()) or any(reference_delta.values())
     app_spec_changed = any(app_spec_delta.values())
     if privilege_changed and not privilege_reviewed:
@@ -639,10 +569,7 @@ def analyze(data: Any) -> dict[str, Any]:
     for name in sorted(set(old_specs) & set(new_specs)):
         old = old_specs[name]
         new = new_specs[name]
-        if (
-            old["definition_sha256"] != new["definition_sha256"]
-            and new["sequence"] <= old["sequence"]
-        ):
+        if old["definition_sha256"] != new["definition_sha256"] and new["sequence"] <= old["sequence"]:
             add_finding(
                 findings,
                 "APP_SPEC_SEQUENCE_NOT_ADVANCED",
@@ -650,10 +577,7 @@ def analyze(data: Any) -> dict[str, Any]:
                 "App Spec definition changed without a larger sequence",
                 "derived",
             )
-    if (
-        previous_manifest["manifest_version"] == 2
-        and candidate_manifest["manifest_version"] == 1
-    ):
+    if previous_manifest["manifest_version"] == 2 and candidate_manifest["manifest_version"] == 1:
         add_finding(
             findings,
             "MANIFEST_V2_TO_V1_REVOCATION_RISK",
@@ -662,10 +586,7 @@ def analyze(data: Any) -> dict[str, Any]:
             "derived",
         )
     if normalized_package["change_kind"] == "PATCH":
-        if (
-            previous_manifest["manifest_version"]
-            != candidate_manifest["manifest_version"]
-        ):
+        if previous_manifest["manifest_version"] != candidate_manifest["manifest_version"]:
             add_finding(
                 findings,
                 "PATCH_MANIFEST_VERSION_CHANGE",
@@ -708,10 +629,7 @@ def analyze(data: Any) -> dict[str, Any]:
             "tested setup path does not match candidate manifest",
             "observed",
         )
-    if (
-        require_string(setup.get("parse_status"), "setup_script.parse_status")
-        != "PARSED"
-    ):
+    if require_string(setup.get("parse_status"), "setup_script.parse_status") != "PARSED":
         add_finding(
             findings,
             "SETUP_EVIDENCE_INCOMPLETE",
@@ -756,18 +674,12 @@ def analyze(data: Any) -> dict[str, Any]:
             "idempotent",
             "stateful",
         }:
-            raise ValueError(
-                f"setup_script.statements[{index}] contains unexpected fields"
-            )
-        actual_index = require_int(
-            statement.get("index"), f"setup_script.statements[{index}].index", 1
-        )
+            raise ValueError(f"setup_script.statements[{index}] contains unexpected fields")
+        actual_index = require_int(statement.get("index"), f"setup_script.statements[{index}].index", 1)
         if actual_index != expected_index:
             raise ValueError("setup_script statement indexes must be contiguous from 1")
         expected_index += 1
-        operation = require_string(
-            statement.get("operation"), f"setup_script.statements[{index}].operation"
-        ).upper()
+        operation = require_string(statement.get("operation"), f"setup_script.statements[{index}].operation").upper()
         if operation not in SETUP_OPERATIONS:
             raise ValueError(f"unknown setup operation {operation!r}")
         object_type = require_string(
@@ -778,12 +690,8 @@ def analyze(data: Any) -> dict[str, Any]:
             statement.get("object_name"),
             f"setup_script.statements[{index}].object_name",
         )
-        idempotent = require_bool(
-            statement.get("idempotent"), f"setup_script.statements[{index}].idempotent"
-        )
-        stateful = require_bool(
-            statement.get("stateful"), f"setup_script.statements[{index}].stateful"
-        )
+        idempotent = require_bool(statement.get("idempotent"), f"setup_script.statements[{index}].idempotent")
+        stateful = require_bool(statement.get("stateful"), f"setup_script.statements[{index}].stateful")
         if operation == "CREATE_OR_REPLACE" and object_type == "APPLICATION_ROLE":
             add_finding(
                 findings,
@@ -902,8 +810,7 @@ def analyze(data: Any) -> dict[str, Any]:
         expected_count=len(statements),
         expected_bindings={
             "source_sha256": setup_hash,
-            "normalized_statements_sha256": "sha256:"
-            + hashlib.sha256(canonical_bytes(statements)).hexdigest(),
+            "normalized_statements_sha256": "sha256:" + hashlib.sha256(canonical_bytes(statements)).hexdigest(),
             "parser_version": parser_version,
             "candidate_version": normalized_package["candidate_version"],
             "candidate_patch": normalized_package["candidate_patch"],
@@ -922,9 +829,7 @@ def analyze(data: Any) -> dict[str, Any]:
     )
 
     compatibility = require_object(root.get("compatibility"), "compatibility")
-    previous_version = require_string(
-        compatibility.get("previous_version"), "compatibility.previous_version"
-    )
+    previous_version = require_string(compatibility.get("previous_version"), "compatibility.previous_version")
     supported = [
         require_string(item, "compatibility.supported_upgrade_from[]")
         for item in require_list(
@@ -938,20 +843,12 @@ def analyze(data: Any) -> dict[str, Any]:
         compatibility.get("manifest_setup_pair_tested"),
         "compatibility.manifest_setup_pair_tested",
     )
-    state_change = require_bool(
-        compatibility.get("state_change"), "compatibility.state_change"
-    )
-    require_hash(
-        compatibility.get("test_receipt_sha256"), "compatibility.test_receipt_sha256"
-    )
-    contract_tests = unique_named(
-        compatibility.get("contract_tests"), "compatibility.contract_tests"
-    )
+    state_change = require_bool(compatibility.get("state_change"), "compatibility.state_change")
+    require_hash(compatibility.get("test_receipt_sha256"), "compatibility.test_receipt_sha256")
+    contract_tests = unique_named(compatibility.get("contract_tests"), "compatibility.contract_tests")
     for index, test in enumerate(contract_tests):
         if set(test) != {"name", "status"}:
-            raise ValueError(
-                f"compatibility.contract_tests[{index}] contains unexpected fields"
-            )
+            raise ValueError(f"compatibility.contract_tests[{index}] contains unexpected fields")
     compatibility_fields = {
         "schema_version",
         "source",
@@ -989,19 +886,12 @@ def analyze(data: Any) -> dict[str, Any]:
     )
     contract_failed = False
     for index, test in enumerate(contract_tests):
-        status = require_string(
-            test.get("status"), f"compatibility.contract_tests[{index}].status"
-        ).upper()
+        status = require_string(test.get("status"), f"compatibility.contract_tests[{index}].status").upper()
         if status not in {"PASS", "FAIL"}:
             raise ValueError("compatibility contract test status must be PASS or FAIL")
         if status != "PASS":
             contract_failed = True
-    if (
-        not contract_tests
-        or not pair_tested
-        or previous_version not in supported
-        or contract_failed
-    ):
+    if not contract_tests or not pair_tested or previous_version not in supported or contract_failed:
         add_finding(
             findings,
             "VERSION_COMPATIBILITY_UNPROVEN",
@@ -1019,16 +909,10 @@ def analyze(data: Any) -> dict[str, Any]:
         )
 
     scan = require_object(root.get("security_scan"), "security_scan")
-    scan_status = require_string(
-        scan.get("review_status"), "security_scan.review_status"
-    ).upper()
+    scan_status = require_string(scan.get("review_status"), "security_scan.review_status").upper()
     if scan_status not in SCAN_STATUSES:
-        raise ValueError(
-            f"security_scan.review_status must be one of {sorted(SCAN_STATUSES)}"
-        )
-    scan_time_text = require_string(
-        scan.get("observed_at"), "security_scan.observed_at"
-    )
+        raise ValueError(f"security_scan.review_status must be one of {sorted(SCAN_STATUSES)}")
+    scan_time_text = require_string(scan.get("observed_at"), "security_scan.observed_at")
     scan_time = parse_timestamp(scan_time_text, "security_scan.observed_at")
     stale(scan_time, as_of, wall_clock, 60, findings, "security_scan")
     validate_bound_receipt(
@@ -1086,9 +970,7 @@ def analyze(data: Any) -> dict[str, Any]:
         seen_channels.add(name)
         versions = [
             require_string(item, f"channels[{index}].versions[]")
-            for item in require_list(
-                channel.get("versions"), f"channels[{index}].versions"
-            )
+            for item in require_list(channel.get("versions"), f"channels[{index}].versions")
         ]
         if len(versions) != len(set(versions)):
             raise ValueError(f"channels[{index}].versions contains duplicates")
@@ -1097,16 +979,12 @@ def analyze(data: Any) -> dict[str, Any]:
             f"channels[{index}].candidate_already_present",
         )
         targeted = require_bool(channel.get("targeted"), f"channels[{index}].targeted")
-        observed_text = require_string(
-            channel.get("observed_at"), f"channels[{index}].observed_at"
-        )
+        observed_text = require_string(channel.get("observed_at"), f"channels[{index}].observed_at")
         observed = parse_timestamp(observed_text, f"channels[{index}].observed_at")
         stale(observed, as_of, wall_clock, 60, findings, f"channel.{name}")
         candidate = normalized_package["candidate_version"]
         if present != (candidate in versions):
-            raise ValueError(
-                f"channels[{index}].candidate_already_present disagrees with versions"
-            )
+            raise ValueError(f"channels[{index}].candidate_already_present disagrees with versions")
         projected = sorted(set(versions) | ({candidate} if targeted else set()))
         if targeted:
             targeted_channels.add(name)
@@ -1200,44 +1078,28 @@ def analyze(data: Any) -> dict[str, Any]:
         if name in cohort_names:
             raise ValueError(f"duplicate cohort name {name!r}")
         cohort_names.add(name)
-        channel = require_string(
-            cohort.get("channel"), f"cohorts[{index}].channel"
-        ).upper()
+        channel = require_string(cohort.get("channel"), f"cohorts[{index}].channel").upper()
         if channel not in targeted_channels:
             raise ValueError(f"cohort {name!r} refers to a non-target channel")
         cohort_channels.add(channel)
-        consumer_count = require_int(
-            cohort.get("consumer_count"), f"cohorts[{index}].consumer_count"
-        )
-        observed_count = require_int(
-            cohort.get("observed_count"), f"cohorts[{index}].observed_count"
-        )
+        consumer_count = require_int(cohort.get("consumer_count"), f"cohorts[{index}].consumer_count")
+        observed_count = require_int(cohort.get("observed_count"), f"cohorts[{index}].observed_count")
         from_versions = [
             require_string(item, f"cohorts[{index}].from_versions[]")
-            for item in require_list(
-                cohort.get("from_versions"), f"cohorts[{index}].from_versions"
-            )
+            for item in require_list(cohort.get("from_versions"), f"cohorts[{index}].from_versions")
         ]
         if consumer_count > 0 and not from_versions:
             raise ValueError(f"cohort {name!r} requires from_versions")
-        preflight = require_string(
-            cohort.get("preflight_status"), f"cohorts[{index}].preflight_status"
-        ).upper()
+        preflight = require_string(cohort.get("preflight_status"), f"cohorts[{index}].preflight_status").upper()
         if preflight not in {"PASS", "FAIL"}:
             raise ValueError("cohort preflight_status must be PASS or FAIL")
-        disabled = require_int(
-            cohort.get("disabled_instances"), f"cohorts[{index}].disabled_instances"
-        )
-        failed = require_int(
-            cohort.get("failed_upgrades"), f"cohorts[{index}].failed_upgrades"
-        )
+        disabled = require_int(cohort.get("disabled_instances"), f"cohorts[{index}].disabled_instances")
+        failed = require_int(cohort.get("failed_upgrades"), f"cohorts[{index}].failed_upgrades")
         rollback_ready = require_bool(
             cohort.get("rollback_observables_ready"),
             f"cohorts[{index}].rollback_observables_ready",
         )
-        observed_text = require_string(
-            cohort.get("observed_at"), f"cohorts[{index}].observed_at"
-        )
+        observed_text = require_string(cohort.get("observed_at"), f"cohorts[{index}].observed_at")
         observed = parse_timestamp(observed_text, f"cohorts[{index}].observed_at")
         stale(observed, as_of, wall_clock, 60, findings, f"cohort.{name}")
         if observed_count != consumer_count:
@@ -1249,13 +1111,7 @@ def analyze(data: Any) -> dict[str, Any]:
                 "observed",
             )
         incompatible = sorted(set(from_versions) - set(supported))
-        if (
-            preflight != "PASS"
-            or disabled
-            or failed
-            or not rollback_ready
-            or incompatible
-        ):
+        if preflight != "PASS" or disabled or failed or not rollback_ready or incompatible:
             add_finding(
                 findings,
                 "COHORT_PREFLIGHT_FAILED",
@@ -1319,17 +1175,11 @@ def analyze(data: Any) -> dict[str, Any]:
             "observed_at",
         }:
             raise ValueError(f"retirements[{index}] contains unexpected fields")
-        channel = require_string(
-            retirement.get("channel"), f"retirements[{index}].channel"
-        ).upper()
+        channel = require_string(retirement.get("channel"), f"retirements[{index}].channel").upper()
         if channel not in CHANNELS:
             raise ValueError(f"unknown retirement channel {channel!r}")
-        version = require_string(
-            retirement.get("version"), f"retirements[{index}].version"
-        )
-        state = require_string(
-            retirement.get("state"), f"retirements[{index}].state"
-        ).upper()
+        version = require_string(retirement.get("version"), f"retirements[{index}].version")
+        state = require_string(retirement.get("state"), f"retirements[{index}].state").upper()
         if state not in RETIREMENT_STATES:
             raise ValueError(f"unknown retirement state {state!r}")
         consumers = require_int(
@@ -1340,9 +1190,7 @@ def analyze(data: Any) -> dict[str, Any]:
             retirement.get("running_code_remaining"),
             f"retirements[{index}].running_code_remaining",
         )
-        observed_text = require_string(
-            retirement.get("observed_at"), f"retirements[{index}].observed_at"
-        )
+        observed_text = require_string(retirement.get("observed_at"), f"retirements[{index}].observed_at")
         observed = parse_timestamp(observed_text, f"retirements[{index}].observed_at")
         stale(
             observed,
@@ -1395,43 +1243,27 @@ def analyze(data: Any) -> dict[str, Any]:
 
     rollback = require_object(root.get("rollback"), "rollback")
     rollback_owner = require_string(rollback.get("owner"), "rollback.owner")
-    rollback_target = require_string(
-        rollback.get("target_version"), "rollback.target_version"
-    )
-    rollback_artifact = require_hash(
-        rollback.get("target_artifact_sha256"), "rollback.target_artifact_sha256"
-    )
-    rollback_baseline = require_hash(
-        rollback.get("baseline_sha256"), "rollback.baseline_sha256"
-    )
-    dry_run_status = require_string(
-        rollback.get("dry_run_status"), "rollback.dry_run_status"
-    ).upper()
+    rollback_target = require_string(rollback.get("target_version"), "rollback.target_version")
+    rollback_artifact = require_hash(rollback.get("target_artifact_sha256"), "rollback.target_artifact_sha256")
+    rollback_baseline = require_hash(rollback.get("baseline_sha256"), "rollback.baseline_sha256")
+    dry_run_status = require_string(rollback.get("dry_run_status"), "rollback.dry_run_status").upper()
     tested_text = require_string(rollback.get("tested_at"), "rollback.tested_at")
     tested_at = parse_timestamp(tested_text, "rollback.tested_at")
     stale(tested_at, as_of, wall_clock, 60, findings, "rollback")
-    halt_plan = require_string(
-        rollback.get("cohort_halt_plan"), "rollback.cohort_halt_plan"
-    )
+    halt_plan = require_string(rollback.get("cohort_halt_plan"), "rollback.cohort_halt_plan")
     stop_conditions = [
         require_string(item, "rollback.stop_conditions[]")
-        for item in require_list(
-            rollback.get("stop_conditions"), "rollback.stop_conditions"
-        )
+        for item in require_list(rollback.get("stop_conditions"), "rollback.stop_conditions")
     ]
     observables = unique_named(rollback.get("observables"), "rollback.observables")
     normalized_observables: list[dict[str, Any]] = []
     for index, observable in enumerate(observables):
         if set(observable) != {"name", "source", "threshold", "window_minutes"}:
-            raise ValueError(
-                f"rollback.observables[{index}] contains unexpected fields"
-            )
+            raise ValueError(f"rollback.observables[{index}] contains unexpected fields")
         normalized_observables.append(
             {
                 "name": observable["name"],
-                "source": require_string(
-                    observable.get("source"), f"rollback.observables[{index}].source"
-                ),
+                "source": require_string(observable.get("source"), f"rollback.observables[{index}].source"),
                 "threshold": require_string(
                     observable.get("threshold"),
                     f"rollback.observables[{index}].threshold",
@@ -1502,9 +1334,7 @@ def analyze(data: Any) -> dict[str, Any]:
             "observed",
         )
 
-    findings.sort(
-        key=lambda row: (row["severity"], row["code"], row["surface"], row["message"])
-    )
+    findings.sort(key=lambda row: (row["severity"], row["code"], row["surface"], row["message"]))
     gate = "BLOCKED" if findings else "READY_FOR_EXPLICIT_APPROVAL"
     remediation = [
         {
@@ -1545,9 +1375,7 @@ def analyze(data: Any) -> dict[str, Any]:
         },
         "channels": sorted(channel_summary, key=lambda row: row["name"]),
         "cohorts": sorted(cohort_summary, key=lambda row: row["name"]),
-        "retirements": sorted(
-            retirement_summary, key=lambda row: (row["channel"], row["version"])
-        ),
+        "retirements": sorted(retirement_summary, key=lambda row: (row["channel"], row["version"])),
         "compatibility": {
             "previous_version": previous_version,
             "supported_upgrade_from": sorted(supported),
@@ -1568,9 +1396,7 @@ def analyze(data: Any) -> dict[str, Any]:
                 "tested_at": tested_text,
                 "cohort_halt_plan": halt_plan,
                 "stop_conditions": stop_conditions,
-                "observables": sorted(
-                    normalized_observables, key=lambda row: row["name"]
-                ),
+                "observables": sorted(normalized_observables, key=lambda row: row["name"]),
             },
             "approval_boundary": "A named operator must separately approve and execute every release or recovery mutation.",
             "prohibited_actions": [
@@ -1601,9 +1427,7 @@ def main() -> int:
     try:
         data = json.loads(Path(args.input).read_text(encoding="utf-8"))
         report = analyze(data)
-        rendered = (
-            json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
-        )
+        rendered = json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
         if args.output:
             Path(args.output).write_text(rendered, encoding="utf-8")
         else:

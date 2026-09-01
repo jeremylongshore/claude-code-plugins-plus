@@ -485,7 +485,10 @@ class PipelineAnalyzerTests(unittest.TestCase):
         report = analyzer.analyze(data)
         self.assertFalse(report["evidence_complete"])
         self.assertTrue(
-            any("receipt_sha256 does not match" in issue for issue in report["current_state_receipt_assessment"]["issues"])
+            any(
+                "receipt_sha256 does not match" in issue
+                for issue in report["current_state_receipt_assessment"]["issues"]
+            )
         )
 
     def test_pipeline_current_receipt_rejects_rehashed_provenance_mismatch(self):
@@ -564,7 +567,10 @@ class PipelineAnalyzerTests(unittest.TestCase):
                 self.assertFalse(report["evidence_complete"])
                 self.assertFalse(report["graph_complete"])
                 self.assertTrue(
-                    any(variant in issue or "identify" in issue for issue in report["current_state_receipt_assessment"]["issues"])
+                    any(
+                        variant in issue or "identify" in issue
+                        for issue in report["current_state_receipt_assessment"]["issues"]
+                    )
                 )
 
 

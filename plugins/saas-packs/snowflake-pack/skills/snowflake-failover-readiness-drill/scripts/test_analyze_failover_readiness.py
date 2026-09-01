@@ -140,9 +140,12 @@ def rehash(receipt: dict) -> None:
 def rehash_event(event: dict) -> None:
     unsigned = dict(event)
     unsigned.pop("receipt_sha256", None)
-    event["receipt_sha256"] = "sha256:" + hashlib.sha256(
-        json.dumps(unsigned, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
-    ).hexdigest()
+    event["receipt_sha256"] = (
+        "sha256:"
+        + hashlib.sha256(
+            json.dumps(unsigned, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        ).hexdigest()
+    )
 
 
 class FailoverTests(unittest.TestCase):

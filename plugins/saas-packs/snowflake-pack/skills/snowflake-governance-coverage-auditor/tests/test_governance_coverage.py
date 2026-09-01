@@ -58,22 +58,16 @@ def seal_receipts(doc: dict) -> dict:
         receipt["row_count"] = len(dataset)
         receipt["raw_row_count"] = len(dataset)
         receipt["row_limit"] = 10000
-        receipt["template_sha256"] = (
-            f"sha256:{hashlib.sha256((SQL_DIR / template).read_bytes()).hexdigest()}"
-        )
+        receipt["template_sha256"] = f"sha256:{hashlib.sha256((SQL_DIR / template).read_bytes()).hexdigest()}"
         receipt["rendered_sql_sha256"] = receipt["query_sha256"]
         receipt["dataset_sha256"] = (
             f"sha256:{hashlib.sha256(json.dumps(dataset, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()}"
         )
         receipt["source_metadata"] = {"selector": {"database": True}}
         if surface == "policy_references":
-            receipt["source_metadata"] = {
-                "selector": {"database": True, "objects": len(doc["assets"])}
-            }
+            receipt["source_metadata"] = {"selector": {"database": True, "objects": len(doc["assets"])}}
         receipt["selector_fingerprint"] = "sha256:" + "f" * 64
-        body = json.dumps(
-            receipt, sort_keys=True, separators=(",", ":"), ensure_ascii=False
-        ).encode()
+        body = json.dumps(receipt, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
         receipt["receipt_sha256"] = f"sha256:{hashlib.sha256(body).hexdigest()}"
     return doc
 
@@ -136,9 +130,7 @@ class GovernanceCoverageTests(unittest.TestCase):
             receipt["dataset_sha256"],
             "sha256:"
             + hashlib.sha256(
-                json.dumps(
-                    envelope["dataset"], sort_keys=True, separators=(",", ":")
-                ).encode()
+                json.dumps(envelope["dataset"], sort_keys=True, separators=(",", ":")).encode()
             ).hexdigest(),
         )
 
@@ -206,9 +198,7 @@ class GovernanceCoverageTests(unittest.TestCase):
             envelope["receipt"]["source"],
             "BOUNDED.INFORMATION_SCHEMA.POLICY_REFERENCES",
         )
-        self.assertEqual(
-            envelope["receipt"]["source_metadata"]["selector"]["objects"], 1
-        )
+        self.assertEqual(envelope["receipt"]["source_metadata"]["selector"]["objects"], 1)
         self.assertEqual(envelope["dataset"][0]["policy_kind"], "JOIN_POLICY")
         self.assertNotIn("CUSTOMERS", completed.stdout)
         self.assertNotIn("PRIVATE_DB", completed.stdout)
@@ -225,25 +215,13 @@ class GovernanceCoverageTests(unittest.TestCase):
 
     def test_direct_policy_precedence_and_aggregation_entity_key_exception(self):
         report = analyze(seal_receipts(load_fixture("covered.json")))
-        masking = next(
-            row
-            for row in report["precedence"]
-            if row["policy_kind"] == "MASKING_POLICY"
-        )
+        masking = next(row for row in report["precedence"] if row["policy_kind"] == "MASKING_POLICY")
         self.assertEqual(masking["rule"], "DIRECT_PRECEDENCE")
         self.assertEqual(masking["shadowed_policy_keys"], ["policy_mask_tag"])
-        aggregation = next(
-            row
-            for row in report["precedence"]
-            if row["policy_kind"] == "AGGREGATION_POLICY"
-        )
+        aggregation = next(row for row in report["precedence"] if row["policy_kind"] == "AGGREGATION_POLICY")
         self.assertEqual(aggregation["rule"], "ENTITY_KEY_EXCEPTION")
-        self.assertEqual(
-            aggregation["shadowed_policy_keys"], ["policy_aggregate_tag_same_key"]
-        )
-        self.assertEqual(
-            aggregation["cumulative_policy_keys"], ["policy_aggregate_tag_distinct_key"]
-        )
+        self.assertEqual(aggregation["shadowed_policy_keys"], ["policy_aggregate_tag_same_key"])
+        self.assertEqual(aggregation["cumulative_policy_keys"], ["policy_aggregate_tag_distinct_key"])
 
     def test_failed_classification_missing_tag_and_policy_are_not_coverage(self):
         report = analyze(load_fixture("gaps.json"))
@@ -256,41 +234,22 @@ class GovernanceCoverageTests(unittest.TestCase):
         self.assertEqual(states["PROJECTION_POLICY"], "UNCOVERED")
         self.assertTrue(report["completeness_claim_blocked"])
         categories = {item["category"] for item in report["findings"]}
-        self.assertTrue(
-            {"classification", "tag-coverage", "edition-boundary", "policy-coverage"}
-            <= categories
-        )
+        self.assertTrue({"classification", "tag-coverage", "edition-boundary", "policy-coverage"} <= categories)
 
     def test_preview_tag_policy_requires_explicit_feature_evidence(self):
         doc = seal_receipts(load_fixture("covered.json"))
-        doc["metadata"]["preview_features_enabled"].remove(
-            "TAG_BASED_PROJECTION_POLICY"
-        )
+        doc["metadata"]["preview_features_enabled"].remove("TAG_BASED_PROJECTION_POLICY")
         report = analyze(doc)
-        email = next(
-            row
-            for row in report["coverage"]
-            if row["asset_key"] == "asset_customer_email"
-        )
-        projection = next(
-            row
-            for row in email["controls"]
-            if row["policy_kind"] == "PROJECTION_POLICY"
-        )
+        email = next(row for row in report["coverage"] if row["asset_key"] == "asset_customer_email")
+        projection = next(row for row in email["controls"] if row["policy_kind"] == "PROJECTION_POLICY")
         self.assertEqual(projection["state"], "PREVIEW_NOT_ENABLED")
         self.assertEqual(report["decision"], "NOT_PROVEN")
 
     def test_tag_policy_without_tag_evidence_is_not_effective_coverage(self):
         doc = seal_receipts(load_fixture("covered.json"))
-        doc["tags"] = [
-            row for row in doc["tags"] if row["asset_key"] != "asset_customer_table"
-        ]
+        doc["tags"] = [row for row in doc["tags"] if row["asset_key"] != "asset_customer_table"]
         report = analyze(doc)
-        table = next(
-            row
-            for row in report["coverage"]
-            if row["asset_key"] == "asset_customer_table"
-        )
+        table = next(row for row in report["coverage"] if row["asset_key"] == "asset_customer_table")
         states = {item["policy_kind"]: item["state"] for item in table["controls"]}
         self.assertEqual(states["ROW_ACCESS_POLICY"], "TAG_EVIDENCE_MISSING")
         self.assertEqual(states["JOIN_POLICY"], "TAG_EVIDENCE_MISSING")
@@ -320,15 +279,11 @@ class GovernanceCoverageTests(unittest.TestCase):
             if isinstance(value, list):
                 return [backdate(child) for child in value]
             if isinstance(value, str):
-                return value.replace("2026-08-31", "2020-08-31").replace(
-                    "2026-08-30", "2020-08-30"
-                )
+                return value.replace("2026-08-31", "2020-08-31").replace("2026-08-30", "2020-08-30")
             return value
 
         resealed = seal_receipts(backdate(doc))
-        with self.assertRaisesRegex(
-            ValueError, "metadata.assessed_at is stale against the current wall clock"
-        ):
+        with self.assertRaisesRegex(ValueError, "metadata.assessed_at is stale against the current wall clock"):
             analyze_governance(resealed, now=FIXTURE_NOW)
 
     def test_receipt_is_bound_to_exact_dataset_source_template_and_selector(self):
@@ -368,12 +323,7 @@ class GovernanceCoverageTests(unittest.TestCase):
                     doc["policy_context"] = doc["policy_context"][1:]
                 report = analyze(doc)
                 self.assertEqual(report["decision"], "NOT_PROVEN")
-                self.assertTrue(
-                    any(
-                        item["category"] == "policy-context"
-                        for item in report["findings"]
-                    )
-                )
+                self.assertTrue(any(item["category"] == "policy-context" for item in report["findings"]))
 
     def test_non_active_snowflake_policy_statuses_are_misconfiguration(self):
         for status in (
@@ -385,16 +335,8 @@ class GovernanceCoverageTests(unittest.TestCase):
                 doc = seal_receipts(load_fixture("covered.json"))
                 doc["policies"][0]["policy_status"] = status
                 report = analyze(doc)
-                email = next(
-                    row
-                    for row in report["coverage"]
-                    if row["asset_key"] == "asset_customer_email"
-                )
-                masking = next(
-                    row
-                    for row in email["controls"]
-                    if row["policy_kind"] == "MASKING_POLICY"
-                )
+                email = next(row for row in report["coverage"] if row["asset_key"] == "asset_customer_email")
+                masking = next(row for row in email["controls"] if row["policy_kind"] == "MASKING_POLICY")
                 self.assertEqual(masking["state"], "MISCONFIGURED")
 
     def test_raw_identifiers_and_credentials_are_rejected(self):

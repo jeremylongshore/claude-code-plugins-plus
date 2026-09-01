@@ -65,7 +65,11 @@ def render_surface(surface: str, database: str, row_limit: int) -> tuple[Path, s
     statements = [part.strip() for part in rendered.split(";") if part.strip()]
     if len(statements) != 1 or not re.match(r"^(?:--[^\n]*\n\s*)*(?:SELECT|WITH)\b", statements[0], re.IGNORECASE):
         raise CollectionError("template must contain exactly one read-only SELECT/CTE statement")
-    if re.search(r"\b(?:ALTER|CALL|COPY|CREATE|DELETE|DROP|GRANT|INSERT|MERGE|PUT|REMOVE|REVOKE|TRUNCATE|UPDATE)\b", rendered, re.IGNORECASE):
+    if re.search(
+        r"\b(?:ALTER|CALL|COPY|CREATE|DELETE|DROP|GRANT|INSERT|MERGE|PUT|REMOVE|REVOKE|TRUNCATE|UPDATE)\b",
+        rendered,
+        re.IGNORECASE,
+    ):
         raise CollectionError("template contains a mutation token")
     selector = {"database": database}
     return path, template, rendered, source, selector
@@ -120,7 +124,11 @@ def render_current_policy(database: str, row_limit: int, objects: list[dict]) ->
         statements = [part.strip() for part in rendered.split(";") if part.strip()]
         if len(statements) != 1 or not re.match(r"^(?:--[^\n]*\n\s*)*SELECT\b", statements[0], re.IGNORECASE):
             raise CollectionError("current-policy template must contain exactly one read-only SELECT")
-        if re.search(r"\b(?:ALTER|CALL|COPY|CREATE|DELETE|DROP|GRANT|INSERT|MERGE|PUT|REMOVE|REVOKE|TRUNCATE|UPDATE)\b", rendered, re.IGNORECASE):
+        if re.search(
+            r"\b(?:ALTER|CALL|COPY|CREATE|DELETE|DROP|GRANT|INSERT|MERGE|PUT|REMOVE|REVOKE|TRUNCATE|UPDATE)\b",
+            rendered,
+            re.IGNORECASE,
+        ):
             raise CollectionError("current-policy template contains a mutation token")
         rendered_queries.append(rendered)
     selector = {"database": database, "objects": objects}
@@ -172,7 +180,9 @@ def load_requirements(path: Path | None) -> dict[str, dict]:
             raise CollectionError(f"requirements[{index}].domain is invalid")
         if not isinstance(row.get("require_tag"), bool) or not isinstance(row.get("require_classification"), bool):
             raise CollectionError(f"requirements[{index}] booleans are invalid")
-        if not isinstance(row.get("required_controls"), list) or any(not isinstance(item, str) for item in row["required_controls"]):
+        if not isinstance(row.get("required_controls"), list) or any(
+            not isinstance(item, str) for item in row["required_controls"]
+        ):
             raise CollectionError(f"requirements[{index}].required_controls is invalid")
         result[key] = row
     return result
@@ -184,11 +194,14 @@ def normalize(surface: str, raw: Any, requirements: dict[str, dict] | None = Non
         "denominator": {"asset_key", "domain", "data_type"},
         "tag_references": {"asset_key", "tag_key", "apply_method"},
         "policy_references": {
-            "asset_key", "policy_key", "policy_kind", "assignment", "policy_status", "entity_key_hash"
+            "asset_key",
+            "policy_key",
+            "policy_kind",
+            "assignment",
+            "policy_status",
+            "entity_key_hash",
         },
-        "classification_latest": {
-            "asset_key", "status", "last_classified_on", "last_attempt_on", "error_present"
-        },
+        "classification_latest": {"asset_key", "status", "last_classified_on", "last_attempt_on", "error_present"},
     }[surface]
     for index, row in enumerate(rows):
         unexpected = set(row) - allowed_columns
@@ -288,8 +301,17 @@ def execute(connection: str, rendered: str, runner=subprocess.run) -> Any:
         with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
             handle.write(rendered)
         command = [
-            "snow", "sql", "--filename", str(path), "--connection", connection,
-            "--format", "JSON_EXT", "--silent", "--enhanced-exit-codes", "--local-only",
+            "snow",
+            "sql",
+            "--filename",
+            str(path),
+            "--connection",
+            connection,
+            "--format",
+            "JSON_EXT",
+            "--silent",
+            "--enhanced-exit-codes",
+            "--local-only",
         ]
         completed = runner(command, capture_output=True, text=True, timeout=120, check=False)
         if completed.returncode != 0:
@@ -323,7 +345,9 @@ def main() -> int:
     parser.add_argument("--connection")
     parser.add_argument("--input-json", type=Path, help="normalize saved Snowflake CLI JSON_EXT instead of connecting")
     parser.add_argument("--requirements", type=Path, help="sanitized denominator requirements JSON")
-    parser.add_argument("--object-manifest", type=Path, help="restricted object manifest for current POLICY_REFERENCES collection")
+    parser.add_argument(
+        "--object-manifest", type=Path, help="restricted object manifest for current POLICY_REFERENCES collection"
+    )
     parser.add_argument("--privilege-scope", choices=("COMPLETE", "PARTIAL", "UNKNOWN"), default="UNKNOWN")
     parser.add_argument("--collected-at", default=None)
     parser.add_argument("--output", type=Path)
@@ -365,8 +389,17 @@ def main() -> int:
         else:
             truncated = raw_count > args.row_limit
         envelope = build_envelope(
-            args.surface, template, rendered, source, selector, dataset, raw_count,
-            args.row_limit, args.privilege_scope, args.collected_at or utc_now(), truncated,
+            args.surface,
+            template,
+            rendered,
+            source,
+            selector,
+            dataset,
+            raw_count,
+            args.row_limit,
+            args.privilege_scope,
+            args.collected_at or utc_now(),
+            truncated,
         )
         write_json(envelope, args.output)
     except (CollectionError, FileNotFoundError, OSError, json.JSONDecodeError, subprocess.TimeoutExpired) as error:
