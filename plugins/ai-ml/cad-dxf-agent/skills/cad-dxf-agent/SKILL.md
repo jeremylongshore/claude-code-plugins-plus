@@ -6,7 +6,7 @@ argument-hint: a path to a .dxf file (and optionally which check — compliance,
 version: 0.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: Apache-2.0
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 tags:
   - dxf
   - cad
