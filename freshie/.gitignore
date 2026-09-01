@@ -3,3 +3,10 @@
 # Python cache
 __pycache__/
 *.pyc
+
+# Native DoltLite sidecar and graph-lock files. Public durability lives in the
+# separately typed DoltHub repository; tracked JSON receipts bind each push.
+doltlite/
+*.db.graphlock
+*.db-lock
+.*.db.sync.lock
