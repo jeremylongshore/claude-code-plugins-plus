@@ -772,6 +772,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pytest pytest-cov pytest-asyncio
+          python -m pip install --require-hashes -r freshie/requirements-doltlite.txt
 
           # Install dependencies if requirements.txt exists
           if [ -f "requirements.txt" ]; then
