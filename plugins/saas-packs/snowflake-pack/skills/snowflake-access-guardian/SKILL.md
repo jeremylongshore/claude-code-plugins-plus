@@ -10,7 +10,7 @@ description: |
   "why can this user read", "Snowflake RBAC drift", or "future grants conflict".
 allowed-tools: Read, Write, Bash(python3:*)
 argument-hint: "[redacted-access-evidence.json]"
-version: 2.1.0
+version: 2.2.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection

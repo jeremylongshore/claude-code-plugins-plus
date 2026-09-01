@@ -10,7 +10,7 @@ description: |
   rotation", or "MCP OAuth role scope".
 allowed-tools: Read, Bash(python3:*)
 argument-hint: "[redacted-auth-evidence.json]"
-version: 2.1.0
+version: 2.2.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection

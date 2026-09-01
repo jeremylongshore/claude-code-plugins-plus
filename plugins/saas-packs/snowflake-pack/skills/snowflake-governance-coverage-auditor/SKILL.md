@@ -11,7 +11,7 @@ description: |
   "audit Snowflake policies", or "verify tag-based policy coverage".
 allowed-tools: Read, Write, Bash(python3:*)
 argument-hint: "[sanitized-governance-evidence.json]"
-version: 1.0.0
+version: 2.2.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake session for operator-run read-only evidence collection
