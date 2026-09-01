@@ -203,11 +203,16 @@ def _receipt_status(value: object, label: str) -> dict:
         return {"status": "UNVERIFIABLE", "complete": False, "issues": [f"{label} receipt is not an object"]}
     issues = []
     expected_surfaces = {"LOGIN_HISTORY": {"auth", "auth-current"}}
-    if value.get("schema_version") != "1": issues.append("schema_version is not 1")
-    if value.get("surface") not in expected_surfaces.get(label, set()): issues.append("surface is not an auth collector surface")
-    if value.get("status") != "collected": issues.append("status is not collected")
-    if value.get("errors"): issues.append("collector reported an error")
-    if value.get("truncation_possible") is not False: issues.append("truncation_possible is not false")
+    if value.get("schema_version") != "1":
+        issues.append("schema_version is not 1")
+    if value.get("surface") not in expected_surfaces.get(label, set()):
+        issues.append("surface is not an auth collector surface")
+    if value.get("status") != "collected":
+        issues.append("status is not collected")
+    if value.get("errors"):
+        issues.append("collector reported an error")
+    if value.get("truncation_possible") is not False:
+        issues.append("truncation_possible is not false")
     for field in ("sql_sha256", "template_sha256", "rendered_sql_sha256"):
         if not isinstance(value.get(field), str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", value[field]):
             issues.append(f"{field} is missing or malformed")
@@ -215,8 +220,10 @@ def _receipt_status(value: object, label: str) -> dict:
     supplied_hash = body.pop("receipt_sha256", None)
     canonical_body = json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
     expected_hash = f"sha256:{hashlib.sha256(canonical_body).hexdigest()}"
-    if supplied_hash != expected_hash: issues.append("receipt_sha256 is missing or invalid")
-    if timestamp(value.get("collected_at")) is None or timestamp(value.get("collected_at")) > datetime.now(timezone.utc): issues.append("collected_at is invalid or in the future")
+    if supplied_hash != expected_hash:
+        issues.append("receipt_sha256 is missing or invalid")
+    if timestamp(value.get("collected_at")) is None or timestamp(value.get("collected_at")) > datetime.now(timezone.utc):
+        issues.append("collected_at is invalid or in the future")
     return {"status": "VERIFIED" if not issues else "UNVERIFIABLE", "complete": not issues, "issues": issues}
 
 

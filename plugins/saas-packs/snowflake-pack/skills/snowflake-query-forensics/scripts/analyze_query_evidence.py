@@ -62,11 +62,16 @@ def validate_subsurface_receipt(value: Any, label: str, surface: str, query_id: 
     if not isinstance(value, dict):
         return {"status": "unverifiable", "complete": False, "issues": [f"{label} receipt is not an object"]}
     issues: list[str] = []
-    if value.get("schema_version") != "1": issues.append("schema_version is not 1")
-    if value.get("surface") != surface: issues.append(f"surface is not {surface}")
-    if value.get("status") != "collected": issues.append("status is not collected")
-    if value.get("errors"): issues.append("collector reported an error")
-    if value.get("truncation_possible") is not False: issues.append("truncation_possible is not false")
+    if value.get("schema_version") != "1":
+        issues.append("schema_version is not 1")
+    if value.get("surface") != surface:
+        issues.append(f"surface is not {surface}")
+    if value.get("status") != "collected":
+        issues.append("status is not collected")
+    if value.get("errors"):
+        issues.append("collector reported an error")
+    if value.get("truncation_possible") is not False:
+        issues.append("truncation_possible is not false")
     metadata = value.get("source_metadata")
     if not isinstance(metadata, dict) or metadata.get("selector") != {"query_id": True}:
         issues.append("source_metadata.selector is not the privacy-safe query_id binding")
