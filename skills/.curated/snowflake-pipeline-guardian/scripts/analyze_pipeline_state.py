@@ -95,6 +95,35 @@ EXPECTED_PIPELINE_SOURCES = [
     "SNOWFLAKE.ACCOUNT_USAGE.COPY_HISTORY",
 ]
 EXPECTED_PIPELINE_DATASETS = {"task_history", "dynamic_table_refresh_history", "copy_history"}
+EXPECTED_CURRENT_SOURCES = ["SHOW TASKS", "SHOW STREAMS", "SHOW DYNAMIC TABLES", "SHOW PIPES"]
+EXPECTED_CURRENT_DATASETS = {
+    "task_current": {
+        "database_name", "schema_name", "name", "id", "state", "predecessors", "schedule", "last_committed_on",
+    },
+    "stream_current": {
+        "database_name", "schema_name", "name", "table_name", "stale", "stale_after", "invalid",
+    },
+    "dynamic_table_current": {
+        "database_name", "schema_name", "name", "scheduling_state", "target_lag", "refresh_mode", "warehouse",
+    },
+    "pipe_current": {
+        "database_name", "schema_name", "name", "type", "invalid_reason", "last_ingested_timestamp",
+    },
+}
+CURRENT_DATASET_KINDS = {
+    "task_current": "TASK",
+    "stream_current": "STREAM",
+    "dynamic_table_current": "DYNAMIC_TABLE",
+    "pipe_current": "PIPE",
+}
+CURRENT_RECEIPT_FIELDS = {
+    "schema_version", "surface", "status", "collected_at", "connection_profile", "sql_sha256",
+    "template_sha256", "rendered_sql_sha256", "selector_fingerprint", "source_metadata", "source_views",
+    "row_count", "row_limit", "truncation_possible", "dataset_row_limits", "dataset_truncation_possible",
+    "datasets", "errors", "non_claims", "receipt_sha256",
+}
+MAX_CURRENT_RECEIPT_AGE_MINUTES = 15
+MAX_CURRENT_RECEIPT_ROWS = 10_000
 
 
 def _collector_receipt_issues(receipt: Any, observed_at: datetime | None) -> list[str]:
@@ -179,6 +208,212 @@ def _collector_receipt_issues(receipt: Any, observed_at: datetime | None) -> lis
     return issues
 
 
+def _current_row_status(dataset: str, row: dict[str, Any]) -> str:
+    """Map one reviewed SHOW projection to the analyzer's status vocabulary."""
+    if dataset == "task_current":
+        return str(row.get("state", "")).upper()
+    if dataset == "stream_current":
+        stale = row.get("stale")
+        invalid = row.get("invalid")
+        if stale is True or (isinstance(stale, str) and stale.upper() in {"TRUE", "Y", "YES", "1"}):
+            return "STALE"
+        if invalid is True or (isinstance(invalid, str) and invalid.upper() in {"TRUE", "Y", "YES", "1"}):
+            return "INVALID"
+        return "OK"
+    if dataset == "dynamic_table_current":
+        return str(row.get("scheduling_state", "")).upper()
+    if dataset == "pipe_current":
+        return "INVALID" if row.get("invalid_reason") not in (None, "") else "OK"
+    return ""
+
+
+def _current_row_identity(row: dict[str, Any]) -> tuple[str | None, str | None]:
+    parts = [row.get(field) for field in ("database_name", "schema_name", "name")]
+    if not all(isinstance(part, str) and part.strip() for part in parts):
+        return None, None
+    return ".".join(str(part).strip() for part in parts), str(parts[-1]).strip()
+
+
+def _current_state_receipt_assessment(
+    receipt: Any,
+    current_state: Any,
+    observed_at: datetime | None,
+) -> dict[str, Any]:
+    """Verify and bind the root pipeline-current receipt without exposing its rows."""
+    empty_binding = {"receipt_nodes": 0, "current_nodes": 0, "matched_nodes": 0}
+    if receipt is None:
+        return {
+            "status": "not_supplied",
+            "complete": False,
+            "issues": ["current_state_receipt is required when current_state is supplied"],
+            "binding": empty_binding,
+        }
+    if not isinstance(receipt, dict):
+        return {
+            "status": "unverifiable",
+            "complete": False,
+            "issues": ["current_state_receipt must be an object"],
+            "binding": empty_binding,
+        }
+
+    issues: list[str] = []
+    if set(receipt) != CURRENT_RECEIPT_FIELDS:
+        issues.append("current_state_receipt fields do not match the pipeline-current receipt schema")
+    if receipt.get("schema_version") != "1":
+        issues.append("current_state_receipt schema_version must be 1")
+    if receipt.get("surface") != "pipeline-current":
+        issues.append("current_state_receipt surface must be pipeline-current")
+    if receipt.get("status") != "collected":
+        issues.append("current_state_receipt status must be collected")
+    if receipt.get("errors") != []:
+        issues.append("current_state_receipt errors must be an empty array")
+    if not isinstance(receipt.get("connection_profile"), str) or not receipt["connection_profile"].strip():
+        issues.append("current_state_receipt connection_profile is required")
+    if receipt.get("source_views") != EXPECTED_CURRENT_SOURCES:
+        issues.append("current_state_receipt source_views do not match pipeline-current SQL")
+
+    metadata = receipt.get("source_metadata")
+    if not isinstance(metadata, dict) or set(metadata) != {"template", "source_views", "selector"}:
+        issues.append("current_state_receipt source_metadata does not match the reviewed schema")
+        metadata = {}
+    if metadata.get("template") != "pipeline-current.sql":
+        issues.append("current_state_receipt source_metadata.template must be pipeline-current.sql")
+    if metadata.get("source_views") != EXPECTED_CURRENT_SOURCES:
+        issues.append("current_state_receipt source_metadata.source_views do not match pipeline-current SQL")
+    if metadata.get("selector") != {} or receipt.get("selector_fingerprint") is not None:
+        issues.append("current_state_receipt must not contain selector material")
+
+    sql_path = Path(__file__).resolve().parent / "sql" / "pipeline-current.sql"
+    expected_sql_hash = f"sha256:{hashlib.sha256(sql_path.read_bytes()).hexdigest()}"
+    for field in ("sql_sha256", "template_sha256", "rendered_sql_sha256"):
+        if receipt.get(field) != expected_sql_hash:
+            issues.append(f"current_state_receipt {field} does not match the reviewed pipeline-current SQL")
+
+    receipt_time = _parse_observed_at(receipt.get("collected_at"))
+    if receipt_time is None:
+        issues.append("current_state_receipt collected_at must be a valid, non-future timezone timestamp")
+    elif observed_at is not None:
+        age_seconds = (observed_at - receipt_time).total_seconds()
+        if age_seconds < 0:
+            issues.append("current_state_receipt collected_at cannot be after observed_at")
+        elif age_seconds > MAX_CURRENT_RECEIPT_AGE_MINUTES * 60:
+            issues.append("current_state_receipt is stale for the fixed freshness bound")
+
+    expected_dataset_limits = {
+        name: MAX_CURRENT_RECEIPT_ROWS for name in sorted(EXPECTED_CURRENT_DATASETS)
+    }
+    if (
+        receipt.get("row_limit") != MAX_CURRENT_RECEIPT_ROWS
+        or receipt.get("dataset_row_limits") != expected_dataset_limits
+    ):
+        issues.append(
+            "current_state_receipt cap metadata does not match the reviewed bounded SHOW template"
+        )
+    if receipt.get("truncation_possible") is not False:
+        issues.append("current_state_receipt is truncated or has an unknown truncation state")
+
+    datasets = receipt.get("datasets")
+    receipt_rows: list[tuple[str, dict[str, Any]]] = []
+    if not isinstance(datasets, dict):
+        issues.append("current_state_receipt datasets must be an object")
+        datasets = {}
+    if set(datasets) != set(EXPECTED_CURRENT_DATASETS):
+        issues.append("current_state_receipt dataset names must exactly match pipeline-current")
+    for dataset, allowed_fields in EXPECTED_CURRENT_DATASETS.items():
+        rows = datasets.get(dataset)
+        if not isinstance(rows, list):
+            issues.append(f"current_state_receipt {dataset} must be an array")
+            continue
+        for row_index, row in enumerate(rows):
+            if not isinstance(row, dict):
+                issues.append(f"current_state_receipt {dataset}[{row_index}] must be an object")
+                continue
+            if set(row) - allowed_fields:
+                issues.append(f"current_state_receipt {dataset}[{row_index}] contains fields outside the reviewed projection")
+            receipt_rows.append((dataset, row))
+
+    row_count = receipt.get("row_count")
+    if type(row_count) is not int or row_count < 0:
+        issues.append("current_state_receipt row_count must be a non-negative integer")
+    else:
+        if row_count != len(receipt_rows):
+            issues.append("current_state_receipt row_count does not match its datasets")
+        if row_count >= MAX_CURRENT_RECEIPT_ROWS:
+            issues.append("current_state_receipt row_count is at or above the analyzer cap")
+    expected_dataset_truncation = {name: False for name in sorted(EXPECTED_CURRENT_DATASETS)}
+    if receipt.get("dataset_truncation_possible") != expected_dataset_truncation:
+        issues.append("current_state_receipt dataset truncation metadata is missing or non-false")
+
+    supplied_hash = receipt.get("receipt_sha256")
+    unsigned = dict(receipt)
+    unsigned.pop("receipt_sha256", None)
+    expected_receipt_hash = f"sha256:{hashlib.sha256(_canonical_json(unsigned)).hexdigest()}"
+    if supplied_hash != expected_receipt_hash:
+        issues.append("current_state_receipt receipt_sha256 does not match its contents")
+
+    current_nodes = current_state.get("nodes") if isinstance(current_state, dict) else None
+    if not isinstance(current_nodes, list):
+        current_nodes = []
+    current_time = _parse_observed_at(current_state.get("observed_at")) if isinstance(current_state, dict) else None
+    if receipt_time is not None and current_time != receipt_time:
+        issues.append("current_state.observed_at does not match current_state_receipt collected_at")
+    max_age = current_state.get("max_age_minutes") if isinstance(current_state, dict) else None
+    if type(max_age) is not int or not 0 < max_age <= MAX_CURRENT_RECEIPT_AGE_MINUTES:
+        issues.append("current_state.max_age_minutes must be bounded between 1 and 15")
+
+    aliases: dict[tuple[str, str], list[int]] = defaultdict(list)
+    receipt_identities: set[tuple[str, str]] = set()
+    for row_index, (dataset, row) in enumerate(receipt_rows):
+        kind = CURRENT_DATASET_KINDS[dataset]
+        qualified, short = _current_row_identity(row)
+        if qualified is None or short is None:
+            issues.append(f"current_state_receipt {dataset}[{row_index}] lacks a qualified object identity")
+            continue
+        identity = (kind, qualified.casefold())
+        if identity in receipt_identities:
+            issues.append(f"current_state_receipt contains duplicate object identity: {_safe(qualified)}")
+        receipt_identities.add(identity)
+        for alias in {qualified, short, str(row.get("id", ""))} - {""}:
+            aliases[(kind, alias.casefold())].append(row_index)
+
+    matched_rows: set[int] = set()
+    for node in current_nodes:
+        if not isinstance(node, dict) or not node.get("id"):
+            continue
+        node_id = str(node["id"])
+        kind = _kind(node)
+        matches = aliases.get((kind, node_id.casefold()), [])
+        if len(matches) != 1:
+            reason = "does not identify" if not matches else "ambiguously identifies"
+            issues.append(f"current_state node {_safe(node_id)} {reason} one receipt dataset row")
+            continue
+        row_index = matches[0]
+        if row_index in matched_rows:
+            issues.append(f"current_state node {_safe(node_id)} duplicates a receipt dataset identity")
+            continue
+        matched_rows.add(row_index)
+        dataset, row = receipt_rows[row_index]
+        current_status = str(node.get("status", node.get("state", ""))).upper()
+        receipt_status = _current_row_status(dataset, row)
+        if not current_status or not receipt_status or current_status != receipt_status:
+            issues.append(f"current_state node {_safe(node_id)} status does not match its receipt dataset row")
+    if len(matched_rows) != len(receipt_rows):
+        issues.append("current_state.nodes do not cover every current_state_receipt dataset row")
+    if len(current_nodes) != len(receipt_rows):
+        issues.append("current_state.nodes count does not match current_state_receipt row_count")
+
+    return {
+        "status": "verified" if not issues else "unverifiable",
+        "complete": not issues,
+        "issues": issues,
+        "binding": {
+            "receipt_nodes": len(receipt_rows),
+            "current_nodes": len(current_nodes),
+            "matched_nodes": len(matched_rows),
+        },
+    }
+
+
 def _reject_secret_fields(value: Any, path: str = "snapshot") -> None:
     if isinstance(value, dict):
         for key, child in value.items():
@@ -253,6 +488,74 @@ def _parse_node_time(value: Any) -> datetime | None:
     if parsed.tzinfo is None:
         return None
     return parsed.astimezone(timezone.utc)
+
+
+def _state_envelope_issues(snapshot: dict[str, Any], observed_at: datetime | None) -> tuple[list[str], dict[str, Any]]:
+    """Validate optional near-live state and reconcile it with bounded history."""
+    current = snapshot.get("current_state")
+    history = snapshot.get("history")
+    current_present = current is not None
+    history_present = history is not None
+    issues: list[str] = []
+    reconciliation: dict[str, Any] = {"current_nodes": 0, "history_nodes": 0, "drift": []}
+    if not current_present and not history_present:
+        return issues, reconciliation
+    if current_present:
+        if not isinstance(current, dict):
+            issues.append("current_state must be an object")
+            current = {}
+        if current.get("status") != "collected":
+            issues.append("current_state status is not collected")
+        current_at = _parse_observed_at(current.get("observed_at"))
+        if current_at is None:
+            issues.append("current_state.observed_at must be a valid, non-future timezone timestamp")
+        elif observed_at is not None:
+            if current_at > observed_at:
+                issues.append("current_state.observed_at cannot be after observed_at")
+            max_age = current.get("max_age_minutes", 15)
+            if type(max_age) is not int or max_age <= 0:
+                issues.append("current_state.max_age_minutes must be a positive integer")
+            elif (observed_at - current_at).total_seconds() > max_age * 60:
+                issues.append("current_state is stale for its declared freshness bound")
+        if current.get("complete") is not True:
+            issues.append("current_state completeness is not proven")
+        current_nodes = current.get("nodes", [])
+        if not isinstance(current_nodes, list):
+            issues.append("current_state.nodes must be an array")
+            current_nodes = []
+        elif any(not isinstance(node, dict) or not node.get("id") for node in current_nodes):
+            issues.append("current_state.nodes must contain identified objects")
+        reconciliation["current_nodes"] = len(current_nodes)
+        reconciliation["current_state_observed_at"] = current.get("observed_at")
+    if history_present:
+        if not isinstance(history, dict):
+            issues.append("history must be an object")
+            history = {}
+        if history.get("status") != "collected":
+            issues.append("history status is not collected")
+        if history.get("complete") is not True:
+            issues.append("history completeness is not proven")
+        history_nodes = history.get("nodes", [])
+        if not isinstance(history_nodes, list):
+            issues.append("history.nodes must be an array")
+            history_nodes = []
+        elif any(not isinstance(node, dict) or not node.get("id") for node in history_nodes):
+            issues.append("history.nodes must contain identified objects")
+        reconciliation["history_nodes"] = len(history_nodes)
+        reconciliation["history_latest_at"] = history.get("latest_at")
+    if current_present and history_present and reconciliation["current_nodes"] and reconciliation["history_nodes"]:
+        current_by_id = {str(node["id"]): node for node in current.get("nodes", []) if isinstance(node, dict) and node.get("id")}
+        history_by_id = {str(node["id"]): node for node in history.get("nodes", []) if isinstance(node, dict) and node.get("id")}
+        for node_id in sorted(set(current_by_id) & set(history_by_id)):
+            current_status = str(current_by_id[node_id].get("status", current_by_id[node_id].get("state", ""))).upper()
+            history_status = str(history_by_id[node_id].get("status", history_by_id[node_id].get("state", ""))).upper()
+            if current_status and history_status and current_status != history_status:
+                reconciliation["drift"].append(
+                    {"id": _safe(node_id), "current": current_status, "history": history_status}
+                )
+        if reconciliation["drift"]:
+            issues.append("current state and history disagree for one or more objects")
+    return issues, reconciliation
 
 
 def _history_node_id(
@@ -344,13 +647,20 @@ def _collector_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
         nodes.append(node)
     if not nodes:
         return snapshot
-    return {
+    normalized = {
         "observed_at": receipt.get("collected_at"),
         "evidence_source": "shared Snowflake evidence collector",
         "nodes": nodes,
         "edges": snapshot.get("edges", []),
         "collector_receipt": _safe_value(receipt),
     }
+    # Keep operator-supplied near-live/history envelopes beside collector rows;
+    # dropping them here would silently turn a reconciliation request into a
+    # history-only claim.
+    for key in ("current_state", "current_state_receipt", "history"):
+        if key in snapshot:
+            normalized[key] = snapshot[key]
+    return normalized
 
 
 def normalize_snapshot(snapshot: Any) -> tuple[dict[str, dict[str, Any]], list[tuple[str, str]], list[dict[str, str]]]:
@@ -817,6 +1127,10 @@ def _dependency_chains(
 def analyze(snapshot: Any) -> dict[str, Any]:
     if isinstance(snapshot, dict):
         snapshot = _collector_snapshot(snapshot)
+        if "nodes" not in snapshot and isinstance(snapshot.get("current_state"), dict):
+            snapshot = dict(snapshot)
+            snapshot["nodes"] = snapshot["current_state"].get("nodes", [])
+            snapshot["edges"] = snapshot["current_state"].get("edges", snapshot.get("edges", []))
     nodes, edges, dangling_edges = normalize_snapshot(snapshot)
     components = _connected_components(nodes, edges)
     observed_at = _parse_observed_at(snapshot.get("observed_at"))
@@ -835,7 +1149,36 @@ def analyze(snapshot: Any) -> dict[str, Any]:
         evidence_gaps.append("shared collector receipt did not include dependency edges")
     if len(components) > 1:
         evidence_gaps.append("node inventory contains disconnected components")
+    state_issues, state_reconciliation = _state_envelope_issues(snapshot, observed_at)
+    evidence_gaps.extend(state_issues)
+    current_receipt = snapshot.get("current_state_receipt") if isinstance(snapshot, dict) else None
+    if snapshot.get("current_state") is not None or current_receipt is not None:
+        current_receipt_assessment = _current_state_receipt_assessment(
+            current_receipt,
+            snapshot.get("current_state"),
+            observed_at,
+        )
+        evidence_gaps.extend(current_receipt_assessment["issues"])
+    else:
+        current_receipt_assessment = {
+            "status": "not_used",
+            "complete": True,
+            "issues": [],
+            "binding": {"receipt_nodes": 0, "current_nodes": 0, "matched_nodes": 0},
+        }
     findings = [finding for node_id in sorted(nodes) for finding in classify_node(nodes[node_id])]
+    for drift in state_reconciliation["drift"]:
+        if drift["id"] in nodes:
+            findings.append(
+                _finding(
+                    "CURRENT_HISTORY_STATE_DRIFT",
+                    nodes[drift["id"]],
+                    "high",
+                    f"current={drift['current']} history={drift['history']}",
+                    "Recollect both current state and bounded history; do not choose a recovery action from stale history alone.",
+                    12,
+                )
+            )
     findings.sort(key=lambda f: (f["recovery_rank"], f["node_id"], f["code"]))
     recovery = []
     seen_actions: set[str] = set()
@@ -870,8 +1213,11 @@ def analyze(snapshot: Any) -> dict[str, Any]:
         "graph_complete": not dangling_edges
         and len(components) == 1
         and not (collector_receipt and not edges)
-        and not receipt_issues,
+        and not receipt_issues
+        and current_receipt_assessment["complete"],
         "connected_components": [[_safe(node_id) for node_id in group] for group in components],
+        "state_reconciliation": state_reconciliation,
+        "current_state_receipt_assessment": current_receipt_assessment,
         "findings": findings,
         "ordered_recovery": recovery,
         "post_fix_invariants": invariants,

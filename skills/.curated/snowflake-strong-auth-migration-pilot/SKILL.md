@@ -38,6 +38,9 @@ PERSON, SERVICE, and LEGACY_SERVICE principals, maps each bound workload to a
   and approved canary/change window. The inventory must include a separately
   tested break-glass identity and a canary receipt with positive and negative
   outcomes.
+- Current `SHOW USERS` and historical `USERS` snapshots plus bounded,
+  privacy-safe `LOGIN_HISTORY` evidence. User-name hashes only are accepted;
+  future or out-of-window events and incomplete receipts block coverage.
 - Python 3.10+ for the bundled stdlib analyzer. No Snowflake driver or network
   access is required.
 
@@ -89,6 +92,8 @@ and verify account, edition, connector, client behavior, and feature availabilit
    Preserve its source views, SQL hash, row count, timestamp, and non-claims;
    supplement it with an owner-approved workload inventory because the shared
    auth query intentionally does not discover runtime ownership or credentials.
+   Reconcile the `auth-current` snapshot with historical users and keep the
+   LOGIN_HISTORY receipt and approved enforcement window attached to the packet.
    If `truncation_possible` is true, partition the inventory before making a
    migration-denominator or absence claim.
 2. Create a sanitized JSON inventory. Include method names and booleans only;

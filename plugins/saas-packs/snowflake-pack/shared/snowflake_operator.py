@@ -21,6 +21,7 @@ class CommandSpec:
 
     script: str
     description: str
+    input_flag: str | None = "--input"
     output_flag: str | None = None
     markdown_flag: str | None = None
     selectors: tuple[str, ...] = ()
@@ -37,6 +38,12 @@ COMMANDS: dict[str, CommandSpec] = {
         script="skills/snowflake-pipeline-guardian/scripts/analyze_pipeline_state.py",
         description="Classify a read-only pipeline evidence snapshot.",
     ),
+    "cost-leak": CommandSpec(
+        script="skills/snowflake-cost-leak-hunter/scripts/analyze_cost_evidence.py",
+        description="Analyze normalized cost evidence and rank leak hypotheses.",
+        output_flag="--json-out",
+        markdown_flag="--markdown-out",
+    ),
     "query-id-forensics": CommandSpec(
         script="skills/snowflake-query-forensics/scripts/analyze_query_evidence.py",
         description="Analyze query-ID evidence and operator statistics.",
@@ -47,11 +54,23 @@ COMMANDS: dict[str, CommandSpec] = {
         script="skills/snowflake-deploy-medic/scripts/analyze_deploy_evidence.py",
         description="Classify read-only deployment evidence.",
     ),
+    "data-quality": CommandSpec(
+        script="skills/snowflake-data-quality-sentinel/scripts/analyze_data_quality.py",
+        description="Assess normalized data-quality evidence.",
+        input_flag=None,
+    ),
     "access-review": CommandSpec(
         script="skills/snowflake-access-guardian/scripts/analyze_access.py",
         description="Analyze a sanitized authorization graph.",
         output_flag="--out",
         selectors=("principal", "object", "privilege"),
+    ),
+    "strong-auth": CommandSpec(
+        script=(
+            "skills/snowflake-strong-auth-migration-pilot/scripts/analyze_auth.py"
+        ),
+        description="Plan a non-password authentication migration pilot.",
+        output_flag="--out",
     ),
     "failover-readiness": CommandSpec(
         script=(
@@ -130,7 +149,11 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def analyzer_arguments(spec: CommandSpec, args: argparse.Namespace) -> list[str]:
-    command = [sys.executable, str(resolve_script(spec)), "--input", str(args.input)]
+    command = [sys.executable, str(resolve_script(spec))]
+    if spec.input_flag is None:
+        command.append(str(args.input))
+    else:
+        command.extend((spec.input_flag, str(args.input)))
     if args.output is not None and spec.output_flag is not None:
         command.extend((spec.output_flag, str(args.output)))
     if spec.markdown_flag and args.markdown_output is not None:

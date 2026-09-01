@@ -19,6 +19,14 @@ and `INFORMATION_SCHEMA` views, but record their retention and latency. A grant
 view is not the full authorization engine: check ownership, database roles,
 secondary roles, object policies, shares, and the role that executed the query.
 
+Pair historical grant and role evidence with current operator-scoped collection:
+`access-current` (`SHOW GRANTS ON ACCOUNT`) and `access-future --database
+<validated-identifier>`. Reconcile current and historical sets by grantee,
+privilege, scope, object type, and object. The collector cap and
+`truncation_possible` receipt field must be clear before making an absence or
+complete-graph claim; Account Usage views may lag, so preserve collection
+timestamps and source views.
+
 The analyzer accepts sanitized JSON rather than credentials or a live connection.
 Recommended minimum shape:
 

@@ -17,6 +17,10 @@ sys.path.insert(0, str(SHARED))
 import snowflake_operator as operator  # noqa: E402
 
 FIXTURES = {
+    "cost-leak": PACK_ROOT
+    / "skills/snowflake-cost-leak-hunter/tests/fixtures/cost_evidence.json",
+    "data-quality": PACK_ROOT
+    / "skills/snowflake-data-quality-sentinel/tests/fixtures/pass.json",
     "pipeline-triage": PACK_ROOT
     / "skills/snowflake-pipeline-guardian/scripts/fixtures/stale-chain.json",
     "query-id-forensics": PACK_ROOT
@@ -33,6 +37,22 @@ FIXTURES = {
     / "skills/snowflake-governance-coverage-auditor/tests/fixtures/gaps.json",
     "native-app-release": PACK_ROOT
     / "skills/snowflake-native-app-release-sheriff/tests/fixtures/clean-qa.json",
+    "strong-auth": PACK_ROOT
+    / "skills/snowflake-strong-auth-migration-pilot/tests/fixtures/auth.json",
+}
+
+APPROVED_COMMANDS = {
+    "access-review",
+    "collect",
+    "cost-leak",
+    "data-quality",
+    "deploy-preflight",
+    "failover-readiness",
+    "governance-coverage",
+    "native-app-release",
+    "pipeline-triage",
+    "query-id-forensics",
+    "strong-auth",
 }
 
 ACCESS_SELECTORS = [
@@ -58,8 +78,12 @@ def run(*arguments: object, timeout: int = 30) -> subprocess.CompletedProcess[by
 def direct_command(
     command: str, fixture: Path, *extra: object
 ) -> subprocess.CompletedProcess[bytes]:
-    script = operator.resolve_script(operator.COMMANDS[command])
-    return run(script, "--input", fixture, *extra)
+    spec = operator.COMMANDS[command]
+    script = operator.resolve_script(spec)
+    input_arguments = (
+        [fixture] if spec.input_flag is None else [spec.input_flag, fixture]
+    )
+    return run(script, *input_arguments, *extra)
 
 
 def wrapper_command(
@@ -69,6 +93,9 @@ def wrapper_command(
 
 
 class SnowflakeOperatorTests(unittest.TestCase):
+    def test_registry_is_the_exact_approved_command_set(self) -> None:
+        self.assertEqual(set(operator.COMMANDS), APPROVED_COMMANDS)
+
     def test_registry_paths_are_confined_to_the_pack(self) -> None:
         root = PACK_ROOT.resolve()
         for name, spec in operator.COMMANDS.items():
@@ -84,7 +111,7 @@ class SnowflakeOperatorTests(unittest.TestCase):
     def test_help_is_fast_and_lists_every_command(self) -> None:
         top = run(OPERATOR, "--help")
         self.assertEqual(top.returncode, 0, top.stderr.decode())
-        for command in operator.COMMANDS:
+        for command in APPROVED_COMMANDS:
             self.assertIn(command.encode(), top.stdout)
             with self.subTest(command=command):
                 result = run(OPERATOR, command, "--help")
@@ -122,7 +149,7 @@ class SnowflakeOperatorTests(unittest.TestCase):
                     self.assertNotIn(b"Traceback", result.stderr)
 
     def test_stdout_only_analyzers_write_atomic_output(self) -> None:
-        for command in ("pipeline-triage", "deploy-preflight"):
+        for command in ("data-quality", "pipeline-triage", "deploy-preflight"):
             fixture = FIXTURES[command]
             direct = direct_command(command, fixture)
             self.assertEqual(direct.returncode, 0, direct.stderr.decode())
@@ -139,50 +166,56 @@ class SnowflakeOperatorTests(unittest.TestCase):
                 leftovers = list(output.parent.glob(f".{output.name}.*.tmp"))
                 self.assertEqual(leftovers, [])
 
-    def test_query_output_and_markdown_options_are_translated(self) -> None:
-        fixture = FIXTURES["query-id-forensics"]
-        spec = operator.COMMANDS["query-id-forensics"]
+    def test_json_and_markdown_options_are_translated(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            direct_json = root / "direct.json"
-            direct_markdown = root / "direct.md"
-            wrapped_json = root / "wrapped.json"
-            wrapped_markdown = root / "wrapped.md"
-            direct = direct_command(
-                "query-id-forensics",
-                fixture,
-                spec.output_flag,
-                direct_json,
-                spec.markdown_flag,
-                direct_markdown,
-            )
-            wrapped = wrapper_command(
-                "query-id-forensics",
-                fixture,
-                "--output",
-                wrapped_json,
-                "--markdown-output",
-                wrapped_markdown,
-            )
-            self.assertEqual(wrapped.returncode, direct.returncode)
-            self.assertEqual(wrapped.stdout, direct.stdout)
-            self.assertEqual(wrapped.stderr, direct.stderr)
-            self.assertEqual(wrapped_json.read_bytes(), direct_json.read_bytes())
-            self.assertEqual(
-                wrapped_markdown.read_bytes(), direct_markdown.read_bytes()
-            )
-
-    def test_native_output_flags_and_access_selectors_are_translated(self) -> None:
-        commands = (
-            "access-review",
-            "governance-coverage",
-            "native-app-release",
-        )
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            for command in commands:
+            for command in ("cost-leak", "query-id-forensics"):
                 fixture = FIXTURES[command]
                 spec = operator.COMMANDS[command]
+                direct_json = root / f"{command}-direct.json"
+                direct_markdown = root / f"{command}-direct.md"
+                wrapped_json = root / f"{command}-wrapped.json"
+                wrapped_markdown = root / f"{command}-wrapped.md"
+                with self.subTest(command=command):
+                    direct = direct_command(
+                        command,
+                        fixture,
+                        spec.output_flag,
+                        direct_json,
+                        spec.markdown_flag,
+                        direct_markdown,
+                    )
+                    wrapped = wrapper_command(
+                        command,
+                        fixture,
+                        "--output",
+                        wrapped_json,
+                        "--markdown-output",
+                        wrapped_markdown,
+                    )
+                    self.assertEqual(wrapped.returncode, direct.returncode)
+                    self.assertEqual(wrapped.stdout, direct.stdout)
+                    self.assertEqual(wrapped.stderr, direct.stderr)
+                    self.assertEqual(
+                        wrapped_json.read_bytes(), direct_json.read_bytes()
+                    )
+                    self.assertEqual(
+                        wrapped_markdown.read_bytes(), direct_markdown.read_bytes()
+                    )
+
+    def test_native_output_flags_and_access_selectors_are_translated(self) -> None:
+        commands = {
+            "access-review": "--out",
+            "governance-coverage": "--out",
+            "native-app-release": "--output",
+            "strong-auth": "--out",
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for command, expected_output_flag in commands.items():
+                fixture = FIXTURES[command]
+                spec = operator.COMMANDS[command]
+                self.assertEqual(spec.output_flag, expected_output_flag)
                 direct_output = root / f"{command}-direct.json"
                 wrapped_output = root / f"{command}-wrapped.json"
                 selectors = ACCESS_SELECTORS if command == "access-review" else []
@@ -204,9 +237,11 @@ class SnowflakeOperatorTests(unittest.TestCase):
                     self.assertEqual(wrapped.returncode, direct.returncode)
                     self.assertEqual(wrapped.stdout, direct.stdout)
                     self.assertEqual(wrapped.stderr, direct.stderr)
-                    self.assertEqual(
-                        wrapped_output.read_bytes(), direct_output.read_bytes()
-                    )
+                    self.assertEqual(wrapped_output.exists(), direct_output.exists())
+                    if direct_output.exists():
+                        self.assertEqual(
+                            wrapped_output.read_bytes(), direct_output.read_bytes()
+                        )
 
     def test_failover_output_option_is_translated(self) -> None:
         spec = operator.COMMANDS["failover-readiness"]

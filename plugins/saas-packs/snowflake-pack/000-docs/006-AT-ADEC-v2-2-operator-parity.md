@@ -1,8 +1,8 @@
 # Snowflake v2.2 Operator Parity Decision
 
-**Status:** accepted implementation authority  
-**Date:** 2026-08-31  
-**Owner:** marketplace CTO  
+**Status:** accepted implementation authority
+**Date:** 2026-08-31
+**Owner:** marketplace CTO
 **Beads:** `claude-zhc5.9`, `claude-na0m`, `claude-na0m.1`
 
 ## Decision

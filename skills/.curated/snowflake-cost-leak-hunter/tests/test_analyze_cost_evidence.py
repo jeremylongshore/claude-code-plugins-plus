@@ -14,6 +14,16 @@ from pathlib import Path
 SKILL_DIR = Path(__file__).resolve().parents[1]
 SCRIPT = SKILL_DIR / "scripts" / "analyze_cost_evidence.py"
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
+COST_SQL_DIR = SKILL_DIR.parents[1] / "shared" / "evidence" / "sql"
+SUPPLEMENTAL_SQL = (
+    "cost-adaptive.sql",
+    "cost-storage.sql",
+    "cost-transfer.sql",
+    "cost-internal-transfer.sql",
+    "cost-ai-functions.sql",
+    "cost-resource-monitors.sql",
+    "cost-budgets.sql",
+)
 
 SPEC = importlib.util.spec_from_file_location("analyze_cost_evidence", SCRIPT)
 assert SPEC and SPEC.loader
@@ -49,6 +59,53 @@ class CostEvidenceTests(unittest.TestCase):
         body = dict(receipt)
         body.pop("receipt_sha256", None)
         receipt["receipt_sha256"] = f"sha256:{hashlib.sha256(COLLECTOR.canonical_json(body)).hexdigest()}"
+
+    def add_baseline_surface_inventory(self, data: dict) -> None:
+        sources = {
+            "warehouse_metering": ("SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY", "3"),
+            "query_attribution": ("SNOWFLAKE.ACCOUNT_USAGE.QUERY_ATTRIBUTION_HISTORY", "8"),
+            "warehouse_load": ("SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_LOAD_HISTORY", "8"),
+            "serverless_usage": ("SNOWFLAKE.ACCOUNT_USAGE.METERING_HISTORY", "8"),
+        }
+        data["metadata"]["expected_surfaces"] = list(sources)
+        data["surface_inventory"] = [
+            {
+                "surface": surface,
+                "source": source,
+                "status": "available",
+                "privilege_status": "verified",
+                "latest_timestamp": data["source_max_times"][surface],
+                "documented_latency_hours": latency,
+                "truncated": False,
+            }
+            for surface, (source, latency) in sources.items()
+        ]
+
+    def valid_supplemental_receipt(self, data: dict, surface: str) -> dict:
+        collector_surface, dataset = MODULE.SUPPLEMENTAL_RECEIPT_SURFACES[surface]
+        rows = MODULE._supplemental_input_rows(data, surface)
+        receipt_rows = [
+            {key: value for key, value in row.items() if key != "covered_domains"}
+            for row in rows
+        ]
+        raw = [{"EVIDENCE": {"_dataset": dataset, **row}} for row in receipt_rows]
+        path, sql, sources = COLLECTOR.load_surface(collector_surface)
+        return COLLECTOR.build_receipt(
+            collector_surface,
+            "readonly",
+            sql,
+            sources,
+            raw=raw,
+            collected_at=data["metadata"]["generated_at"],
+            template_sql=sql,
+            template_path=path,
+        )
+
+    def add_supplemental_receipts(self, data: dict) -> None:
+        data["supplemental_receipts"] = {
+            surface: self.valid_supplemental_receipt(data, surface)
+            for surface in MODULE.SUPPLEMENTAL_RECEIPT_SURFACES
+        }
 
     def test_classifies_observed_estimated_and_at_risk_separately(self) -> None:
         result = MODULE.analyze(self.load_fixture("cost_evidence.json"))
@@ -152,10 +209,43 @@ class CostEvidenceTests(unittest.TestCase):
 
     def test_verified_collector_receipt_is_accepted(self) -> None:
         data = self.load_fixture("cost_evidence.json")
+        self.add_baseline_surface_inventory(data)
         data["collector_receipt"] = self.valid_receipt(data)
         result = MODULE.analyze(data)
         self.assertEqual(result["collector_receipt_assessment"]["status"], "verified")
         self.assertFalse(result["completeness_claim_blocked"])
+
+    def test_verified_supplemental_receipts_bind_every_cost_surface(self) -> None:
+        data = self.load_fixture("cost_evidence_v2.json")
+        data["collector_receipt"] = self.valid_receipt(data)
+        self.add_supplemental_receipts(data)
+        result = MODULE.analyze(data)
+        self.assertTrue(
+            all(item["status"] == "verified" for item in result["supplemental_receipt_assessments"].values())
+        )
+        self.assertFalse(result["completeness_claim_blocked"])
+
+    def test_missing_or_tampered_supplemental_receipt_blocks_completeness(self) -> None:
+        for mutation in ("missing", "template", "payload", "hash"):
+            data = self.load_fixture("cost_evidence_v2.json")
+            data["collector_receipt"] = self.valid_receipt(data)
+            self.add_supplemental_receipts(data)
+            if mutation == "missing":
+                del data["supplemental_receipts"]["storage_usage"]
+            else:
+                receipt = data["supplemental_receipts"]["storage_usage"]
+                if mutation == "template":
+                    receipt["source_metadata"]["template"] = "cost-transfer.sql"
+                    self.rehash_receipt(receipt)
+                elif mutation == "payload":
+                    receipt["datasets"]["storage_usage"][0]["storage_bytes"] = "999999"
+                    self.rehash_receipt(receipt)
+                else:
+                    receipt["receipt_sha256"] = "sha256:" + "0" * 64
+            result = MODULE.analyze(data)
+            assessment = result["supplemental_receipt_assessments"]["storage_usage"]
+            self.assertNotEqual(assessment["status"], "verified")
+            self.assertTrue(result["completeness_claim_blocked"])
 
     def test_truncated_or_error_receipt_blocks_completeness(self) -> None:
         for mutation in ("truncate", "error"):
@@ -243,8 +333,10 @@ class CostEvidenceTests(unittest.TestCase):
                 text=True,
             )
             self.assertEqual(completed.returncode, 0, completed.stderr)
-            self.assertEqual(json.loads(json_out.read_text())["schema_version"], "1.0")
+            self.assertEqual(json.loads(json_out.read_text())["schema_version"], "2.0")
             markdown = markdown_out.read_text(encoding="utf-8")
+            self.assertIn("## Typed cost ledger", markdown)
+            self.assertIn("## Findings", markdown)
             self.assertIn("## Confirmed observations", markdown)
             self.assertIn("## Estimated amounts", markdown)
             self.assertIn("## At-risk opportunities", markdown)
@@ -284,6 +376,13 @@ class CostEvidenceTests(unittest.TestCase):
             "max_size_steps": 1,
             "measurement_window": "same 7-day window",
             "success_criteria": "p95 latency <= baseline and no queue regression",
+            "rollback": {
+                "warehouse_size": "MEDIUM",
+                "thresholds": {
+                    "max_p95_latency_regression_pct": "5",
+                    "max_queue_regression_pct": "0",
+                },
+            },
         }
         result = MODULE.analyze(data)
         self.assertEqual(len(result["attribution_completeness"]), 2)
@@ -298,6 +397,207 @@ class CostEvidenceTests(unittest.TestCase):
         item = next(item for item in result["attribution_completeness"] if item["warehouse_name"] == "ETL_WH")
         self.assertEqual(item["status"], "unknown")
         self.assertEqual(item["unattributed_credits"], "unknown")
+        self.assertIn("COST_ADAPTIVE_ATTRIBUTION_GAP", {finding["code"] for finding in result["findings"]})
+
+    def test_typed_ledger_prevents_query_and_ai_double_counting(self) -> None:
+        result = MODULE.analyze(self.load_fixture("cost_evidence_v2.json"))
+        ledger = {item["entry_id"]: item for item in result["cost_ledger"]}
+        self.assertTrue(ledger["warehouse-compute-total"]["aggregation_eligible"])
+        self.assertFalse(ledger["query-attributed-compute"]["aggregation_eligible"])
+        self.assertEqual(ledger["query-attributed-compute"]["parent_id"], "warehouse-compute-total")
+        self.assertTrue(ledger["serverless-total:AI_SERVICES"]["aggregation_eligible"])
+        self.assertFalse(ledger["ai-functions-attribution"]["aggregation_eligible"])
+        self.assertEqual(
+            ledger["ai-functions-attribution"]["parent_id"],
+            "serverless-total:AI_SERVICES",
+        )
+        self.assertFalse(ledger["adaptive-compute-attribution"]["aggregation_eligible"])
+        self.assertEqual(ledger["adaptive-compute-attribution"]["parent_id"], "warehouse-compute-total")
+        additive_credits = sum(
+            Decimal(item["amount"])
+            for item in result["cost_ledger"]
+            if item["aggregation_eligible"] and item["unit"] == "credits"
+        )
+        self.assertEqual(additive_credits, Decimal("28"))
+        self.assertNotIn("COST_DOUBLE_COUNT_RISK", {finding["code"] for finding in result["findings"]})
+
+    def test_storage_and_transfer_are_context_not_invoice_totals(self) -> None:
+        result = MODULE.analyze(self.load_fixture("cost_evidence_v2.json"))
+        ledger = {item["entry_id"]: item for item in result["cost_ledger"]}
+        self.assertEqual(ledger["storage-context:table_storage"]["ledger_role"], "context")
+        self.assertFalse(ledger["storage-context:table_storage"]["aggregation_eligible"])
+        self.assertEqual(ledger["data_transfer_usage-context"]["unit"], "bytes")
+        self.assertEqual(ledger["internal_transfer_usage-context"]["unit"], "bytes")
+        self.assertIn("COST_INVOICE_ONLY", {finding["code"] for finding in result["findings"]})
+
+    def test_missing_and_region_unavailable_surfaces_are_not_zero(self) -> None:
+        data = self.load_fixture("cost_evidence_v2.json")
+        data["adaptive_usage"] = []
+        adaptive = next(item for item in data["surface_inventory"] if item["surface"] == "adaptive_usage")
+        adaptive["status"] = "region_unavailable"
+        adaptive.pop("latest_timestamp")
+        result = MODULE.analyze(data)
+        codes = {finding["code"] for finding in result["findings"]}
+        self.assertIn("COST_ADAPTIVE_REGION_UNAVAILABLE", codes)
+        self.assertNotIn("adaptive-compute-attribution", {item["entry_id"] for item in result["cost_ledger"]})
+
+        absent = self.load_fixture("cost_evidence_v2.json")
+        absent["surface_inventory"] = [
+            row for row in absent["surface_inventory"] if row["surface"] != "data_transfer_usage"
+        ]
+        absent["data_transfer_usage"] = []
+        result = MODULE.analyze(absent)
+        self.assertTrue(result["completeness_claim_blocked"])
+        self.assertTrue(
+            any(
+                finding["code"] == "COST_SURFACE_MISSING"
+                and finding["surface"] == "data_transfer_usage"
+                for finding in result["findings"]
+            )
+        )
+
+    def test_explicit_latency_boundary_drives_stale_finding(self) -> None:
+        data = self.load_fixture("cost_evidence_v2.json")
+        storage = next(item for item in data["surface_inventory"] if item["surface"] == "storage_usage")
+        storage["latest_timestamp"] = "2026-08-08T09:59:59Z"
+        result = MODULE.analyze(data)
+        self.assertTrue(
+            any(
+                finding["code"] == "COST_SURFACE_STALE" and finding["surface"] == "storage_usage"
+                for finding in result["findings"]
+            )
+        )
+
+    def test_surface_inventory_rejects_unreviewed_source_substitution(self) -> None:
+        data = self.load_fixture("cost_evidence_v2.json")
+        storage = next(item for item in data["surface_inventory"] if item["surface"] == "storage_usage")
+        storage["source"] = "CUSTOM_DB.PUBLIC.UNREVIEWED_STORAGE"
+        with self.assertRaises(MODULE.EvidenceError):
+            MODULE.analyze(data)
+
+    def test_control_gaps_cover_serverless_budget_and_monitor_boundaries(self) -> None:
+        data = self.load_fixture("cost_evidence_v2.json")
+        data["controls_inventory"] = {
+            "resource_monitors": [],
+            "budgets": [],
+            "visibility_is_complete": False,
+        }
+        result = MODULE.analyze(data)
+        codes = {finding["code"] for finding in result["findings"]}
+        self.assertIn("COST_RESOURCE_MONITOR_COVERAGE_GAP", codes)
+        self.assertIn("COST_BUDGET_COVERAGE_GAP", codes)
+        self.assertIn("COST_SERVERLESS_MONITOR_GAP", codes)
+
+    def test_ai_total_without_detail_is_an_attribution_gap(self) -> None:
+        data = self.load_fixture("cost_evidence_v2.json")
+        data["ai_usage"] = []
+        result = MODULE.analyze(data)
+        self.assertIn("COST_AI_ATTRIBUTION_GAP", {finding["code"] for finding in result["findings"]})
+
+    def test_rate_conversion_stays_estimate_even_when_invoice_reconciled(self) -> None:
+        data = self.load_fixture("cost_evidence_v2.json")
+        data["credit_rates"]["warehouse"]["invoice_reconciled"] = True
+        result = MODULE.analyze(data)
+        entry = next(item for item in result["cost_ledger"] if item["entry_id"] == "estimate:warehouse-compute-total")
+        self.assertEqual(entry["ledger_role"], "estimate")
+        self.assertFalse(entry["aggregation_eligible"])
+        self.assertEqual(entry["invoice_reconciliation"], "reconciled")
+
+    def test_invoice_statement_is_separate_from_rate_estimates(self) -> None:
+        data = self.load_fixture("cost_evidence_v2.json")
+        data["invoice_usage"] = [
+            {
+                "start_time": "2026-08-01T00:00:00Z",
+                "end_time": "2026-08-08T00:00:00Z",
+                "statement_id": "statement-2026-08",
+                "domain": "account-billing-period",
+                "currency": "USD",
+                "amount": "125.50",
+            }
+        ]
+        result = MODULE.analyze(data)
+        invoice = next(item for item in result["cost_ledger"] if item["ledger_role"] == "invoice-only")
+        estimate = next(item for item in result["cost_ledger"] if item["ledger_role"] == "estimate")
+        self.assertEqual(invoice["invoice_reconciliation"], "invoice_only")
+        self.assertNotEqual(invoice["overlap_key"], estimate["overlap_key"])
+        self.assertFalse(estimate["aggregation_eligible"])
+
+    def test_duplicate_invoice_denominator_is_a_double_count_blocker(self) -> None:
+        data = self.load_fixture("cost_evidence_v2.json")
+        invoice = {
+            "start_time": "2026-08-01T00:00:00Z",
+            "end_time": "2026-08-08T00:00:00Z",
+            "statement_id": "statement-duplicate",
+            "domain": "account-billing-period",
+            "currency": "USD",
+            "amount": "125.50",
+        }
+        data["invoice_usage"] = [dict(invoice), dict(invoice)]
+        result = MODULE.analyze(data)
+        self.assertIn("COST_DOUBLE_COUNT_RISK", {finding["code"] for finding in result["findings"]})
+        self.assertTrue(result["completeness_claim_blocked"])
+
+    def test_right_sizing_requires_explicit_rollback_thresholds(self) -> None:
+        data = self.load_fixture("cost_evidence_v2.json")
+        data["metadata"]["right_sizing"] = {
+            "warehouse": "ETL_WH",
+            "current_size": "MEDIUM",
+            "candidate_sizes": ["SMALL"],
+            "max_size_steps": 1,
+            "measurement_window": "same seven-day workload window",
+            "success_criteria": "no p95 latency regression",
+        }
+        result = MODULE.analyze(data)
+        self.assertEqual(result["right_sizing_experiment"]["status"], "incomplete")
+        self.assertIn("COST_EXPERIMENT_ROLLBACK_UNBOUNDED", {finding["code"] for finding in result["findings"]})
+
+    def test_rejects_raw_sql_and_presigned_urls(self) -> None:
+        for field, value in (
+            ("query_text", "select customer_email from pii"),
+            ("presigned_url", "https://example.invalid/object?signature=secret"),
+        ):
+            data = self.load_fixture("cost_evidence_v2.json")
+            data["ai_usage"][0][field] = value
+            with self.subTest(field=field), self.assertRaises(MODULE.EvidenceError):
+                MODULE.analyze(data)
+
+    def test_supplemental_sql_is_bounded_read_only_and_redacted(self) -> None:
+        forbidden = ("ALTER ", "CALL ", "CREATE ", "DELETE ", "DROP ", "GRANT ", "INSERT ", "MERGE ", "REVOKE ", "UPDATE ")
+        for name in SUPPLEMENTAL_SQL:
+            path = COST_SQL_DIR / name
+            self.assertTrue(path.is_file(), name)
+            sql = path.read_text(encoding="utf-8")
+            normalized = " ".join(
+                line.split("--", 1)[0].strip() for line in sql.splitlines() if line.split("--", 1)[0].strip()
+            ).upper()
+            with self.subTest(name=name):
+                self.assertTrue(normalized.startswith(("SELECT ", "SHOW ")))
+                self.assertIn("LIMIT ", normalized)
+                self.assertFalse(any(token in normalized for token in forbidden))
+                self.assertNotIn("QUERY_TEXT", normalized)
+                self.assertNotIn("PRESIGNED", normalized)
+
+    def test_v2_ledger_and_findings_are_deterministic_under_row_reordering(self) -> None:
+        original = self.load_fixture("cost_evidence_v2.json")
+        reordered = self.load_fixture("cost_evidence_v2.json")
+        reordered["surface_inventory"].reverse()
+        for key in (
+            "warehouse_metering",
+            "query_attribution",
+            "warehouse_load",
+            "serverless_usage",
+            "adaptive_usage",
+            "storage_usage",
+            "data_transfer_usage",
+            "internal_transfer_usage",
+            "ai_usage",
+        ):
+            reordered[key].reverse()
+        first = MODULE.analyze(original)
+        second = MODULE.analyze(reordered)
+        self.assertEqual(first["cost_ledger"], second["cost_ledger"])
+        self.assertEqual(first["findings"], second["findings"])
+        self.assertEqual(first["surface_inventory"], second["surface_inventory"])
 
 
 if __name__ == "__main__":

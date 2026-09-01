@@ -75,8 +75,12 @@ class CollectorTests(unittest.TestCase):
                     self.assertNotRegex(sql, rf"\b{column}\b")
 
     def test_current_state_show_surfaces_export_only_safe_pipe_projections(self) -> None:
+        auth = MODULE.load_surface("auth-current")[1]
         pipeline = MODULE.load_surface("pipeline-current")[1]
         replication = MODULE.load_surface("replication-current")[1]
+        self.assertIn("SHOW USERS\n->> SELECT OBJECT_CONSTRUCT_KEEP_NULL", auth)
+        self.assertIn("'user_name_sha256', SHA2", auth)
+        self.assertNotIn("SHOW USERS LIMIT", auth)
         self.assertIn("SHOW TASKS IN ACCOUNT\n->> SELECT OBJECT_CONSTRUCT_KEEP_NULL", pipeline)
         self.assertIn("SHOW REPLICATION GROUPS\n->> SELECT OBJECT_CONSTRUCT_KEEP_NULL", replication)
         self.assertNotIn("RESULT_SCAN", pipeline)
@@ -88,6 +92,20 @@ class CollectorTests(unittest.TestCase):
         data_quality = MODULE.strip_sql_comments_and_strings(MODULE.load_surface("data-quality-current")[1]).upper()
         self.assertNotIn("WITHIN_GROUP", data_quality)
         self.assertNotRegex(data_quality, r"\bFILTER\b")
+        auth_projection = MODULE.strip_sql_comments_and_strings(auth).casefold()
+        for forbidden in (
+            "login_name",
+            "display_name",
+            "first_name",
+            "last_name",
+            "email",
+            "comment",
+            "default_namespace",
+            "default_warehouse",
+            "default_role",
+        ):
+            with self.subTest(auth_field=forbidden):
+                self.assertNotIn(forbidden, auth_projection)
 
     def test_gate_rejects_mutation_and_session_changes(self) -> None:
         for sql in (
@@ -127,6 +145,31 @@ class CollectorTests(unittest.TestCase):
         datasets, _ = MODULE.normalize_cli_json([{"EVIDENCE": {"_dataset": "users", "has_password": True}}])
         self.assertTrue(datasets["users"][0]["has_password"])
 
+    def test_auth_current_rejects_raw_show_users_fields(self) -> None:
+        raw_show_row = {
+            "EVIDENCE": {
+                "_dataset": "current_users",
+                "user_name_sha256": "a" * 64,
+                "email": "person@example.com",
+                "login_name": "person",
+                "display_name": "Person Name",
+                "comment": "customer metadata",
+            }
+        }
+        with self.assertRaises(MODULE.CollectionError):
+            MODULE.normalize_cli_json([raw_show_row], surface="auth-current")
+        safe = {
+            "EVIDENCE": {
+                "_dataset": "current_users",
+                "user_name_sha256": "a" * 64,
+                "disabled": False,
+                "type": "PERSON",
+                "has_password": True,
+            }
+        }
+        datasets, _ = MODULE.normalize_cli_json([safe], surface="auth-current")
+        self.assertEqual(datasets["current_users"][0]["user_name_sha256"], "a" * 64)
+
     def test_relevant_sql_surfaces_are_deterministically_ordered(self) -> None:
         for surface in ("cost", "query", "pipeline"):
             with self.subTest(surface=surface):
@@ -141,6 +184,24 @@ class CollectorTests(unittest.TestCase):
         receipt = MODULE.build_receipt("query", "readonly", sql, ["QUERY_HISTORY"], raw=raw)
         self.assertEqual(receipt["row_limit"], 1000)
         self.assertTrue(receipt["truncation_possible"])
+
+    def test_receipt_detects_aggregate_multi_dataset_limit(self) -> None:
+        raw = [
+            {"EVIDENCE": {"_dataset": "queries", "id": str(index)}}
+            for index in range(500)
+        ] + [
+            {"EVIDENCE": {"_dataset": "warehouses", "id": str(index)}}
+            for index in range(500)
+        ]
+        receipt = MODULE.build_receipt(
+            "query", "readonly", "SELECT 1 LIMIT 1000", ["QUERY_HISTORY"], raw=raw
+        )
+        self.assertTrue(receipt["truncation_possible"])
+        self.assertFalse(any(receipt["dataset_truncation_possible"].values()))
+
+    def test_account_wide_pipeline_show_queries_are_bounded(self) -> None:
+        sql = MODULE.load_surface("pipeline-current")[1]
+        self.assertEqual(len(__import__("re").findall(r"\bLIMIT\s+10000\b", sql)), 4)
 
     def test_runner_uses_profile_only_and_emits_provenance(self) -> None:
         captured = {}
@@ -268,6 +329,25 @@ class CollectorTests(unittest.TestCase):
         self.assertNotIn("rawsecret", rendered)
         self.assertIn("[REDACTED_CREDENTIAL]", rendered)
         self.assertEqual(receipt["row_count"], 0)
+
+    def test_failed_dynamic_collection_redacts_selector(self) -> None:
+        selector = "01customer-query-id"
+
+        def runner(command, **kwargs):
+            return subprocess.CompletedProcess(
+                command,
+                5,
+                stdout="",
+                stderr=f"query {selector} was not visible in database ANALYTICS",
+            )
+
+        receipt, code = MODULE.execute_surface(
+            "query-insights", "readonly", query_id=selector, runner=runner
+        )
+        self.assertEqual(code, 5)
+        rendered = json.dumps(receipt)
+        self.assertNotIn(selector, rendered)
+        self.assertIn("[REDACTED_SELECTOR]", rendered)
 
     def test_cli_offline_normalization_writes_atomically(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -6,7 +6,7 @@
   },
   "stats": {
     "totalPlugins": 439,
-    "totalSkills": 3017,
+    "totalSkills": 3019,
     "totalCommands": 85,
     "pluginsWithSkills": 407,
     "byCategory": {
@@ -10265,8 +10265,8 @@
       "slug": "snowflake-pack",
       "name": "snowflake-pack",
       "displayName": "snowflake pack",
-      "description": "Eight model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, and failover",
-      "version": "2.1.0",
+      "description": "Ten model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, failover, and Native Apps",
+      "version": "2.2.0",
       "category": "saas-packs",
       "keywords": [
         "snowflake",
@@ -10275,7 +10275,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 8,
+      "skillCount": 10,
       "commandCount": 0,
       "installCommand": "/plugin install snowflake-pack",
       "sourcePath": "./plugins/saas-packs/snowflake-pack",

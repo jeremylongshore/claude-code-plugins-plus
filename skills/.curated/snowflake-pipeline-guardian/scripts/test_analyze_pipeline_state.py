@@ -10,6 +10,7 @@ import unittest
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import analyze_pipeline_state as analyzer  # noqa: E402
+import collect_snowflake_evidence as collector  # noqa: E402
 
 
 class PipelineAnalyzerTests(unittest.TestCase):
@@ -34,6 +35,102 @@ class PipelineAnalyzerTests(unittest.TestCase):
         }
         receipt["receipt_sha256"] = "sha256:" + hashlib.sha256(analyzer._canonical_json(receipt)).hexdigest()
         return receipt
+
+    def current_state_receipt(self):
+        path, template_sql, rendered_sql, sources, selector = collector.render_surface("pipeline-current")
+        raw = [
+            {
+                "EVIDENCE": {
+                    "_dataset": "task_current",
+                    "database_name": "DB",
+                    "schema_name": "PUBLIC",
+                    "name": "LOAD_TASK",
+                    "id": "101",
+                    "state": "STARTED",
+                    "predecessors": [],
+                    "schedule": "USING CRON 0 * * * * UTC",
+                    "last_committed_on": "2026-08-30T12:00:00Z",
+                }
+            },
+            {
+                "EVIDENCE": {
+                    "_dataset": "stream_current",
+                    "database_name": "DB",
+                    "schema_name": "PUBLIC",
+                    "name": "ORDERS_STREAM",
+                    "table_name": "ORDERS",
+                    "stale": False,
+                    "stale_after": "2026-09-01T12:00:00Z",
+                    "invalid": False,
+                }
+            },
+            {
+                "EVIDENCE": {
+                    "_dataset": "dynamic_table_current",
+                    "database_name": "DB",
+                    "schema_name": "PUBLIC",
+                    "name": "ORDERS_DT",
+                    "scheduling_state": "RUNNING",
+                    "target_lag": "5 minutes",
+                    "refresh_mode": "INCREMENTAL",
+                    "warehouse": "PIPELINE_WH",
+                }
+            },
+            {
+                "EVIDENCE": {
+                    "_dataset": "pipe_current",
+                    "database_name": "DB",
+                    "schema_name": "PUBLIC",
+                    "name": "ORDERS_PIPE",
+                    "type": "AUTO_INGEST",
+                    "invalid_reason": None,
+                    "last_ingested_timestamp": "2026-08-30T11:59:00Z",
+                }
+            },
+        ]
+        return collector.build_receipt(
+            "pipeline-current",
+            "readonly-observer",
+            rendered_sql,
+            sources,
+            raw=raw,
+            collected_at="2026-08-30T12:00:00Z",
+            template_sql=template_sql,
+            template_path=path,
+            selector=selector,
+        )
+
+    def current_state_snapshot(self):
+        nodes = [
+            {"id": "DB.PUBLIC.LOAD_TASK", "kind": "TASK", "status": "STARTED"},
+            {"id": "DB.PUBLIC.ORDERS_STREAM", "kind": "STREAM", "status": "OK"},
+            {"id": "DB.PUBLIC.ORDERS_DT", "kind": "DYNAMIC_TABLE", "status": "RUNNING"},
+            {"id": "DB.PUBLIC.ORDERS_PIPE", "kind": "PIPE", "status": "OK"},
+        ]
+        return {
+            "observed_at": "2026-08-30T12:05:00Z",
+            "evidence_source": "pipeline-current receipt fixture",
+            "nodes": nodes,
+            "edges": [
+                {"from": "DB.PUBLIC.ORDERS_STREAM", "to": "DB.PUBLIC.LOAD_TASK"},
+                {"from": "DB.PUBLIC.LOAD_TASK", "to": "DB.PUBLIC.ORDERS_DT"},
+                {"from": "DB.PUBLIC.ORDERS_DT", "to": "DB.PUBLIC.ORDERS_PIPE"},
+            ],
+            "current_state": {
+                "status": "collected",
+                "observed_at": "2026-08-30T12:00:00Z",
+                "max_age_minutes": 15,
+                "complete": True,
+                "nodes": nodes,
+            },
+            "current_state_receipt": self.current_state_receipt(),
+        }
+
+    @staticmethod
+    def rehash(receipt):
+        unsigned = dict(receipt)
+        unsigned.pop("receipt_sha256", None)
+        receipt["receipt_sha256"] = "sha256:" + hashlib.sha256(analyzer._canonical_json(unsigned)).hexdigest()
 
     def test_upstream_stale_stream_is_first_causal_finding(self):
         report = analyzer.analyze(self.load("stale-chain.json"))
@@ -227,6 +324,23 @@ class PipelineAnalyzerTests(unittest.TestCase):
         self.assertFalse(report["graph_complete"])
         self.assertIn("TASK_SKIPPED", {item["code"] for item in report["findings"]})
 
+    def test_collector_adapter_preserves_current_state_envelope(self):
+        report = analyzer.analyze(
+            {
+                "collector_receipt": self.collector_receipt(),
+                "current_state": {
+                    "status": "collected",
+                    "observed_at": "2026-08-30T11:58:00Z",
+                    "max_age_minutes": 15,
+                    "complete": True,
+                    "nodes": [{"id": "load_task", "kind": "TASK", "status": "SUCCEEDED"}],
+                    "edges": [],
+                },
+            }
+        )
+        self.assertEqual(report["state_reconciliation"]["current_nodes"], 1)
+        self.assertNotIn("current_state must be an object", report["evidence_gaps"])
+
     def test_verified_receipt_can_support_complete_bounded_graph(self):
         report = analyzer.analyze(
             {
@@ -337,6 +451,121 @@ class PipelineAnalyzerTests(unittest.TestCase):
             {node_id for component in report["connected_components"] for node_id in component},
             {"load_task@run-a|1", "load_task@run-a|2"},
         )
+
+    def test_current_state_is_fresh_and_reconciled_to_history(self):
+        report = analyzer.analyze(self.load("current-state-drift.json"))
+        self.assertEqual(report["state_reconciliation"]["current_nodes"], 2)
+        self.assertEqual(report["state_reconciliation"]["history_nodes"], 2)
+        self.assertEqual(report["state_reconciliation"]["drift"][0]["id"], "load_task")
+        self.assertIn("CURRENT_HISTORY_STATE_DRIFT", {item["code"] for item in report["findings"]})
+        self.assertIn("current state and history disagree", " ".join(report["evidence_gaps"]))
+
+    def test_stale_or_incomplete_current_state_blocks_completeness(self):
+        data = self.load("current-state-drift.json")
+        data["current_state"]["observed_at"] = "2026-08-29T12:00:00Z"
+        data["current_state"]["complete"] = False
+        report = analyzer.analyze(data)
+        self.assertFalse(report["evidence_complete"])
+        self.assertTrue(any("current_state" in gap for gap in report["evidence_gaps"]))
+
+    def test_pipeline_current_receipt_verifies_and_binds_all_nodes(self):
+        report = analyzer.analyze(self.current_state_snapshot())
+        assessment = report["current_state_receipt_assessment"]
+        self.assertEqual(assessment["status"], "verified")
+        self.assertEqual(
+            assessment["binding"],
+            {"receipt_nodes": 4, "current_nodes": 4, "matched_nodes": 4},
+        )
+        self.assertTrue(report["evidence_complete"])
+        self.assertTrue(report["graph_complete"])
+
+    def test_pipeline_current_receipt_tamper_is_rejected(self):
+        data = self.current_state_snapshot()
+        data["current_state_receipt"]["datasets"]["task_current"][0]["state"] = "SUSPENDED"
+        report = analyzer.analyze(data)
+        self.assertFalse(report["evidence_complete"])
+        self.assertTrue(
+            any("receipt_sha256 does not match" in issue for issue in report["current_state_receipt_assessment"]["issues"])
+        )
+
+    def test_pipeline_current_receipt_rejects_rehashed_provenance_mismatch(self):
+        for variant in ("schema", "surface", "status", "errors", "sources", "template", "sql_hash"):
+            with self.subTest(variant=variant):
+                data = self.current_state_snapshot()
+                receipt = data["current_state_receipt"]
+                if variant == "schema":
+                    receipt["schema_version"] = "2"
+                elif variant == "surface":
+                    receipt["surface"] = "pipeline"
+                elif variant == "status":
+                    receipt["status"] = "error"
+                elif variant == "errors":
+                    receipt["errors"] = [{"message": "permission denied"}]
+                elif variant == "sources":
+                    receipt["source_views"] = ["SHOW TASKS"]
+                elif variant == "template":
+                    receipt["source_metadata"]["template"] = "foreign.sql"
+                else:
+                    receipt["sql_sha256"] = "sha256:" + "0" * 64
+                    receipt["template_sha256"] = "sha256:" + "0" * 64
+                    receipt["rendered_sql_sha256"] = "sha256:" + "0" * 64
+                self.rehash(receipt)
+                report = analyzer.analyze(data)
+                self.assertFalse(report["evidence_complete"])
+                self.assertFalse(report["graph_complete"])
+                self.assertTrue(report["current_state_receipt_assessment"]["issues"])
+
+    def test_pipeline_current_receipt_stale_truncated_or_missing_fails_closed(self):
+        for variant in ("stale", "truncated", "missing"):
+            with self.subTest(variant=variant):
+                data = self.current_state_snapshot()
+                if variant == "stale":
+                    data["observed_at"] = "2026-08-30T12:30:01Z"
+                elif variant == "truncated":
+                    data["current_state_receipt"]["truncation_possible"] = True
+                    data["current_state_receipt"]["dataset_truncation_possible"]["task_current"] = True
+                    self.rehash(data["current_state_receipt"])
+                else:
+                    del data["current_state_receipt"]
+                report = analyzer.analyze(data)
+                self.assertFalse(report["evidence_complete"])
+                self.assertFalse(report["graph_complete"])
+                self.assertNotEqual(report["current_state_receipt_assessment"]["status"], "verified")
+
+    def test_pipeline_current_receipt_rejects_dataset_and_projection_drift(self):
+        for variant in ("dataset", "raw_definition", "row_count", "cap"):
+            with self.subTest(variant=variant):
+                data = self.current_state_snapshot()
+                receipt = data["current_state_receipt"]
+                if variant == "dataset":
+                    receipt["datasets"]["foreign_current"] = []
+                    receipt["dataset_truncation_possible"]["foreign_current"] = False
+                elif variant == "raw_definition":
+                    receipt["datasets"]["pipe_current"][0]["definition"] = "COPY INTO private_target"
+                elif variant == "row_count":
+                    receipt["row_count"] = 3
+                else:
+                    receipt["row_count"] = analyzer.MAX_CURRENT_RECEIPT_ROWS
+                self.rehash(receipt)
+                report = analyzer.analyze(data)
+                self.assertFalse(report["evidence_complete"])
+                self.assertTrue(report["current_state_receipt_assessment"]["issues"])
+                self.assertNotIn("COPY INTO private_target", json.dumps(report))
+
+    def test_pipeline_current_payload_status_and_id_mismatches_fail_closed(self):
+        for variant in ("status", "id"):
+            with self.subTest(variant=variant):
+                data = self.current_state_snapshot()
+                if variant == "status":
+                    data["current_state"]["nodes"][0]["status"] = "SUSPENDED"
+                else:
+                    data["current_state"]["nodes"][0]["id"] = "DB.PUBLIC.WRONG_TASK"
+                report = analyzer.analyze(data)
+                self.assertFalse(report["evidence_complete"])
+                self.assertFalse(report["graph_complete"])
+                self.assertTrue(
+                    any(variant in issue or "identify" in issue for issue in report["current_state_receipt_assessment"]["issues"])
+                )
 
 
 if __name__ == "__main__":

@@ -126,6 +126,18 @@ A before/after comparison is defensible only after documenting:
 If these cannot be aligned, call the comparison directional or inconclusive rather than
 causal.
 
+## Collector reconciliation
+
+The bundled `query` receipt is historical and includes `QUERY_HISTORY` plus
+`WAREHOUSE_LOAD_HISTORY`; preserve source views, SQL hash, row cap, truncation flag,
+and receipt integrity hash. Query History may lag by up to 45 minutes. Collect
+operator evidence separately with `--surface query-operator-stats --query-id
+<opaque-id>` only for a completed query; Snowflake documents a 14-day retrieval
+window and warehouse visibility is required. Collect Query Insights with
+`--surface query-insights --query-id <opaque-id>`; its documented latency can be up
+to 90 minutes. The analyzer blocks completeness when a supplied sub-surface receipt
+is errored, mismatched, stale, or truncated.
+
 ## Redaction
 
 Default evidence excludes query text. Preserve query ID and hashes. Before sharing:

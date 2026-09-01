@@ -18,6 +18,14 @@ Invoice reconciliation status
 
 ## Required sections
 
+### Typed cost ledger
+
+For every entry include the domain, source, role, native unit, amount, parent ID,
+overlap key, aggregation eligibility, freshness, availability, and invoice status.
+Only `total` entries are additive without separate invoice evidence. Query and AI
+detail remain `attribution`; storage and transfer bytes remain `context`; currency
+conversions remain `estimate`.
+
 ### Confirmed observations
 
 List observed credits by source and category. “Confirmed” means confirmed in the
@@ -43,7 +51,13 @@ must include:
 ### Coverage and freshness
 
 List actual source ages and the official latency/coverage caveats checked during the
-run. “No rows” must be distinguishable from “surface unavailable.”
+run. “No rows” must be distinguishable from “surface unavailable,” “region
+unavailable,” “privilege error,” and “collection truncated.”
+
+Include both the baseline collector assessment and every expected supplemental
+receipt assessment. A complete claim requires the exact reviewed template hash,
+canonical receipt hash, expected source, normalized payload match, timestamp, and cap
+for each supplemental surface in scope.
 
 ### Approval queue
 

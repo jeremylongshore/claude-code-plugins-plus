@@ -11,7 +11,7 @@ allowed-tools: Read, Bash(python3:*)
 argument-hint: "[normalized-evidence.json]"
 model: inherit
 effort: high
-version: 2.1.0
+version: 2.2.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatibility: "Model-neutral; requires Python 3.10+. Optional collection requires Snowflake CLI with an existing read-only profile."
@@ -59,10 +59,32 @@ persist passwords, private keys, OAuth tokens, MFA codes, or temporary connectio
 flags. A permission or edition error is evidence, not authorization to switch to
 `ACCOUNTADMIN`.
 
+Read [`references/current-state.md`](references/current-state.md) before
+interpreting a historical result. Current association schedule/status,
+execution role, and notification state are separate evidence and must be fresh
+enough for the declared decision. Never collect predicates, raw group values,
+failed rows, SQL text, endpoints, or customer identifiers.
+
+Collect the current-state receipt with the bundled, selector-free surface and
+place the unmodified receipt at root `current_state_receipt`:
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
+  --surface data-quality-current \
+  --connection readonly-observer \
+  --output ./snowflake-data-quality-current-receipt.json
+```
+
+The analyzer verifies the exact receipt schema, reviewed SQL hashes, source
+view, canonical receipt hash, timestamp, row cap/count, dataset name, and every
+current association field that the SQL projects. A missing, altered, stale,
+truncated, or payload-mismatched receipt blocks monitoring completeness.
+
 ## Workflow
 
-1. Confirm the input contains the declared requirement denominator and the shared
-   collector receipt hash. Stop on raw failed rows, PII, credential fields, SQL
+1. Confirm the input contains the declared requirement denominator, the shared
+   collector receipt hash, and the root `current_state_receipt`. Stop on raw
+   failed rows, filters, group values, endpoints, PII, credential fields, SQL
    text, or presigned URLs. If `truncation_possible` is true, narrow or partition
    the evidence window before issuing either verdict.
 2. Run the deterministic analyzer with `Bash`:
@@ -128,4 +150,5 @@ controls `monitoring_status`.
 
 - [Normalized evidence input contract](references/input-contract.md)
 - [Primary-source notes](references/source-notes.md)
+- [Current association and notification state](references/current-state.md)
 - [Snowflake data-quality monitoring documentation](https://docs.snowflake.com/en/user-guide/data-quality-intro)

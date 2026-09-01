@@ -299,8 +299,16 @@ def _current_state_receipt_assessment(
         elif age_seconds > MAX_CURRENT_RECEIPT_AGE_MINUTES * 60:
             issues.append("current_state_receipt is stale for the fixed freshness bound")
 
-    if receipt.get("row_limit") is not None or receipt.get("dataset_row_limits") != {}:
-        issues.append("current_state_receipt cap metadata does not match the uncapped reviewed SHOW template")
+    expected_dataset_limits = {
+        name: MAX_CURRENT_RECEIPT_ROWS for name in sorted(EXPECTED_CURRENT_DATASETS)
+    }
+    if (
+        receipt.get("row_limit") != MAX_CURRENT_RECEIPT_ROWS
+        or receipt.get("dataset_row_limits") != expected_dataset_limits
+    ):
+        issues.append(
+            "current_state_receipt cap metadata does not match the reviewed bounded SHOW template"
+        )
     if receipt.get("truncation_possible") is not False:
         issues.append("current_state_receipt is truncated or has an unknown truncation state")
 

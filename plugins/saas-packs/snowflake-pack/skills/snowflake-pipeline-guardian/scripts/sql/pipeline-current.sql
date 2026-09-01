@@ -8,7 +8,8 @@ SHOW TASKS IN ACCOUNT
   'schedule', "schedule", 'last_committed_on', "last_committed_on"
 ) AS EVIDENCE
 FROM $1
-ORDER BY "database_name", "schema_name", "name";
+ORDER BY "database_name", "schema_name", "name"
+LIMIT 10000;
 SHOW STREAMS IN ACCOUNT
 ->> SELECT OBJECT_CONSTRUCT_KEEP_NULL(
   '_dataset', 'stream_current',
@@ -17,7 +18,8 @@ SHOW STREAMS IN ACCOUNT
   'invalid', "invalid"
 ) AS EVIDENCE
 FROM $1
-ORDER BY "database_name", "schema_name", "name";
+ORDER BY "database_name", "schema_name", "name"
+LIMIT 10000;
 SHOW DYNAMIC TABLES IN ACCOUNT
 ->> SELECT OBJECT_CONSTRUCT_KEEP_NULL(
   '_dataset', 'dynamic_table_current',
@@ -26,7 +28,8 @@ SHOW DYNAMIC TABLES IN ACCOUNT
   'refresh_mode', "refresh_mode", 'warehouse', "warehouse"
 ) AS EVIDENCE
 FROM $1
-ORDER BY "database_name", "schema_name", "name";
+ORDER BY "database_name", "schema_name", "name"
+LIMIT 10000;
 SHOW PIPES IN ACCOUNT
 ->> SELECT OBJECT_CONSTRUCT_KEEP_NULL(
   '_dataset', 'pipe_current',
@@ -35,4 +38,5 @@ SHOW PIPES IN ACCOUNT
   'last_ingested_timestamp', "last_ingested_timestamp"
 ) AS EVIDENCE
 FROM $1
-ORDER BY "database_name", "schema_name", "name";
+ORDER BY "database_name", "schema_name", "name"
+LIMIT 10000;

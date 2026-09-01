@@ -17,7 +17,8 @@
       "exit_code": 0,
       "changes": 0,
       "saved_plan_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "generated_at": "2026-08-30T11:55:00Z"
+      "generated_at": "2026-08-30T11:55:00Z",
+      "receipt_sha256": "sha256:3ef4163af8062d16fab30200e5ccfd4f53031405b4c3e019045e9ceedf8d69f6"
     },
     "resources": [],
     "preview_features": []
@@ -43,12 +44,19 @@
     "verified": true,
     "location": "s3://redacted-state-bucket/versions/42",
     "state_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-    "captured_at": "2026-08-30T11:35:00Z"
+    "captured_at": "2026-08-30T11:35:00Z",
+    "receipt_sha256": "sha256:58645d9e128ccd9b9e3fcae5c84982cbd804c9a49135f1756676e6e1b768e475"
   },
   "migrations": [
     {"path": "V1.0.0__init.sql", "type": "V", "version": "1.0.0", "checksum": "same", "applied_checksum": "same"},
     {"path": "R__views.sql", "type": "R", "checksum": "same-r", "applied_checksum": "same-r"}
   ],
+  "provider_migrations_verified": true,
+  "provider_migrations": [],
+  "dbt_projects_verified": true,
+  "dbt_projects": [],
+  "post_change_invariants_verified": true,
+  "post_change_invariants": [],
   "tools": {"snowflake_cli": {"version": "3.12.0"}, "python_connector": {"version": "3.17.2"}},
   "bcr": {
     "checked": true,

@@ -152,6 +152,13 @@ REDACTIONS = (
     (re.compile(r"\b[a-z][a-z0-9+.-]*://[^/\s:@]+:[^@\s/]+@\S+", re.IGNORECASE), "[REDACTED_CONNECTION_URL]"),
     (re.compile(r"https?://\S+[?&](?:X-Amz-|X-Goog-|sig=|signature=)\S*", re.IGNORECASE), "[REDACTED_PRESIGNED_URL]"),
 )
+AUTH_CURRENT_ALLOWED_KEYS = {
+    "_dataset",
+    "disabled",
+    "has_password",
+    "type",
+    "user_name_sha256",
+}
 
 
 class CollectionError(ValueError):
@@ -166,8 +173,11 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
-def sanitize_text(value: Any) -> str:
+def sanitize_text(value: Any, *, sensitive_values: tuple[str, ...] = ()) -> str:
     text = str(value)
+    for sensitive_value in sensitive_values:
+        if sensitive_value:
+            text = text.replace(sensitive_value, "[REDACTED_SELECTOR]")
     for pattern, replacement in REDACTIONS:
         text = pattern.sub(replacement, text)
     return text[:2000]
@@ -275,7 +285,11 @@ def render_surface(
     return path, template_sql, rendered_sql, sources, selector
 
 
-def normalize_cli_json(raw: Any) -> tuple[dict[str, list[dict[str, Any]]], int]:
+def normalize_cli_json(
+    raw: Any,
+    *,
+    surface: str | None = None,
+) -> tuple[dict[str, list[dict[str, Any]]], int]:
     if isinstance(raw, dict):
         rows = [raw]
     elif isinstance(raw, list):
@@ -294,6 +308,20 @@ def normalize_cli_json(raw: Any) -> tuple[dict[str, list[dict[str, Any]]], int]:
                 raise CollectionError(f"row {index} EVIDENCE is not valid JSON") from exc
         if not isinstance(payload, dict):
             raise CollectionError(f"row {index} evidence payload must be an object")
+        if surface == "auth-current":
+            unexpected = sorted(set(payload) - AUTH_CURRENT_ALLOWED_KEYS)
+            if unexpected:
+                raise CollectionError(
+                    "auth-current accepts only the reviewed privacy-safe projection; "
+                    f"unexpected fields: {', '.join(unexpected)}"
+                )
+            user_hash = payload.get("user_name_sha256")
+            if not isinstance(user_hash, str) or not re.fullmatch(
+                r"(?:sha256:)?[0-9a-fA-F]{64}", user_hash
+            ):
+                raise CollectionError(
+                    f"rows[{index}].user_name_sha256 is missing or not a SHA-256 digest"
+                )
         reject_secret_fields(payload, f"rows[{index}]")
         payload = dict(payload)
         dataset = str(payload.pop("_dataset", "rows"))
@@ -321,7 +349,7 @@ def build_receipt(
     datasets: dict[str, list[dict[str, Any]]] = {}
     row_count = 0
     if raw is not None:
-        datasets, row_count = normalize_cli_json(raw)
+        datasets, row_count = normalize_cli_json(raw, surface=surface)
         # Preserve the reviewed dataset identity even when Snowflake returns no
         # association rows. Consumers can distinguish a complete empty result
         # from a receipt whose expected dataset was removed.
@@ -332,7 +360,12 @@ def build_receipt(
     dataset_truncation = {
         name: row_limit is not None and len(rows) >= row_limit for name, rows in datasets.items()
     }
-    truncation_possible = any(dataset_truncation.values())
+    # A LIMIT applies to a statement's result set, not independently to each
+    # logical dataset encoded in that result. Conservatively fail closed when
+    # the aggregate output reaches the reviewed limit as well.
+    truncation_possible = any(dataset_truncation.values()) or (
+        row_limit is not None and row_count >= row_limit
+    )
     canonical_template = template_sql if template_sql is not None else sql
     template_hash = f"sha256:{hashlib.sha256(canonical_template.encode('utf-8')).hexdigest()}"
     rendered_hash = f"sha256:{hashlib.sha256(sql.encode('utf-8')).hexdigest()}"
@@ -446,7 +479,10 @@ def execute_surface(
             error = {
                 "code": "SNOW_CLI_FAILED",
                 "exit_code": completed.returncode,
-                "message": sanitize_text(completed.stderr or completed.stdout or "Snowflake CLI failed"),
+                "message": sanitize_text(
+                    completed.stderr or completed.stdout or "Snowflake CLI failed",
+                    sensitive_values=tuple(selector.values()),
+                ),
             }
             return (
                 build_receipt(

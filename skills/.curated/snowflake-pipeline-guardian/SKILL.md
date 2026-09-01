@@ -86,6 +86,11 @@ Collect a timestamped, redacted snapshot with:
 Read [`references/privilege-and-boundaries.md`](references/privilege-and-boundaries.md)
 before requesting additional access.
 
+For current-versus-history reconciliation and freshness/completeness rules, read
+[`references/current-state.md`](references/current-state.md). Current `SHOW`
+metadata is separate from Account Usage history; report stale, incomplete, or
+disagreeing surfaces instead of selecting one source silently.
+
 For model-neutral live control-plane evidence, use the shared read-only collector:
 
 ```bash
@@ -103,6 +108,23 @@ coverage or absence. An ingested receipt with no edges is incomplete, never a
 healthy graph. The analyzer also binds the receipt to the exact vendored pipeline
 SQL hash and expected Account Usage views; a self-consistent but foreign receipt
 cannot prove completeness.
+
+Collect the separate near-live control plane with the reviewed SHOW projection:
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
+  --surface pipeline-current --connection <approved-readonly-profile> \
+  --output ./snowflake-pipeline-current.json
+```
+
+Attach that unmodified receipt at root key `current_state_receipt`, and map its
+four datasets to `current_state.nodes`. Set `current_state.observed_at` to the
+receipt's `collected_at`. The analyzer verifies the exact receipt schema, sources,
+vendored template hashes, canonical receipt hash, freshness, row bounds, dataset
+names, and reviewed projections. It then requires a one-to-one object identity,
+kind, and status match between current nodes and receipt rows. Missing, stale,
+truncated, altered, foreign, or payload-mismatched receipts fail closed and cannot
+support evidence or graph completeness.
 
 ## Instructions
 
@@ -249,3 +271,5 @@ file identity and target-key idempotence are proven.
   — least-privilege, redaction, and advisory-mode rules.
 - [`references/source-notes.md`](references/source-notes.md) — research scope and
   primary Snowflake documentation links; re-check live docs for current syntax.
+- [`references/current-state.md`](references/current-state.md) — current control-plane
+  metadata, history reconciliation, freshness, and graph completeness contract.

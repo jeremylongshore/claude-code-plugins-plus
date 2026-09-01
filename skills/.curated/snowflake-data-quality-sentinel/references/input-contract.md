@@ -1,9 +1,11 @@
 # Input contract
 
-The analyzer accepts one JSON object with exactly five top-level fields:
+The analyzer accepts one JSON object with the required top-level fields
 `metadata`, `requirements`, `associations`, `measurements`, and
-`source_metadata`. Collection and normalization must exclude query/SQL text,
-customer rows, failed-row payloads, PII, credentials, and signed URLs.
+`source_metadata`, plus optional `current_state` and `current_state_receipt`.
+Collection and normalization must exclude query/SQL text, filters, raw group
+values, endpoints, customer rows, failed-row payloads, PII, credentials, and
+signed URLs.
 
 ## Metadata
 
@@ -59,6 +61,26 @@ represent that explicitly in `source_metadata`; never synthesize success. A
 source `collected_at` must not precede `window_start` and must be no later than
 the envelope `collected_at`; a non-null `latest_record_at` must fall within the
 observation window.
+
+## Current-state receipt
+
+When `current_state` is used for monitoring claims, supply the unmodified output
+of `collect_snowflake_evidence.py --surface data-quality-current` at root
+`current_state_receipt`. The analyzer fail-closes unless the receipt has the
+exact v1 collector schema; surface `data-quality-current`; status `collected`;
+an empty `errors` array; the exact source view, template name, and bundled SQL
+hashes; no selector; a valid canonical `receipt_sha256`; a collection timestamp
+equal to `current_state.observed_at`; the reviewed 5000-row cap; internally
+consistent row counts; no truncation; and exactly the `data_quality_current`
+dataset.
+
+Every current association must match a receipt row by `reference_id`. The row's
+metric and referenced object identity must match the governed requirement, and
+its schedule status, notification status, and execution role must match the
+normalized current association. Notification status is also reconciled. The SQL
+does not project the normalized association `status` or notification delivery
+timestamp, so those fields remain separate evidence and are not represented as
+receipt-bound facts.
 
 ## Finding semantics
 

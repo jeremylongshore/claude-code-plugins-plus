@@ -123,6 +123,98 @@ def _verification_receipts(value: object, path: str) -> list[dict]:
     return value
 
 
+def _optional_rows(doc: dict, names: tuple[str, ...], path: str) -> tuple[list[dict] | None, str | None]:
+    """Return an explicitly supplied snapshot without treating omission as empty."""
+    for name in names:
+        if name in doc:
+            return _rows(doc, name), name
+    return None, None
+
+
+def _access_row_key(row: dict, *, future: bool = False, role: bool = False) -> tuple[str, ...]:
+    if role:
+        return (_upper(row.get("name") or row.get("role_name")), _upper(row.get("role_type")))
+    if future:
+        return (
+            _upper(row.get("grantee")),
+            _upper(row.get("privilege")),
+            _upper(row.get("scope_type")),
+            _upper(row.get("scope") or row.get("container")),
+            _upper(row.get("object_type")),
+        )
+    return (
+        _upper(row.get("grantee")),
+        _upper(row.get("grantee_type")),
+        _upper(row.get("privilege")),
+        _upper(row.get("object") or row.get("object_name")),
+        _upper(row.get("object_type")),
+    )
+
+
+def _reconcile_access_rows(current: list[dict] | None, historical: list[dict] | None, *, future: bool = False, role: bool = False) -> dict:
+    current_keys = {_access_row_key(row, future=future, role=role) for row in current or []}
+    historical_keys = {_access_row_key(row, future=future, role=role) for row in historical or []}
+    current_only = sorted(current_keys - historical_keys)
+    historical_only = sorted(historical_keys - current_keys)
+    if current is None or historical is None:
+        status = "NOT_SUPPLIED"
+    elif not current_only and not historical_only:
+        status = "MATCHED"
+    else:
+        status = "MISMATCH"
+    return {
+        "status": status,
+        "current_count": len(current_keys) if current is not None else None,
+        "historical_count": len(historical_keys) if historical is not None else None,
+        "current_only": [list(item) for item in current_only[:100]],
+        "historical_only": [list(item) for item in historical_only[:100]],
+        "difference_truncated": len(current_only) > 100 or len(historical_only) > 100,
+    }
+
+
+def _receipt_assessment(value: object, label: str) -> dict:
+    if value is None:
+        return {"status": "NOT_SUPPLIED", "complete": False, "issues": [f"{label} receipt not supplied"]}
+    if not isinstance(value, dict):
+        return {"status": "UNVERIFIABLE", "complete": False, "issues": [f"{label} receipt is not an object"]}
+    issues = []
+    expected_surface = {"current access": "access-current", "future access": "access-future"}.get(label)
+    if value.get("schema_version") != "1":
+        issues.append("schema_version is not 1")
+    if expected_surface and value.get("surface") != expected_surface:
+        issues.append(f"surface is not {expected_surface}")
+    if value.get("status") != "collected":
+        issues.append("status is not collected")
+    if value.get("errors"):
+        issues.append("collector reported an error")
+    if value.get("truncation_possible") is not False:
+        issues.append("truncation_possible is not false")
+    if not isinstance(value.get("source_views"), list) or not value.get("source_views"):
+        issues.append("source_views are missing")
+    selector = value.get("source_metadata", {}).get("selector") if isinstance(value.get("source_metadata"), dict) else None
+    expected_selector = {"database": True} if label == "future access" else {}
+    if selector != expected_selector:
+        issues.append("source_metadata.selector is not the expected privacy-safe binding")
+    if label == "future access":
+        if not isinstance(value.get("selector_fingerprint"), str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", value["selector_fingerprint"]):
+            issues.append("selector_fingerprint is missing or malformed")
+    elif value.get("selector_fingerprint") is not None:
+        issues.append("unexpected selector_fingerprint on unscoped receipt")
+    for field in ("sql_sha256", "template_sha256", "rendered_sql_sha256"):
+        if not isinstance(value.get(field), str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", value[field]):
+            issues.append(f"{field} is missing or malformed")
+    body = dict(value)
+    supplied_hash = body.pop("receipt_sha256", None)
+    canonical_body = json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    expected_hash = f"sha256:{hashlib.sha256(canonical_body).hexdigest()}"
+    if supplied_hash != expected_hash:
+        issues.append("receipt_sha256 is missing or invalid")
+    collected = _timestamp(value.get("collected_at"))
+    if collected is None or collected > datetime.now(timezone.utc):
+        issues.append("collected_at is invalid or in the future")
+    return {"status": "VERIFIED" if not issues else "UNVERIFIABLE", "complete": not issues, "issues": issues}
+
+
 def object_schema(object_name: str) -> str:
     parts = [part for part in _norm(object_name).split(".") if part]
     return ".".join(parts[:-1]) if len(parts) >= 2 else ""
@@ -164,9 +256,50 @@ def analyze(doc: dict, principal: str = "", object_name: str = "", privilege: st
     user_rows = _rows(doc, "users")
     grants = _rows(doc, "grants")
     future = _rows(doc, "future_grants")
+    current_roles, _ = _optional_rows(doc, ("current_roles", "current_show_roles"), "current_roles")
+    historical_roles, _ = _optional_rows(doc, ("historical_roles", "account_usage_roles"), "historical_roles")
+    historical_roles = role_rows if historical_roles is None and "historical_roles" not in doc and "account_usage_roles" not in doc else historical_roles
+    current_grants, current_grants_field = _optional_rows(
+        doc, ("current_grants", "current_show_grants", "current_snapshot_grants"), "current_grants"
+    )
+    historical_grants, historical_grants_field = _optional_rows(
+        doc, ("historical_grants", "account_usage_grants"), "historical_grants"
+    )
+    current_future, _ = _optional_rows(
+        doc, ("current_future_grants", "current_show_future_grants"), "current_future_grants"
+    )
+    historical_future, _ = _optional_rows(
+        doc, ("historical_future_grants", "account_usage_future_grants"), "historical_future_grants"
+    )
+    # The legacy `grants` and `future_grants` fields are the historical side of
+    # the contract. Explicit aliases take precedence when provided.
+    historical_grants = grants if historical_grants is None and "historical_grants" not in doc and "account_usage_grants" not in doc else historical_grants
+    historical_future = future if historical_future is None and "historical_future_grants" not in doc and "account_usage_future_grants" not in doc else historical_future
+    reconciliation = {
+        "roles": _reconcile_access_rows(current_roles, historical_roles, role=True),
+        "grants": _reconcile_access_rows(current_grants, historical_grants),
+        "future_grants": _reconcile_access_rows(current_future, historical_future, future=True),
+    }
+    completeness_blocked = any(item["status"] != "MATCHED" for item in reconciliation.values())
+    receipt = _receipt_assessment(
+        doc.get("current_receipt", doc.get("access_current_receipt")), "current access"
+    )
+    future_receipt = _receipt_assessment(
+        doc.get("future_receipt", doc.get("access_future_receipt")), "future access"
+    )
+    if not receipt["complete"] or (current_future is not None and not future_receipt["complete"]):
+        completeness_blocked = True
     metadata = doc.get("metadata", {})
     if not isinstance(metadata, dict):
         raise ValueError("metadata must be an object")
+    report_collected_at = _timestamp(metadata.get("collected_at"))
+    for label, item, raw in (("current", receipt, doc.get("current_receipt", doc.get("access_current_receipt"))), ("future", future_receipt, doc.get("future_receipt", doc.get("access_future_receipt")))):
+        receipt_at = _timestamp(raw.get("collected_at")) if isinstance(raw, dict) else None
+        if report_collected_at is not None and receipt_at is not None and receipt_at > report_collected_at:
+            item["status"] = "UNVERIFIABLE"
+            item["complete"] = False
+            item["issues"].append("collected_at is later than report collection")
+            completeness_blocked = True
     supplied_verification = doc.get("verification", {})
     if not isinstance(supplied_verification, dict):
         raise ValueError("verification must be an object")
@@ -612,6 +745,39 @@ def analyze(doc: dict, principal: str = "", object_name: str = "", privilege: st
             )
         )
 
+    for label, item in reconciliation.items():
+        if item["status"] == "NOT_SUPPLIED":
+            findings.append(
+                _finding(
+                    f"{label}-reconciliation-missing",
+                    "high",
+                    "access-reconciliation-missing",
+                    label,
+                    "Current SHOW evidence and historical Account Usage evidence were not both supplied; completeness and absence claims are blocked.",
+                )
+            )
+        elif item["status"] == "MISMATCH":
+            findings.append(
+                _finding(
+                    f"{label}-reconciliation-mismatch",
+                    "high",
+                    "access-reconciliation-mismatch",
+                    label,
+                    "Current and historical access snapshots differ. Investigate timing, revocation, future-grant precedence, and role context before making an access decision.",
+                )
+            )
+    for label, item in (("current", receipt), ("future", future_receipt)):
+        if not item["complete"] and (label == "current" or current_future is not None):
+            findings.append(
+                _finding(
+                    f"{label}-collector-receipt-unverifiable",
+                    "high",
+                    "collector-receipt-unverifiable",
+                    label,
+                    "The evidence collector receipt is missing, errored, stale, or potentially truncated; do not report a complete access graph.",
+                )
+            )
+
     findings.sort(key=lambda item: (SEVERITY_ORDER[item["severity"]], item["id"]))
     payload = json.dumps(doc, sort_keys=True, separators=(",", ":")).encode()
     return {
@@ -645,6 +811,14 @@ def analyze(doc: dict, principal: str = "", object_name: str = "", privilege: st
         "ownership_paths": sorted(ownership_paths, key=lambda item: (item["object"], item["path"])),
         "future_grant_precedence": future_precedence,
         "effective_access": requested,
+        "access_evidence_reconciliation": {
+            **reconciliation,
+            "current_grants_field": current_grants_field,
+            "historical_grants_field": historical_grants_field,
+            "current_receipt": receipt,
+            "future_receipt": future_receipt,
+        },
+        "completeness_claim_blocked": completeness_blocked,
         "verification": {
             "positive": [
                 "Run SHOW GRANTS and a representative allowed query under the workload's primary/secondary-role context."

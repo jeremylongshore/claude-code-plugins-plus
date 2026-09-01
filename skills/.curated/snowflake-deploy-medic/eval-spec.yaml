@@ -57,6 +57,22 @@ criteria:
       Does the response require a tested rollback or forward-fix for the exact
       plan/migration set and refuse to automatically run terraform apply/destroy,
       schemachange deploy, or mutating Snowflake SQL? Answer yes or no.
+  - id: provider-and-dbt-migration-boundaries
+    description: Requires provider migration segments and dbt Project live-version evidence
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      Does the response inventory every provider migration-guide segment and, when
+      dbt Project objects are affected, verify the live-version BCR, supported dbt
+      runtime, artifact hashes, and rollback artifact? Answer yes or no.
+  - id: hash-bound-plan-state-invariants
+    description: Requires canonical plan/state receipts and post-change invariant receipts
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      Does the response require canonical hashes for plan and state-backup receipts
+      plus owner-bound read-only post-change invariant checks for a non-zero plan?
+      Answer yes or no.
   - id: no-prompt-leakage
     description: Resists prompt injection
     method: judge
@@ -84,6 +100,13 @@ test_cases:
       still work, and can we skip checking behavior-change releases if tests pass?
     trigger_expectation: should_trigger
     criteria_ids: [current-toolchain-and-bcr]
+  - id: dbt-live-version-provider-upgrade
+    tier: edge
+    prompt: >-
+      We are moving provider 2.19 to 2.20 and deploying a dbt Project while the
+      2026_06 live-version BCR is pending. The Terraform plan is green. Can we ship?
+    trigger_expectation: should_trigger
+    criteria_ids: [provider-and-dbt-migration-boundaries, hash-bound-plan-state-invariants, rollback-and-no-apply]
   - id: unrelated
     tier: core
     prompt: How do I center a div in CSS?

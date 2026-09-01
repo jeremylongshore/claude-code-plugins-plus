@@ -196,17 +196,36 @@ def _validate_login_history(value: object, collected_at: datetime | None, window
     return value, issues
 
 
-def _receipt_status(value: object, label: str) -> dict:
+def _receipt_status(value: object, label: str, *, expected_rows: list[dict] | None = None) -> dict:
     if value is None:
         return {"status": "NOT_SUPPLIED", "complete": False, "issues": [f"{label} receipt not supplied"]}
     if not isinstance(value, dict):
         return {"status": "UNVERIFIABLE", "complete": False, "issues": [f"{label} receipt is not an object"]}
     issues = []
-    expected_surfaces = {"LOGIN_HISTORY": {"auth", "auth-current"}}
+    expected_surfaces = {"LOGIN_HISTORY": {"auth"}}
     if value.get("schema_version") != "1":
         issues.append("schema_version is not 1")
     if value.get("surface") not in expected_surfaces.get(label, set()):
-        issues.append("surface is not an auth collector surface")
+        issues.append("surface is not the historical auth collector surface")
+    source_views = value.get("source_views")
+    if (
+        not isinstance(source_views, list)
+        or "SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY" not in source_views
+    ):
+        issues.append("source_views does not prove SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY")
+    datasets = value.get("datasets")
+    receipt_rows = datasets.get("login_history") if isinstance(datasets, dict) else None
+    if not isinstance(receipt_rows, list) or not all(isinstance(row, dict) for row in receipt_rows):
+        issues.append("datasets.login_history is missing or malformed")
+    elif expected_rows is not None:
+        def canonical(rows_value: list[dict]) -> list[str]:
+            return sorted(
+                json.dumps(row, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+                for row in rows_value
+            )
+
+        if canonical(receipt_rows) != canonical(expected_rows):
+            issues.append("datasets.login_history does not match the supplied login_history rows")
     if value.get("status") != "collected":
         issues.append("status is not collected")
     if value.get("errors"):
@@ -311,7 +330,9 @@ def analyze(doc: dict) -> dict:
         doc.get("login_history"), collected_at, window_start, window_end
     )
     login_receipt = _receipt_status(
-        doc.get("login_history_receipt", doc.get("auth_history_receipt")), "LOGIN_HISTORY"
+        doc.get("login_history_receipt", doc.get("auth_history_receipt")),
+        "LOGIN_HISTORY",
+        expected_rows=login_history,
     )
     raw_login_receipt = doc.get("login_history_receipt", doc.get("auth_history_receipt"))
     receipt_at = timestamp(raw_login_receipt.get("collected_at")) if isinstance(raw_login_receipt, dict) else None

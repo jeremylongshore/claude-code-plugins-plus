@@ -1,0 +1,153 @@
+{
+  "schema_version": "1",
+  "metadata": {
+    "assessed_at": "2026-08-31T12:00:00Z",
+    "edition": "ENTERPRISE",
+    "preview_features_enabled": [
+      "TAG_BASED_ROW_ACCESS_POLICY",
+      "TAG_BASED_PROJECTION_POLICY",
+      "TAG_BASED_JOIN_POLICY",
+      "TAG_BASED_AGGREGATION_POLICY"
+    ],
+    "max_age_hours": {"evidence": 4, "classification": 720}
+  },
+  "assets": [
+    {
+      "asset_key": "asset_customer_email",
+      "domain": "COLUMN",
+      "require_tag": true,
+      "require_classification": true,
+      "required_controls": ["MASKING_POLICY", "PROJECTION_POLICY"]
+    },
+    {
+      "asset_key": "asset_customer_table",
+      "domain": "TABLE",
+      "require_tag": true,
+      "require_classification": true,
+      "required_controls": ["ROW_ACCESS_POLICY", "JOIN_POLICY", "AGGREGATION_POLICY"]
+    }
+  ],
+  "tags": [
+    {"asset_key": "asset_customer_email", "tag_key": "tag_sensitivity", "apply_method": "CLASSIFIED"},
+    {"asset_key": "asset_customer_table", "tag_key": "tag_privacy", "apply_method": "INHERITED"}
+  ],
+  "classifications": [
+    {
+      "asset_key": "asset_customer_email",
+      "status": "REVIEWED",
+      "last_classified_on": "2026-08-30T12:00:00Z",
+      "last_attempt_on": "2026-08-30T12:00:00Z",
+      "error_present": false
+    },
+    {
+      "asset_key": "asset_customer_table",
+      "status": "CLASSIFIED",
+      "last_classified_on": "2026-08-30T12:00:00Z",
+      "last_attempt_on": "2026-08-30T12:00:00Z",
+      "error_present": false
+    }
+  ],
+  "policies": [
+    {
+      "asset_key": "asset_customer_email",
+      "policy_key": "policy_mask_direct",
+      "policy_kind": "MASKING_POLICY",
+      "assignment": "DIRECT",
+      "policy_status": "ACTIVE"
+    },
+    {
+      "asset_key": "asset_customer_email",
+      "policy_key": "policy_mask_tag",
+      "policy_kind": "MASKING_POLICY",
+      "assignment": "TAG",
+      "policy_status": "ACTIVE"
+    },
+    {
+      "asset_key": "asset_customer_email",
+      "policy_key": "policy_projection_tag",
+      "policy_kind": "PROJECTION_POLICY",
+      "assignment": "TAG",
+      "policy_status": "ACTIVE"
+    },
+    {
+      "asset_key": "asset_customer_table",
+      "policy_key": "policy_row_tag",
+      "policy_kind": "ROW_ACCESS_POLICY",
+      "assignment": "TAG",
+      "policy_status": "ACTIVE"
+    },
+    {
+      "asset_key": "asset_customer_table",
+      "policy_key": "policy_join_tag",
+      "policy_kind": "JOIN_POLICY",
+      "assignment": "TAG",
+      "policy_status": "ACTIVE"
+    },
+    {
+      "asset_key": "asset_customer_table",
+      "policy_key": "policy_aggregate_direct",
+      "policy_kind": "AGGREGATION_POLICY",
+      "assignment": "DIRECT",
+      "policy_status": "ACTIVE",
+      "entity_key_hashes": ["sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+    },
+    {
+      "asset_key": "asset_customer_table",
+      "policy_key": "policy_aggregate_tag_same_key",
+      "policy_kind": "AGGREGATION_POLICY",
+      "assignment": "TAG",
+      "policy_status": "ACTIVE",
+      "entity_key_hashes": ["sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+    },
+    {
+      "asset_key": "asset_customer_table",
+      "policy_key": "policy_aggregate_tag_distinct_key",
+      "policy_kind": "AGGREGATION_POLICY",
+      "assignment": "TAG",
+      "policy_status": "ACTIVE",
+      "entity_key_hashes": ["sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]
+    }
+  ],
+  "policy_context": [
+    {
+      "asset_key": "asset_customer_email",
+      "scenario_key": "scenario_analyst",
+      "status": "PASS",
+      "simulated_at": "2026-08-31T11:00:00Z",
+      "policy_kinds": ["MASKING_POLICY", "PROJECTION_POLICY"]
+    },
+    {
+      "asset_key": "asset_customer_table",
+      "scenario_key": "scenario_consumer",
+      "status": "PASS",
+      "simulated_at": "2026-08-31T11:00:00Z",
+      "policy_kinds": ["ROW_ACCESS_POLICY", "JOIN_POLICY", "AGGREGATION_POLICY"]
+    }
+  ],
+  "receipts": {
+    "denominator": {
+      "schema_version": "1", "surface": "denominator", "status": "COLLECTED",
+      "collected_at": "2026-08-31T11:00:00Z", "row_count": 2, "truncated": false,
+      "privilege_scope": "COMPLETE", "source": "operator-denominator",
+      "query_sha256": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "tag_references": {
+      "schema_version": "1", "surface": "tag_references", "status": "COLLECTED",
+      "collected_at": "2026-08-31T11:00:00Z", "row_count": 2, "truncated": false,
+      "privilege_scope": "COMPLETE", "source": "SNOWFLAKE.ACCOUNT_USAGE.TAG_REFERENCES",
+      "query_sha256": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+    },
+    "policy_references": {
+      "schema_version": "1", "surface": "policy_references", "status": "COLLECTED",
+      "collected_at": "2026-08-31T11:00:00Z", "row_count": 8, "truncated": false,
+      "privilege_scope": "COMPLETE", "source": "INFORMATION_SCHEMA.POLICY_REFERENCES",
+      "query_sha256": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+    },
+    "classification_latest": {
+      "schema_version": "1", "surface": "classification_latest", "status": "COLLECTED",
+      "collected_at": "2026-08-31T11:00:00Z", "row_count": 2, "truncated": false,
+      "privilege_scope": "COMPLETE", "source": "SNOWFLAKE.ACCOUNT_USAGE.DATA_CLASSIFICATION_LATEST",
+      "query_sha256": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+    }
+  }
+}

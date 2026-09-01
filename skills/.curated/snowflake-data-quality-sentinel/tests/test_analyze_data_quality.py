@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import importlib.util
 import json
 import pathlib
@@ -18,6 +19,11 @@ SPEC = importlib.util.spec_from_file_location("analyze_data_quality", SCRIPT)
 assert SPEC and SPEC.loader
 analyzer = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(analyzer)
+COLLECTOR_SCRIPT = HERE.parent / "scripts" / "collect_snowflake_evidence.py"
+COLLECTOR_SPEC = importlib.util.spec_from_file_location("collect_snowflake_evidence", COLLECTOR_SCRIPT)
+assert COLLECTOR_SPEC and COLLECTOR_SPEC.loader
+collector = importlib.util.module_from_spec(COLLECTOR_SPEC)
+COLLECTOR_SPEC.loader.exec_module(collector)
 
 
 class DataQualityAnalyzerTests(unittest.TestCase):
@@ -27,6 +33,12 @@ class DataQualityAnalyzerTests(unittest.TestCase):
     def codes(self, report: dict) -> set[str]:
         return {finding["code"] for finding in report["findings"]}
 
+    def rehash_current_receipt(self, data: dict) -> None:
+        receipt = data["current_state_receipt"]
+        body = dict(receipt)
+        body.pop("receipt_sha256", None)
+        receipt["receipt_sha256"] = f"sha256:{hashlib.sha256(analyzer.canonical_json(body)).hexdigest()}"
+
     def test_clean_denominator_passes_both_statuses(self):
         report = analyzer.analyze(self.fixture("pass.json"))
         self.assertEqual(report["quality_status"], "PASS")
@@ -34,6 +46,7 @@ class DataQualityAnalyzerTests(unittest.TestCase):
         self.assertEqual(report["findings"], [])
         self.assertEqual(report["denominator"]["requirements"], 1)
         self.assertRegex(report["receipt_sha256"], r"^sha256:[0-9a-f]{64}$")
+        self.assertEqual(report["provenance"]["current_state_receipt"]["status"], "verified")
 
     def test_problem_fixture_separates_quality_failure_and_monitoring_failure(self):
         report = analyzer.analyze(self.fixture("problems.json"))
@@ -221,6 +234,129 @@ class DataQualityAnalyzerTests(unittest.TestCase):
         self.assertEqual(completed.returncode, 2)
         self.assertEqual(completed.stdout, "")
         self.assertIn("prohibited field", completed.stderr)
+
+    def test_current_association_and_notification_state_are_required_for_health(self):
+        data = self.fixture("pass.json")
+        data["current_state"]["associations"][0]["status"] = "SUSPENDED"
+        data["current_state"]["associations"][0]["notification_status"] = "DISABLED"
+        data["current_state"]["notifications"][0]["status"] = "DISABLED"
+        report = analyzer.analyze(data)
+        self.assertEqual(report["quality_status"], "INCONCLUSIVE")
+        self.assertEqual(report["monitoring_status"], "FAIL")
+        self.assertTrue(
+            {"DQ_CURRENT_ASSOCIATION_NOT_ACTIVE", "DQ_CURRENT_NOTIFICATION_DISABLED"}
+            <= self.codes(report)
+        )
+
+    def test_stale_current_state_blocks_monitoring_claim(self):
+        data = self.fixture("pass.json")
+        data["current_state"]["observed_at"] = "2026-08-30T12:00:00Z"
+        report = analyzer.analyze(data)
+        self.assertIn("DQ_CURRENT_STATE_STALE", self.codes(report))
+        self.assertEqual(report["monitoring_status"], "INCONCLUSIVE")
+
+    def test_current_state_shape_rejects_raw_group_values_and_duplicates(self):
+        data = self.fixture("pass.json")
+        data["current_state"]["associations"][0]["raw_group_values"] = ["customer@example.com"]
+        with self.assertRaises(analyzer.EvidenceError):
+            analyzer.analyze(data)
+
+        data = self.fixture("pass.json")
+        duplicate = dict(data["current_state"]["associations"][0])
+        data["current_state"]["associations"].append(duplicate)
+        with self.assertRaisesRegex(analyzer.EvidenceError, "duplicate current association"):
+            analyzer.analyze(data)
+
+    def test_missing_or_tampered_current_receipt_blocks_monitoring_completeness(self):
+        data = self.fixture("pass.json")
+        del data["current_state_receipt"]
+        report = analyzer.analyze(data)
+        self.assertEqual(report["monitoring_status"], "INCONCLUSIVE")
+        self.assertIn("DQ_CURRENT_STATE_RECEIPT_INVALID", self.codes(report))
+        self.assertEqual(report["provenance"]["current_state_receipt"]["status"], "not_supplied")
+
+        data = self.fixture("pass.json")
+        data["current_state_receipt"]["datasets"]["data_quality_current"][0]["execution_role"] = "SYSADMIN"
+        report = analyzer.analyze(data)
+        self.assertEqual(report["monitoring_status"], "INCONCLUSIVE")
+        issues = report["provenance"]["current_state_receipt"]["issues"]
+        self.assertIn("receipt_sha256 is missing or invalid", issues)
+
+    def test_exact_current_receipt_contract_rejects_wrong_surface_hash_source_and_dataset(self):
+        mutations = (
+            ("surface", lambda receipt: receipt.__setitem__("surface", "data-quality")),
+            ("status", lambda receipt: receipt.__setitem__("status", "error")),
+            ("errors", lambda receipt: receipt.__setitem__("errors", [{"code": "COLLECTION_FAILED"}])),
+            ("template hash", lambda receipt: receipt.__setitem__("template_sha256", "sha256:" + "0" * 64)),
+            ("source view", lambda receipt: receipt.__setitem__("source_views", [])),
+            ("template name", lambda receipt: receipt["source_metadata"].__setitem__("template", "other.sql")),
+            ("timestamp", lambda receipt: receipt.__setitem__("collected_at", "2026-08-31T11:54:00Z")),
+            ("row cap", lambda receipt: receipt.__setitem__("row_limit", 4999)),
+            ("row count", lambda receipt: receipt.__setitem__("row_count", 2)),
+            ("dataset", lambda receipt: receipt.__setitem__("datasets", {"rows": []})),
+            ("schema", lambda receipt: receipt.__setitem__("extra", True)),
+        )
+        for label, mutate in mutations:
+            with self.subTest(label=label):
+                data = self.fixture("pass.json")
+                mutate(data["current_state_receipt"])
+                self.rehash_current_receipt(data)
+                report = analyzer.analyze(data)
+                self.assertEqual(report["monitoring_status"], "INCONCLUSIVE")
+                self.assertIn("DQ_CURRENT_STATE_RECEIPT_INVALID", self.codes(report))
+
+    def test_stale_truncated_and_payload_mismatched_current_receipts_block(self):
+        stale = self.fixture("pass.json")
+        stale["current_state"]["observed_at"] = "2026-08-30T12:00:00Z"
+        stale["current_state_receipt"]["collected_at"] = "2026-08-30T12:00:00Z"
+        self.rehash_current_receipt(stale)
+        stale_report = analyzer.analyze(stale)
+        self.assertEqual(stale_report["monitoring_status"], "INCONCLUSIVE")
+        self.assertIn("DQ_CURRENT_STATE_STALE", self.codes(stale_report))
+
+        truncated = self.fixture("pass.json")
+        truncated["current_state_receipt"]["truncation_possible"] = True
+        truncated["current_state_receipt"]["dataset_truncation_possible"]["data_quality_current"] = True
+        self.rehash_current_receipt(truncated)
+        truncated_report = analyzer.analyze(truncated)
+        self.assertEqual(truncated_report["monitoring_status"], "INCONCLUSIVE")
+        self.assertIn("DQ_CURRENT_STATE_RECEIPT_INVALID", self.codes(truncated_report))
+
+        mismatch = self.fixture("pass.json")
+        mismatch["current_state"]["associations"][0]["execution_role"] = "SYSADMIN"
+        mismatch_report = analyzer.analyze(mismatch)
+        issues = mismatch_report["provenance"]["current_state_receipt"]["issues"]
+        self.assertTrue(any("does not match receipt field execution_role" in issue for issue in issues))
+        self.assertEqual(mismatch_report["monitoring_status"], "INCONCLUSIVE")
+
+    def test_rejects_raw_filters_group_values_and_endpoints(self):
+        for field in ("filter", "group_values", "endpoint"):
+            with self.subTest(analyzer_field=field):
+                data = self.fixture("pass.json")
+                data["current_state_receipt"][field] = "raw"
+                with self.assertRaisesRegex(analyzer.EvidenceError, "prohibited field"):
+                    analyzer.analyze(data)
+
+            with self.subTest(collector_field=field):
+                with self.assertRaisesRegex(collector.CollectionError, "raw filter/group/endpoint"):
+                    collector.normalize_cli_json([{field: "raw"}])
+
+    def test_collector_preserves_empty_current_dataset_identity(self):
+        path, template_sql, rendered_sql, sources, selector = collector.render_surface("data-quality-current")
+        receipt = collector.build_receipt(
+            "data-quality-current",
+            "offline-input",
+            rendered_sql,
+            sources,
+            raw=[],
+            collected_at="2026-08-31T11:55:00Z",
+            template_sql=template_sql,
+            template_path=path,
+            selector=selector,
+        )
+        self.assertEqual(receipt["datasets"], {"data_quality_current": []})
+        self.assertEqual(receipt["dataset_row_limits"], {"data_quality_current": 5000})
+        self.assertEqual(receipt["row_count"], 0)
 
 
 if __name__ == "__main__":

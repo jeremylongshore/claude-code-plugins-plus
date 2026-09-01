@@ -14,6 +14,15 @@ from analyze_auth import analyze  # noqa: E402
 SCRIPT = HERE.parent / "scripts" / "analyze_auth.py"
 
 
+def seal_receipt(receipt):
+    body = dict(receipt)
+    body.pop("receipt_sha256", None)
+    receipt["receipt_sha256"] = "sha256:" + hashlib.sha256(
+        json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    ).hexdigest()
+    return receipt
+
+
 class AuthAnalyzerFixtureTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -171,9 +180,7 @@ class AuthAnalyzerFixtureTests(unittest.TestCase):
             "is_success": True,
             "first_authentication_factor": "PASSWORD",
         }]
-        data["login_history_receipt"] = {"schema_version": "1", "surface": "auth", "status": "collected", "truncation_possible": False, "source_views": ["SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY"], "collected_at": data["metadata"]["collected_at"], "sql_sha256": "sha256:" + "0" * 64, "template_sha256": "sha256:" + "0" * 64, "rendered_sql_sha256": "sha256:" + "0" * 64}
-        receipt_body = dict(data["login_history_receipt"])
-        data["login_history_receipt"]["receipt_sha256"] = "sha256:" + hashlib.sha256(json.dumps(receipt_body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
+        data["login_history_receipt"] = seal_receipt({"schema_version": "1", "surface": "auth", "status": "collected", "truncation_possible": False, "source_views": ["SNOWFLAKE.ACCOUNT_USAGE.USERS", "SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY"], "datasets": {"login_history": data["login_history"]}, "collected_at": data["metadata"]["collected_at"], "sql_sha256": "sha256:" + "0" * 64, "template_sha256": "sha256:" + "0" * 64, "rendered_sql_sha256": "sha256:" + "0" * 64})
         data["enforcement_windows"] = [{"name": "pilot", "start": "2026-08-30T11:45:00Z", "end": "2026-08-30T12:00:00Z"}]
         report = analyze(data)
         self.assertEqual(report["identity_evidence_reconciliation"]["users"]["status"], "MATCHED")
@@ -185,6 +192,60 @@ class AuthAnalyzerFixtureTests(unittest.TestCase):
         data["login_history"][0]["user_name"] = "ALICE"
         with self.assertRaises(ValueError):
             analyze(data)
+
+    def test_auth_current_cannot_forge_login_history_coverage(self):
+        data = json.loads(json.dumps(self.fixture))
+        data["current_users"] = data["users"]
+        data["historical_users"] = data["users"]
+        data["login_history"] = []
+        data["enforcement_windows"] = [{"name": "pilot", "start": "2026-08-30T11:45:00Z", "end": "2026-08-30T12:00:00Z"}]
+        data["login_history_receipt"] = seal_receipt({
+            "schema_version": "1",
+            "surface": "auth-current",
+            "status": "collected",
+            "truncation_possible": False,
+            "source_views": ["SHOW USERS"],
+            "datasets": {"current_users": []},
+            "collected_at": data["metadata"]["collected_at"],
+            "sql_sha256": "sha256:" + "0" * 64,
+            "template_sha256": "sha256:" + "0" * 64,
+            "rendered_sql_sha256": "sha256:" + "0" * 64,
+        })
+        report = analyze(data)
+        self.assertTrue(report["completeness_claim_blocked"])
+        self.assertIn(
+            "collector-receipt-unverifiable",
+            {item["category"] for item in report["findings"]},
+        )
+
+    def test_login_history_rows_must_match_sealed_receipt_dataset(self):
+        data = json.loads(json.dumps(self.fixture))
+        data["current_users"] = data["users"]
+        data["historical_users"] = data["users"]
+        data["login_history"] = [{
+            "user_name_sha256": "a" * 64,
+            "event_timestamp": "2026-08-30T11:55:00Z",
+            "event_type": "LOGIN",
+        }]
+        data["enforcement_windows"] = [{"name": "pilot", "start": "2026-08-30T11:45:00Z", "end": "2026-08-30T12:00:00Z"}]
+        data["login_history_receipt"] = seal_receipt({
+            "schema_version": "1",
+            "surface": "auth",
+            "status": "collected",
+            "truncation_possible": False,
+            "source_views": ["SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY"],
+            "datasets": {"login_history": []},
+            "collected_at": data["metadata"]["collected_at"],
+            "sql_sha256": "sha256:" + "0" * 64,
+            "template_sha256": "sha256:" + "0" * 64,
+            "rendered_sql_sha256": "sha256:" + "0" * 64,
+        })
+        report = analyze(data)
+        self.assertTrue(report["completeness_claim_blocked"])
+        self.assertIn(
+            "collector-receipt-unverifiable",
+            {item["category"] for item in report["findings"]},
+        )
 
 
 if __name__ == "__main__":

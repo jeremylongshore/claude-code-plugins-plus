@@ -2725,10 +2725,12 @@ plugins/saas-packs/skill-databases/windsurf/skills/windsurf-theme-customization,
 plugins/saas-packs/skill-databases/windsurf/skills/windsurf-usage-analytics,A,92
 plugins/saas-packs/skill-databases/windsurf/skills/windsurf-workspace-setup,A,92
 plugins/saas-packs/snowflake-pack/skills/snowflake-access-guardian,A,95
-plugins/saas-packs/snowflake-pack/skills/snowflake-cost-leak-hunter,A,96
+plugins/saas-packs/snowflake-pack/skills/snowflake-cost-leak-hunter,A,94
 plugins/saas-packs/snowflake-pack/skills/snowflake-data-quality-sentinel,A,96
 plugins/saas-packs/snowflake-pack/skills/snowflake-deploy-medic,A,94
 plugins/saas-packs/snowflake-pack/skills/snowflake-failover-readiness-drill,A,95
+plugins/saas-packs/snowflake-pack/skills/snowflake-governance-coverage-auditor,A,96
+plugins/saas-packs/snowflake-pack/skills/snowflake-native-app-release-sheriff,A,93
 plugins/saas-packs/snowflake-pack/skills/snowflake-pipeline-guardian,A,93
 plugins/saas-packs/snowflake-pack/skills/snowflake-query-forensics,A,96
 plugins/saas-packs/snowflake-pack/skills/snowflake-strong-auth-migration-pilot,A,95

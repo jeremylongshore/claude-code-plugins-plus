@@ -1,0 +1,29 @@
+{
+  "observed_at": "2026-08-30T12:00:00Z",
+  "evidence_source": "current SHOW metadata plus bounded Account Usage history",
+  "current_state": {
+    "status": "collected",
+    "observed_at": "2026-08-30T11:58:00Z",
+    "max_age_minutes": 15,
+    "complete": true,
+    "nodes": [
+      {"id": "load_task", "kind": "TASK", "status": "STARTED"},
+      {"id": "orders_stream", "kind": "STREAM", "status": "STALE"}
+    ],
+    "edges": [{"from": "orders_stream", "to": "load_task"}]
+  },
+  "history": {
+    "status": "collected",
+    "complete": true,
+    "latest_at": "2026-08-30T11:55:00Z",
+    "nodes": [
+      {"id": "load_task", "kind": "TASK", "status": "SUCCEEDED"},
+      {"id": "orders_stream", "kind": "STREAM", "status": "STALE"}
+    ]
+  },
+  "nodes": [
+    {"id": "orders_stream", "kind": "STREAM", "status": "STALE"},
+    {"id": "load_task", "kind": "TASK", "status": "STARTED"}
+  ],
+  "edges": [{"from": "orders_stream", "to": "load_task"}]
+}

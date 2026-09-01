@@ -20,6 +20,13 @@ last-evidence timestamp. Never capture a password, token, private key, or secret
 value. `ACCOUNT_USAGE.USERS` and `SHOW USERS` have different freshness and
 visibility; record which supplied each field.
 
+For current/history reconciliation, collect `auth-current` (`SHOW USERS`) alongside
+the historical `USERS` export and retain both bounded receipts. `LOGIN_HISTORY` is
+historical and can lag by up to 120 minutes; retain event timestamps and event type,
+but hash user names and omit IP addresses, connection identifiers, and authenticator
+IDs. A missing, out-of-window, errored, or truncated login receipt blocks migration
+coverage. Every canary must also name an ordered, non-future enforcement window.
+
 ## No universal deadline
 
 Snowflake feature support varies by cloud, connector, runtime, account edition,

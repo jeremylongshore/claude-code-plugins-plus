@@ -1,19 +1,18 @@
 ---
 name: snowflake-cost-leak-hunter
 description: >-
-  Audit Snowflake warehouse and query-attribution evidence to locate idle compute,
-  unallocated or untagged usage, query-acceleration spend, and serverless visibility
-  gaps without guessing prices or savings. Use when a Snowflake bill increased, a
-  team needs chargeback/showback evidence, warehouse credits appear unexplained, or
-  an operator asks which usage merits investigation. Trigger with "Snowflake bill
+  Audit Snowflake warehouse, serverless, Adaptive, storage, transfer, and AI cost
+  evidence with a typed ledger that prevents double counting and exposes freshness,
+  attribution, control, and invoice boundaries. Use when a Snowflake bill increased,
+  a team needs chargeback/showback evidence, credits appear unexplained, or an
+  operator asks which usage merits investigation. Trigger with "Snowflake bill
   increased", "find idle Snowflake credits", "Snowflake cost attribution", or
-  "untagged Snowflake spend". Do not use to change warehouse size, suspend compute,
-  create resource monitors, or claim invoice reconciliation.
+  "untagged Snowflake spend". Do not use to mutate cost controls or claim savings.
 allowed-tools: Read, Write, Bash(python3:*)
 argument-hint: "[evidence-json-or-output-directory]"
 model: inherit
 effort: high
-version: 2.1.0
+version: 2.2.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -29,9 +28,9 @@ compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflak
 
 ## Overview
 
-Produce a read-only, evidence-first Snowflake cost investigation. Report observed
-credits, derived currency estimates, and remediation opportunities as different
-classes; never collapse them into one savings claim.
+Produce a read-only, evidence-first Snowflake cost investigation. The deterministic
+analyzer emits a typed ledger whose `total`, `attribution`, `context`, `estimate`, and
+`invoice-only` roles cannot silently collapse into one savings claim.
 
 **Problem:** Cost views answer different questions, arrive at different times, and do
 not equal invoice truth. Generic advice easily turns observed credits into unsupported
@@ -84,6 +83,8 @@ before collecting evidence. Read
 for the bounded SQL surfaces. If controls are requested, read
 [references/controls-boundaries.md](references/controls-boundaries.md), but return a
 review packet only.
+For Adaptive, storage, transfer, AI, surface-denominator, and typed-ledger rules, read
+[references/cost-ledger-and-surfaces.md](references/cost-ledger-and-surfaces.md).
 
 For a live, model-neutral collection, use the shared read-only collector with an
 existing Snowflake CLI profile:
@@ -109,6 +110,14 @@ and savings claims. When supplied, it verifies the receipt's surface, source vie
 reviewed SQL hash, receipt hash, dataset rows, status, and cap. An error, mismatch,
 missing integrity field, or possible truncation is surfaced in the report and blocks
 completeness/savings claims.
+The bundled collector currently supplies the baseline warehouse, query, load, and
+generic metering receipt. Supplemental canonical templates live under
+`scripts/sql/cost-*.sql`; collect each needed surface with the same bundled collector,
+for example `--surface cost-storage`. Put its complete JSON receipt under
+`supplemental_receipts.<surface_inventory_name>`. The analyzer verifies the exact
+template, source, normalized payload, collection time, cap, and canonical receipt hash.
+An unavailable region, edition, view, or privilege is a bounded finding, never a reason
+to broaden privileges or treat the surface as zero.
 
 ## Instructions
 
@@ -121,6 +130,8 @@ Capture:
 - requested attribution dimension, such as warehouse, user, query tag, or service;
 - whether an approved contract rate card is available;
 - whether Adaptive Warehouses or serverless features are in scope.
+- the complete expected-surface denominator, including storage, transfer, AI,
+  resource-monitor, and budget evidence when those domains are in scope.
 
 If the user supplies only an invoice total, state that the audit can explain usage but
 cannot reconcile the invoice without the corresponding usage statement and contract
@@ -156,6 +167,21 @@ The input JSON has these optional evidence arrays:
 - `warehouse_metering`: hourly or pre-aggregated warehouse credit observations;
 - `query_attribution`: per-query attributed compute and query-acceleration credits;
 - `serverless_usage`: observed serverless credit rows from an approved usage surface;
+- `adaptive_usage`: per-query Adaptive credits from `QUERY_METERING_HISTORY`;
+- `storage_usage`: storage bytes used as operational context, never invoice truth;
+- `data_transfer_usage` and `internal_transfer_usage`: transfer bytes retained in
+  their native unit;
+- `ai_usage`: detailed Cortex AI function credits, treated as attribution beneath the
+  generic `AI_SERVICES` total;
+- `surface_inventory`: availability, privilege, latency, freshness, and truncation
+  receipts for every expected surface;
+- `supplemental_receipts`: exact collector envelopes keyed by `adaptive_usage`,
+  `storage_usage`, `data_transfer_usage`, `internal_transfer_usage`, `ai_usage`,
+  `resource_monitors`, or `budgets`; an inventory assertion without its matching
+  receipt blocks completeness;
+- `controls_inventory`: visibility-scoped resource-monitor and budget inventory;
+- `invoice_usage`: optional customer-supplied billing-statement rows, kept as
+  `invoice-only` entries and never inferred from usage views;
 - `credit_rates`: user-supplied rate-card entries used only for estimates.
 
 Every supplied source must include its maximum returned timestamp in `source_max_times`.
@@ -171,13 +197,15 @@ python3 "${CLAUDE_SKILL_DIR}/scripts/analyze_cost_evidence.py" \
 ```
 
 The script validates non-negative numeric evidence, sums with decimal arithmetic, and
-keeps three result classes separate:
+keeps five ledger roles separate:
 
-- **Confirmed observations** — credits present in supplied Snowflake evidence.
-- **Estimated amounts** — currency conversions using an explicitly supplied rate-card
-  entry, always labeled with that entry's provenance.
-- **At-risk opportunities** — observed idle/unattributed compute or untagged query
-  usage that merits review; not promised savings.
+- **Total** — additive usage totals such as warehouse metering or generic service
+  metering.
+- **Attribution** — a child breakdown of a total, such as query or AI-function usage;
+  never additive with its parent.
+- **Context** — non-price operational measures such as storage or transfer bytes.
+- **Estimate** — a non-additive currency conversion from an applicable customer rate.
+- **Invoice-only** — billing truth that cannot be inferred from operational views.
 
 It does not apply magnitude thresholds, infer a price, or recommend a warehouse size.
 When query fingerprints have both attributed credits and elapsed time, it also emits
@@ -208,6 +236,8 @@ Follow [references/output-contract.md](references/output-contract.md). Lead with
 window and coverage, not a sensational savings number. A valid packet contains:
 
 - confirmed credits by evidence surface;
+- the typed ledger with parent IDs, overlap keys, aggregation eligibility, freshness,
+  availability, and invoice-reconciliation status;
 - attribution completeness by warehouse, including unknown boundaries for NULL
   attribution and query coverage gaps;
 - cost/latency Pareto points by query fingerprint and warehouse-load correlation;
@@ -234,6 +264,8 @@ Stop and return a bounded partial result when:
 - account and organization usage are mixed without aligned account identifiers and UTC
   boundaries;
 - Adaptive Warehouse rows make warehouse attribution columns NULL;
+- a required cost surface is unavailable, stale beyond its supplied documented
+  boundary, truncated, region-limited, or hidden by the approved role;
 - a currency request has no applicable contract rate;
 - evidence contains negative credits, malformed timestamps, or incompatible currencies;
 - the only proposed next step would mutate production.
@@ -244,7 +276,9 @@ Stop and return a bounded partial result when:
 |---|---|---|
 | Approved role cannot read a required view | Coverage unavailable | Preserve the sanitized error, name the missing surface, and stop that branch without changing grants. |
 | Source maximum time trails the requested window | Recent evidence may be incomplete | Report observed age and return a partial result; do not convert missing rows to zero. |
-| Attributed-query credits are NULL | Idle/unattributed calculation is unsupported for that row | Exclude the row from that calculation and explain the platform/account limitation. |
+| Attributed-query credits are NULL | Idle/unattributed calculation is unsupported for that row | Emit `COST_ADAPTIVE_ATTRIBUTION_GAP`; exclude the row from that calculation and do not substitute zero. |
+| Generic AI or warehouse total and detailed attribution both exist | The evidence overlaps by design | Retain one additive total and attach detailed evidence as a non-additive ledger child. |
+| Storage or transfer evidence has bytes but no contract billing model | Operational context is present without price evidence | Keep bytes as `context`; do not infer currency or invoice amounts. |
 | No applicable contract rate | Currency cannot be defended | Report credits only; do not substitute a public price. |
 | Analyzer rejects evidence | Malformed timestamp, negative/non-finite number, or incompatible shape | Correct the input from source evidence; never coerce it into a plausible value. |
 | User requests mutation | New authority and impact review are required | Return a proposed change packet and stop before execution. |

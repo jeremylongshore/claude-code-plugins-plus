@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import hashlib
 import json
 import subprocess
 import sys
@@ -11,6 +12,15 @@ sys.path.insert(0, str(HERE.parent / "scripts"))
 from analyze_auth import analyze  # noqa: E402
 
 SCRIPT = HERE.parent / "scripts" / "analyze_auth.py"
+
+
+def seal_receipt(receipt):
+    body = dict(receipt)
+    body.pop("receipt_sha256", None)
+    receipt["receipt_sha256"] = "sha256:" + hashlib.sha256(
+        json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    ).hexdigest()
+    return receipt
 
 
 class AuthAnalyzerFixtureTests(unittest.TestCase):
@@ -158,6 +168,84 @@ class AuthAnalyzerFixtureTests(unittest.TestCase):
         self.assertEqual(result.returncode, 2)
         self.assertIn("users must be an array", result.stderr)
         self.assertNotIn("Traceback", result.stderr)
+
+    def test_login_history_and_current_historical_users_are_bounded(self):
+        data = json.loads(json.dumps(self.fixture))
+        data["current_users"] = data["users"]
+        data["historical_users"] = data["users"]
+        data["login_history"] = [{
+            "user_name_sha256": "a" * 64,
+            "event_timestamp": "2026-08-30T11:55:00Z",
+            "event_type": "LOGIN",
+            "is_success": True,
+            "first_authentication_factor": "PASSWORD",
+        }]
+        data["login_history_receipt"] = seal_receipt({"schema_version": "1", "surface": "auth", "status": "collected", "truncation_possible": False, "source_views": ["SNOWFLAKE.ACCOUNT_USAGE.USERS", "SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY"], "datasets": {"login_history": data["login_history"]}, "collected_at": data["metadata"]["collected_at"], "sql_sha256": "sha256:" + "0" * 64, "template_sha256": "sha256:" + "0" * 64, "rendered_sql_sha256": "sha256:" + "0" * 64})
+        data["enforcement_windows"] = [{"name": "pilot", "start": "2026-08-30T11:45:00Z", "end": "2026-08-30T12:00:00Z"}]
+        report = analyze(data)
+        self.assertEqual(report["identity_evidence_reconciliation"]["users"]["status"], "MATCHED")
+        self.assertFalse(report["identity_evidence_reconciliation"]["login_history"]["issues"])
+        self.assertFalse(report["completeness_claim_blocked"])
+        data["login_history_receipt"]["receipt_sha256"] = "sha256:" + "0" * 64
+        tampered = analyze(data)
+        self.assertIn("collector-receipt-unverifiable", {item["category"] for item in tampered["findings"]})
+        data["login_history"][0]["user_name"] = "ALICE"
+        with self.assertRaises(ValueError):
+            analyze(data)
+
+    def test_auth_current_cannot_forge_login_history_coverage(self):
+        data = json.loads(json.dumps(self.fixture))
+        data["current_users"] = data["users"]
+        data["historical_users"] = data["users"]
+        data["login_history"] = []
+        data["enforcement_windows"] = [{"name": "pilot", "start": "2026-08-30T11:45:00Z", "end": "2026-08-30T12:00:00Z"}]
+        data["login_history_receipt"] = seal_receipt({
+            "schema_version": "1",
+            "surface": "auth-current",
+            "status": "collected",
+            "truncation_possible": False,
+            "source_views": ["SHOW USERS"],
+            "datasets": {"current_users": []},
+            "collected_at": data["metadata"]["collected_at"],
+            "sql_sha256": "sha256:" + "0" * 64,
+            "template_sha256": "sha256:" + "0" * 64,
+            "rendered_sql_sha256": "sha256:" + "0" * 64,
+        })
+        report = analyze(data)
+        self.assertTrue(report["completeness_claim_blocked"])
+        self.assertIn(
+            "collector-receipt-unverifiable",
+            {item["category"] for item in report["findings"]},
+        )
+
+    def test_login_history_rows_must_match_sealed_receipt_dataset(self):
+        data = json.loads(json.dumps(self.fixture))
+        data["current_users"] = data["users"]
+        data["historical_users"] = data["users"]
+        data["login_history"] = [{
+            "user_name_sha256": "a" * 64,
+            "event_timestamp": "2026-08-30T11:55:00Z",
+            "event_type": "LOGIN",
+        }]
+        data["enforcement_windows"] = [{"name": "pilot", "start": "2026-08-30T11:45:00Z", "end": "2026-08-30T12:00:00Z"}]
+        data["login_history_receipt"] = seal_receipt({
+            "schema_version": "1",
+            "surface": "auth",
+            "status": "collected",
+            "truncation_possible": False,
+            "source_views": ["SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY"],
+            "datasets": {"login_history": []},
+            "collected_at": data["metadata"]["collected_at"],
+            "sql_sha256": "sha256:" + "0" * 64,
+            "template_sha256": "sha256:" + "0" * 64,
+            "rendered_sql_sha256": "sha256:" + "0" * 64,
+        })
+        report = analyze(data)
+        self.assertTrue(report["completeness_claim_blocked"])
+        self.assertIn(
+            "collector-receipt-unverifiable",
+            {item["category"] for item in report["findings"]},
+        )
 
 
 if __name__ == "__main__":
