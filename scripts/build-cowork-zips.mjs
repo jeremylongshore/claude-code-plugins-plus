@@ -34,11 +34,12 @@ import {
   statSync,
   writeFileSync,
 } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, resolve, sep } from 'node:path';
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 
-const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+import { fileURLToPath } from 'node:url';
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 // Resolve archiver — available in both root and marketplace node_modules
 const require = createRequire(join(ROOT, 'marketplace', 'package.json'));
@@ -155,7 +156,7 @@ function shouldInclude(entryName) {
  */
 function isWithinPluginsDir(resolvedPath) {
   const normalized = resolve(resolvedPath);
-  return normalized.startsWith(PLUGINS_DIR + '/') || normalized === PLUGINS_DIR;
+  return normalized.startsWith(PLUGINS_DIR + sep) || normalized === PLUGINS_DIR;
 }
 
 /**

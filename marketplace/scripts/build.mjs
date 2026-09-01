@@ -9,7 +9,10 @@ const repoRoot = resolve(__dirname, '..', '..');
 function run(label, command, args) {
   const result = spawnSync(command, args, {
     stdio: 'inherit',
-    env: process.env
+    env: process.env,
+    // Windows cannot spawn .cmd shims (e.g. astro) directly via spawnSync;
+    // routing through the shell keeps this cross-platform.
+    shell: process.platform === 'win32'
   });
 
   if (result.error) {

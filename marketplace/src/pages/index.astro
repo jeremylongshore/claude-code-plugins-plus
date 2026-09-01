@@ -109,6 +109,7 @@ try {
 // the CLI and hundreds of READMEs, GitHub 301s it, and renaming it is a breaking
 // API change.
 const INSTALL_CMD = '/plugin marketplace add jeremylongshore/claude-code-plugins';
+const CCPI_CMD = 'npm install -g @intentsolutionsio/ccpi';
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 const pageDescription = `${fmt(totalSkills)} marketplace-visible agent skills across ${fmt(totalPlugins)} catalog plugins for AI coding agents. Free and open source.`;
@@ -151,12 +152,12 @@ const pageDescription = `${fmt(totalSkills)} marketplace-visible agent skills ac
         </div>
 
         <h1 class="home-headline">
-            {fmt(totalSkills)} marketplace-visible skills for<br />AI coding agents.
+            {fmt(totalSkills)} skills. One CLI.
         </h1>
 
         <p class="home-subhead">
             Plugins, agents and skills for AI coding agents.<br />
-            Free and open source.
+            Install with <code class="inline-cmd">ccpi</code> &mdash; free and open source.
         </p>
 
         <p class="home-support-note">
@@ -188,6 +189,25 @@ const pageDescription = `${fmt(totalSkills)} marketplace-visible agent skills ac
             <span class="home-meta-sep">·</span> {fmt(totalAgents)} agents
             {installsDisplay && (<><span class="home-meta-sep">·</span> {installsDisplay} installs</>)}
         </p>
+
+        <!-- ccpi CLI install: the terminal path alongside the Claude Code
+             native path above. ccpi is the @intentsolutionsio/ccpi npm
+             package (packages/cli in this monorepo). Styled flat — the
+             Claude Code block above keeps its single hard shadow. -->
+        <div class="install install-secondary">
+            <div class="install-head">
+                <span class="install-label">Any terminal</span>
+                <button
+                    type="button"
+                    class="install-copy"
+                    data-copy={CCPI_CMD}
+                    aria-label="Copy the ccpi install command to your clipboard"
+                >Copy</button>
+            </div>
+            <div class="install-body">
+                <span class="install-prompt" aria-hidden="true">$</span><code class="install-cmd">{CCPI_CMD}</code>
+            </div>
+        </div>
 
         <!-- Browse is FIRST and is the only on-site action in this row.
              Before 2026-08-03 both buttons here pointed off-site (GitHub,
@@ -228,6 +248,69 @@ const pageDescription = `${fmt(totalSkills)} marketplace-visible agent skills ac
              That badge remains the ONLY partner reference on the site: no
              partner wording in the headline, subhead, meta description or og:
              tags, and it does not propagate to the README or the catalog. -->
+        <!-- Pricing tiers: the storefront ladder. Starter is the free
+             marketplace itself; Skill Packs are paid vendor packs (flagship
+             links point at catalog-rendered /plugins/<slug> detail pages);
+             Pro is the annual membership (/pro); MCP Suite and Aurora
+             Platform are high-touch offerings reached via /tools and
+             /community contact paths. -->
+        <section class="tiers" aria-label="Pricing tiers">
+            <h2 class="tiers-head">Get skills your way</h2>
+            <div class="tier-grid">
+                <div class="tier">
+                    <h3 class="tier-name">Starter Pack</h3>
+                    <p class="tier-price">Free</p>
+                    <p class="tier-desc">The full open marketplace: {fmt(totalPlugins)} plugins, {fmt(totalSkills)} skills, one install command.</p>
+                    <a class="btn" href="/getting-started/">Start free &rarr;</a>
+                </div>
+                <div class="tier">
+                    <h3 class="tier-name">Skill Packs</h3>
+                    <p class="tier-price">$29&ndash;$79</p>
+                    <p class="tier-desc">Vendor-specific skill packs. Flagships: <a href="/plugins/supabase-pack/">Supabase</a>, <a href="/plugins/vercel-pack/">Vercel</a>, <a href="/plugins/salesforce-pack/">Salesforce</a>.</p>
+                    <a class="btn" href="/collections/">Browse packs &rarr;</a>
+                </div>
+                <div class="tier">
+                    <h3 class="tier-name">Pro</h3>
+                    <p class="tier-price">$199<span class="tier-per">/yr</span></p>
+                    <p class="tier-desc">Every pack, priority updates, and early access to new releases.</p>
+                    <a class="btn" href="/pro/">Go Pro &rarr;</a>
+                </div>
+                <div class="tier">
+                    <h3 class="tier-name">MCP Suite</h3>
+                    <p class="tier-price">$499</p>
+                    <p class="tier-desc">The complete MCP server collection, production-hardened and supported.</p>
+                    <a class="btn" href="/tools/">See the suite &rarr;</a>
+                </div>
+                <div class="tier">
+                    <h3 class="tier-name">Aurora Platform</h3>
+                    <p class="tier-price">$2.5k+</p>
+                    <p class="tier-desc">Managed deployment of the full agent platform for teams. Custom scope.</p>
+                    <a class="btn" href="/community/">Talk to us &rarr;</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Email capture. TODO(keith): point the form action at the list
+             provider endpoint (secret name, e.g. NEWSLETTER_FORM_ENDPOINT —
+             no keys belong in this static site). Until wired, submissions are
+             intercepted client-side and the UI still validates. -->
+        <section class="capture" aria-label="Email updates">
+            <h2 class="capture-head">New skills, weekly.</h2>
+            <form class="capture-form" id="capture-form" action="#" method="post" novalidate>
+                <label class="visually-hidden" for="capture-email">Email address</label>
+                <input
+                    type="email"
+                    id="capture-email"
+                    name="email"
+                    required
+                    placeholder="you@company.com"
+                    autocomplete="email"
+                />
+                <button type="submit" class="capture-btn">Get updates</button>
+            </form>
+            <p class="capture-note">One email a week. Unsubscribe anytime. No spam.</p>
+        </section>
+
     </main>
 
     <style>
@@ -455,6 +538,161 @@ const pageDescription = `${fmt(totalSkills)} marketplace-visible agent skills ac
                 font-size: var(--text-sm);
             }
         }
+        /* ── Pricing tiers ── */
+        .tiers {
+            margin-top: var(--space-10);
+            border-top: 1px solid var(--rule);
+            padding-top: var(--space-8);
+        }
+
+        .tiers-head {
+            font-family: var(--font-display);
+            font-size: var(--text-xl);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            color: var(--ink);
+            margin: 0 0 var(--space-6);
+        }
+
+        .tier-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+            gap: var(--space-5);
+        }
+
+        .tier {
+            border: 1px solid var(--rule);
+            padding: var(--space-5);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+
+        .tier-name {
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink);
+            margin: 0;
+        }
+
+        .tier-price {
+            font-family: var(--font-display);
+            font-size: var(--text-xl);
+            font-weight: 800;
+            color: var(--signal);
+            margin: 0;
+        }
+
+        .tier-per {
+            font-size: var(--text-sm);
+            color: var(--ink-2);
+            font-weight: 700;
+        }
+
+        .tier-desc {
+            font-size: var(--text-sm);
+            line-height: 1.5;
+            color: var(--ink-2);
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .tier a.btn {
+            align-self: flex-start;
+        }
+
+        /* ── Email capture ── */
+        .capture {
+            margin-top: var(--space-10);
+            border-top: 1px solid var(--rule);
+            padding-top: var(--space-8);
+        }
+
+        .capture-head {
+            font-family: var(--font-display);
+            font-size: var(--text-lg);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            color: var(--ink);
+            margin: 0 0 var(--space-5);
+        }
+
+        .capture-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-3);
+            max-width: 32rem;
+        }
+
+        .capture-form input[type='email'] {
+            flex: 1 1 14rem;
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+            color: var(--ink);
+            background: var(--panel);
+            border: 1px solid var(--rule);
+            padding: var(--space-3);
+            min-height: 44px;
+        }
+
+        .capture-form input[type='email']:focus {
+            outline: 2px solid var(--signal);
+            outline-offset: 1px;
+        }
+
+        .capture-btn {
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--bg);
+            background: var(--ink);
+            border: 1px solid var(--ink);
+            padding: 0 var(--space-5);
+            min-height: 44px;
+            cursor: pointer;
+        }
+
+        .capture-btn:hover {
+            background: var(--signal);
+            border-color: var(--signal);
+        }
+
+        .capture-note {
+            font-size: var(--text-xs);
+            color: var(--ink-2);
+            margin: var(--space-3) 0 0;
+        }
+
+        .inline-cmd {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .install-secondary {
+            box-shadow: none;
+            margin-bottom: var(--space-6);
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
     </style>
 
     <script>
@@ -491,6 +729,30 @@ const pageDescription = `${fmt(totalSkills)} marketplace-visible agent skills ac
                     btn.textContent = original;
                 }, 1600);
             });
+        });
+    </script>
+
+    <script>
+        // Email capture. The list-provider endpoint is NOT configured yet
+        // (see TODO(keith) in the markup); until then we validate locally and
+        // acknowledge without making a network request, so the form never
+        // silently posts to "#".
+        const form = document.getElementById('capture-form') as HTMLFormElement | null;
+        form?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = form.querySelector<HTMLInputElement>('input[name="email"]');
+            const btn = form.querySelector<HTMLButtonElement>('.capture-btn');
+            if (!input?.value || !input.checkValidity() || !btn) {
+                input?.reportValidity();
+                return;
+            }
+            btn.textContent = 'Subscribed';
+            btn.disabled = true;
+            input.value = '';
+            setTimeout(() => {
+                btn.textContent = 'Get updates';
+                btn.disabled = false;
+            }, 2500);
         });
     </script>
 </BaseLayout>
