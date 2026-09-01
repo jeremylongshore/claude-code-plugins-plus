@@ -1,0 +1,11 @@
+-- Account Usage contains direct references only. It can lag and is
+-- privilege-filtered. TAG_VALUE is intentionally excluded.
+SELECT
+  'asset_' || LOWER(SHA2(UPPER(CONCAT_WS('|', DOMAIN, OBJECT_DATABASE, OBJECT_SCHEMA, OBJECT_NAME, COALESCE(COLUMN_NAME, ''))), 256)) AS asset_key,
+  'tag_' || LOWER(SHA2(UPPER(CONCAT_WS('|', TAG_DATABASE, TAG_SCHEMA, TAG_NAME)), 256)) AS tag_key,
+  APPLY_METHOD
+FROM SNOWFLAKE.ACCOUNT_USAGE.TAG_REFERENCES
+WHERE OBJECT_DELETED IS NULL
+  AND OBJECT_DATABASE = '__DATABASE_LITERAL__'
+ORDER BY asset_key, tag_key
+LIMIT __ROW_LIMIT_PLUS_ONE__;

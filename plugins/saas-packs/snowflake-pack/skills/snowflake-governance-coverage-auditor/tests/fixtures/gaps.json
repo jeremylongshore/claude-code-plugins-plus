@@ -1,0 +1,38 @@
+{
+  "schema_version": "1",
+  "metadata": {
+    "assessed_at": "2026-08-31T12:00:00Z",
+    "edition": "STANDARD",
+    "preview_features_enabled": [],
+    "max_age_hours": {"evidence": 4, "classification": 24}
+  },
+  "assets": [
+    {
+      "asset_key": "asset_uncovered",
+      "domain": "COLUMN",
+      "require_tag": true,
+      "require_classification": true,
+      "required_controls": ["MASKING_POLICY", "PROJECTION_POLICY"]
+    }
+  ],
+  "tags": [],
+  "classifications": [
+    {
+      "asset_key": "asset_uncovered",
+      "status": "CLASSIFIED",
+      "last_classified_on": "2026-08-01T00:00:00Z",
+      "last_attempt_on": "2026-08-30T00:00:00Z",
+      "error_present": true
+    }
+  ],
+  "policies": [
+    {
+      "asset_key": "asset_uncovered",
+      "policy_key": "policy_broken",
+      "policy_kind": "MASKING_POLICY",
+      "assignment": "TAG",
+      "policy_status": "COLUMN_DATATYPE_MISMATCH_FOR_SECONDARY_ARG"
+    }
+  ],
+  "policy_context": []
+}
