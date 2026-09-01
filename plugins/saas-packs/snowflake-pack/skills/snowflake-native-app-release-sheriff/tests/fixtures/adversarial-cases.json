@@ -1,0 +1,32 @@
+[
+  {
+    "id": "tampered-channel-receipt",
+    "path": "channel_receipt.row_count",
+    "value": 99,
+    "expected_code": "CHANNEL_RECEIPT_UNVERIFIABLE"
+  },
+  {
+    "id": "truncated-cohort-receipt",
+    "path": "cohort_receipt.truncated",
+    "value": true,
+    "expected_code": "COHORT_RECEIPT_UNVERIFIABLE"
+  },
+  {
+    "id": "artifact-swap-in-scan",
+    "path": "security_scan.artifact_sha256",
+    "value": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+    "expected_code": "SECURITY_SCAN_RECEIPT_UNVERIFIABLE"
+  },
+  {
+    "id": "setup-parser-executed",
+    "path": "setup_script.parser_receipt.executed",
+    "value": true,
+    "expected_code": "SETUP_PARSER_RECEIPT_UNVERIFIABLE"
+  },
+  {
+    "id": "setup-parser-ambiguous",
+    "path": "setup_script.parser_receipt.ambiguous",
+    "value": true,
+    "expected_code": "SETUP_PARSER_RECEIPT_UNVERIFIABLE"
+  }
+]

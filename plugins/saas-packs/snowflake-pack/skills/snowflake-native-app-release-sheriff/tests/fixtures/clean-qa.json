@@ -1,0 +1,327 @@
+{
+  "schema_version": "1",
+  "as_of": "2026-08-31T23:50:00Z",
+  "package": {
+    "name": "NATIVE_APP_PACKAGE",
+    "candidate_version": "V2",
+    "candidate_patch": 0,
+    "change_kind": "VERSION",
+    "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "source_review": [
+    {
+      "topic": "setup_script",
+      "url": "https://docs.snowflake.com/en/developer-guide/native-apps/update-app-develop",
+      "reviewed_at": "2026-08-30T12:00:00Z"
+    },
+    {
+      "topic": "manifest_privileges",
+      "url": "https://docs.snowflake.com/en/developer-guide/native-apps/requesting-auto-privs",
+      "reviewed_at": "2026-08-30T12:00:00Z"
+    },
+    {
+      "topic": "app_specifications",
+      "url": "https://docs.snowflake.com/en/developer-guide/native-apps/requesting-app-specs",
+      "reviewed_at": "2026-08-30T12:00:00Z"
+    },
+    {
+      "topic": "security_scan",
+      "url": "https://docs.snowflake.com/en/developer-guide/native-apps/security-run-scan",
+      "reviewed_at": "2026-08-30T12:00:00Z"
+    },
+    {
+      "topic": "release_channels",
+      "url": "https://docs.snowflake.com/en/developer-guide/native-apps/release-channels",
+      "reviewed_at": "2026-08-30T12:00:00Z"
+    },
+    {
+      "topic": "upgrades",
+      "url": "https://docs.snowflake.com/en/developer-guide/native-apps/release-channels-upgrade",
+      "reviewed_at": "2026-08-30T12:00:00Z"
+    },
+    {
+      "topic": "release_notes",
+      "url": "https://docs.snowflake.com/en/release-notes/2025/9_12",
+      "reviewed_at": "2026-08-30T12:00:00Z"
+    }
+  ],
+  "manifest": {
+    "previous": {
+      "source_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "manifest_version": 2,
+      "setup_script": "scripts/setup.sql",
+      "privileges": [
+        {
+          "name": "EXECUTE TASK",
+          "description": "Run application tasks"
+        }
+      ],
+      "references": [
+        {
+          "name": "ORDERS",
+          "object_type": "TABLE",
+          "privileges": ["SELECT"]
+        }
+      ],
+      "app_specs": [
+        {
+          "name": "OUTBOUND_API",
+          "type": "EXTERNAL ACCESS",
+          "sequence": 1,
+          "definition_sha256": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        }
+      ]
+    },
+    "candidate": {
+      "source_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "manifest_version": 2,
+      "setup_script": "scripts/setup.sql",
+      "privileges": [
+        {
+          "name": "EXECUTE TASK",
+          "description": "Run application tasks"
+        }
+      ],
+      "references": [
+        {
+          "name": "ORDERS",
+          "object_type": "TABLE",
+          "privileges": ["SELECT"]
+        }
+      ],
+      "app_specs": [
+        {
+          "name": "OUTBOUND_API",
+          "type": "EXTERNAL ACCESS",
+          "sequence": 1,
+          "definition_sha256": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        }
+      ]
+    },
+    "consumer_disclosure": {
+      "privilege_delta_reviewed": true,
+      "app_spec_delta_reviewed": true
+    }
+  },
+  "setup_script": {
+    "path": "scripts/setup.sql",
+    "sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "parse_status": "PARSED",
+    "self_contained": true,
+    "fresh_install_tested": true,
+    "restart_from_beginning_tested": true,
+    "repeat_run_tested": true,
+    "upgrade_from_previous_tested": true,
+    "test_receipt_sha256": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "statements": [
+      {
+        "index": 1,
+        "operation": "CREATE_IF_NOT_EXISTS",
+        "object_type": "APPLICATION_ROLE",
+        "object_name": "APP_USER",
+        "idempotent": true,
+        "stateful": false
+      },
+      {
+        "index": 2,
+        "operation": "CREATE_IF_NOT_EXISTS",
+        "object_type": "TABLE",
+        "object_name": "APP_STATE.CONFIG",
+        "idempotent": true,
+        "stateful": true
+      },
+      {
+        "index": 3,
+        "operation": "GRANT",
+        "object_type": "TABLE",
+        "object_name": "APP_STATE.CONFIG",
+        "idempotent": true,
+        "stateful": false
+      }
+    ],
+    "parser_receipt": {
+      "schema_version": "1",
+      "source": "STATIC_SETUP_SQL_PARSER",
+      "collected_at": "2026-08-31T23:45:00Z",
+      "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "normalized_statements_sha256": "sha256:482382abdae4288f5e1ce991bdc59a8c90a1fad491c22324986c6785e8ae59bc",
+      "parser_version": "native-app-static-parser/1",
+      "candidate_version": "V2",
+      "candidate_patch": 0,
+      "ambiguous": false,
+      "executed": false,
+      "row_count": 3,
+      "truncated": false,
+      "receipt_sha256": "sha256:dae7e9ce6247755b5afefb28e7e57f2ad26d5ad426f6b83b2191797b4c272d14"
+    }
+  },
+  "artifact_receipt": {
+    "schema_version": "1",
+    "source": "CI_NATIVE_APP_BUNDLE",
+    "collected_at": "2026-08-31T23:45:00Z",
+    "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "candidate_version": "V2",
+    "candidate_patch": 0,
+    "previous_manifest_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "candidate_manifest_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "previous_manifest_normalized_sha256": "sha256:2433162d5d9943f6e156f9f60b2d94e37baf2406c63542111d9a3746462c065c",
+    "candidate_manifest_normalized_sha256": "sha256:ab85f1748bf4b144cb366e3db19b6ff0d5646087284b4250256feed81a8287db",
+    "setup_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "row_count": 3,
+    "truncated": false,
+    "receipt_sha256": "sha256:8c5c5014ffe090885c8fc4f0906eec6834220e965f8e5bcf190aac899c1c018b"
+  },
+  "security_scan": {
+    "schema_version": "1",
+    "source": "SHOW VERSIONS IN APPLICATION PACKAGE",
+    "collected_at": "2026-08-31T23:46:00Z",
+    "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "candidate_version": "V2",
+    "candidate_patch": 0,
+    "review_status": "NOT_REVIEWED",
+    "observed_at": "2026-08-31T23:46:00Z",
+    "row_count": 1,
+    "truncated": false,
+    "receipt_sha256": "sha256:3d9f493b73531a4573cc1853657f7f4ef8d770b95b5336baf09b3b248a519b8d"
+  },
+  "channels": [
+    {
+      "name": "QA",
+      "versions": ["V1"],
+      "candidate_already_present": false,
+      "targeted": true,
+      "observed_at": "2026-08-31T23:46:00Z"
+    }
+  ],
+  "channel_receipt": {
+    "schema_version": "1",
+    "source": "SHOW RELEASE CHANNELS AND VERSION INVENTORY",
+    "collected_at": "2026-08-31T23:46:00Z",
+    "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "channels": [
+      {
+        "name": "QA",
+        "versions": ["V1"],
+        "candidate_already_present": false,
+        "targeted": true,
+        "observed_at": "2026-08-31T23:46:00Z"
+      }
+    ],
+    "row_count": 1,
+    "truncated": false,
+    "receipt_sha256": "sha256:8e3582475d04d4bd86fb5dfba7600aba7c89e08424c49792c52e35ddc524cc33"
+  },
+  "cohorts": [
+    {
+      "name": "internal-qa",
+      "channel": "QA",
+      "consumer_count": 2,
+      "observed_count": 2,
+      "from_versions": ["V1"],
+      "preflight_status": "PASS",
+      "disabled_instances": 0,
+      "failed_upgrades": 0,
+      "rollback_observables_ready": true,
+      "observed_at": "2026-08-31T23:46:00Z"
+    }
+  ],
+  "cohort_receipt": {
+    "schema_version": "1",
+    "source": "SNOWFLAKE.DATA_SHARING_USAGE.APPLICATION_STATE",
+    "collected_at": "2026-08-31T23:46:00Z",
+    "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "cohorts": [
+      {
+        "name": "internal-qa",
+        "channel": "QA",
+        "consumer_count": 2,
+        "observed_count": 2,
+        "from_versions": ["V1"],
+        "preflight_status": "PASS",
+        "disabled_instances": 0,
+        "failed_upgrades": 0,
+        "rollback_observables_ready": true,
+        "observed_at": "2026-08-31T23:46:00Z"
+      }
+    ],
+    "row_count": 2,
+    "truncated": false,
+    "receipt_sha256": "sha256:edaa6a9ce40b62d5f2588ea315aee943c90eaebf1296f3b149e0cd76806cc496"
+  },
+  "retirements": [],
+  "retirement_receipt": {
+    "schema_version": "1",
+    "source": "PROVIDER_VERSION_RETIREMENT_INVENTORY",
+    "collected_at": "2026-08-31T23:46:00Z",
+    "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "retirements": [],
+    "row_count": 0,
+    "truncated": false,
+    "receipt_sha256": "sha256:819eb2989a84518a7c0859cc7670b758809b4c4fa7e92323be33ee82225f3d6d"
+  },
+  "compatibility": {
+    "schema_version": "1",
+    "source": "CI_NATIVE_APP_COMPATIBILITY",
+    "collected_at": "2026-08-31T23:44:00Z",
+    "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "previous_version": "V1",
+    "supported_upgrade_from": ["V1"],
+    "manifest_setup_pair_tested": true,
+    "state_change": true,
+    "contract_tests": [
+      {
+        "name": "fresh-install",
+        "status": "PASS"
+      },
+      {
+        "name": "upgrade-v1-to-v2",
+        "status": "PASS"
+      }
+    ],
+    "test_receipt_sha256": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "row_count": 2,
+    "truncated": false,
+    "receipt_sha256": "sha256:faff16cddbe963b6581558ee20a75880ae755e20f116a55a83b31f2da144d81c"
+  },
+  "rollback": {
+    "schema_version": "1",
+    "source": "CI_NATIVE_APP_ROLLBACK_DRY_RUN",
+    "collected_at": "2026-08-31T23:43:00Z",
+    "artifact_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "owner": "native-app-release-manager",
+    "target_version": "V1",
+    "target_artifact_sha256": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "baseline_sha256": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "dry_run_status": "PASS",
+    "tested_at": "2026-08-31T23:43:00Z",
+    "cohort_halt_plan": "Pause the named cohort in the approved release controller and collect fresh state.",
+    "stop_conditions": [
+      "upgrade_failures exceeds zero",
+      "application invariant falls below its threshold"
+    ],
+    "observables": [
+      {
+        "name": "upgrade_failures",
+        "source": "APPLICATION_STATE",
+        "threshold": "0",
+        "window_minutes": 30
+      },
+      {
+        "name": "disabled_instances",
+        "source": "APPLICATION_STATE",
+        "threshold": "0",
+        "window_minutes": 30
+      },
+      {
+        "name": "successful_health_checks",
+        "source": "provider test telemetry",
+        "threshold": "100 percent",
+        "window_minutes": 30
+      }
+    ],
+    "row_count": 3,
+    "truncated": false,
+    "receipt_sha256": "sha256:badcc6e2d7964eccaf472c5fcde4d7be9f86de218b736e0ba0a431b772b83a8e"
+  }
+}
