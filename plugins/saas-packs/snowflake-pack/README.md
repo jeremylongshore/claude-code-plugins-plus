@@ -1,8 +1,8 @@
 # Snowflake Skill Pack
 
-> Eight model-neutral, evidence-driven operator skills for Snowflake cost,
-> performance, pipelines, deployments, authentication, access governance, data
-> quality, and failover readiness.
+> Ten model-neutral, evidence-driven operator skills for Snowflake cost,
+> performance, pipelines, deployments, authentication, access and data
+> governance, data quality, failover readiness, and Native App releases.
 
 ## Start in 30 seconds
 
@@ -31,7 +31,7 @@ Then describe the problem in plain language:
 The matching skill asks for the smallest useful evidence set, analyzes it without
 changing the account, and produces a reviewable report or change packet.
 
-## The eight skills
+## The ten skills
 
 | Skill | Use it when |
 | --- | --- |
@@ -43,6 +43,28 @@ changing the account, and produces a reviewable report or change packet.
 | `snowflake-access-guardian` | You need an effective privilege trace, RBAC drift review, or least-privilege change packet. |
 | `snowflake-data-quality-sentinel` | You need to distinguish violated expectations, failed evaluations, missing coverage, stale results, and monitoring gaps. |
 | `snowflake-failover-readiness-drill` | You need a read-only RPO/RTO preflight or verification of an operator-executed failover/failback drill. |
+| `snowflake-governance-coverage-auditor` | You need to prove which sensitive assets lack effective classification, tags, masking, row-access, projection, join, or aggregation coverage. |
+| `snowflake-native-app-release-sheriff` | You need a provider-side Native App release preflight for setup retries, privilege/App Spec deltas, scans, channels, cohorts, compatibility, or rollback. |
+
+## One model-neutral operator command
+
+From the installed pack directory, list every workflow:
+
+```bash
+./shared/snowflake_operator.py --help
+```
+
+The command runs on Python 3.10+ and dispatches to the same analyzers used by the
+skills. It does not call a model API or copy their decision logic. For example:
+
+```bash
+./shared/snowflake_operator.py pipeline-triage \
+  --input ./pipeline-evidence.json \
+  --output ./pipeline-report.json
+```
+
+Use `collect` separately when you have an existing least-privilege Snowflake CLI
+profile. Collection never implies that the evidence is complete or healthy.
 
 ## Collect live evidence without an adapter
 
@@ -57,10 +79,10 @@ python3 shared/evidence/collect_snowflake_evidence.py \
   --output ./snowflake-query-evidence.json
 ```
 
-Supported surfaces are `cost`, `query`, `pipeline`, `access`, `auth`,
-`data-quality`, and `replication`. The collector statically rejects mutating SQL,
-does not accept credentials, records view/timestamp/hash provenance, and treats
-permission gaps as missing evidence rather than permission to escalate.
+Run `./shared/snowflake_operator.py collect --help` for the current reviewed
+surface list. The collector statically rejects mutating SQL, does not accept
+credentials, records view/timestamp/hash provenance, and treats permission gaps
+as missing evidence rather than permission to escalate.
 If a receipt sets `truncation_possible: true`, narrow or partition the requested
 window before making any completeness, absence, or pass claim.
 
@@ -92,12 +114,15 @@ Each skill lists its exact evidence and privilege requirements. A missing view o
 grant produces a blocked-evidence finding and a narrowly scoped request—not a demand
 for `ACCOUNTADMIN`.
 
-## Migration: v1 → v2.1
+## Migration: v1 → v2.2
 
 Version 2 replaced 30 documentation-style skills with six operator workflows;
-version 2.1 adds the two research-justified gaps plus shared live collection. The
-plugin install slug remains `snowflake-pack`. Retired public skill URLs permanently
-redirect to the closest successor, and Git history retains every v1 artifact.
+version 2.1 added the two research-justified reliability gaps plus shared live
+collection. Version 2.2 deepens receipt-bound evidence across the portfolio, adds
+the governance-coverage and Native App release jobs, and provides one canonical
+model-neutral operator command. The plugin install slug remains `snowflake-pack`.
+Retired public skill URLs permanently redirect to the closest successor, and Git
+history retains every v1 artifact.
 
 Restore receipt: v1 is preserved at
 `8302ef137e9ba717c4bdbe48b7f4c20ebe3a4169`; the exact restore command is in

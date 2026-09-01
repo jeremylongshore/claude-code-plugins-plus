@@ -135,6 +135,8 @@ class SnowflakePackIntegrityTests(unittest.TestCase):
             self.assertTrue(resolved.issubset(packed_files), document)
         self.assertIn("000-docs/000-INDEX.md", packed_files)
         self.assertIn("LICENSE", packed_files)
+        self.assertIn("shared/snowflake_operator.py", packed_files)
+        self.assertTrue(os.access(PACK / "shared" / "snowflake_operator.py", os.X_OK))
         self.assertIn("shared/evidence/collect_snowflake_evidence.py", packed_files)
         self.assertIn("shared/evidence/sql/replication.sql", packed_files)
 

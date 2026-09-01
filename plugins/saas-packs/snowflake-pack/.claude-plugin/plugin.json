@@ -1,7 +1,7 @@
 {
   "name": "snowflake-pack",
-  "version": "2.1.0",
-  "description": "Eight model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, and failover",
+  "version": "2.2.0",
+  "description": "Ten model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, failover, and Native Apps",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
