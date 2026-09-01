@@ -3,8 +3,8 @@
   "authority": "Blueprint 727 §8; Freshie graded export",
   "source": {
     "path": "freshie/grades.csv",
-    "sha256": "a46de16f6347a3ec0cd9b036b6ff77349b8778292447a13e104d21ad50c30495",
-    "artifact_count": 3609
+    "sha256": "7324deed6dadaba5bdcf2918c70a218ad6e8fccb7974bda767d2d0a6e71255d5",
+    "artifact_count": 3575
   },
   "rule_order": [
     "G0",
@@ -19,7 +19,7 @@
     "G9"
   ],
   "counts": {
-    "AUTO-MIGRATE": 493,
+    "AUTO-MIGRATE": 459,
     "CERTIFY": 0,
     "CERTIFY-PENDING-EVIDENCE": 2770,
     "CERTIFY-UPSTREAM": 0,
@@ -34779,23 +34779,6 @@
       ]
     },
     {
-      "path": "plugins/saas-packs/stackblitz-pack/skills/stackblitz-ci-integration/SKILL.md",
-      "grade": "C",
-      "score": 79,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
       "path": "plugins/saas-packs/stackblitz-pack/skills/stackblitz-common-errors/SKILL.md",
       "grade": "C",
       "score": 72,
@@ -34851,43 +34834,9 @@
       ]
     },
     {
-      "path": "plugins/saas-packs/stackblitz-pack/skills/stackblitz-cost-tuning/SKILL.md",
-      "grade": "B",
-      "score": 80,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
       "path": "plugins/saas-packs/stackblitz-pack/skills/stackblitz-debug-bundle/SKILL.md",
       "grade": "B",
       "score": 80,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/stackblitz-pack/skills/stackblitz-deploy-integration/SKILL.md",
-      "grade": "C",
-      "score": 79,
       "diagnostics": [
         "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
         "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
@@ -34945,60 +34894,9 @@
       ]
     },
     {
-      "path": "plugins/saas-packs/stackblitz-pack/skills/stackblitz-performance-tuning/SKILL.md",
-      "grade": "B",
-      "score": 80,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/stackblitz-pack/skills/stackblitz-prod-checklist/SKILL.md",
-      "grade": "C",
-      "score": 79,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
       "path": "plugins/saas-packs/stackblitz-pack/skills/stackblitz-rate-limits/SKILL.md",
       "grade": "C",
       "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/stackblitz-pack/skills/stackblitz-reference-architecture/SKILL.md",
-      "grade": "C",
-      "score": 79,
       "diagnostics": [
         "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
         "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
@@ -35032,7 +34930,7 @@
     {
       "path": "plugins/saas-packs/stackblitz-pack/skills/stackblitz-security-basics/SKILL.md",
       "grade": "C",
-      "score": 77,
+      "score": 78,
       "diagnostics": [
         "[body] Required section missing: '## Error Handling' (or an equivalent heading: ## Errors, ## Troubleshooting, ## Failure modes, ## Edge cases, ## Limitations) (marketplace tier)",
         "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
@@ -35043,40 +34941,6 @@
       "gate": "G5",
       "reason_codes": [
         "[body] Required section missing: '## Error Handling' (or an equivalent heading: ## Errors, ## Troubleshooting, ## Failure modes, ## Edge cases, ## Limitations) (marketplace tier)",
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/stackblitz-pack/skills/stackblitz-upgrade-migration/SKILL.md",
-      "grade": "C",
-      "score": 79,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/stackblitz-pack/skills/stackblitz-webhooks-events/SKILL.md",
-      "grade": "C",
-      "score": 79,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
         "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
         "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
         "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
@@ -35802,23 +35666,6 @@
       ]
     },
     {
-      "path": "plugins/saas-packs/together-pack/skills/together-debug-bundle/SKILL.md",
-      "grade": "C",
-      "score": 79,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
       "path": "plugins/saas-packs/together-pack/skills/together-deploy-integration/SKILL.md",
       "grade": "C",
       "score": 79,
@@ -35882,23 +35729,6 @@
       "reason_codes": [
         "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
         "[body] Required section missing: '## Instructions' (or an equivalent heading: ## Usage, ## How to use, ## How it works, ## Steps, ## Workflow, ## Guide, ## Getting started) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/together-pack/skills/together-performance-tuning/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
         "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
         "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
       ]
@@ -36562,412 +36392,6 @@
       "gate": "G7",
       "reason_codes": [
         "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-ci-integration/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-common-errors/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-core-workflow-a/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-core-workflow-b/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-cost-tuning/SKILL.md",
-      "grade": "C",
-      "score": 79,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-data-handling/SKILL.md",
-      "grade": "C",
-      "score": 79,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-debug-bundle/SKILL.md",
-      "grade": "B",
-      "score": 80,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-deploy-integration/SKILL.md",
-      "grade": "C",
-      "score": 79,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-enterprise-rbac/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-hello-world/SKILL.md",
-      "grade": "B",
-      "score": 82,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-incident-runbook/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-install-auth/SKILL.md",
-      "grade": "C",
-      "score": 79,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-local-dev-loop/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-migration-deep-dive/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-multi-env-setup/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-observability/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-performance-tuning/SKILL.md",
-      "grade": "C",
-      "score": 79,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-prod-checklist/SKILL.md",
-      "grade": "C",
-      "score": 79,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-rate-limits/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-reference-architecture/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-sdk-patterns/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-security-basics/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-upgrade-migration/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/veeva-pack/skills/veeva-webhooks-events/SKILL.md",
-      "grade": "C",
-      "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
-      "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
       ]
     },
     {
