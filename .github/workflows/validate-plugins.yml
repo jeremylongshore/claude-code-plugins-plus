@@ -837,6 +837,13 @@ jobs:
           raise SystemExit(0 if valid else 1)
           PY
 
+      # DoltLite replaces SQLite for its host process. Keep its native tests in
+      # a fresh interpreter so pytest-cov and unrelated sqlite3 users retain
+      # the stock SQLite library for the repository-wide suite.
+      - name: Run native DoltLite tests in an isolated process
+        if: matrix.test-type == 'python-tests'
+        run: python -W error -m unittest tests.test_doltlite_sync -v
+
       - name: Run Python tests
         if: matrix.test-type == 'python-tests'
         run: |
@@ -850,7 +857,7 @@ jobs:
             echo "$TEST_FILES"
 
             # Run pytest with coverage
-            pytest -v --cov=. --cov-report=term-missing --cov-report=xml || exit 1
+            pytest -v --ignore=tests/test_doltlite_sync.py --cov=. --cov-report=term-missing --cov-report=xml || exit 1
             echo "✅ Python tests passed"
           else
             echo "⚠️  No Python test files found"
