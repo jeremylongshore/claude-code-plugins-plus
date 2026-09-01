@@ -8,7 +8,7 @@ description: 'Together AI rate limits for inference, fine-tuning, and model depl
 
   '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -136,4 +136,4 @@ async function batchEmbedDocuments(texts: string[], model: string, batchSize = 2
 
 ## Next Steps
 
-See `together-performance-tuning`.
+See `together-cost-tuning` for batch and caching trade-offs.

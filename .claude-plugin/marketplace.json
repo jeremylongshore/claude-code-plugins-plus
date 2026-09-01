@@ -7262,8 +7262,8 @@
     {
       "name": "stackblitz-pack",
       "source": "./plugins/saas-packs/stackblitz-pack",
-      "description": "Claude Code skill pack for StackBlitz (18 skills)",
-      "version": "1.5.0",
+      "description": "Claude Code skill pack for StackBlitz (10 skills)",
+      "version": "1.6.0",
       "category": "saas-packs",
       "keywords": [
         "stackblitz",
@@ -7298,30 +7298,12 @@
     {
       "name": "together-pack",
       "source": "./plugins/saas-packs/together-pack",
-      "description": "Claude Code skill pack for Together AI (18 skills)",
-      "version": "1.6.0",
+      "description": "Claude Code skill pack for Together AI (16 skills)",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": [
         "together",
         "together ai",
-        "saas",
-        "sdk",
-        "integration"
-      ],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io",
-        "url": "https://github.com/jeremylongshore"
-      }
-    },
-    {
-      "name": "veeva-pack",
-      "source": "./plugins/saas-packs/veeva-pack",
-      "description": "Claude Code skill pack for Veeva (24 skills)",
-      "version": "1.3.0",
-      "category": "saas-packs",
-      "keywords": [
-        "veeva",
         "saas",
         "sdk",
         "integration"
