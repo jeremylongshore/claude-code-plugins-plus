@@ -351,7 +351,7 @@
             "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18, a persistent local filesystem (the observe-decide-act loop passes state through local turn files), and ~/.kobiton/.credentials written by /automate:setup — scripts/appium.js reads that file directly and never calls the MCP getCredential tool, so it is required, not a fallback. An authenticated Kobiton MCP connection is additionally useful for device selection."
           },
           {
-            "count": 3284,
+            "count": 3285,
             "value": "Designed for Claude Code"
           },
           {
@@ -367,7 +367,7 @@
             "value": "Designed for Claude Code, Codex, Cursor, and GitHub Copilot; works in any agent that can read project files and fetch a URL."
           },
           {
-            "count": 3,
+            "count": 2,
             "value": "Designed for Claude Code, also compatible with Codex and OpenClaw"
           },
           {
