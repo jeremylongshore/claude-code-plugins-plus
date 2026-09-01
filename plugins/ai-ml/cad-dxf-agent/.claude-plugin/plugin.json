@@ -1,0 +1,20 @@
+{
+  "name": "cad-dxf-agent",
+  "version": "0.1.0",
+  "description": "Deterministic DXF drawing analysis from natural language — code compliance (ADA/IBC), drawing health/QA, quantity takeoff, plain-English summary, RFIs, and room/zone detection. No LLM or API key required.",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io",
+    "url": "https://intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/cad-ai-agent",
+  "license": "Apache-2.0",
+  "keywords": [
+    "dxf",
+    "cad",
+    "compliance",
+    "takeoff",
+    "drawing-intelligence",
+    "aec"
+  ]
+}

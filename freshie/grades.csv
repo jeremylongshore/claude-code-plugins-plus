@@ -246,6 +246,7 @@ plugins/ai-ml/ai-ethics-validator/skills/validating-ai-ethics-and-fairness,A,96
 plugins/ai-ml/ai-sdk-agents/skills/orchestrating-multi-agent-systems,A,99
 plugins/ai-ml/anomaly-detection-system/skills/detecting-data-anomalies,A,99
 plugins/ai-ml/automl-pipeline-builder/skills/building-automl-pipelines,A,96
+plugins/ai-ml/cad-dxf-agent/skills/cad-dxf-agent,A,97
 plugins/ai-ml/classification-model-builder/skills/building-classification-models,A,95
 plugins/ai-ml/clustering-algorithm-runner/skills/running-clustering-algorithms,A,94
 plugins/ai-ml/computer-vision-processor/skills/processing-computer-vision-tasks,A,96

@@ -5,16 +5,16 @@
     "generator": "marketplace/scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 439,
-    "totalSkills": 3017,
+    "totalPlugins": 440,
+    "totalSkills": 3018,
     "totalCommands": 85,
-    "pluginsWithSkills": 407,
+    "pluginsWithSkills": 408,
     "byCategory": {
       "productivity": 29,
       "security": 27,
       "testing": 28,
       "ai-agency": 9,
-      "ai-ml": 36,
+      "ai-ml": 37,
       "mcp": 16,
       "packages": 5,
       "performance": 25,
@@ -1421,6 +1421,33 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "cad-dxf-agent",
+      "name": "cad-dxf-agent",
+      "displayName": "cad dxf agent",
+      "description": "Deterministic DXF drawing analysis for compliance, drawing QA, quantity takeoff, summaries, RFIs, and room/zone detection — no LLM or API key required.",
+      "version": "0.1.0",
+      "category": "ai-ml",
+      "keywords": [
+        "dxf",
+        "cad",
+        "compliance",
+        "takeoff",
+        "drawing-intelligence",
+        "aec"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install cad-dxf-agent",
+      "sourcePath": "./plugins/ai-ml/cad-dxf-agent",
+      "isFeatured": false,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
       },
       "type": "instruction-plugin"
     },
