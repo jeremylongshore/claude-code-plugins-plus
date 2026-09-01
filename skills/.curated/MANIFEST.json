@@ -6,22 +6,22 @@
   "validated": true,
   "grade_export": {
     "run_id": 19,
-    "total": 3608,
+    "total": 3609,
     "grades": {
-      "A": 1882,
+      "A": 1883,
       "B": 1112,
       "C": 452,
       "D": 157,
       "F": 5
     },
-    "grades_csv_sha256": "cc914a9f672e6ebcc6117390203906ac77f76f20d827b3e75ca967cb4a79c955"
+    "grades_csv_sha256": "a46de16f6347a3ec0cd9b036b6ff77349b8778292447a13e104d21ad50c30495"
   },
   "selection": {
     "resolver": "graded∩first-party",
-    "count": 2426,
-    "sha256": "151a3d73518868ed6860fe571ede560446da3e043eed0bbf3744aa23be634ed9"
+    "count": 2427,
+    "sha256": "fa52ab57bdad1d54fdfd9f6ede6a7f3628d54161cc294469b2e4df00814f4d0e"
   },
-  "count": 2426,
+  "count": 2427,
   "skills": [
     {
       "curated_name": "abridge-ci-integration",
@@ -4293,6 +4293,20 @@
         "references/errors.md",
         "references/examples.md",
         "references/implementation.md"
+      ]
+    },
+    {
+      "curated_name": "cad-dxf-agent",
+      "source_path": "plugins/ai-ml/cad-dxf-agent/skills/cad-dxf-agent",
+      "category": "ai-ml",
+      "plugin": "cad-dxf-agent",
+      "recorded_grade": "A",
+      "recorded_score": "97",
+      "fresh_grade": "A",
+      "run_id": 19,
+      "files": [
+        "SKILL.md",
+        "references/capabilities.md"
       ]
     },
     {
