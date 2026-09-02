@@ -2,6 +2,9 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { test, expect } from '@playwright/test';
 
+// @ts-expect-error JavaScript utility has no separate declaration file.
+import { truncateHtml } from '../scripts/truncate-html.mjs';
+
 type CatalogSkill = {
   slug: string;
   content: string;
@@ -25,9 +28,12 @@ const candidate = catalog.skills.find(
 
 test.describe('HTML preview structure', () => {
   test('plugin preview is truncated while the dedicated skill page stays complete', async ({ page }) => {
-    test.skip(!candidate, 'catalog has no skill large enough to exercise the preview limit');
+    expect(candidate, 'catalog must contain an installable skill above the preview limit').toBeDefined();
+    const expectedPreview = truncateHtml(candidate!.content, 3000);
 
-    await page.goto(`/plugins/${candidate!.parentPlugin!.name}/`);
+    const response = await page.goto(`/plugins/${candidate!.parentPlugin!.name}/`);
+    expect(response?.status()).toBe(200);
+    expect(await response!.text()).toContain(expectedPreview);
     const preview = page.locator(
       `[data-skill-slug="${candidate!.slug}"] .gist-content-inner`,
     );
@@ -38,14 +44,12 @@ test.describe('HTML preview structure', () => {
     expect(previewHtml).not.toBe(candidate!.content.slice(0, 3000));
     expect(Array.from(previewHtml).length).toBeLessThanOrEqual(3000);
 
-    const structurallyClosed = await preview.evaluate((element) => {
-      const walk = (node: Element): boolean =>
-        Array.from(node.children).every(
-          (child) => child.parentElement === node && walk(child),
-        );
-      return walk(element);
-    });
-    expect(structurallyClosed).toBe(true);
+    const normalizedExpected = await page.evaluate((html) => {
+      const template = document.createElement('template');
+      template.innerHTML = html;
+      return template.innerHTML;
+    }, expectedPreview);
+    expect(previewHtml).toBe(normalizedExpected);
 
     await page.goto(`/skills/${candidate!.slug}/`);
     const fullHtml = await page.locator('.skill-content > div').innerHTML();

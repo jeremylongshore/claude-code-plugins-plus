@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 import { truncateHtml } from './truncate-html.mjs';
@@ -81,4 +82,18 @@ test('uses only valid bounded inputs', () => {
   assert.throws(() => truncateHtml('<p>x</p>', -1), RangeError);
   assert.throws(() => truncateHtml('<p>x</p>', 1.5), RangeError);
   assert.throws(() => truncateHtml(null, 10), TypeError);
+});
+
+test('every current generated skill preview remains balanced within the public limit', () => {
+  const catalogPath = new URL('../src/data/skills-catalog.json', import.meta.url);
+  const catalog = JSON.parse(readFileSync(catalogPath, 'utf8'));
+  const candidates = catalog.skills.filter(({ content }) => length(content) > 3000);
+  assert.ok(candidates.length > 0, 'the corpus must exercise truncation');
+
+  for (const { slug, content } of candidates) {
+    const result = truncateHtml(content, 3000);
+    assert.ok(length(result) <= 3000, slug);
+    assert.match(result, /…/, slug);
+    assertBalanced(result);
+  }
 });

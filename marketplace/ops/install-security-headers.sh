@@ -100,9 +100,9 @@ fi
 
 [[ -f $TARGET ]] && cp --preserve=mode,ownership,timestamps -- "$TARGET" "$TARGET_BACKUP"
 cp --preserve=mode,ownership,timestamps -- "$MAIN_CONFIG" "$MAIN_BACKUP"
+INSTALLED=1
 install -o root -g root -m 0644 "$SOURCE" "$TARGET"
 install -o root -g root -m 0644 "$TMP_DIR/Caddyfile" "$MAIN_CONFIG"
-INSTALLED=1
 sudo -n -u caddy caddy validate --config "$MAIN_CONFIG" >/dev/null
 systemctl reload caddy
 INSTALLED=0

@@ -72,6 +72,19 @@ test('planted weakening is rejected by the policy assertions', () => {
   wildcard['connect-src'] = [...wildcard['connect-src'], '*'];
   assert.throws(() => validateSecurityPolicy(wildcard), /wildcard/);
 
+  for (const [directive, source] of [
+    ['object-src', 'https:'],
+    ['script-src', 'https:'],
+    ['base-uri', 'data:'],
+  ]) {
+    const broadSchemeSource = structuredClone(CSP_DIRECTIVES);
+    broadSchemeSource[directive] = [...broadSchemeSource[directive], source];
+    assert.throws(
+      () => validateSecurityPolicy(broadSchemeSource),
+      /reviewed (?:singleton|source allowlist)/,
+    );
+  }
+
   assert.throws(
     () => validateSecurityPolicy(CSP_DIRECTIVES, { 'style-src': 'only one exception' }),
     /script-src unsafe-inline requires/,

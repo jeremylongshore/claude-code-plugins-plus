@@ -35,6 +35,7 @@ export const CSP_DIRECTIVES = Object.freeze({
     'https://github.com',
     'https://avatars.githubusercontent.com',
     'https://www.google-analytics.com',
+    'https://www.googletagmanager.com',
   ],
   'connect-src': [
     "'self'",
@@ -54,7 +55,6 @@ export const CSP_DIRECTIVES = Object.freeze({
   'media-src': ["'self'"],
   'manifest-src': ["'self'"],
   'worker-src': ["'self'", 'blob:'],
-  'upgrade-insecure-requests': [],
 });
 
 export function serializeCsp(directives = CSP_DIRECTIVES) {
@@ -75,9 +75,17 @@ export function validateSecurityPolicy(
     'form-action': "'self'",
   };
   for (const [name, requiredValue] of Object.entries(required)) {
-    if (!directives[name]?.includes(requiredValue)) {
-      throw new Error(`${name} must include ${requiredValue}`);
+    if (directives[name]?.length !== 1 || directives[name][0] !== requiredValue) {
+      throw new Error(`${name} must be the reviewed singleton ${requiredValue}`);
     }
+  }
+
+  const reviewedNames = Object.keys(CSP_DIRECTIVES);
+  if (
+    Object.keys(directives).length !== reviewedNames.length ||
+    reviewedNames.some((name) => !Object.hasOwn(directives, name))
+  ) {
+    throw new Error('CSP directives must match the reviewed directive allowlist');
   }
 
   for (const [name, values] of Object.entries(directives)) {
@@ -85,6 +93,13 @@ export function validateSecurityPolicy(
     if (values.includes("'unsafe-eval'")) throw new Error(`${name} may not allow unsafe-eval`);
     if (values.includes("'unsafe-inline'") && !inlineJustifications[name]) {
       throw new Error(`${name} unsafe-inline requires an explicit justification`);
+    }
+    const reviewedValues = CSP_DIRECTIVES[name];
+    if (
+      values.length !== reviewedValues.length ||
+      values.some((value, index) => value !== reviewedValues[index])
+    ) {
+      throw new Error(`${name} must match the reviewed source allowlist`);
     }
   }
   return true;

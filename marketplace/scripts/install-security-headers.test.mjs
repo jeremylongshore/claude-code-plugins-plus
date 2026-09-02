@@ -135,3 +135,67 @@ test('post-install validation failure restores prior and absent target states', 
     }
   }
 });
+
+test('failure during either live-file install rolls back the complete transaction', () => {
+  for (const failingCall of ['1', '2']) {
+    for (const targetBefore of [null, 'previous-fragment\n']) {
+      const paths = fixture();
+      const reloadLog = join(paths.directory, 'reload.log');
+      const installLog = join(paths.directory, 'install.log');
+      try {
+        const mainBefore = readFileSync(paths.main, 'utf8');
+        if (targetBefore !== null) writeFileSync(paths.target, targetBefore);
+        writeFileSync(
+          join(paths.bin, 'caddy'),
+          '#!/usr/bin/env sh\n[ "$1" = "adapt" ] || [ "$1" = "validate" ]\n',
+        );
+        writeFileSync(
+          join(paths.bin, 'sudo'),
+          '#!/usr/bin/env sh\nwhile [ "$#" -gt 0 ]; do\n  case "$1" in\n    -n) shift ;;\n    -u) shift 2 ;;\n    *) break ;;\n  esac\ndone\nexec "$@"\n',
+        );
+        writeFileSync(
+          join(paths.bin, 'systemctl'),
+          '#!/usr/bin/env sh\nprintf "%s\\n" "$*" >> "$SYSTEMCTL_LOG"\n',
+        );
+        writeFileSync(
+          join(paths.bin, 'install'),
+          '#!/usr/bin/env sh\nprintf "x\\n" >> "$INSTALL_CALL_LOG"\ncount=$(wc -l < "$INSTALL_CALL_LOG")\n/usr/bin/install "$@"\n[ "$count" != "$FAIL_INSTALL_CALL" ]\n',
+        );
+        for (const command of ['caddy', 'sudo', 'systemctl', 'install']) {
+          chmodSync(join(paths.bin, command), 0o755);
+        }
+
+        const result = spawnSync(
+          '/usr/bin/sudo',
+          [
+            '-n',
+            'env',
+            `PATH=${paths.bin}:/usr/bin:/bin`,
+            `SYSTEMCTL_LOG=${reloadLog}`,
+            `INSTALL_CALL_LOG=${installLog}`,
+            `FAIL_INSTALL_CALL=${failingCall}`,
+            'bash',
+            installer,
+            source,
+            paths.target,
+            paths.main,
+            'example.invalid {',
+          ],
+          { encoding: 'utf8' },
+        );
+
+        assert.notEqual(result.status, 0, `install call ${failingCall} must fail`);
+        assert.match(result.stderr, /rolled back/);
+        assert.equal(readFileSync(paths.main, 'utf8'), mainBefore);
+        if (targetBefore === null) {
+          assert.equal(existsSync(paths.target), false, 'new target must be removed');
+        } else {
+          assert.equal(readFileSync(paths.target, 'utf8'), targetBefore);
+        }
+        assert.equal(readFileSync(reloadLog, 'utf8'), 'reload caddy\n');
+      } finally {
+        rmSync(paths.directory, { recursive: true, force: true });
+      }
+    }
+  }
+});
