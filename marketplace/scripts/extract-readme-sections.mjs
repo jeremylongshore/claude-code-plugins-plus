@@ -13,6 +13,7 @@ import { createRequire } from 'node:module';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { mdToHtml } from './md-to-html.mjs';
+import { truncateHtml } from './truncate-html.mjs';
 
 const require = createRequire(import.meta.url);
 const { publishedPlugins } = require('../../scripts/publication-policy.cjs');
@@ -121,14 +122,6 @@ function parseTroubleshooting(md) {
   return items.length > 0 ? items : null;
 }
 
-function truncate(html, max) {
-  if (html.length <= max) return html;
-  // Truncate at last complete tag before limit
-  const cut = html.slice(0, max);
-  const lastClose = cut.lastIndexOf('>');
-  return (lastClose > max * 0.5 ? cut.slice(0, lastClose + 1) : cut) + '...';
-}
-
 // ── Main ──
 
 const catalog = JSON.parse(readFileSync(CATALOG_PATH, 'utf-8'));
@@ -152,22 +145,22 @@ for (const plugin of publishedPlugins(catalog.plugins, 'extended catalog')) {
   // Overview: explicit section or pre-heading content
   const overviewMd = sections.overview || sections._preHeading;
   if (overviewMd) {
-    entry.overview = truncate(mdToHtml(overviewMd), MAX_SECTION_CHARS);
+    entry.overview = truncateHtml(mdToHtml(overviewMd), MAX_SECTION_CHARS);
   }
 
   // Features
   if (sections.features) {
-    entry.features = truncate(mdToHtml(sections.features), MAX_SECTION_CHARS);
+    entry.features = truncateHtml(mdToHtml(sections.features), MAX_SECTION_CHARS);
   }
 
   // Usage
   if (sections.usage) {
-    entry.usage = truncate(mdToHtml(sections.usage), MAX_SECTION_CHARS);
+    entry.usage = truncateHtml(mdToHtml(sections.usage), MAX_SECTION_CHARS);
   }
 
   // Use Cases
   if (sections.useCases) {
-    entry.useCases = truncate(mdToHtml(sections.useCases), MAX_SECTION_CHARS);
+    entry.useCases = truncateHtml(mdToHtml(sections.useCases), MAX_SECTION_CHARS);
   }
 
   // Troubleshooting — parsed as Q&A

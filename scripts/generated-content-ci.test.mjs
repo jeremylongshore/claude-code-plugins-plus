@@ -14,6 +14,7 @@ const GENERATED_CONTENT_COMMAND = PACKAGE.scripts['validate:generated-content'];
 const PARSER_SECURITY_SUITES = [
   'marketplace/scripts/discover-skills.test.mjs',
   'marketplace/scripts/md-to-html.test.mjs',
+  'marketplace/scripts/truncate-html.test.mjs',
 ];
 const RED_PROOF_CHILD = 'GENERATED_CONTENT_SECURITY_RED_PROOF_CHILD';
 const RED_PROOF_TARGET = 'GENERATED_CONTENT_SECURITY_RED_PROOF_TARGET';
@@ -70,7 +71,7 @@ test('generated content drift job is unconditional, credential-free, and exact',
   assert.doesNotMatch(block, /(?:npm|pnpm)\s+(?:ci|install)/);
   assert.match(
     block,
-    /node --test scripts\/generated-content-ci\.test\.mjs marketplace\/scripts\/discover-skills\.test\.mjs marketplace\/scripts\/md-to-html\.test\.mjs marketplace\/scripts\/sync-catalog\.test\.mjs marketplace\/scripts\/generate-unified-search\.test\.mjs/,
+    /node --test scripts\/generated-content-ci\.test\.mjs marketplace\/scripts\/discover-skills\.test\.mjs marketplace\/scripts\/md-to-html\.test\.mjs marketplace\/scripts\/truncate-html\.test\.mjs marketplace\/scripts\/sync-catalog\.test\.mjs marketplace\/scripts\/generate-unified-search\.test\.mjs/,
   );
   for (const suite of PARSER_SECURITY_SUITES) {
     assert.equal(
@@ -115,7 +116,7 @@ test('canonical generated content command executes parser security suites exactl
   assert.equal(typeof GENERATED_CONTENT_COMMAND, 'string');
   assert.match(
     GENERATED_CONTENT_COMMAND,
-    /node --test scripts\/generated-content-ci\.test\.mjs marketplace\/scripts\/discover-skills\.test\.mjs marketplace\/scripts\/md-to-html\.test\.mjs marketplace\/scripts\/sync-catalog\.test\.mjs/,
+    /node --test scripts\/generated-content-ci\.test\.mjs marketplace\/scripts\/discover-skills\.test\.mjs marketplace\/scripts\/md-to-html\.test\.mjs marketplace\/scripts\/truncate-html\.test\.mjs marketplace\/scripts\/sync-catalog\.test\.mjs/,
   );
   for (const suite of PARSER_SECURITY_SUITES) {
     assert.equal(
