@@ -441,6 +441,35 @@ def build_forge_proof_receipt(report: dict) -> dict:
     }
 
 
+def preserve_legacy_forge_proof_receipt(reports_dir: Path, report: dict) -> Path:
+    """Create the one-time legacy demotion receipt without rewriting history.
+
+    Later Freshie runs may legitimately contain zero forge-proof rows. They
+    must not erase the immutable receipt proving how the three historical
+    unretained claims were demoted. The scorecard independently binds an
+    existing receipt to its own source run, tag, commit, and record digest.
+    """
+    path = reports_dir / "legacy-forge-proofs-demotion.json"
+    if path.exists():
+        try:
+            existing = json.loads(path.read_text())
+        except (OSError, json.JSONDecodeError) as exc:
+            raise DeltaError(f"legacy forge-proof receipt is unreadable: {path}") from exc
+        if (
+            existing.get("schema_version") != "forge-proof-demotion/v2"
+            or existing.get("status") != "immutable-ledger-snapshot"
+            or not isinstance(existing.get("records"), list)
+            or not existing["records"]
+        ):
+            raise DeltaError("existing legacy forge-proof receipt is not an immutable non-empty snapshot")
+        return path
+
+    candidate = build_forge_proof_receipt(report)
+    if candidate["records"]:
+        path.write_text(json.dumps(candidate, indent=2) + "\n")
+    return path
+
+
 # ---------------------------------------------------------------------------
 # Emit — the entry point dolt-sync calls post-commit
 # ---------------------------------------------------------------------------
@@ -491,8 +520,7 @@ def emit(
     reports_dir.mkdir(parents=True, exist_ok=True)
     out_path = reports_dir / f"run-delta-{run_id}.json"
     out_path.write_text(json.dumps(report, indent=2) + "\n")
-    demotion_path = reports_dir / "legacy-forge-proofs-demotion.json"
-    demotion_path.write_text(json.dumps(build_forge_proof_receipt(report), indent=2) + "\n")
+    preserve_legacy_forge_proof_receipt(reports_dir, report)
     return out_path, report
 
 

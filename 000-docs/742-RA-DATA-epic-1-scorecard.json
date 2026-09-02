@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3075,
-        "tracked_files": 23775
+        "tracked_files": 23776
       }
     },
     "2": {
@@ -1919,7 +1919,7 @@
         "invalid_patterns": 0,
         "invisible_files": 23,
         "target_invisible_files": 0,
-        "tracked_files": 23775
+        "tracked_files": 23776
       }
     },
     "47": {
@@ -2055,30 +2055,64 @@
       }
     },
     "54": {
-      "cohort": "tracked legacy forge-proof demotion receipt",
+      "cohort": "tag-bound forge-proof ledger snapshot and legacy demotion receipt",
       "dimension": "Forge proofs",
-      "reason_code": "MISSING_COMMITTED_FORGE_PROOF_LEDGER",
       "reproduce": "pnpm run measure:e1 --row=54 --stdout",
-      "required_inputs": [
-        "versioned forge_proofs rows",
-        "proof schema with class, hash, and foreign key"
+      "source": [
+        "freshie/reports/legacy-forge-proofs-demotion.json",
+        "freshie/reports/run-delta-19.json",
+        "freshie/reports/run-delta-22.json",
+        "freshie/scripts/dolt-sync.py",
+        "freshie/scripts/run-delta.py",
+        "scripts/record-jrig-proofs.mjs"
       ],
-      "source": ["freshie/reports/legacy-forge-proofs-demotion.json"],
-      "status": "not_reproducible",
-      "values": null
+      "status": "target_met",
+      "values": {
+        "class_counts": {
+          "E0": 3,
+          "E1": 0,
+          "E2": 0,
+          "E3": 0
+        },
+        "current_run_id": 22,
+        "invalid_identities": 0,
+        "legacy_e0_records": 3,
+        "retained_e2_e3": 0,
+        "source_dolt_commit": "ui4r79m97pkp5dk37a5v5rtfu355avl1",
+        "source_run_id": 19,
+        "source_tag": "run-19",
+        "target_legacy_e0_records": 3,
+        "target_unclassified": 0,
+        "total_e2_e3": 0,
+        "total_records": 3,
+        "unclassified": 0
+      }
     },
     "55": {
-      "cohort": "tracked evidence-class receipt",
+      "cohort": "tag-bound evidence-class snapshot and canonical retention standard",
       "dimension": "Retained primary evaluation artifacts",
-      "reason_code": "MISSING_RETAINED_PRIMARY_EVAL_ARTIFACTS",
-      "reproduce": "pnpm run measure:e1 --row=55 --stdout",
-      "required_inputs": [
-        "versioned E2/E3 proof denominator",
-        "hash-linked retained primary artifacts"
+      "limitations": [
+        "zero E2/E3 claims satisfies the safety target of zero unretained claims; retention_percent remains null rather than fabricating 100%"
       ],
-      "source": ["freshie/reports/legacy-forge-proofs-demotion.json"],
-      "status": "not_reproducible",
-      "values": null
+      "reproduce": "pnpm run measure:e1 --row=55 --stdout",
+      "source": [
+        "000-docs/807-DR-STND-evaluation-evidence.md",
+        "freshie/reports/legacy-forge-proofs-demotion.json",
+        "freshie/reports/run-delta-19.json",
+        "freshie/reports/run-delta-22.json",
+        "freshie/scripts/dolt-sync.py",
+        "freshie/scripts/run-delta.py"
+      ],
+      "status": "target_met",
+      "values": {
+        "legacy_e0_records": 3,
+        "no_e2_e3_claims": true,
+        "retained_e2_e3": 0,
+        "retention_percent": null,
+        "target_retention_percent": 100,
+        "total_e2_e3": 0,
+        "unretained_e2_e3": 0
+      }
     },
     "56": {
       "cohort": "legacy JRig marketplace verification projection",
