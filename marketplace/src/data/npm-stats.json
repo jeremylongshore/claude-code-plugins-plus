@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-09-01T01:40:00.697Z",
+  "generatedAt": "2026-09-02T04:55:57.759Z",
   "max_age_hours": 72,
-  "publishedCount": 395,
-  "establishedCount": 395,
-  "candidateCount": 422,
-  "totalDay": 642,
-  "totalWeek": 3280,
-  "totalMonth": 11812,
-  "establishedDay": 642,
-  "establishedWeek": 3280,
-  "establishedMonth": 11812,
+  "publishedCount": 394,
+  "establishedCount": 394,
+  "candidateCount": 423,
+  "totalDay": 641,
+  "totalWeek": 3272,
+  "totalMonth": 11794,
+  "establishedDay": 641,
+  "establishedWeek": 3272,
+  "establishedMonth": 11794,
   "top": [
     {
       "name": "@intentsolutionsio/openrouter-pack",
@@ -1621,15 +1621,6 @@
       "lastMonth": 18,
       "createdAt": 1776742197705,
       "latestVersion": "1.0.2"
-    },
-    {
-      "name": "@intentsolutionsio/veeva-pack",
-      "status": "published",
-      "lastDay": 1,
-      "lastWeek": 8,
-      "lastMonth": 18,
-      "createdAt": 1776742228935,
-      "latestVersion": "1.0.0"
     },
     {
       "name": "@intentsolutionsio/web-analytics",
@@ -3568,10 +3559,10 @@
     }
   ],
   "telemetry": {
-    "candidates": 422,
-    "probed": 422,
-    "published": 395,
-    "unpublished": 25,
+    "candidates": 423,
+    "probed": 423,
+    "published": 394,
+    "unpublished": 27,
     "foreign": 2,
     "rateLimited": 0,
     "errors": 0
