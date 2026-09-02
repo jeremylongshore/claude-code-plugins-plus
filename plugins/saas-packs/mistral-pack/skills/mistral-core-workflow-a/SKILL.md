@@ -13,7 +13,7 @@ description: 'Execute Mistral AI chat completions with streaming, multi-turn, an
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

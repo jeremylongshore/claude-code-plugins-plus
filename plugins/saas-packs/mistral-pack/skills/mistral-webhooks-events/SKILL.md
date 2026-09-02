@@ -13,7 +13,7 @@ description: 'Implement Mistral AI async patterns, batch API, agents, and event-
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

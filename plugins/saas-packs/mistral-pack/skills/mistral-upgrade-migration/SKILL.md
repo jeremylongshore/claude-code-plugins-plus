@@ -13,7 +13,7 @@ description: 'Analyze, plan, and execute Mistral AI SDK upgrades with breaking c
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
