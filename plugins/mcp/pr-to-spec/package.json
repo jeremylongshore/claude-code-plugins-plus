@@ -48,17 +48,17 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0",
-    "@octokit/rest": "^21.1.1",
-    "commander": "^13.1.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@octokit/rest": "^22.0.1",
+    "commander": "^15.0.0",
     "yaml": "^2.9.0",
-    "zod": "^3.25.76"
+    "zod": "^4.5.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@types/node": "^22.19.19",
-    "@vercel/ncc": "^0.38.4",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "@biomejs/biome": "^2.5.11",
+    "@types/node": "^26.4.0",
+    "@vercel/ncc": "^0.45.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
   }
 }

@@ -23,13 +23,13 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0",
-    "zod": "^4.4.3",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.5.4",
     "zod-to-json-schema": "^3.25.2"
   },
   "devDependencies": {
-    "@types/node": "^25.9.1",
-    "typescript": "^5.9.3",
-    "vitest": "^4.1.7"
+    "@types/node": "^26.4.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
   }
 }

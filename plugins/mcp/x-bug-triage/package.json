@@ -14,10 +14,10 @@
     "db:reset": "rm -f data/triage.db && bun db/migrate.ts"
   },
   "devDependencies": {
-    "@types/bun": "^1.2.0",
-    "typescript": "^5.7.0"
+    "@types/bun": "^1.4.0",
+    "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0"
+    "@modelcontextprotocol/sdk": "^1.30.0"
   }
 }
