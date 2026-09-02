@@ -212,20 +212,33 @@ Updated: [timestamp UTC]
 
 ```bash
 #!/bin/bash
-set -euo pipefail
-umask 077
-DIR="incident-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$DIR"
-
-kubectl logs -l app=mistral-service --since=2h > "$DIR/app-logs.txt" 2>/dev/null || true
-kubectl get events --sort-by=.lastTimestamp > "$DIR/k8s-events.txt" 2>/dev/null || true
-kubectl get deployment mistral-service -o json 2>/dev/null \
-  | jq '{metadata: {name: .metadata.name, namespace: .metadata.namespace, generation: .metadata.generation}, spec: {replicas: .spec.replicas, strategy: .spec.strategy}, status: .status}' \
-  > "$DIR/deployment-summary.json" || true
-
-echo "Review and redact every file before archiving or sharing."
-tar -czf "$DIR.tar.gz" "$DIR"
-echo "Evidence: $DIR.tar.gz"
+set -euo pipefail; umask 077
+DIR="$(mktemp -d "${TMPDIR:-/tmp}/mistral-incident-evidence.XXXXXX")"
+ARCHIVE="mistral-incident-evidence-$(date -u +%Y%m%d-%H%M%S).tar.gz"
+trap 'rm -rf -- "$DIR"' EXIT
+# Closed projection excludes logs, events, annotations, container specs, messages, labels, credentials, prompts, payloads, and customer identifiers.
+kubectl get deployment mistral-service -o json | jq -e '
+  def count_or_null: if type == "number" and . >= 0 and floor == . then . else null end;
+  {
+    schema_version: "mistral-incident-evidence/v1",
+    deployment_generation: (.metadata.generation | count_or_null),
+    replicas: {
+      desired: (.spec.replicas | count_or_null), current: (.status.replicas | count_or_null),
+      updated: (.status.updatedReplicas | count_or_null), ready: (.status.readyReplicas | count_or_null),
+      available: (.status.availableReplicas | count_or_null),
+      unavailable: (.status.unavailableReplicas | count_or_null)
+    },
+    rollout_conditions: [
+      .status.conditions[]?
+      | select(.type == "Available" or .type == "Progressing" or .type == "ReplicaFailure")
+      | {type, status: (if .status == "True" or .status == "False" or .status == "Unknown"
+                        then .status else "Unknown" end)}
+    ]
+  }
+' > "$DIR/deployment-summary.json"
+# Archive only the allowlisted projection, never the working directory.
+tar -czf "$ARCHIVE" -C "$DIR" deployment-summary.json
+echo "Evidence: $ARCHIVE"; echo "Inspect it, restrict access, and record its retention deadline before sharing."
 ```
 
 ### Postmortem Template

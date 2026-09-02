@@ -19,9 +19,12 @@ command after secret substitution. Do not retain authorization headers, API-key
 values or prefixes, prompts, tool outputs, raw customer payloads, secret-bearing pod
 specifications, or unredacted application logs.
 
-Before sharing an archive, inspect every file, apply the organization's redaction
-procedure, restrict access, and record the retention deadline. A filename or `grep`
-filter is not evidence that secret-bearing material was removed.
+The automated bundle in the main runbook contains one closed-schema deployment
+summary and never collects raw logs or events. Do not append files to that archive.
+Any additional evidence belongs in a separately approved location only after the
+organization's enforced redaction review. Before sharing either artifact, inspect
+it, restrict access, and record the retention deadline. A filename or `grep` filter
+is not evidence that secret-bearing material was removed.
 
 ## Recovery proof
 

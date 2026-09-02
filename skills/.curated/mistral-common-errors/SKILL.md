@@ -51,10 +51,35 @@ test -n "${MISTRAL_API_KEY:-}" || {
   exit 1
 }
 
-# Test API connectivity and auth
-curl -sS -w "\nHTTP Status: %{http_code}\n" \
+# Keep the JSON body separate from curl's status metadata. Command substitution
+# removes trailing newlines, so the final newline inserted by -w is a stable
+# delimiter even when the response body itself spans multiple lines.
+response="$(curl -sS -w $'\n%{http_code}' \
   -H "Authorization: Bearer ${MISTRAL_API_KEY}" \
-  https://api.mistral.ai/v1/models | jq '.data[].id' 2>/dev/null || echo "FAILED"
+  https://api.mistral.ai/v1/models)"
+http_status="${response##*$'\n'}"
+body="${response%$'\n'*}"
+
+case "$http_status" in
+  200)
+    printf '%s\n' "$body" | jq -er '
+      [.data[]?.id | select(type == "string" and length > 0)]
+      | if length > 0 then .[] else error("models response contains no model ids") end
+    '
+    ;;
+  401)
+    echo "Mistral authentication failed (HTTP 401); rotate or correct the configured key." >&2
+    exit 1
+    ;;
+  429)
+    echo "Mistral rate limit reached (HTTP 429); inspect limits and retry policy." >&2
+    exit 1
+    ;;
+  *)
+    echo "Mistral connectivity probe failed (HTTP ${http_status:-unknown})." >&2
+    exit 1
+    ;;
+esac
 ```
 
 ### Step 2: Error Reference
