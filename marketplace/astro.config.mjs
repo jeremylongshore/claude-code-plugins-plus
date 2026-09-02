@@ -2,6 +2,8 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
+import { MARKETPLACE_SECURITY_HEADERS } from './scripts/security-policy.mjs';
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://tonsofskills.com',
@@ -42,6 +44,11 @@ export default defineConfig({
   compressHTML: false,  // Disabled: iOS Safari fails with lines > 5000 chars
   vite: {
     plugins: [tailwindcss()],
+    // Preview must enforce the same policy as production Caddy. This also
+    // makes browser tests exercise a real response header rather than a meta
+    // tag that browsers may ignore.
+    server: { headers: MARKETPLACE_SECURITY_HEADERS },
+    preview: { headers: MARKETPLACE_SECURITY_HEADERS },
     build: {
       cssCodeSplit: true,
       rollupOptions: {

@@ -216,6 +216,13 @@ jobs:
       - name: Validate catalog invariants (FS path = category)
         run: python3 scripts/validate-catalog-invariants.py
 
+      # Public HTML reaches set:html sinks, so the response policy is a
+      # required defense-in-depth surface. The test pins the exact Astro
+      # preview/Caddy projection and plants missing/weak directives; this job
+      # is already an input to ci-required.
+      - name: Enforce marketplace response-security policy
+        run: pnpm run validate:security-headers
+
       # Unicode-hygiene gate. Detects the supply-chain attack class
       # schema validation cannot see: invisible tag characters
       # (U+E0000-U+E007F, the Socket TrapDoor vector, advisory 2026-05-24),
