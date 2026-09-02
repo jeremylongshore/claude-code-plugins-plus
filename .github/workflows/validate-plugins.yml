@@ -810,7 +810,7 @@ jobs:
           printf '%s  %s\n' "$dolt_sha256" "$dolt_archive" | sha256sum --check --strict
           tar -xzf "$dolt_archive" -C "$dolt_extract"
           sudo install -m 0755 "$dolt_extract/dolt-linux-amd64/bin/dolt" /usr/local/bin/dolt
-          installed_dolt_version="$(dolt version | awk '{print $3}')"
+          installed_dolt_version="$(dolt version | awk 'NR == 1 { print $3 }')"
           readonly installed_dolt_version
           test "$installed_dolt_version" = "$dolt_version"
 
@@ -1678,11 +1678,20 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          # README presentation evidence resolves the exact pre-remediation
-          # base commit. PR merge refs and post-merge main commits expose that
-          # parent at depth 2 without paying for a full-history checkout.
-          fetch-depth: 2
+          # The exact historical source is fetched from the reviewed registry
+          # below, so this checkout can stay shallow without relying on the
+          # source commit remaining an immediate parent.
+          fetch-depth: 1
           persist-credentials: false
+
+      - name: Fetch pinned README presentation source
+        shell: bash
+        run: >-
+          set -euo pipefail;
+          source_commit="$(node -e "const r=require('./marketplace/ops/readme-presentation-routes.json'); process.stdout.write(r.audit.source_commit)")";
+          readonly source_commit;
+          [[ "$source_commit" =~ ^[0-9a-f]{40}$ ]];
+          git fetch --no-tags --depth=1 origin "$source_commit"
 
       - name: Setup Node.js
         uses: actions/setup-node@v6

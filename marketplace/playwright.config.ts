@@ -63,7 +63,7 @@ export default defineConfig({
     },
   ],
 
-  // Run your local dev server before starting the tests
+  // Serve the built static output with the same route-aware policy as Caddy.
   webServer: {
     command: 'npm run preview',
     url: 'http://localhost:4321',

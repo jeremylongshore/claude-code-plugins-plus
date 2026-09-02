@@ -17,6 +17,7 @@ import {
 const caddyPath = new URL('../ops/tonsofskills-security-headers.caddy', import.meta.url);
 const workflowPath = new URL('../../.github/workflows/validate-plugins.yml', import.meta.url);
 const packagePath = new URL('../../package.json', import.meta.url);
+const marketplacePackagePath = new URL('../package.json', import.meta.url);
 const policyModulePath = new URL('./security-policy.mjs', import.meta.url);
 
 const REVIEWED_BASE_CSP =
@@ -143,7 +144,13 @@ test('source-level CSP weakenings fail during module initialization', async () =
 test('required validation keeps the security policy and projection gate wired', () => {
   const workflow = readFileSync(workflowPath, 'utf8');
   const packageJson = JSON.parse(readFileSync(packagePath, 'utf8'));
+  const marketplacePackageJson = JSON.parse(readFileSync(marketplacePackagePath, 'utf8'));
   assertSecurityHeaderCiWiring(workflow, packageJson);
+  assert.equal(marketplacePackageJson.scripts.preview, 'node scripts/preview.mjs');
+  assert.match(
+    packageJson.scripts['validate:security-headers'],
+    /marketplace\/scripts\/preview\.test\.mjs/,
+  );
 
   const plantedDisappearance = workflow.replace(
     'run: pnpm run validate:security-headers',

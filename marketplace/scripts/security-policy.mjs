@@ -1,9 +1,9 @@
 /**
  * Single source of truth for the marketplace response-security policy.
  *
- * The site is static, so production headers come from Caddy while local Astro
- * preview uses Vite. Keeping the values here prevents those two enforcement
- * layers from silently drifting apart.
+ * The site is static, so production headers come from Caddy while local
+ * development and the dependency-free static preview use this module directly.
+ * Keeping the values here prevents those enforcement layers from drifting.
  */
 
 export const CSP_INLINE_JUSTIFICATIONS = Object.freeze({

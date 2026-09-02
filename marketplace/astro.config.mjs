@@ -17,7 +17,6 @@ function marketplaceSecurityHeaders() {
   return {
     name: 'marketplace-security-headers',
     configureServer: installMiddleware,
-    configurePreviewServer: installMiddleware,
   };
 }
 
@@ -60,9 +59,9 @@ export default defineConfig({
   output: 'static',
   compressHTML: false, // Disabled: iOS Safari fails with lines > 5000 chars
   vite: {
-    // Route-aware middleware keeps the global policy strict while allowing
-    // user-supplied WebSocket endpoints only on /chats. Production Caddy uses
-    // the same path split from the same policy module.
+    // Route-aware middleware keeps the development server strict while
+    // allowing user-supplied WebSocket endpoints only on /chats. The static
+    // preview server and production Caddy use the same policy module.
     plugins: [tailwindcss(), marketplaceSecurityHeaders()],
     build: {
       cssCodeSplit: true,
