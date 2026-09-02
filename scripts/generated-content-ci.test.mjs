@@ -66,6 +66,7 @@ test('generated content drift job is unconditional, credential-free, and exact',
   assert.doesNotMatch(block, /\b(?:paths|paths-ignore):/);
   assert.doesNotMatch(block, /continue-on-error|\|\|\s*true|secrets\./);
   assert.match(block, /permissions:\n {6}contents: read/);
+  assert.match(block, /fetch-depth: 2/);
   assert.match(block, /persist-credentials: false/);
   assert.match(block, /timeout-minutes: 10/);
   assert.doesNotMatch(block, /(?:npm|pnpm)\s+(?:ci|install)/);
@@ -138,7 +139,7 @@ test(
   () => {
     const workflowCommand = workflowRunScript('generated-content-drift');
 
-    for (const target of ['discover-skills', 'md-to-html']) {
+    for (const target of ['discover-skills', 'md-to-html', 'truncate-html']) {
       const env = {
         ...process.env,
         [RED_PROOF_CHILD]: '1',

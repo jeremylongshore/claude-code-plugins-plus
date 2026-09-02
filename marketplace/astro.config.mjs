@@ -2,7 +2,24 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
-import { MARKETPLACE_SECURITY_HEADERS } from './scripts/security-policy.mjs';
+import { securityHeadersForPath } from './scripts/security-policy.mjs';
+
+function marketplaceSecurityHeaders() {
+  const installMiddleware = (server) => {
+    server.middlewares.use((request, response, next) => {
+      for (const [name, value] of Object.entries(securityHeadersForPath(request.url ?? '/'))) {
+        response.setHeader(name, value);
+      }
+      next();
+    });
+  };
+
+  return {
+    name: 'marketplace-security-headers',
+    configureServer: installMiddleware,
+    configurePreviewServer: installMiddleware,
+  };
+}
 
 // https://astro.build/config
 export default defineConfig({
@@ -38,24 +55,22 @@ export default defineConfig({
   },
   build: {
     assets: '_astro',
-    inlineStylesheets: 'auto'
+    inlineStylesheets: 'auto',
   },
   output: 'static',
-  compressHTML: false,  // Disabled: iOS Safari fails with lines > 5000 chars
+  compressHTML: false, // Disabled: iOS Safari fails with lines > 5000 chars
   vite: {
-    plugins: [tailwindcss()],
-    // Preview must enforce the same policy as production Caddy. This also
-    // makes browser tests exercise a real response header rather than a meta
-    // tag that browsers may ignore.
-    server: { headers: MARKETPLACE_SECURITY_HEADERS },
-    preview: { headers: MARKETPLACE_SECURITY_HEADERS },
+    // Route-aware middleware keeps the global policy strict while allowing
+    // user-supplied WebSocket endpoints only on /chats. Production Caddy uses
+    // the same path split from the same policy module.
+    plugins: [tailwindcss(), marketplaceSecurityHeaders()],
     build: {
       cssCodeSplit: true,
       rollupOptions: {
         output: {
-          assetFileNames: '_astro/[name].[hash][extname]'
-        }
-      }
-    }
-  }
+          assetFileNames: '_astro/[name].[hash][extname]',
+        },
+      },
+    },
+  },
 });

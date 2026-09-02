@@ -27,19 +27,20 @@
  * complete candidate before changing Caddy and retains rollback backups.
  */
 
-import { MARKETPLACE_SECURITY_HEADERS } from '../marketplace/scripts/security-policy.mjs';
+import { securityHeadersForPath } from '../marketplace/scripts/security-policy.mjs';
 
 const args = process.argv.slice(2);
 const urlArg = args.indexOf('--url');
 const URL_ = urlArg !== -1 ? args[urlArg + 1] : 'https://tonsofskills.com/';
 const WARN_ONLY = args.includes('--warn-only');
+const EXPECTED_HEADERS = securityHeadersForPath(new URL(URL_).pathname);
 
 // HSTS remains advisory for non-TLS local fixtures; every browser-enforced
 // content boundary is required.
 const EXPECT = [
   {
     name: 'content-security-policy',
-    match: (value) => value === MARKETPLACE_SECURITY_HEADERS['Content-Security-Policy'],
+    match: (value) => value === EXPECTED_HEADERS['Content-Security-Policy'],
     required: true,
   },
   { name: 'x-frame-options', match: /^(sameorigin|deny)$/i, required: true },

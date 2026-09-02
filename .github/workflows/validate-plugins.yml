@@ -1678,6 +1678,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          # README presentation evidence resolves the exact pre-remediation
+          # base commit. PR merge refs and post-merge main commits expose that
+          # parent at depth 2 without paying for a full-history checkout.
+          fetch-depth: 2
           persist-credentials: false
 
       - name: Setup Node.js

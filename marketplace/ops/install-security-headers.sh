@@ -18,6 +18,10 @@ if [[ $CHECK_ONLY -eq 0 && ${EUID} -ne 0 ]]; then
   echo "install-security-headers: must run as root" >&2
   exit 77
 fi
+command -v python3 >/dev/null 2>&1 || {
+  echo "install-security-headers: python3 is required" >&2
+  exit 70
+}
 for path in "$SOURCE" "$MAIN_CONFIG"; do
   [[ -f "$path" ]] || { echo "install-security-headers: missing file: $path" >&2; exit 66; }
 done

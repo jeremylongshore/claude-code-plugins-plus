@@ -6,6 +6,13 @@ import { truncateHtml } from './truncate-html.mjs';
 
 const length = (value) => Array.from(value).length;
 
+// Test-only sentinel consumed by scripts/generated-content-ci.test.mjs.
+if (process.env.GENERATED_CONTENT_SECURITY_RED_PROOF_TARGET === 'truncate-html') {
+  test('planted red proof: truncate-html security suite failure reaches its callers', () => {
+    assert.fail('GENERATED_CONTENT_SECURITY_RED_PROOF:truncate-html');
+  });
+}
+
 function assertBalanced(html) {
   const voidElements = new Set(['br', 'hr', 'img', 'input', 'meta', 'link', 'source', 'wbr']);
   const stack = [];

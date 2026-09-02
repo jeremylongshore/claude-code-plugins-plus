@@ -1,8 +1,8 @@
 {
   "schema_version": "readme-presentation-routes/v1",
   "audit": {
-    "source_commit": "45e35b165718d95e1d362052285000d27248fbf7",
-    "captured_at": "2026-08-31",
+    "source_commit": "f3540e47cc58e22b0b762e3db71d3b5f4a6b2524",
+    "captured_at": "2026-09-02",
     "intentional_raw_html_tag_tokens": 178,
     "method": "Post-paragraph-buffer renderer audit. Fenced and inline code are opaque; literal documentation is not presentation loss."
   },
@@ -10,7 +10,10 @@
     {
       "plugin": "kobiton-automate",
       "readme": "plugins/testing/kobiton-automate/README.md",
+      "source_sha256": "1bc78f1171b57db2da63aa701e3930c69d768269562af9033b9e5dfb40179dbd",
+      "current_sha256": "1bc78f1171b57db2da63aa701e3930c69d768269562af9033b9e5dfb40179dbd",
       "ownership": "upstream-mirror",
+      "sources_lock_key": "kobiton-automate",
       "provenance": "plugins/testing/kobiton-automate/.source.json",
       "upstream": "kobiton/automate",
       "route": "https://github.com/kobiton/automate/issues/new",
@@ -19,7 +22,10 @@
     {
       "plugin": "portaljs",
       "readme": "plugins/community/portaljs/README.md",
+      "source_sha256": "529701d54139fbe4e89de716f31ee6019ad76a093b96a05a46a9661e736e4c9e",
+      "current_sha256": "529701d54139fbe4e89de716f31ee6019ad76a093b96a05a46a9661e736e4c9e",
       "ownership": "upstream-mirror",
+      "sources_lock_key": "portaljs",
       "provenance": "plugins/community/portaljs/.source.json",
       "upstream": "datopian/portaljs",
       "route": "https://github.com/datopian/portaljs/issues/new",
@@ -28,6 +34,8 @@
     {
       "plugin": "databricks-workspace-mcp",
       "readme": "plugins/mcp/databricks-workspace-mcp/README.md",
+      "source_sha256": "8619bc4ac6ce2b66c34c6fabda27066885f20f924ec410c5321f09fa18464e4f",
+      "current_sha256": "09563e5ff6ad2031f833b146085e75d6dfb65682a849936ff63d873e3e01f46a",
       "ownership": "first-party",
       "upstream": "jeremylongshore/tons-of-skills-marketplace",
       "route": "https://github.com/jeremylongshore/tons-of-skills-marketplace/issues/new",
@@ -37,7 +45,10 @@
     {
       "plugin": "slack-channel",
       "readme": "plugins/mcp/slack-channel/README.md",
+      "source_sha256": "b1cdf0830036fcbb08284324dc5ab5661ee2bcb450dac011f88a59b08b1b62c7",
+      "current_sha256": "b1cdf0830036fcbb08284324dc5ab5661ee2bcb450dac011f88a59b08b1b62c7",
       "ownership": "upstream-mirror",
+      "sources_lock_key": "slack-channel",
       "provenance": "plugins/mcp/slack-channel/.source.json",
       "upstream": "jeremylongshore/claude-code-slack-channel",
       "route": "https://github.com/jeremylongshore/claude-code-slack-channel/issues/new",
@@ -46,7 +57,10 @@
     {
       "plugin": "servicegraph",
       "readme": "plugins/mcp/servicegraph/README.md",
+      "source_sha256": "9086558e1bcb588dc1b8f1a25e8c41ec23e3f57176d763b5189d58cba997eb0d",
+      "current_sha256": "9086558e1bcb588dc1b8f1a25e8c41ec23e3f57176d763b5189d58cba997eb0d",
       "ownership": "upstream-mirror",
+      "sources_lock_key": "servicegraph",
       "provenance": "plugins/mcp/servicegraph/.source.json",
       "upstream": "nostrband/ServiceGraph",
       "route": "https://github.com/nostrband/ServiceGraph/issues/new",
@@ -55,7 +69,10 @@
     {
       "plugin": "claudebase",
       "readme": "plugins/productivity/claudebase/README.md",
+      "source_sha256": "10693ce2bb755db9a5fa53b0f0aa503fc98514b7896f7cc9164b52b00a2a9778",
+      "current_sha256": "10693ce2bb755db9a5fa53b0f0aa503fc98514b7896f7cc9164b52b00a2a9778",
       "ownership": "upstream-mirror",
+      "sources_lock_key": "Claudebase",
       "provenance": "plugins/productivity/claudebase/.source.json",
       "upstream": "rohithzr/claudebase",
       "route": "https://github.com/rohithzr/claudebase/issues/new",
@@ -64,7 +81,10 @@
     {
       "plugin": "tonone",
       "readme": "plugins/ai-agency/tonone/README.md",
+      "source_sha256": "05128cbd33f7e98619759823ba063c0e783e322ba74d0db8b9e693d99145db57",
+      "current_sha256": "05128cbd33f7e98619759823ba063c0e783e322ba74d0db8b9e693d99145db57",
       "ownership": "upstream-mirror",
+      "sources_lock_key": "tonone",
       "provenance": "plugins/ai-agency/tonone/.source.json",
       "upstream": "tonone-ai/tonone",
       "route": "https://github.com/tonone-ai/tonone/issues/new",
@@ -73,7 +93,10 @@
     {
       "plugin": "hermes-tweet",
       "readme": "plugins/community/hermes-tweet/README.md",
+      "source_sha256": "9696bc20f7f6982b66510236e1802088ddba89563ea1367800c1d6d51d98fccf",
+      "current_sha256": "9696bc20f7f6982b66510236e1802088ddba89563ea1367800c1d6d51d98fccf",
       "ownership": "upstream-mirror",
+      "sources_lock_key": "hermes-tweet",
       "provenance": "plugins/community/hermes-tweet/.source.json",
       "upstream": "Xquik-dev/hermes-tweet",
       "route": "https://github.com/Xquik-dev/hermes-tweet/issues/new",
