@@ -5,7 +5,7 @@
     "generator": "marketplace/scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 439,
+    "totalPlugins": 440,
     "totalSkills": 2984,
     "totalCommands": 85,
     "pluginsWithSkills": 407,
@@ -15,7 +15,7 @@
       "testing": 28,
       "ai-agency": 9,
       "ai-ml": 37,
-      "mcp": 16,
+      "mcp": 17,
       "packages": 5,
       "performance": 25,
       "devops": 36,
@@ -10577,6 +10577,32 @@
       "installCommand": "/plugin install box-cloud-filesystem",
       "sourcePath": "./plugins/productivity/box-cloud-filesystem",
       "isFeatured": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "a2a-client",
+      "name": "a2a-client",
+      "displayName": "a2a client",
+      "description": "Security-hardened MCP client for Agent2Agent card discovery, messaging, streaming, and confirmation-gated task control",
+      "version": "0.1.0",
+      "category": "mcp",
+      "keywords": [
+        "a2a",
+        "agent2agent",
+        "agent-card",
+        "multi-agent",
+        "mcp"
+      ],
+      "hasSkills": false,
+      "skillCount": 0,
+      "commandCount": 0,
+      "installCommand": "/plugin install a2a-client",
+      "sourcePath": "./plugins/mcp/a2a-client",
+      "isFeatured": false,
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"

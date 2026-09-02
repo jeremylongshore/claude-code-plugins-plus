@@ -4,7 +4,7 @@
 
 [![Release](https://img.shields.io/badge/release-v4.33.0-green)](https://github.com/jeremylongshore/tons-of-skills-marketplace/releases/latest)
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
-[![Plugins](https://img.shields.io/badge/plugins-439-blue)](https://tonsofskills.com/explore)
+[![Plugins](https://img.shields.io/badge/plugins-440-blue)](https://tonsofskills.com/explore)
 [![Skills](https://img.shields.io/badge/skills-2984-green)](https://tonsofskills.com/skills)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/tons-of-skills-marketplace?style=social)](https://github.com/jeremylongshore/tons-of-skills-marketplace)
 [![skills.sh](https://skills.sh/b/jeremylongshore/tons-of-skills-marketplace)](https://skills.sh/jeremylongshore/tons-of-skills-marketplace)
@@ -61,7 +61,7 @@ Every number below names the cohort it counts and the command that reproduces it
 
 | Count | Cohort                                 | Reproduce with                                                                                                          |
 | ----: | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-|   439 | catalog plugins (catalog-entry cohort) | `node scripts/generate-readme-toc.mjs` over `marketplace.extended.json`                                                 |
+|   440 | catalog plugins (catalog-entry cohort) | `node scripts/generate-readme-toc.mjs` over `marketplace.extended.json`                                                 |
 | 2,984 | marketplace-visible skills (distinct)  | `node -e "import('./scripts/corpus-resolver.mjs').then(m=>console.log(m.resolveCorpus('marketplace-visible').length))"` |
 |   347 | agent definitions in plugins           | `git ls-files 'plugins/**' \| grep '/agents/.*\.md'`                                                                    |
 |    19 | plugin categories                      | `ls -d plugins/*/`                                                                                                      |
@@ -129,7 +129,7 @@ The 19 categories below link into the live marketplace. Plugin counts are the ca
 | 🎨  | [Design](https://tonsofskills.com/plugins#design)                   |       2 |
 | 🔧  | [DevOps & Infrastructure](https://tonsofskills.com/plugins#devops)  |      36 |
 | 📚  | [Examples & Templates](https://tonsofskills.com/plugins#examples)   |       5 |
-| 🧩  | [MCP Servers](https://tonsofskills.com/plugins#mcp)                 |      16 |
+| 🧩  | [MCP Servers](https://tonsofskills.com/plugins#mcp)                 |      17 |
 | 📦  | [Packages](https://tonsofskills.com/plugins#packages)               |       5 |
 | ⚡  | [Performance](https://tonsofskills.com/plugins#performance)         |      25 |
 | ✅  | [Productivity](https://tonsofskills.com/plugins#productivity)       |      29 |

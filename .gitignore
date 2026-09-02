@@ -155,6 +155,11 @@ coverage/
 .coverage
 .coverage.*
 dist/
+# a2a-client is distributed as a self-contained marketplace/npm runtime. Its
+# deterministic bundle is intentionally tracked so a plugin install has a real
+# entrypoint before any package-manager lifecycle runs.
+!plugins/mcp/a2a-client/dist/
+!plugins/mcp/a2a-client/dist/index.js
 ehthumbs.db
 google-adk-reference/
 logs/

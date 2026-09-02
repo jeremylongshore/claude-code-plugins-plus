@@ -8611,6 +8611,27 @@
       }
     },
     {
+      "name": "a2a-client",
+      "source": "./plugins/mcp/a2a-client",
+      "description": "Security-hardened MCP client for Agent2Agent card discovery, messaging, streaming, and confirmation-gated task control",
+      "version": "0.1.0",
+      "category": "mcp",
+      "keywords": ["a2a", "agent2agent", "agent-card", "multi-agent", "mcp"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "repository": "https://github.com/jeremylongshore/tons-of-skills-marketplace",
+      "homepage": "https://tonsofskills.com",
+      "license": "MIT",
+      "featured": false,
+      "pricing": "free",
+      "mcpTools": 7,
+      "components": {
+        "hooks": 1
+      }
+    },
+    {
       "name": "pr-to-spec",
       "source": "./plugins/mcp/pr-to-spec",
       "description": "The flight envelope for agentic coding \u2014 convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
