@@ -1,10 +1,12 @@
 ---
 name: postwire
-category: social-media
-description: "Publish and schedule to TikTok, Instagram, YouTube, LinkedIn, X, Bluesky, Mastodon, Facebook, Threads, Reddit, Telegram and Discord through one PostWire API call — writing a separate, native version of the post for each network instead of sending identical text everywhere. Use when the user wants to publish or schedule one idea across several platforms, wants per-network captions, or wants to know why a post was rejected before it is sent."
+description: "Publish and schedule to TikTok, Instagram, YouTube, LinkedIn, X, Bluesky, Mastodon, Facebook, Threads, Reddit, Telegram and Discord through one PostWire API call — writing a separate, native version of the post for each network instead of sending identical text everywhere. Use when the user wants to publish or schedule one idea across several platforms, wants per-network captions, or wants to know why a post was rejected before it is sent. Trigger with \"post this to X and LinkedIn\", \"schedule a week of posts\", or \"why did my TikTok post fail\"."
+allowed-tools: mcp__postwire__generate_posts, mcp__postwire__post_to_social, mcp__postwire__get_post_status, mcp__postwire__list_platforms, mcp__postwire__my_account
+version: 1.0.0
+author: PostWire <privacy@postwire.io>
 license: MIT
-requires:
-  env: [POSTWIRE_API_KEY]
+compatibility: Claude Code, Claude Desktop, Cursor, VS Code and Windsurf. Uses PostWire's hosted MCP server at https://postwire.io/api/mcp (Streamable HTTP) or the postwire-mcp npm package over stdio. Requires a PostWire API key; the free tier covers one brand and 30 posts a month.
+tags: [social-media, publishing, scheduling, mcp, tiktok, instagram, youtube, linkedin, cross-posting]
 ---
 
 # PostWire
@@ -20,6 +22,12 @@ developer app, review queue, or token refresh to maintain. One API key covers ev
 - The user wants a post scheduled for later, or a week of posts queued from one topic
 - The user asks why a post failed, or whether a post *will* fail before sending it
 - The user is publishing video to TikTok or YouTube from an automation
+
+## Overview
+
+PostWire turns one idea into a separate, native post per network and publishes it through a
+single call. Accounts are connected once by OAuth in the PostWire dashboard, so there is no
+per-platform developer app, review queue or token refresh to maintain.
 
 ## What Makes This Different
 
@@ -145,7 +153,7 @@ curl -X POST https://postwire.io/api/week \
 Five angles on one topic, queued across five days. Text-only networks only — the video platforms
 would reject every one of them, and the endpoint says so rather than queueing them to fail.
 
-## Errors Worth Handling
+## Error Handling
 
 | code | meaning | fix |
 |---|---|---|
@@ -167,3 +175,48 @@ would reject every one of them, and the endpoint says so rather than queueing th
 
 PostWire ships an **MCP server**, so an agent can call these as tools rather than as HTTP requests,
 and there are n8n templates for the same flows. Both are linked from the dashboard.
+
+## Output
+
+`generate_posts` returns `{ drafts: { <platform>: { text, title?, tags? } } }` — one draft per
+requested network, each already within that platform's limits.
+
+`post_to_social` returns `{ results: [...] }`, one entry per platform, each either
+`{ ok: true, platform, id, url }` or `{ ok: false, platform, error, code }`. The call is
+**all-or-nothing on validation**: if any named platform would fail a pre-flight check (not
+connected, caption too long, video network with no video) the whole request is refused before
+anything publishes, so a four-network post never leaves two live and two silently missing.
+
+`my_account` returns the plan, the month's usage against its limit, and the connected accounts.
+
+## Examples
+
+**Publish one idea, written per network**
+
+```
+1. generate_posts { prompt: "we shipped scheduling today", platforms: ["x","linkedin","bluesky"] }
+2. show the three drafts to the user and get confirmation
+3. post_to_social { platforms: ["x","linkedin","bluesky"], per_platform: <drafts from step 1> }
+```
+
+**Publish a video to TikTok and YouTube**
+
+```
+post_to_social {
+  platforms: ["tiktok","youtube"],
+  video_url: "https://example.com/clip.mp4",
+  per_platform: { youtube: { title: "...", text: "...", tags: [...] }, tiktok: { text: "..." } },
+  privacy: "public"
+}
+```
+
+**Check what is supported before signing up** — `list_platforms` needs no API key, so an agent can
+answer "can you post to Mastodon?" before the user has an account.
+
+## Resources
+
+- Dashboard and API key: https://postwire.io/dashboard.html
+- Hosted MCP endpoint: `https://postwire.io/api/mcp` (Streamable HTTP)
+- npm package: https://www.npmjs.com/package/postwire-mcp
+- Per-client setup: https://postwire.io/mcp/
+- Security note for this plugin: `SECURITY.md`, in the plugin root next to this skill
