@@ -54,6 +54,7 @@ normalized, source-stamped receipt for any supported surface:
 python3 shared/evidence/collect_snowflake_evidence.py \
   --surface query \
   --connection readonly-observer \
+  --source-max-age-seconds 2700 \
   --output ./snowflake-query-evidence.json
 ```
 
@@ -63,6 +64,35 @@ does not accept credentials, records view/timestamp/hash provenance, and treats
 permission gaps as missing evidence rather than permission to escalate.
 If a receipt sets `truncation_possible: true`, narrow or partition the requested
 window before making any completeness, absence, or pass claim.
+For the query surface, choose the incident freshness bound before collection; receipt
+schema `2` records the dataset maximum, declared bound, and collection time for the
+query-forensics schema `2.0` analyzer. The analyzer derives freshness from the anchor
+query row only; a newer unrelated history row cannot make an old anchor fresh.
+It also binds `metadata.history_source` and `metadata.role` to the receipted source and
+anchor `role_name`. Full confirmed claims require a surface-compatible terminal status
+and at least one bound operator row; running queries and missing operator evidence remain
+partial even when their optional arrays are empty. Every JSON/Markdown string passes a
+final recursive credential/raw-SQL redaction boundary.
+
+The receipt's embedded SHA-256 is an internal consistency checksum, not proof of who
+collected it or where it came from. Query-forensics therefore withholds confirmed,
+freshness, completeness, operator, comparison, and ROI claims unless the fully
+normalized schema `2.0` bundle matches a digest recorded separately at a trusted local
+boundary. At that boundary, after mapping the reviewed collector rows into the
+normalized bundle, record its canonical digest:
+
+```bash
+python3 skills/snowflake-query-forensics/scripts/analyze_query_evidence.py \
+  --input ./normalized-query-evidence.json \
+  --print-input-sha256 > ./normalized-query-evidence.sha256
+```
+
+Keep the digest on an independently controlled channel, then supply its value during
+analysis with `--trusted-input-sha256 sha256:<hex>`. Generating a digest from a file
+after it arrives over the same untrusted channel adds no provenance. This local digest
+mechanism detects change after the boundary; it is not a signature, does not establish
+collector identity, and does not provide cryptographic authenticity without an
+independent secret/signature trust root.
 
 ## Safety model
 
@@ -115,6 +145,16 @@ Restore receipt: v1 is preserved at
 This is a deliberate consolidation. Generic tutorials, fixed sizing tables, universal
 rate limits, password-first examples, and copy/paste destructive recipes were removed
 rather than preserved to inflate the catalog.
+
+## Migration: v2.1 → v3
+
+Pack `3.x` deliberately breaks the query-forensics evidence contract. Recollect or
+migrate query inputs to normalized schema `2.0` with query collector receipt schema
+`2`; legacy inputs are rejected instead of being interpreted under the stricter query
+identity, anchor freshness, row-cap, and provenance rules. The analyzer output remains
+schema `2.0`. Automation must also provide the separately recorded trusted-boundary
+digest when it needs confirmed or completeness claims; otherwise the packet is useful
+only as explicitly untrusted, non-confirming diagnostic input.
 
 ## Design records
 

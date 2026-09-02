@@ -12,7 +12,7 @@ caller needs `OPERATE` or `MONITOR` on the warehouse where the query ran.
 
 ```sql
 SELECT
-  query_id,
+  :query_id AS query_id,
   step_id,
   operator_id,
   parent_operators,
@@ -24,6 +24,9 @@ FROM TABLE(GET_QUERY_OPERATOR_STATS(:query_id))
 ORDER BY step_id, operator_id;
 ```
 
+`query_id` above is the validated selector repeated into every normalized row; do not
+infer it later from a file name or surrounding report.
+
 Do not retry with a more privileged role automatically. A privilege error becomes a
 coverage limitation and an owner request.
 
@@ -31,6 +34,7 @@ coverage limitation and an owner request.
 
 ```json
 {
+  "query_id": "01abcdef-0123-4567-89ab-cdef01234567",
   "operator_id": 3,
   "operator_type": "Join",
   "operator_statistics": {
