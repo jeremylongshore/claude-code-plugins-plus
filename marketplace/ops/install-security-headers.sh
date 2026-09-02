@@ -26,12 +26,18 @@ TMP_DIR=$(mktemp -d)
 TARGET_BACKUP="${TARGET}.bak.$(date -u +%Y%m%dT%H%M%SZ)"
 MAIN_BACKUP="${MAIN_CONFIG}.bak.csp.$(date -u +%Y%m%dT%H%M%SZ)"
 INSTALLED=0
+TARGET_EXISTED=0
+[[ -f $TARGET ]] && TARGET_EXISTED=1
 cleanup() { rm -rf -- "$TMP_DIR"; }
 rollback_on_error() {
   local status=$?
   set +e
   if [[ $INSTALLED -eq 1 ]]; then
-    [[ -f $TARGET_BACKUP ]] && cp --preserve=mode,ownership,timestamps -- "$TARGET_BACKUP" "$TARGET"
+    if [[ $TARGET_EXISTED -eq 1 && -f $TARGET_BACKUP ]]; then
+      cp --preserve=mode,ownership,timestamps -- "$TARGET_BACKUP" "$TARGET"
+    else
+      rm -f -- "$TARGET"
+    fi
     cp --preserve=mode,ownership,timestamps -- "$MAIN_BACKUP" "$MAIN_CONFIG"
     systemctl reload caddy
     echo "install-security-headers: rolled back" >&2
