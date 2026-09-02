@@ -113,7 +113,9 @@ def _summarize(verdict: str, results: list[dict], blockers: list[str], warnings:
     # Null-safe: validator can emit "score": null on partial results.
     scores = [int(r["score"]) for r in results if r.get("score") is not None]
     avg = (sum(scores) / len(scores)) if scores else 0
-    parts = [f"{verdict}: {n} skill(s) inspected"]
+    # Results can represent skill grades or structural records for valid
+    # skill-less plugins (for example, an MCP-only plugin).
+    parts = [f"{verdict}: {n} component(s) inspected"]
     if scores:
         parts.append(f"avg score {avg:.0f}/100")
     if blockers:
