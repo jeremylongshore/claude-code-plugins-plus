@@ -4,10 +4,14 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
+import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+
+import yaml
 
 
 _SCRIPT = Path(__file__).with_name("scope.py")
@@ -59,11 +63,15 @@ def _catalog(root: Path, sources: list[str]) -> Path:
     return path
 
 
-def _supplement(
-    results: list[dict], changed_dirs: list[str], *, pr_root: Path
-) -> tuple[list[dict], list[str]]:
+def _supplement(results: list[dict], changed_dirs: list[str], *, pr_root: Path) -> tuple[list[dict], list[str]]:
     _catalog(pr_root, changed_dirs)
     return _SCOPE.supplement_results(results, changed_dirs, pr_root=pr_root)
+
+
+def _workflow_step(name: str) -> str:
+    workflow_path = _SCRIPT.parents[2] / ".github/workflows/pr-prescreen.yml"
+    workflow = yaml.safe_load(workflow_path.read_text())
+    return next(step["run"] for step in workflow["jobs"]["validate"]["steps"] if step.get("name") == name)
 
 
 class ScopeTests(unittest.TestCase):
@@ -72,13 +80,20 @@ class ScopeTests(unittest.TestCase):
         self.assertIn('"$SCOPE_SCRIPT" discover', workflow)
         self.assertIn('"$SCOPE_SCRIPT" supplement', workflow)
         self.assertIn("python3 base/scripts/validate-skills-schema.py --marketplace --json --repo-root pr", workflow)
+        self.assertIn('if [ "$PLUGIN_LINES" = "0" ]', workflow)
+        self.assertIn('((.previous_filename // "") | startswith("plugins/"))', workflow)
+        self.assertEqual(workflow.count("/tmp/no-plugin-changes"), 3)
+        self.assertIn("printf '[]\\n' > /tmp/filtered-results.json", workflow)
+        self.assertIn(": > /tmp/structure-signals.txt", workflow)
+        self.assertIn(": > /tmp/hard-blocks.txt", workflow)
+        self.assertIn("immutable base scope helper is unavailable", workflow)
         self.assertNotIn("SCOPE_SCRIPT=pr/", workflow)
         self.assertNotIn(".prescreen-validator.py", workflow)
         self.assertNotIn("install -m 0644", workflow)
 
     def test_workflow_resolves_dispatch_head_base_and_all_file_pages(self) -> None:
         workflow = (_SCRIPT.parents[2] / ".github/workflows/pr-prescreen.yml").read_text()
-        self.assertIn("gh api \"repos/${{ github.repository }}/pulls/$PR_NUMBER\"", workflow)
+        self.assertIn('gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER"', workflow)
         self.assertIn("ref: ${{ steps.pr.outputs.head_sha }}", workflow)
         self.assertIn("ref: ${{ steps.pr.outputs.base_sha }}", workflow)
         self.assertIn("gh api --paginate --slurp", workflow)
@@ -86,6 +101,94 @@ class ScopeTests(unittest.TestCase):
         self.assertIn('if [ "$VALIDATOR_EXIT" -ne 0 ]', workflow)
         self.assertIn('"$SCOPE_SCRIPT" check-deletions', workflow)
         self.assertNotIn("grep -q", workflow)
+
+    def test_workflow_zero_plugin_bootstrap_produces_complete_artifacts_without_base_helper(self) -> None:
+        artifact_paths = [
+            Path("/tmp/no-plugin-changes"),
+            Path("/tmp/validator.log"),
+            Path("/tmp/validator-parsed.json"),
+            Path("/tmp/filtered-results.json"),
+            Path("/tmp/structure-signals.txt"),
+            Path("/tmp/diff-step-signals.txt"),
+            Path("/tmp/hard-blocks.txt"),
+        ]
+        try:
+            for path in artifact_paths:
+                path.unlink(missing_ok=True)
+            Path("/tmp/no-plugin-changes").touch()
+            Path("/tmp/diff-step-signals.txt").touch()
+            with tempfile.TemporaryDirectory() as tmp:
+                for name in (
+                    "Run validator against PR tree (full --json sweep)",
+                    "Detect structural hard-block signals",
+                ):
+                    result = subprocess.run(
+                        ["bash", "-c", _workflow_step(name)],
+                        cwd=tmp,
+                        text=True,
+                        capture_output=True,
+                        check=False,
+                    )
+                    self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(json.loads(Path("/tmp/filtered-results.json").read_text()), [])
+            self.assertEqual(Path("/tmp/structure-signals.txt").read_text(), "")
+            self.assertEqual(Path("/tmp/hard-blocks.txt").read_text(), "")
+        finally:
+            for path in artifact_paths:
+                path.unlink(missing_ok=True)
+
+    def test_workflow_rename_out_of_plugins_invokes_immutable_scope_helper(self) -> None:
+        artifact_paths = [
+            Path("/tmp/no-plugin-changes"),
+            Path("/tmp/pr-files.json"),
+            Path("/tmp/pr-files.txt"),
+            Path("/tmp/changed-plugins.txt"),
+            Path("/tmp/deleted-plugins.txt"),
+            Path("/tmp/diff-step-signals.txt"),
+        ]
+        try:
+            for path in artifact_paths:
+                path.unlink(missing_ok=True)
+            with tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                bin_dir = root / "bin"
+                bin_dir.mkdir()
+                gh = bin_dir / "gh"
+                gh.write_text(
+                    "#!/bin/sh\n"
+                    'printf \'%s\\n\' \'[[{"filename":"000-docs/moved.json",'
+                    '"previous_filename":"plugins/mcp/a2a-client/.claude-plugin/plugin.json",'
+                    '"status":"renamed"}]]\'\n'
+                )
+                gh.chmod(0o755)
+                helper = root / "base/scripts/pr-prescreen/scope.py"
+                helper.parent.mkdir(parents=True)
+                helper.write_text(
+                    "import pathlib, sys\n"
+                    "args = sys.argv\n"
+                    "for flag in ('--changed-output', '--deleted-output'):\n"
+                    "    pathlib.Path(args[args.index(flag) + 1]).touch()\n"
+                    "pathlib.Path('scope-invoked').touch()\n"
+                )
+                (root / "pr").mkdir()
+                script = _workflow_step("Compute changed plugin paths")
+                script = script.replace("${{ github.repository }}", "owner/repo")
+                script = script.replace("${{ steps.pr.outputs.number }}", "1")
+                github_output = root / "github-output"
+                result = subprocess.run(
+                    ["bash", "-c", script],
+                    cwd=root,
+                    env={**os.environ, "PATH": f"{bin_dir}:{os.environ['PATH']}", "GITHUB_OUTPUT": str(github_output)},
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertTrue((root / "scope-invoked").is_file())
+                self.assertFalse(Path("/tmp/no-plugin-changes").exists())
+        finally:
+            for path in artifact_paths:
+                path.unlink(missing_ok=True)
 
     def test_category_support_file_is_not_a_plugin(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -174,9 +277,7 @@ class ScopeTests(unittest.TestCase):
             _manifest(plugin)
             _mcp(plugin)
             _catalog(root, ["plugins/security/shared-name"])
-            results, signals = _SCOPE.supplement_results(
-                [], ["plugins/mcp/shared-name"], pr_root=root
-            )
+            results, signals = _SCOPE.supplement_results([], ["plugins/mcp/shared-name"], pr_root=root)
         self.assertEqual(len(results), 1)
         self.assertTrue(any("Missing exact catalog source" in signal for signal in signals))
 
@@ -217,10 +318,12 @@ class ScopeTests(unittest.TestCase):
             (plugin / "README.md").write_text("still here")
             _manifest(root / "base/plugins/mcp/a2a-client")
             changed, deleted, _count = _SCOPE.discover_plugin_dirs(
-                [{
-                    "filename": "plugins/mcp/a2a-client/.claude-plugin/plugin.json",
-                    "status": "removed",
-                }],
+                [
+                    {
+                        "filename": "plugins/mcp/a2a-client/.claude-plugin/plugin.json",
+                        "status": "removed",
+                    }
+                ],
                 pr_root=root / "pr",
                 base_root=root / "base",
             )
@@ -265,11 +368,13 @@ class ScopeTests(unittest.TestCase):
             _manifest(root / "pr/plugins/mcp/new-plugin")
             _manifest(root / "base/plugins/mcp/old-plugin")
             changed, deleted, _count = _SCOPE.discover_plugin_dirs(
-                [{
-                    "filename": "plugins/mcp/new-plugin/src/index.ts",
-                    "previous_filename": "plugins/mcp/old-plugin/src/index.ts",
-                    "status": "renamed",
-                }],
+                [
+                    {
+                        "filename": "plugins/mcp/new-plugin/src/index.ts",
+                        "previous_filename": "plugins/mcp/old-plugin/src/index.ts",
+                        "status": "renamed",
+                    }
+                ],
                 pr_root=root / "pr",
                 base_root=root / "base",
             )
@@ -283,11 +388,13 @@ class ScopeTests(unittest.TestCase):
             _manifest(root / "pr/plugins/mcp/old-plugin")
             _manifest(root / "base/plugins/mcp/old-plugin")
             changed, deleted, _count = _SCOPE.discover_plugin_dirs(
-                [{
-                    "filename": "plugins/mcp/new-plugin/src/index.ts",
-                    "previous_filename": "plugins/mcp/old-plugin/src/index.ts",
-                    "status": "renamed",
-                }],
+                [
+                    {
+                        "filename": "plugins/mcp/new-plugin/src/index.ts",
+                        "previous_filename": "plugins/mcp/old-plugin/src/index.ts",
+                        "status": "renamed",
+                    }
+                ],
                 pr_root=root / "pr",
                 base_root=root / "base",
             )
@@ -300,9 +407,7 @@ class ScopeTests(unittest.TestCase):
             plugin = root / "plugins/mcp/a2a-client"
             _manifest(plugin)
             _mcp(plugin)
-            results, signals = _supplement(
-                [], ["plugins/mcp/a2a-client"], pr_root=root
-            )
+            results, signals = _supplement([], ["plugins/mcp/a2a-client"], pr_root=root)
         self.assertEqual(signals, [])
         self.assertEqual(len(results), 1)
         self.assertIsNone(results[0]["grade"])
@@ -323,9 +428,7 @@ class ScopeTests(unittest.TestCase):
                     validator_results.append(
                         {"path": str(skill), "score": 95, "grade": "A", "errors": 0, "warnings": 0}
                     )
-                results, signals = _supplement(
-                    validator_results, ["plugins/mcp/name-contract"], pr_root=root
-                )
+                results, signals = _supplement(validator_results, ["plugins/mcp/name-contract"], pr_root=root)
             self.assertTrue(any("non-empty kebab-case" in signal for signal in signals))
 
     def test_mcp_marketplace_required_fields_fail_closed(self) -> None:
@@ -345,11 +448,7 @@ class ScopeTests(unittest.TestCase):
                 del config[field]
                 errors = _SCOPE._validate_mcp_servers({"server": config}, "test MCP")
                 self.assertTrue(any(field in error for error in errors), errors)
-        self.assertTrue(
-            _SCOPE._validate_mcp_servers(
-                {"Bad Name": canonical}, "test MCP"
-            )
-        )
+        self.assertTrue(_SCOPE._validate_mcp_servers({"Bad Name": canonical}, "test MCP"))
         invalid_version = dict(canonical, version="1.0")
         self.assertTrue(
             any(
@@ -365,9 +464,7 @@ class ScopeTests(unittest.TestCase):
             ({"when_to_use": "legacy"}, "deprecated"),
         ):
             with self.subTest(mutation=mutation):
-                errors = _SCOPE._validate_mcp_servers(
-                    {"server": dict(canonical, **mutation)}, "test MCP"
-                )
+                errors = _SCOPE._validate_mcp_servers({"server": dict(canonical, **mutation)}, "test MCP")
                 self.assertTrue(any(expected in error for error in errors), errors)
 
     def test_invalid_manifest_version_type_fails_closed(self) -> None:
@@ -375,9 +472,7 @@ class ScopeTests(unittest.TestCase):
             root = Path(tmp)
             plugin = root / "plugins/mcp/broken-version"
             _manifest(plugin, {"name": "broken-version", "version": 7})
-            results, signals = _supplement(
-                [], ["plugins/mcp/broken-version"], pr_root=root
-            )
+            results, signals = _supplement([], ["plugins/mcp/broken-version"], pr_root=root)
         self.assertEqual(results, [])
         self.assertTrue(any("Field 'version' must be string" in signal for signal in signals))
 
@@ -385,24 +480,25 @@ class ScopeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             plugin = root / "plugins/mcp/broken-inline"
-            _manifest(plugin, {
-                "name": "broken-inline",
-                "mcpServers": {
-                    "remote": {
-                        "name": "remote",
-                        "type": "http",
-                        "command": "node",
-                        "args": [],
-                        "env": {},
-                        "description": "Remote MCP server",
-                        "version": "1.0.0",
-                        "enabled": True,
-                    }
+            _manifest(
+                plugin,
+                {
+                    "name": "broken-inline",
+                    "mcpServers": {
+                        "remote": {
+                            "name": "remote",
+                            "type": "http",
+                            "command": "node",
+                            "args": [],
+                            "env": {},
+                            "description": "Remote MCP server",
+                            "version": "1.0.0",
+                            "enabled": True,
+                        }
+                    },
                 },
-            })
-            results, signals = _supplement(
-                [], ["plugins/mcp/broken-inline"], pr_root=root
             )
+            results, signals = _supplement([], ["plugins/mcp/broken-inline"], pr_root=root)
         self.assertEqual(results, [])
         self.assertTrue(any("requires a non-empty url" in signal for signal in signals))
 
@@ -414,9 +510,7 @@ class ScopeTests(unittest.TestCase):
             hooks = plugin / "hooks/hooks.json"
             hooks.parent.mkdir()
             hooks.write_text(json.dumps({"hooks": {"PreToolUse": []}}))
-            results, signals = _supplement(
-                [], ["plugins/mcp/broken-hooks"], pr_root=root
-            )
+            results, signals = _supplement([], ["plugins/mcp/broken-hooks"], pr_root=root)
         self.assertEqual(results, [])
         self.assertTrue(any("must contain a non-empty array" in signal for signal in signals))
 
@@ -430,9 +524,7 @@ class ScopeTests(unittest.TestCase):
                 artifact = plugin / component / "broken.md"
                 artifact.parent.mkdir(parents=True)
                 artifact.write_text("No frontmatter here")
-                results, signals = _supplement(
-                    [], ["plugins/mcp/broken-component"], pr_root=root
-                )
+                results, signals = _supplement([], ["plugins/mcp/broken-component"], pr_root=root)
             self.assertEqual(results, [])
             self.assertTrue(any("No frontmatter found" in signal for signal in signals))
 
@@ -445,9 +537,7 @@ class ScopeTests(unittest.TestCase):
             candidate.parent.mkdir(parents=True)
             candidate.symlink_to(target, target_is_directory=True)
             _catalog(root, ["plugins/mcp/old-plugin"])
-            signals = _SCOPE.validate_deleted_plugins(
-                ["plugins/mcp/old-plugin"], pr_root=root
-            )
+            signals = _SCOPE.validate_deleted_plugins(["plugins/mcp/old-plugin"], pr_root=root)
         self.assertTrue(any("symlink or non-directory" in signal for signal in signals))
         self.assertTrue(any("still has exact catalog source" in signal for signal in signals))
 
@@ -455,13 +545,14 @@ class ScopeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             plugin = root / "plugins/mcp/broken-inline-hooks"
-            _manifest(plugin, {
-                "name": "broken-inline-hooks",
-                "hooks": {"PreToolUse": [{"hooks": "not-an-array"}]},
-            })
-            results, signals = _supplement(
-                [], ["plugins/mcp/broken-inline-hooks"], pr_root=root
+            _manifest(
+                plugin,
+                {
+                    "name": "broken-inline-hooks",
+                    "hooks": {"PreToolUse": [{"hooks": "not-an-array"}]},
+                },
             )
+            results, signals = _supplement([], ["plugins/mcp/broken-inline-hooks"], pr_root=root)
         self.assertEqual(results, [])
         self.assertTrue(any("hooks must be a non-empty array" in signal for signal in signals))
 
@@ -488,9 +579,7 @@ class ScopeTests(unittest.TestCase):
                         target = outside / "hooks.json"
                         target.write_text(json.dumps({"hooks": {}}))
                         (plugin / "hooks").symlink_to(outside, target_is_directory=True)
-                results, signals = _supplement(
-                    [], ["plugins/mcp/symlinked"], pr_root=root
-                )
+                results, signals = _supplement([], ["plugins/mcp/symlinked"], pr_root=root)
                 self.assertEqual(results, [])
                 self.assertTrue(any("no symlink components" in signal for signal in signals))
 
@@ -503,11 +592,13 @@ class ScopeTests(unittest.TestCase):
             skill.write_text("---\nname: check\n---\n")
             (plugin / ".claude-plugin").symlink_to(root / "missing", target_is_directory=True)
             validator_result = {
-                "path": str(skill), "score": 95, "grade": "A", "errors": 0, "warnings": 0,
+                "path": str(skill),
+                "score": 95,
+                "grade": "A",
+                "errors": 0,
+                "warnings": 0,
             }
-            results, signals = _supplement(
-                [validator_result], ["plugins/security/symlinked"], pr_root=root
-            )
+            results, signals = _supplement([validator_result], ["plugins/security/symlinked"], pr_root=root)
         self.assertEqual(len(results), 1)
         self.assertTrue(any(".claude-plugin" in signal and "no symlink" in signal for signal in signals))
 
@@ -520,11 +611,13 @@ class ScopeTests(unittest.TestCase):
             skill.parent.mkdir(parents=True)
             skill.write_text("---\nname: check\ndescription: example\n---\n")
             validator_result = {
-                "path": str(skill), "score": 95, "grade": "A", "errors": 0, "warnings": 0,
+                "path": str(skill),
+                "score": 95,
+                "grade": "A",
+                "errors": 0,
+                "warnings": 0,
             }
-            results, signals = _supplement(
-                [validator_result], ["plugins/security/example"], pr_root=root
-            )
+            results, signals = _supplement([validator_result], ["plugins/security/example"], pr_root=root)
         self.assertEqual(len(results), 1)
         self.assertTrue(any("Field 'version' must be string" in signal for signal in signals))
 
@@ -536,13 +629,11 @@ class ScopeTests(unittest.TestCase):
             skill = plugin / "skills/check/SKILL.md"
             skill.parent.mkdir(parents=True)
             skill.write_text("---\nname: check\n---\n")
-            results, signals = _supplement(
-                [], ["plugins/security/example"], pr_root=root
-            )
+            results, signals = _supplement([], ["plugins/security/example"], pr_root=root)
         self.assertEqual(results, [])
-        self.assertEqual(signals, [
-            "prescreen-internal-error: validator produced no result for plugins/security/example"
-        ])
+        self.assertEqual(
+            signals, ["prescreen-internal-error: validator produced no result for plugins/security/example"]
+        )
 
 
 if __name__ == "__main__":

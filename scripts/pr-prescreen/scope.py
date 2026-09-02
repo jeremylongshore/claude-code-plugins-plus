@@ -183,17 +183,14 @@ def load_catalog_roots(checkout: Path, *, required: bool = False) -> set[str]:
         source = _normalize_catalog_source(entry.get("source"))
         if source is None:
             raise ValueError(
-                f"{_CATALOG_PATH} plugins[{index}].source must be an exact "
-                "plugins/<category>/<plugin> path"
+                f"{_CATALOG_PATH} plugins[{index}].source must be an exact plugins/<category>/<plugin> path"
             )
         roots.add(source)
     return roots
 
 
 def _catalog_or_marker_root(checkout: Path, relative: str, catalog_roots: set[str]) -> bool:
-    return _real_directory(checkout, relative) and (
-        relative in catalog_roots or _plugin_has_marker(checkout, relative)
-    )
+    return _real_directory(checkout, relative) and (relative in catalog_roots or _plugin_has_marker(checkout, relative))
 
 
 def discover_plugin_dirs(
@@ -288,9 +285,7 @@ def _regular_contained_file(plugin_dir: Path, path: Path) -> bool:
         if stat.S_ISLNK(metadata.st_mode):
             return False
         final = index == len(relative.parts) - 1
-        if (final and not stat.S_ISREG(metadata.st_mode)) or (
-            not final and not stat.S_ISDIR(metadata.st_mode)
-        ):
+        if (final and not stat.S_ISREG(metadata.st_mode)) or (not final and not stat.S_ISDIR(metadata.st_mode)):
             return False
     try:
         return path.resolve().is_relative_to(plugin_dir.resolve())
@@ -326,11 +321,7 @@ def _canonical_manifest_errors(path: Path, manifest: dict[str, Any]) -> list[str
         return [str(exc)]
     errors = [str(value) for value in result.get("errors", []) + result.get("warnings", [])]
     name = manifest.get("name")
-    if (
-        not isinstance(name, str)
-        or not _KEBAB_NAME.fullmatch(name)
-        or len(name) > 64
-    ):
+    if not isinstance(name, str) or not _KEBAB_NAME.fullmatch(name) or len(name) > 64:
         errors.append("Field 'name' must be a non-empty kebab-case name of at most 64 characters")
     return errors
 
@@ -360,23 +351,16 @@ def _validate_mcp_servers(servers: Any, label: str) -> list[str]:
             errors.append(f"{label} server {server_name!r} name must match its map key")
         transport = config.get("type")
         if transport not in {"stdio", "http", "streamable-http", "sse", "ws"}:
-            errors.append(
-                f"{label} server {server_name!r} type must be one of "
-                "stdio, http, streamable-http, sse, ws"
-            )
+            errors.append(f"{label} server {server_name!r} type must be one of stdio, http, streamable-http, sse, ws")
         command = config.get("command")
         if not isinstance(command, str) or not command.strip():
             errors.append(f"{label} server {server_name!r} command must be a non-empty string")
         if transport in {"http", "streamable-http", "sse", "ws"}:
             if not isinstance(config.get("url"), str) or not config["url"].strip():
-                errors.append(
-                    f"{label} server {server_name!r} type {transport!r} requires a non-empty url"
-                )
+                errors.append(f"{label} server {server_name!r} type {transport!r} requires a non-empty url")
         if not isinstance(config.get("args"), list):
             errors.append(f"{label} server {server_name!r} args must be an array")
-        elif not all(
-            isinstance(value, str) for value in config["args"]
-        ):
+        elif not all(isinstance(value, str) for value in config["args"]):
             errors.append(f"{label} server {server_name!r} args entries must be strings")
         if not isinstance(config.get("env"), dict):
             errors.append(f"{label} server {server_name!r} env must be an object")
@@ -452,9 +436,7 @@ _HOOK_EVENTS = {
 }
 
 
-def _validate_hooks(
-    document: Any, label: str, *, require_marketplace_fields: bool = True
-) -> list[str]:
+def _validate_hooks(document: Any, label: str, *, require_marketplace_fields: bool = True) -> list[str]:
     """Validate the canonical event → matcher-group → handler shape."""
 
     if not isinstance(document, dict) or not isinstance(document.get("hooks"), dict):
@@ -528,9 +510,7 @@ def validate_plugin_structure(plugin_dir: Path, relative: str, *, has_skills: bo
     for component_dir in (".claude-plugin", "hooks", "skills", "agents", "commands"):
         candidate = plugin_dir / component_dir
         if candidate.is_symlink():
-            errors.append(
-                f"{relative}/{component_dir} must be a contained directory with no symlink components"
-            )
+            errors.append(f"{relative}/{component_dir} must be a contained directory with no symlink components")
     manifest_path = plugin_dir / ".claude-plugin" / "plugin.json"
     manifest: dict[str, Any] | None = None
     if _lexists(manifest_path):
@@ -554,9 +534,7 @@ def validate_plugin_structure(plugin_dir: Path, relative: str, *, has_skills: bo
     if manifest is not None and "mcpServers" in manifest:
         declaration = manifest["mcpServers"]
         if isinstance(declaration, dict):
-            errors.extend(
-                _validate_mcp_servers(declaration, f"{relative}/.claude-plugin/plugin.json mcpServers")
-            )
+            errors.extend(_validate_mcp_servers(declaration, f"{relative}/.claude-plugin/plugin.json mcpServers"))
         elif isinstance(declaration, (str, list)):
             references = [declaration] if isinstance(declaration, str) else declaration
             for reference in references:
@@ -624,9 +602,7 @@ def validate_plugin_structure(plugin_dir: Path, relative: str, *, has_skills: bo
             if not _regular_contained_file(plugin_dir, path):
                 errors.append(f"{label} must be a contained regular file with no symlink components")
                 continue
-            errors.extend(
-                f"{label}: {error}" for error in _canonical_component_errors(path, kind)
-            )
+            errors.extend(f"{label}: {error}" for error in _canonical_component_errors(path, kind))
 
     return errors
 
@@ -647,15 +623,10 @@ def supplement_results(
     for plugin in changed_dirs:
         plugin_dir = pr_root.joinpath(*PurePosixPath(plugin).parts)
         if plugin not in catalog_roots:
-            signals.append(
-                f"Missing exact catalog source './{plugin}' in {_CATALOG_PATH}"
-            )
-        has_skills = any(
-            _regular_contained_file(plugin_dir, path) for path in plugin_dir.rglob("SKILL.md")
-        )
+            signals.append(f"Missing exact catalog source './{plugin}' in {_CATALOG_PATH}")
+        has_skills = any(_regular_contained_file(plugin_dir, path) for path in plugin_dir.rglob("SKILL.md"))
         has_skill_result = any(
-            (plugin + "/") in str(result.get("path", ""))
-            and str(result.get("path", "")).endswith("SKILL.md")
+            (plugin + "/") in str(result.get("path", "")) and str(result.get("path", "")).endswith("SKILL.md")
             for result in filtered
         )
         errors = validate_plugin_structure(plugin_dir, plugin, has_skills=has_skills)
@@ -689,9 +660,7 @@ def supplement_results(
     return filtered, signals
 
 
-def validate_deleted_plugins(
-    deleted_dirs: list[str], *, pr_root: Path
-) -> list[str]:
+def validate_deleted_plugins(deleted_dirs: list[str], *, pr_root: Path) -> list[str]:
     """Validate full removals without following replacement symlinks."""
 
     catalog_roots = load_catalog_roots(pr_root, required=True)
@@ -705,15 +674,11 @@ def validate_deleted_plugins(
                 signals.append(f"Deleted plugin root {plugin} cannot be inspected: {exc}")
             else:
                 if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
-                    signals.append(
-                        f"Deleted plugin root {plugin} still exists as a symlink or non-directory"
-                    )
+                    signals.append(f"Deleted plugin root {plugin} still exists as a symlink or non-directory")
                 else:
                     signals.append(f"prescreen-internal-error: deleted plugin root {plugin} still exists")
         if plugin in catalog_roots:
-            signals.append(
-                f"Deleted plugin {plugin} still has exact catalog source './{plugin}'"
-            )
+            signals.append(f"Deleted plugin {plugin} still has exact catalog source './{plugin}'")
     return signals
 
 

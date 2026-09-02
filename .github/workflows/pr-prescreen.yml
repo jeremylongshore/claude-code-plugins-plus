@@ -113,22 +113,32 @@ jobs:
           jq -r '.[].filename' /tmp/pr-files.json > /tmp/pr-files.txt
           echo "All changed files (count=$(wc -l < /tmp/pr-files.txt | tr -d ' ')):" >&2
           head -50 /tmp/pr-files.txt >&2
+          PLUGIN_LINES=$(jq '[.[] | select(
+            (.filename | startswith("plugins/")) or
+            ((.previous_filename // "") | startswith("plugins/"))
+          )] | length' /tmp/pr-files.json)
           SCOPE_SCRIPT=base/scripts/pr-prescreen/scope.py
-          if [ ! -f "$SCOPE_SCRIPT" ]; then
+          if [ "$PLUGIN_LINES" = "0" ]; then
+            # Bootstrap-safe: a governance-only PR cannot execute its new helper,
+            # and it has no plugin data that needs scoping.
+            : > /tmp/no-plugin-changes
+            : > /tmp/changed-plugins.txt
+            : > /tmp/deleted-plugins.txt
+          elif [ ! -f "$SCOPE_SCRIPT" ]; then
             echo "prescreen-internal-error: immutable base scope helper is unavailable" >&2
             exit 1
+          else
+            python3 "$SCOPE_SCRIPT" discover \
+              --files-json /tmp/pr-files.json \
+              --pr-root pr \
+              --base-root base \
+              --changed-output /tmp/changed-plugins.txt \
+              --deleted-output /tmp/deleted-plugins.txt
           fi
-          python3 "$SCOPE_SCRIPT" discover \
-            --files-json /tmp/pr-files.json \
-            --pr-root pr \
-            --base-root base \
-            --changed-output /tmp/changed-plugins.txt \
-            --deleted-output /tmp/deleted-plugins.txt
           echo "Changed (non-deleted) plugin dirs:" >&2
           cat /tmp/changed-plugins.txt >&2
           echo "Deleted plugin dirs:" >&2
           cat /tmp/deleted-plugins.txt >&2
-          PLUGIN_LINES=$(jq '[.[] | select(.filename | startswith("plugins/"))] | length' /tmp/pr-files.json)
           CHANGED_DIRS=$(wc -l < /tmp/changed-plugins.txt | tr -d ' ')
           DELETED_DIRS=$(wc -l < /tmp/deleted-plugins.txt | tr -d ' ')
           : > /tmp/diff-step-signals.txt
@@ -147,19 +157,28 @@ jobs:
           CI: 'true'
         run: |
           set -euo pipefail
-          VALIDATOR_EXIT=0
-          # Execute immutable base-authored validator + resolver code. The PR
-          # checkout is supplied only as the data root; no pr/scripts bytes run.
-          python3 base/scripts/validate-skills-schema.py --marketplace --json --repo-root pr \
-            > /tmp/validator-results.json 2>/tmp/validator.log || VALIDATOR_EXIT=$?
-          echo "Validator exit: $VALIDATOR_EXIT" >&2
-          if [ "$VALIDATOR_EXIT" -ne 0 ]; then
-            echo "prescreen-internal-error: validator exited $VALIDATOR_EXIT (see validator.log)" \
-              >> /tmp/diff-step-signals.txt
-          fi
-          echo "Validator stderr/info:" >&2
-          tail -50 /tmp/validator.log >&2 || true
-          python3 - <<'PY'
+          if [ -f /tmp/no-plugin-changes ]; then
+            # The prescreen owns plugin changes only. Produce its complete
+            # neutral artifact set without executing PR-authored helper code.
+            : > /tmp/validator.log
+            printf '[]\n' > /tmp/validator-parsed.json
+            printf '[]\n' > /tmp/filtered-results.json
+            : > /tmp/structure-signals.txt
+            echo "No plugin paths changed; validator and structural supplement skipped." >&2
+          else
+            VALIDATOR_EXIT=0
+            # Execute immutable base-authored validator + resolver code. The PR
+            # checkout is supplied only as the data root; no pr/scripts bytes run.
+            python3 base/scripts/validate-skills-schema.py --marketplace --json --repo-root pr \
+              > /tmp/validator-results.json 2>/tmp/validator.log || VALIDATOR_EXIT=$?
+            echo "Validator exit: $VALIDATOR_EXIT" >&2
+            if [ "$VALIDATOR_EXIT" -ne 0 ]; then
+              echo "prescreen-internal-error: validator exited $VALIDATOR_EXIT (see validator.log)" \
+                >> /tmp/diff-step-signals.txt
+            fi
+            echo "Validator stderr/info:" >&2
+            tail -50 /tmp/validator.log >&2 || true
+            python3 - <<'PY'
           import json, pathlib
           raw = pathlib.Path('/tmp/validator-results.json').read_text()
           try:
@@ -174,17 +193,18 @@ jobs:
           pathlib.Path('/tmp/validator-parsed.json').write_text(json.dumps(all_results))
           print(f"validator total: {len(all_results)}")
           PY
-          SCOPE_SCRIPT=base/scripts/pr-prescreen/scope.py
-          if [ ! -f "$SCOPE_SCRIPT" ]; then
-            echo "prescreen-internal-error: immutable base scope helper is unavailable" >&2
-            exit 1
+            SCOPE_SCRIPT=base/scripts/pr-prescreen/scope.py
+            if [ ! -f "$SCOPE_SCRIPT" ]; then
+              echo "prescreen-internal-error: immutable base scope helper is unavailable" >&2
+              exit 1
+            fi
+            python3 "$SCOPE_SCRIPT" supplement \
+              --validator-results /tmp/validator-parsed.json \
+              --changed-input /tmp/changed-plugins.txt \
+              --pr-root pr \
+              --results-output /tmp/filtered-results.json \
+              --signals-output /tmp/structure-signals.txt
           fi
-          python3 "$SCOPE_SCRIPT" supplement \
-            --validator-results /tmp/validator-parsed.json \
-            --changed-input /tmp/changed-plugins.txt \
-            --pr-root pr \
-            --results-output /tmp/filtered-results.json \
-            --signals-output /tmp/structure-signals.txt
           cat /tmp/structure-signals.txt >> /tmp/diff-step-signals.txt
           echo "validator filtered/supplemented count: $(jq length /tmp/filtered-results.json)" >&2
 
@@ -192,15 +212,19 @@ jobs:
         id: signals
         run: |
           set -euo pipefail
-          SCOPE_SCRIPT=base/scripts/pr-prescreen/scope.py
-          if [ ! -f "$SCOPE_SCRIPT" ]; then
-            echo "prescreen-internal-error: immutable base scope helper is unavailable" >&2
-            exit 1
+          if [ -f /tmp/no-plugin-changes ]; then
+            : > /tmp/hard-blocks.txt
+          else
+            SCOPE_SCRIPT=base/scripts/pr-prescreen/scope.py
+            if [ ! -f "$SCOPE_SCRIPT" ]; then
+              echo "prescreen-internal-error: immutable base scope helper is unavailable" >&2
+              exit 1
+            fi
+            python3 "$SCOPE_SCRIPT" check-deletions \
+              --deleted-input /tmp/deleted-plugins.txt \
+              --pr-root pr \
+              --signals-output /tmp/hard-blocks.txt
           fi
-          python3 "$SCOPE_SCRIPT" check-deletions \
-            --deleted-input /tmp/deleted-plugins.txt \
-            --pr-root pr \
-            --signals-output /tmp/hard-blocks.txt
           echo "Detected hard-block signals:" >&2
           cat /tmp/hard-blocks.txt >&2 || true
 
