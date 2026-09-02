@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 
 import { inlineFormat, isSafeLinkTarget, mdToHtml } from './md-to-html.mjs';
 
@@ -8,6 +11,8 @@ if (process.env.GENERATED_CONTENT_SECURITY_RED_PROOF_TARGET === 'md-to-html') {
     assert.fail('GENERATED_CONTENT_SECURITY_RED_PROOF:md-to-html');
   });
 }
+
+const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
 test('keeps inline code opaque and escapes its contents', () => {
   for (const identifier of [
@@ -75,6 +80,70 @@ test('escapes raw Markdown HTML instead of passing executable elements to set:ht
   assert.equal(rendered.includes('<svg'), false);
   assert.match(rendered, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
   assert.match(rendered, /&lt;img src=x onerror=&quot;alert\(1\)&quot;&gt;/);
+});
+
+test('accounts for the authoritative README presentation cohort without editing mirrors', async () => {
+  const registryPath = join(ROOT_DIR, 'marketplace', 'ops', 'readme-presentation-routes.json');
+  const registry = JSON.parse(await readFile(registryPath, 'utf8'));
+
+  assert.equal(registry.schema_version, 'readme-presentation-routes/v1');
+  assert.equal(registry.audit.intentional_raw_html_tag_tokens, 178);
+  assert.equal(registry.entries.length, 8);
+  assert.deepEqual(
+    registry.entries.map(({ plugin }) => plugin).sort(),
+    [
+      'claudebase',
+      'databricks-workspace-mcp',
+      'hermes-tweet',
+      'kobiton-automate',
+      'portaljs',
+      'servicegraph',
+      'slack-channel',
+      'tonone',
+    ],
+  );
+
+  const firstParty = registry.entries.filter(({ ownership }) => ownership === 'first-party');
+  assert.deepEqual(firstParty.map(({ plugin }) => plugin), ['databricks-workspace-mcp']);
+
+  for (const entry of registry.entries) {
+    const readme = await readFile(join(ROOT_DIR, entry.readme), 'utf8');
+    assert.ok(readme.length > 0, entry.readme);
+
+    const route = new URL(entry.route);
+    assert.equal(route.protocol, 'https:', entry.plugin);
+    assert.equal(route.hostname, 'github.com', entry.plugin);
+
+    if (entry.ownership === 'first-party') {
+      assert.equal(entry.disposition, 'resolved-safe-markdown');
+      assert.doesNotMatch(readme, /<\/?[A-Za-z][^>]*>/u);
+      continue;
+    }
+
+    assert.equal(entry.ownership, 'upstream-mirror');
+    const provenance = JSON.parse(await readFile(join(ROOT_DIR, entry.provenance), 'utf8'));
+    assert.equal(provenance.synced_from.repo, entry.upstream, entry.plugin);
+    if (Array.isArray(provenance.files)) assert.ok(provenance.files.includes('README.md'));
+    assert.match(route.pathname, new RegExp(`^/${entry.upstream.replace('/', '\\/')}/issues/new$`, 'u'));
+  }
+});
+
+test('retains the first-party README meaning through safe Markdown only', async () => {
+  const readme = await readFile(
+    join(ROOT_DIR, 'plugins', 'mcp', 'databricks-workspace-mcp', 'README.md'),
+    'utf8',
+  );
+  const intro = readme.slice(0, readme.indexOf('\n---\n'));
+  const rendered = mdToHtml(intro);
+
+  assert.match(rendered, /<h1>databricks-workspace-mcp<\/h1>/u);
+  assert.match(rendered, /Databricks <strong>control plane<\/strong>/u);
+  assert.match(rendered, /<code>system\.\*<\/code>/u);
+  assert.match(rendered, /<li><strong>License:<\/strong> MIT<\/li>/u);
+  assert.match(rendered, /<li><strong>Transport:<\/strong> MCP over stdio and HTTP<\/li>/u);
+  assert.match(rendered, /<li><strong>Access:<\/strong> Read-only<\/li>/u);
+  assert.doesNotMatch(rendered, /&lt;(?:h1|p|img|strong|br|code)\b/iu);
+  assert.doesNotMatch(rendered, /(?:javascript|data|vbscript):/iu);
 });
 
 test('rejects executable, obfuscated, and attribute-injection link targets', () => {

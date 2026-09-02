@@ -1,0 +1,83 @@
+{
+  "schema_version": "readme-presentation-routes/v1",
+  "audit": {
+    "source_commit": "45e35b165718d95e1d362052285000d27248fbf7",
+    "captured_at": "2026-08-31",
+    "intentional_raw_html_tag_tokens": 178,
+    "method": "Post-paragraph-buffer renderer audit. Fenced and inline code are opaque; literal documentation is not presentation loss."
+  },
+  "entries": [
+    {
+      "plugin": "kobiton-automate",
+      "readme": "plugins/testing/kobiton-automate/README.md",
+      "ownership": "upstream-mirror",
+      "provenance": "plugins/testing/kobiton-automate/.source.json",
+      "upstream": "kobiton/automate",
+      "route": "https://github.com/kobiton/automate/issues/new",
+      "limitation": "The safe marketplace renderer displays the upstream logo, collapsible setup and troubleshooting sections, keyboard styling, and named anchor markup as escaped text until upstream offers a Markdown-only presentation."
+    },
+    {
+      "plugin": "portaljs",
+      "readme": "plugins/community/portaljs/README.md",
+      "ownership": "upstream-mirror",
+      "provenance": "plugins/community/portaljs/.source.json",
+      "upstream": "datopian/portaljs",
+      "route": "https://github.com/datopian/portaljs/issues/new",
+      "limitation": "The safe marketplace renderer cannot preserve the upstream centered logo, title, line breaks, or linked badge row from raw HTML."
+    },
+    {
+      "plugin": "databricks-workspace-mcp",
+      "readme": "plugins/mcp/databricks-workspace-mcp/README.md",
+      "ownership": "first-party",
+      "upstream": "jeremylongshore/tons-of-skills-marketplace",
+      "route": "https://github.com/jeremylongshore/tons-of-skills-marketplace/issues/new",
+      "disposition": "resolved-safe-markdown",
+      "limitation": "Resolved locally: the title, description, license, transport, and read-only status now use accessible Markdown with no raw HTML dependency."
+    },
+    {
+      "plugin": "slack-channel",
+      "readme": "plugins/mcp/slack-channel/README.md",
+      "ownership": "upstream-mirror",
+      "provenance": "plugins/mcp/slack-channel/.source.json",
+      "upstream": "jeremylongshore/claude-code-slack-channel",
+      "route": "https://github.com/jeremylongshore/claude-code-slack-channel/issues/new",
+      "limitation": "The safe marketplace renderer displays the three upstream named installation anchors as escaped text until their source uses heading-derived Markdown anchors."
+    },
+    {
+      "plugin": "servicegraph",
+      "readme": "plugins/mcp/servicegraph/README.md",
+      "ownership": "upstream-mirror",
+      "provenance": "plugins/mcp/servicegraph/.source.json",
+      "upstream": "nostrband/ServiceGraph",
+      "route": "https://github.com/nostrband/ServiceGraph/issues/new",
+      "limitation": "The safe marketplace renderer cannot preserve the upstream centered product images or collapsible skill catalog from raw HTML."
+    },
+    {
+      "plugin": "claudebase",
+      "readme": "plugins/productivity/claudebase/README.md",
+      "ownership": "upstream-mirror",
+      "provenance": "plugins/productivity/claudebase/.source.json",
+      "upstream": "rohithzr/claudebase",
+      "route": "https://github.com/rohithzr/claudebase/issues/new",
+      "limitation": "The safe marketplace renderer displays the upstream update, examples, and platform-specific collapsibles as escaped text until their source uses ordinary Markdown sections."
+    },
+    {
+      "plugin": "tonone",
+      "readme": "plugins/ai-agency/tonone/README.md",
+      "ownership": "upstream-mirror",
+      "provenance": "plugins/ai-agency/tonone/.source.json",
+      "upstream": "tonone-ai/tonone",
+      "route": "https://github.com/tonone-ai/tonone/issues/new",
+      "limitation": "The safe marketplace renderer cannot preserve the upstream shield images or expandable full-skill list from raw HTML."
+    },
+    {
+      "plugin": "hermes-tweet",
+      "readme": "plugins/community/hermes-tweet/README.md",
+      "ownership": "upstream-mirror",
+      "provenance": "plugins/community/hermes-tweet/.source.json",
+      "upstream": "Xquik-dev/hermes-tweet",
+      "route": "https://github.com/Xquik-dev/hermes-tweet/issues/new",
+      "limitation": "The safe marketplace renderer cannot preserve the upstream linked agent-readiness badge from raw HTML."
+    }
+  ]
+}
