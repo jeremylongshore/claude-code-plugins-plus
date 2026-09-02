@@ -28,6 +28,27 @@ compatibility: Designed for Claude Code
 
 Rapid incident response procedures for Mistral AI integration failures. Covers severity classification, quick triage script, decision tree, per-error mitigations, communication templates, and postmortem process.
 
+## Prerequisites
+
+- An assigned incident commander and a documented application severity policy
+- Read-only access to application telemetry, deployment state, and redacted logs
+- A configured `MISTRAL_API_KEY` supplied through the environment or secret manager
+- Authorization to apply the named rollback, fallback, or concurrency change
+- A secure incident workspace for evidence and stakeholder updates
+
+## Instructions
+
+1. Use `Read` and `Grep` on approved logs and configuration to establish impact,
+   start time, endpoint, model, HTTP status, and request IDs without copying prompts,
+   credentials, or customer content.
+2. Assign severity from observed user impact, not from the provider status page alone.
+3. Run the minimal redacted probe, follow the matching immediate-action branch, and
+   prefer a reversible mitigation over an untested production change.
+4. Verify both the provider probe and the affected application path. Keep the incident
+   open through the service's normal observation window.
+5. Produce the output contract below and follow the retained-evidence checklist in
+   [operator-checklist.md](references/operator-checklist.md).
+
 ## Severity Levels
 
 | Level | Definition | Response Time | Example |
@@ -89,12 +110,15 @@ API returning errors?
 
 ```bash
 set -euo pipefail
-# Verify key
-echo "Key length: ${#MISTRAL_API_KEY}"
-echo "Key prefix: ${MISTRAL_API_KEY:0:8}..."
+# Verify presence without printing key material or key metadata
+test -n "${MISTRAL_API_KEY:-}" || {
+  echo "MISTRAL_API_KEY is not set" >&2
+  exit 1
+}
 
-# Test directly
-curl -v -H "Authorization: Bearer ${MISTRAL_API_KEY}" \
+# Test directly; emit only the HTTP status, never verbose request headers
+curl -sS -o /dev/null -w "HTTP %{http_code}\n" \
+  -H "Authorization: Bearer ${MISTRAL_API_KEY}" \
   https://api.mistral.ai/v1/models
 
 # If invalid: rotate key at console.mistral.ai
@@ -109,8 +133,9 @@ curl -v -H "Authorization: Bearer ${MISTRAL_API_KEY}" \
 ```bash
 set -euo pipefail
 # Check headers for limit info
-curl -v -H "Authorization: Bearer ${MISTRAL_API_KEY}" \
-  https://api.mistral.ai/v1/models 2>&1 | grep -i "ratelimit\|retry"
+curl -sS -D - -o /dev/null \
+  -H "Authorization: Bearer ${MISTRAL_API_KEY}" \
+  https://api.mistral.ai/v1/models | grep -i "ratelimit\|retry-after"
 
 # Immediate mitigation: reduce concurrency
 kubectl set env deployment/app MAX_CONCURRENT_MISTRAL=3
@@ -148,7 +173,8 @@ curl -v --connect-timeout 5 https://api.mistral.ai/v1/models
 # Check egress policies
 kubectl get networkpolicy -A | grep mistral
 
-# Increase timeout if latency issue
+# Temporary two-minute timeout while the network cause is investigated.
+# Revert after recovery; this does not fix upstream latency.
 kubectl set env deployment/app MISTRAL_TIMEOUT_MS=120000
 ```
 
@@ -187,14 +213,18 @@ Updated: [timestamp UTC]
 ```bash
 #!/bin/bash
 set -euo pipefail
+umask 077
 DIR="incident-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$DIR"
 
 kubectl logs -l app=mistral-service --since=2h > "$DIR/app-logs.txt" 2>/dev/null || true
 kubectl get events --sort-by=.lastTimestamp > "$DIR/k8s-events.txt" 2>/dev/null || true
-kubectl get deployment mistral-service -o yaml | grep -v api-key > "$DIR/deployment.yaml" 2>/dev/null || true
+kubectl get deployment mistral-service -o json 2>/dev/null \
+  | jq '{metadata: {name: .metadata.name, namespace: .metadata.namespace, generation: .metadata.generation}, spec: {replicas: .spec.replicas, strategy: .spec.strategy}, status: .status}' \
+  > "$DIR/deployment-summary.json" || true
 
-tar -czf "$DIR.tar.gz" "$DIR" && rm -rf "$DIR"
+echo "Review and redact every file before archiving or sharing."
+tar -czf "$DIR.tar.gz" "$DIR"
 echo "Evidence: $DIR.tar.gz"
 ```
 
@@ -244,7 +274,8 @@ echo "Evidence: $DIR.tar.gz"
 
 - [Mistral AI Status](https://status.mistral.ai/)
 - [Mistral Console](https://console.mistral.ai/)
-- [Discord Community](https://discord.gg/mistralai)
+- [Mistral error glossary](https://docs.mistral.ai/resources/error-glossary)
+- [Usage and limits](https://docs.mistral.ai/admin/billing-usage/usage-limits)
 
 ## Output
 
@@ -253,3 +284,27 @@ echo "Evidence: $DIR.tar.gz"
 - Stakeholders notified with status updates
 - Evidence collected for postmortem
 - Action items documented
+
+The report must also name the incident commander, UTC observation window, rollback or
+fallback state, unresolved risks, and next update time. Mark the incident `RESOLVED`
+only after the affected application path—not just the provider probe—meets its normal
+health threshold through that window.
+
+## Examples
+
+### Provider-side degradation
+
+The provider probe returns intermittent `503` responses, the status page reports an
+active incident, and application error rate crosses the P2 threshold. Enable the
+pre-approved fallback, cap retries to prevent amplification, post the external
+degradation notice, and keep monitoring the primary path. Resolve only after the
+primary path is healthy for the service's observation window and the fallback has
+been safely reverted.
+
+### Credential failure isolated to one environment
+
+Production returns `401` while staging succeeds and the provider status page is clear.
+Classify the event as an internal credential incident. Compare secret version metadata
+without exposing values, rotate the production credential through the secret manager,
+restart only affected consumers, and verify the application path. Record who approved
+the rotation and when the superseded secret was revoked.

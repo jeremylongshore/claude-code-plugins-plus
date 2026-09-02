@@ -31,22 +31,30 @@ Quick reference for diagnosing and fixing Mistral AI API errors. Covers HTTP sta
 
 - Mistral AI SDK installed
 - `MISTRAL_API_KEY` configured
-- Access to application logs
+- Read-only access to application logs and configuration
+- `curl` and `jq` available for the diagnostic probe
+- Access to the secret manager if a credential must be rotated
 
 ## Instructions
 
 ### Step 1: Quick Diagnostic
 
+Use `Read` for the relevant configuration and log files, then `Grep` for the exact
+HTTP status, request ID, model name, and error `code`. Never print, paste, or store
+the API key while collecting evidence.
+
 ```bash
 set -euo pipefail
+# Check presence without revealing key material or key metadata
+test -n "${MISTRAL_API_KEY:-}" || {
+  echo "MISTRAL_API_KEY is not set" >&2
+  exit 1
+}
+
 # Test API connectivity and auth
-curl -s -w "\nHTTP Status: %{http_code}\n" \
+curl -sS -w "\nHTTP Status: %{http_code}\n" \
   -H "Authorization: Bearer ${MISTRAL_API_KEY}" \
   https://api.mistral.ai/v1/models | jq '.data[].id' 2>/dev/null || echo "FAILED"
-
-# Check env
-echo "Key set: ${MISTRAL_API_KEY:+yes}"
-echo "Key length: ${#MISTRAL_API_KEY}"
 ```
 
 ### Step 2: Error Reference
@@ -194,27 +202,35 @@ for (const call of response.choices[0].message.toolCalls) {
 
 ---
 
-#### 413 / Context Length Exceeded
+#### 400 Bad Request — Context Window Exceeded
 
 ```
 Error: Maximum context length exceeded
 ```
 
-**Fix:** Trim conversation history, keeping system message:
+**Fix:** Determine the selected model's current context window from its model card,
+count both input and requested output tokens, and trim conversation history while
+preserving the system message:
 
 ```typescript
-function trimToFit(messages: any[], maxChars = 100_000): any[] {
+function trimToFit(
+  messages: any[],
+  countTokens: (candidate: any[]) => number,
+  maxContextTokens: number,
+  reservedOutputTokens: number,
+): any[] {
   const system = messages.find(m => m.role === 'system');
   const rest = messages.filter(m => m.role !== 'system');
   const kept: any[] = system ? [system] : [];
-  let chars = system?.content?.length ?? 0;
+  const inputBudget = maxContextTokens - reservedOutputTokens;
 
-  // Keep most recent messages that fit
+  // Keep the newest complete messages that fit the tokenizer-backed budget.
   for (let i = rest.length - 1; i >= 0; i--) {
-    const msgChars = JSON.stringify(rest[i]).length;
-    if (chars + msgChars > maxChars) break;
-    chars += msgChars;
-    kept.splice(system ? 1 : 0, 0, rest[i]);
+    const insertAt = system ? 1 : 0;
+    const candidate = [...kept];
+    candidate.splice(insertAt, 0, rest[i]);
+    if (countTokens(candidate) > inputBudget) break;
+    kept.splice(insertAt, 0, rest[i]);
   }
   return kept;
 }
@@ -222,13 +238,13 @@ function trimToFit(messages: any[], maxChars = 100_000): any[] {
 
 ---
 
-#### 500/503 Server Error
+#### 500/502/503/504 Server Error
 
 ```
 Error: Internal server error
 ```
 
-**Causes:** Mistral service issue (temporary).
+**Causes:** A transient Mistral service or gateway issue.
 
 **Fix:**
 
@@ -251,7 +267,7 @@ class CircuitBreaker {
       this.failures = 0;
       return result;
     } catch (error: any) {
-      if (error.status >= 500) {
+      if ([500, 502, 503, 504].includes(error.status)) {
         this.failures++;
         this.lastFailure = Date.now();
       }
@@ -315,17 +331,60 @@ const client = new Mistral({
 | `401` | Auth failure | Regenerate key at console.mistral.ai |
 | `429` | Rate limit | Backoff + check tier limits |
 | `400` | Bad params | Validate model, messages, tools |
-| `413` | Context overflow | Trim conversation history |
+| `400` context-window error | Input plus requested output exceeds the model limit | Count tokens and trim conversation history |
 | `5xx` | Service error | Retry with circuit breaker |
 | `ERR_REQUIRE_ESM` | CJS import | Use ESM `import` syntax |
+
+For the evidence to collect and the safe decision boundary for each class, read
+[the error triage playbook](references/error-triage-playbook.md).
+
+## Output
+
+Return a redacted diagnostic report with these fields:
+
+```text
+Mistral incident: <short symptom>
+Observed at: <UTC timestamp>
+Scope: <endpoint, model, environment, affected request percentage>
+Evidence: <HTTP status, error type/code, request ID; never credentials>
+Classification: <caller defect | auth | authorization | capacity | transient provider | network>
+Action taken: <one reversible mitigation>
+Verification: <probe or application check and result>
+Next action: <owner and trigger, or "none — resolved">
+```
+
+Do not claim resolution from one successful retry. Require the application's normal
+health signal to recover and a short observation window with no repeat of the same
+error class.
+
+## Examples
+
+### Authentication failure
+
+Input evidence: production requests return `401 authentication_error`; the same
+key fails a redacted `/v1/models` probe. Classify this as authentication, rotate the
+credential through the secret manager, restart only the consumers that need the new
+version, and verify with both the probe and application telemetry. The report records
+the secret version identifier, never the key value or prefix.
+
+### Rate-limit saturation
+
+Input evidence: a burst produces `429 rate_limit_error` while ordinary traffic is
+healthy. Preserve the response request ID and rate-limit headers, reduce concurrency,
+honor server retry guidance, and use exponential backoff with jitter. Escalate for a
+limit increase only after comparing observed requests and tokens against the current
+organization limits.
 
 ## Resources
 
 - [Mistral API Reference](https://docs.mistral.ai/api/)
-- [Rate Limits & Tiers](https://docs.mistral.ai/deployment/ai-studio/tier/)
+- [Mistral error glossary](https://docs.mistral.ai/resources/error-glossary)
+- [Usage and limits](https://docs.mistral.ai/admin/billing-usage/usage-limits)
+- [Known limitations](https://docs.mistral.ai/resources/known-limitations)
 - [Status Page](https://status.mistral.ai/)
-- [Discord Community](https://discord.gg/mistralai)
 
 ## Next Steps
 
-For comprehensive debugging, see `mistral-debug-bundle`.
+For comprehensive debugging, see `mistral-debug-bundle`. For an active outage with
+user impact, switch to `mistral-incident-runbook` after preserving the redacted
+request evidence.
