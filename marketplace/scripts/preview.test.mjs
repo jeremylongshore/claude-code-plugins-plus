@@ -5,7 +5,11 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 
-import { createPreviewServer, resolvePreviewAsset } from './preview.mjs';
+import {
+  buildPreviewAssetIndex,
+  createPreviewServer,
+  resolvePreviewAsset,
+} from './preview.mjs';
 import {
   MARKETPLACE_CHAT_SECURITY_HEADERS,
   MARKETPLACE_SECURITY_HEADERS,
@@ -89,8 +93,9 @@ test('serves static assets and HEAD requests with correct metadata', async (t) =
 
 test('fails closed on traversal, malformed paths, and unsupported methods', async (t) => {
   const { base, root } = await fixture(t);
+  const index = await buildPreviewAssetIndex(root);
   assert.equal(
-    await resolvePreviewAsset(root, normalizeRequestPath('/%2e%2e%2fsecret.txt')),
+    resolvePreviewAsset(index, normalizeRequestPath('/%2e%2e%2fsecret.txt')),
     undefined,
   );
 

@@ -1,6 +1,6 @@
 import { createServer } from 'node:http';
-import { readFile, realpath, stat } from 'node:fs/promises';
-import { extname, resolve, sep } from 'node:path';
+import { readFile, readdir, realpath } from 'node:fs/promises';
+import { extname, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { normalizeRequestPath, securityHeadersForPath } from './security-policy.mjs';
@@ -27,46 +27,55 @@ const CONTENT_TYPES = Object.freeze({
   '.zip': 'application/zip',
 });
 
-function safePath(root, pathname) {
-  const absoluteRoot = resolve(root);
-  const candidate = resolve(absoluteRoot, pathname.replace(/^\/+/, '') || '.');
-  if (candidate !== absoluteRoot && !candidate.startsWith(`${absoluteRoot}${sep}`)) return null;
-  return candidate;
-}
+export async function buildPreviewAssetIndex(root) {
+  const canonicalRoot = await realpath(root);
+  const files = new Map();
+  const symlinks = new Set();
 
-async function canonicalFileWithinRoot(root, path) {
-  try {
-    const [canonicalRoot, canonicalPath] = await Promise.all([realpath(root), realpath(path)]);
-    if (
-      canonicalPath !== canonicalRoot &&
-      !canonicalPath.startsWith(`${canonicalRoot}${sep}`)
-    ) {
-      return null;
-    }
-    return (await stat(canonicalPath)).isFile() ? canonicalPath : undefined;
-  } catch (error) {
-    if (error?.code === 'ENOENT' || error?.code === 'ENOTDIR') return undefined;
-    throw error;
+  async function walk(directory) {
+    const entries = await readdir(directory, { withFileTypes: true });
+    await Promise.all(
+      entries.map(async (entry) => {
+        const absolutePath = resolve(directory, entry.name);
+        const relativePath = relative(canonicalRoot, absolutePath).split(sep).join('/');
+        if (entry.isSymbolicLink()) {
+          symlinks.add(relativePath);
+          return;
+        }
+        if (entry.isDirectory()) {
+          await walk(absolutePath);
+          return;
+        }
+        if (entry.isFile()) files.set(relativePath, absolutePath);
+      }),
+    );
   }
+
+  await walk(canonicalRoot);
+  return { files, symlinks };
 }
 
-export async function resolvePreviewAsset(root, pathname) {
-  const base = safePath(root, pathname);
-  if (!base) return null;
-
+export function resolvePreviewAsset(index, pathname) {
+  const base = pathname.replace(/^\/+/, '');
   const candidates = [base];
   if (!extname(base)) candidates.push(`${base}.html`);
-  candidates.push(resolve(base, 'index.html'));
+  candidates.push(base ? `${base.replace(/\/$/u, '')}/index.html` : 'index.html');
 
   for (const candidate of candidates) {
-    const canonicalFile = await canonicalFileWithinRoot(root, candidate);
-    if (canonicalFile === null) return null;
-    if (canonicalFile) return canonicalFile;
+    if (index.symlinks.has(candidate)) return null;
+    const asset = index.files.get(candidate);
+    if (asset) return asset;
   }
   return undefined;
 }
 
 export function createPreviewServer({ root = DEFAULT_ROOT } = {}) {
+  let assetIndexPromise;
+  const getAssetIndex = () => {
+    assetIndexPromise ??= buildPreviewAssetIndex(root);
+    return assetIndexPromise;
+  };
+
   return createServer(async (request, response) => {
     const requestTarget = request.url ?? '/';
     for (const [name, value] of Object.entries(securityHeadersForPath(requestTarget))) {
@@ -88,7 +97,7 @@ export function createPreviewServer({ root = DEFAULT_ROOT } = {}) {
     }
 
     try {
-      const asset = await resolvePreviewAsset(root, pathname);
+      const asset = resolvePreviewAsset(await getAssetIndex(), pathname);
       if (asset === null) {
         response.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
         response.end('Bad Request\n');
