@@ -12,4 +12,3 @@ test('production emits the reviewed CSP on representative public surfaces', asyn
     );
   }
 });
-

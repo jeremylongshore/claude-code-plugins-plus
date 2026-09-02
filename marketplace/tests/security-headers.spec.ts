@@ -27,4 +27,3 @@ for (const path of pages) {
     expect(violations).toEqual([]);
   });
 }
-
