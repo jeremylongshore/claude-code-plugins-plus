@@ -1,0 +1,23 @@
+{
+  "description": "Require host confirmation before an A2A task cancellation request leaves the process.",
+  "version": "1.0.0",
+  "lastUpdated": "2026-09-01",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "description": "cancel_task can stop remote work and must always be confirmed",
+        "matcher": "^(mcp__a2a-client__cancel_task|mcp__plugin_a2a-client_a2a-client__cancel_task)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/confirm-cancel-task.sh",
+            "description": "Ask the host for explicit approval before cancellation",
+            "enabled": true,
+            "timeout": 5,
+            "blocking": true
+          }
+        ]
+      }
+    ]
+  }
+}

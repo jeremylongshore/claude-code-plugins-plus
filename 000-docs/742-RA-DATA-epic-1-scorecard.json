@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3075,
-        "tracked_files": 23750
+        "tracked_files": 23771
       }
     },
     "2": {
@@ -53,9 +53,9 @@
       "status": "measured",
       "target_status": "pass",
       "values": {
-        "distinct_names": 442,
+        "distinct_names": 443,
         "duplicate_names": [],
-        "entries": 442
+        "entries": 443
       }
     },
     "3": {
@@ -80,27 +80,27 @@
       "values": {
         "agent_lane": {
           "error_total_all_validated_surfaces": 236,
-          "fully_compliant_surfaces": 769,
+          "fully_compliant_surfaces": 770,
           "terminal_denominator": {
             "agents": 358,
-            "files": 951,
+            "files": 952,
             "label": "agents_plus_plugin_manifests",
-            "plugin_manifests": 593
+            "plugin_manifests": 594
           },
           "validator_reported_mixed_denominator_percent": 80.9
         },
         "marketplace_terminal": {
           "error_total_all_validated_surfaces": 3986,
-          "fully_compliant_surfaces": 1145,
+          "fully_compliant_surfaces": 1146,
           "terminal_denominator": {
             "agents": 358,
             "commands": 373,
-            "files": 4899,
+            "files": 4900,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
-            "plugin_manifests": 593,
+            "plugin_manifests": 594,
             "skills": 3575
           },
-          "validated_plugin_manifests": 601,
+          "validated_plugin_manifests": 602,
           "validator_reported_mixed_denominator_percent": 23.4
         },
         "skill_rows": {
@@ -1917,9 +1917,9 @@
       "values": {
         "allowlist_patterns": 10,
         "invalid_patterns": 0,
-        "invisible_files": 22,
+        "invisible_files": 23,
         "target_invisible_files": 0,
-        "tracked_files": 23750
+        "tracked_files": 23771
       }
     },
     "47": {

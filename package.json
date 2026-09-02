@@ -103,8 +103,13 @@
   },
   "pnpm": {
     "overrides": {
+      "@hono/node-server": "1.19.15",
       "@intentsolutions/core": "0.10.0",
+      "ajv>fast-uri": "3.1.5",
       "esbuild": ">=0.25.0",
+      "express@5.2.1>body-parser": "2.3.0",
+      "express-rate-limit>ip-address": "10.3.1",
+      "hono": "4.12.34",
       "vite": ">=6.4.2",
       "qs": ">=6.15.2"
     }

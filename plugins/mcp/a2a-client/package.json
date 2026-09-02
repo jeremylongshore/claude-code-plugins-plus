@@ -1,0 +1,64 @@
+{
+  "name": "@intentsolutionsio/a2a-client",
+  "version": "0.1.0",
+  "description": "Security-hardened MCP client for the Agent2Agent protocol",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "a2a-client": "./dist/index.js"
+  },
+  "files": [
+    "dist/index.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "pnpm build && vitest run",
+    "test:ci": "pnpm build && git diff --exit-code -- dist/index.js && vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "a2a",
+    "agent2agent",
+    "agent-card",
+    "mcp",
+    "multi-agent"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io",
+    "url": "https://intentsolutions.io"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/tons-of-skills-marketplace.git",
+    "directory": "plugins/mcp/a2a-client"
+  },
+  "homepage": "https://tonsofskills.com",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@a2a-js/sdk": "1.0.1",
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "ipaddr.js": "2.5.0",
+    "undici": "6.28.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.4",
+    "@types/node": "25.9.1",
+    "@vitest/coverage-v8": "4.1.7",
+    "esbuild": "0.28.0",
+    "eslint": "9.39.4",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.60.0",
+    "vitest": "4.1.7"
+  }
+}

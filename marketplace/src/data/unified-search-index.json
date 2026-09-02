@@ -5,10 +5,10 @@
     "generator": "marketplace/scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 439,
+    "totalPlugins": 440,
     "totalSkills": 2984,
     "totalDocs": 24,
-    "totalItems": 3447,
+    "totalItems": 3448,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -404,6 +404,7 @@
       "agencies",
       "agency",
       "agent",
+      "agent-card",
       "agent-development",
       "agent-development-kit",
       "agent-engine",
@@ -415,6 +416,7 @@
       "agent-skills",
       "agent-starter-pack",
       "agent-to-agent",
+      "agent2agent",
       "agentic",
       "agentic-skills",
       "agents",
@@ -1702,10 +1704,10 @@
       "zod"
     ],
     "totalAgents": 347,
-    "totalHooks": 27,
+    "totalHooks": 28,
     "pluginsWithAgents": 90,
-    "pluginsWithHooks": 19,
-    "officialPlugins": 389,
+    "pluginsWithHooks": 20,
+    "officialPlugins": 390,
     "communityPlugins": 50,
     "communityContributors": 39
   },
@@ -13680,6 +13682,33 @@
       "verificationGrade": "N/A",
       "verificationBadge": "none",
       "searchText": "box cloud filesystem transparent cloud filesystem for ai agents using box cli (@box/cli). upload, download, search, share, and sync files to box cloud storage with operational safety guardrails. productivity box cloud-storage filesystem file-sync box-cli upload download document-management collaboration ai-agent-storage"
+    },
+    {
+      "type": "plugin",
+      "id": "a2a-client",
+      "slug": "a2a-client",
+      "name": "a2a-client",
+      "displayName": "a2a client",
+      "description": "Security-hardened MCP client for Agent2Agent card discovery, messaging, streaming, and confirmation-gated task control",
+      "category": "mcp",
+      "keywords": [
+        "a2a",
+        "agent2agent",
+        "agent-card",
+        "multi-agent",
+        "mcp"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "authorType": "official",
+      "version": "0.1.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
+      "searchText": "a2a client security-hardened mcp client for agent2agent card discovery, messaging, streaming, and confirmation-gated task control mcp a2a agent2agent agent-card multi-agent mcp"
     },
     {
       "type": "plugin",

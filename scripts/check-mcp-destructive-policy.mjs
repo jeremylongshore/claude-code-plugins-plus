@@ -12,9 +12,8 @@
 //      EXECUTES it (python3 -m unittest), failing on a non-zero exit — a
 //      declaration is only as good as its passing test.
 //
-// "Tracked" means the dir contains at least one git-tracked file: untracked
-// build-output dirs (the a2a-client case) are invisible to CI checkouts and
-// are reported as a warning locally rather than gated.
+// "Tracked" means the dir contains at least one git-tracked file. Untracked
+// build-output dirs are invisible to CI checkouts and therefore are not gated.
 
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
