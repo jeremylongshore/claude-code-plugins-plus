@@ -563,6 +563,10 @@ jobs:
     name: marketplace-compliance-ratchet
     runs-on: ubuntu-latest
     timeout-minutes: 2
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v6
         with:
@@ -574,18 +578,54 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Refuse unauthorized marketplace baseline growth
+      - name: Refuse unauthorized marketplace baseline policy-envelope changes
         if: github.event_name == 'pull_request'
         env:
           BASE_REF: ${{ github.base_ref }}
           HEAD_REF: ${{ github.head_ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REPOSITORY: ${{ github.repository }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           git fetch --no-tags origin "$BASE_REF"
-          python3 scripts/check-marketplace-compliance-baseline.py \
-            --check-growth-only \
-            --base "origin/$BASE_REF" \
+          args=(
+            --check-growth-only
+            --base "origin/$BASE_REF"
             --head-ref "$HEAD_REF"
+          )
+          if [[ "$HEAD_REF" =~ ^automation/compliance-baseline-([1-9][0-9]*)$ ]]; then
+            run_id="${BASH_REMATCH[1]}"
+            evidence_dir="$(mktemp -d)"
+            trap 'rm -rf -- "$evidence_dir"' EXIT
+            gh api "repos/$REPOSITORY/actions/runs/$run_id" > "$evidence_dir/run.json"
+            gh api "repos/$REPOSITORY/actions/runs/$run_id/jobs?filter=latest" > "$evidence_dir/jobs.json"
+            gh api --method GET "repos/$REPOSITORY/pulls" \
+              -f state=all \
+              -f "head=$REPOSITORY_OWNER:$HEAD_REF" \
+              -f per_page=100 > "$evidence_dir/pulls.json"
+            mkdir "$evidence_dir/artifact"
+            gh run download "$run_id" \
+              --repo "$REPOSITORY" \
+              --name "marketplace-compliance-baseline-$run_id" \
+              --dir "$evidence_dir/artifact"
+            mapfile -d '' artifact_files < <(find "$evidence_dir/artifact" -type f -print0)
+            test "${#artifact_files[@]}" -eq 1
+            args+=(
+              --head-sha "$HEAD_SHA"
+              --repository "$REPOSITORY"
+              --repository-owner "$REPOSITORY_OWNER"
+              --base-ref "$BASE_REF"
+              --pr-number "$PR_NUMBER"
+              --capture-run-metadata "$evidence_dir/run.json"
+              --capture-run-jobs "$evidence_dir/jobs.json"
+              --capture-pull-requests "$evidence_dir/pulls.json"
+              --capture-artifact "${artifact_files[0]}"
+            )
+          fi
+          python3 scripts/check-marketplace-compliance-baseline.py "${args[@]}"
       - name: Enforce R1/R2/R4 marketplace compliance ratchet
         run: |
           python3 -c "import yaml" 2>/dev/null || python3 -m pip install --quiet pyyaml

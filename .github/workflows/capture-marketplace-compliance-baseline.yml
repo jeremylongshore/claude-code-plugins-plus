@@ -2,24 +2,36 @@ name: Capture Marketplace Compliance Baseline
 
 on:
   workflow_dispatch:
-    inputs:
-      base_ref:
-        description: 'Quiet commit to capture (defaults to the dispatched ref)'
-        required: false
-        type: string
 
-permissions:
-  contents: write
-  pull-requests: write
+permissions: {}
 
 jobs:
   capture:
+    name: capture-baseline-artifact
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      branch: ${{ steps.commit.outputs.branch }}
+      base_sha: ${{ steps.commit.outputs.base_sha }}
     steps:
+      - name: Authorize an owner dispatch from the protected default branch
+        env:
+          ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
+          REF_NAME: ${{ github.ref_name }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          test "$ACTOR" = "$REPOSITORY_OWNER"
+          test "$TRIGGERING_ACTOR" = "$REPOSITORY_OWNER"
+          test "$REF_NAME" = "$DEFAULT_BRANCH"
+
       - name: Check out the requested quiet tree
         uses: actions/checkout@v6
         with:
-          ref: ${{ inputs.base_ref || github.ref }}
+          ref: ${{ github.sha }}
           fetch-depth: 0
 
       - name: Set up Python
@@ -45,10 +57,24 @@ jobs:
           test "${#changed[@]}" -eq 1
           test "${changed[0]}" = "scripts/.marketplace-compliance-baseline.json"
 
-      - name: Open the dedicated baseline pull request
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BASE_SHA: ${{ github.sha }}
+      - name: Stage the immutable capture artifact
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/marketplace-compliance-baseline/scripts"
+          cp scripts/.marketplace-compliance-baseline.json \
+            "$RUNNER_TEMP/marketplace-compliance-baseline/scripts/.marketplace-compliance-baseline.json"
+
+      - name: Upload the immutable capture artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: marketplace-compliance-baseline-${{ github.run_id }}
+          path: ${{ runner.temp }}/marketplace-compliance-baseline
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Commit the dedicated baseline branch
+        id: commit
         run: |
           set -euo pipefail
           branch="automation/compliance-baseline-${GITHUB_RUN_ID}"
@@ -56,8 +82,28 @@ jobs:
           git add scripts/.marketplace-compliance-baseline.json
           git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'chore(ci): capture marketplace compliance baseline'
           git push origin "$branch"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "base_sha=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+
+  open-pr:
+    name: open-baseline-pull-request
+    needs: capture
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Open the owner-dispatched baseline pull request
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PR_TOKEN }}
+          BRANCH: ${{ needs.capture.outputs.branch }}
+          BASE_SHA: ${{ needs.capture.outputs.base_sha }}
+        run: |
+          set -euo pipefail
+          test -n "$GH_TOKEN"
           gh pr create \
+            --repo "$GITHUB_REPOSITORY" \
             --base main \
-            --head "$branch" \
+            --head "$BRANCH" \
             --title 'chore(ci): capture marketplace compliance baseline' \
-            --body "CI-only baseline capture from quiet tree ${BASE_SHA}. This PR intentionally changes only scripts/.marketplace-compliance-baseline.json; review the triple-keyed diff and CODEOWNERS approval before merge."
+            --body "Owner-dispatched CI baseline capture from quiet tree ${BASE_SHA}. This PR intentionally changes only scripts/.marketplace-compliance-baseline.json. Required CI verifies the owner-run identity, successful capture job, source commit, and byte-identical immutable artifact before permitting growth; no human review gate is required."

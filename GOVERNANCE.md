@@ -5,8 +5,9 @@ more responsibility over time. This is the operating manual for the **maintainer
 ladder**; the live roster of people is in [`MAINTAINERS.md`](MAINTAINERS.md).
 
 > **Status:** MVP on the personal repo `jeremylongshore/tons-of-skills-marketplace`.
-> The ladder below is a _convention_ today (enforced by CODEOWNERS + branch
-> protection + human trust). It is designed to convert cleanly to real **GitHub
+> The ladder below is a _convention_ today (recorded by CODEOWNERS and enforced
+> through repository permissions + human trust). Ordinary merges require the
+> three protected CI contexts, not a human approval. It is designed to convert cleanly to real **GitHub
 > Teams** and org rulesets once the repo transfers to the `intent-solutions-io`
 > org — see [`000-docs/707-AT-DECR-org-migration-to-intent-solutions-io.md`](000-docs/707-AT-DECR-org-migration-to-intent-solutions-io.md).
 
@@ -34,8 +35,8 @@ model directly from four proven systems:
 - **Home Assistant** — per-integration `codeowners`, auto-generated from metadata,
   so ownership scales to thousands of components without hand-editing one giant
   file. This is our [per-plugin ownership](#scaling-per-plugin-ownership) answer.
-- **GitHub-native** — `require_code_owner_reviews` so an area owner's approval is a
-  hard, structural merge gate, not just a social norm.
+- **GitHub-native** — CODEOWNERS routing and protected status checks, with the
+  option to graduate area-owner approval into an org ruleset after the org move.
 
 ---
 
@@ -45,20 +46,21 @@ Every tier is **scoped to one or more areas** (see [Areas](#areas)). You can be 
 Maintainer of `marketplace-site` and only a Contributor everywhere else. Rights are
 per-area, never repo-wide (except the Lead).
 
-| Tier            | What they can do                                                                                                                                                                                                                                                      | How review counts                                                                                     |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| **Contributor** | Open issues and PRs. Anyone. No write access.                                                                                                                                                                                                                         | Their PRs are reviewed by others.                                                                     |
-| **Reviewer**    | Everything a Contributor can, plus: authoritative first-pass review on PRs **in their area** — the "does this meet the bar" read. A Reviewer's ✅ is the `/lgtm` signal. Triages incoming PRs in their area against the [72h first-response SLA](.github/SUPPORT.md). | Review is advisory to the Approver; a Reviewer does **not** yet satisfy `require_code_owner_reviews`. |
-| **Approver**    | Everything a Reviewer can, plus: their approval **satisfies the code-owner review gate** for their area (listed in [`.github/CODEOWNERS`](.github/CODEOWNERS)), so they can merge PRs in that area. Owns the health of their area.                                    | Approving review = merge-eligible once CI is green.                                                   |
-| **Maintainer**  | Everything an Approver can, plus: sets direction for their area — the bar, the roadmap, what gets accepted — and can sponsor others up the ladder.                                                                                                                    | Sets policy for the area.                                                                             |
-| **Lead**        | Jeremy Longshore. Owns the whole repo, the high-trust paths (validators, schema, CI, root policy, deps), releases, and final say on cross-area decisions and org-level moves.                                                                                         | Owns everything not delegated.                                                                        |
+| Tier            | What they can do                                                                                                                                                                                                                                                      | How review counts                                                                  |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Contributor** | Open issues and PRs. Anyone. No write access.                                                                                                                                                                                                                         | Review is welcome but is not a protected merge requirement.                        |
+| **Reviewer**    | Everything a Contributor can, plus: authoritative first-pass review on PRs **in their area** — the "does this meet the bar" read. A Reviewer's ✅ is the `/lgtm` signal. Triages incoming PRs in their area against the [72h first-response SLA](.github/SUPPORT.md). | Advisory quality signal; it does not replace or unlock protected CI.               |
+| **Approver**    | Everything a Reviewer can, plus: records an area-level approval when review is requested, and may merge if repository permissions allow and protected CI is green. Listed in [`.github/CODEOWNERS`](.github/CODEOWNERS). Owns the health of their area.               | Area-governance decision; not a branch-protection requirement on the current repo. |
+| **Maintainer**  | Everything an Approver can, plus: sets direction for their area — the bar, the roadmap, what gets accepted — and can sponsor others up the ladder.                                                                                                                    | Sets policy for the area.                                                          |
+| **Lead**        | Jeremy Longshore. Owns the whole repo, the high-trust paths (validators, schema, CI, root policy, deps), releases, and final say on cross-area decisions and org-level moves.                                                                                         | Owns everything not delegated.                                                     |
 
-**Two-phase review, K8s-style.** A merge needs both: (1) a **Reviewer**'s
-quality read (`/lgtm`), and (2) an **Approver**'s code-owner approval. On a small
-bench these can be the same person; as the bench grows, splitting them is how we
-keep review load off any single approver. The deterministic CI gate
-(`ci-required` + `gitleaks` + `skill-conform`) is always required on top — human
-approval never substitutes for green checks.
+**Review is available without becoming a universal merge lock.** Reviewers and
+Approvers provide the K8s-style `/lgtm` and area-approval signals when requested,
+and independent evidence review remains mandatory where a blueprint acceptance
+contract names it. Ordinary merges do not wait for a human approval. The
+deterministic branch-protection gate (`ci-required` + `gitleaks` +
+`skill-conform`) is always required; human approval never substitutes for green
+checks.
 
 ---
 
@@ -120,9 +122,10 @@ delegated as the roster fills:
   on new PRs in that area within the **72-hour SLA** ([`.github/SUPPORT.md`](.github/SUPPORT.md)) —
   label, ask for the submission issue if missing, run the pre-flight, and either
   `/lgtm` or request changes. This is the single biggest load transfer.
-- **PR approval & merge.** Handled structurally by [`.github/CODEOWNERS`](.github/CODEOWNERS):
-  GitHub auto-requests the area owner, and an area **Approver**'s review satisfies
-  the merge gate. Merges no longer funnel through the Lead.
+- **PR ownership & merge.** [`.github/CODEOWNERS`](.github/CODEOWNERS) routes the
+  relevant area owner for optional or explicitly requested review. An area
+  **Approver** may merge within their repository permissions after all protected
+  CI contexts pass; ordinary merges do not require a review ritual.
 - **External-sync review.** The weekly `sync-external` auto-PR (Mondays 06:00 UTC)
   is reviewed by the **`external-sync` Approver**. ~1 in 10 sync PRs merges;
   mirror-by-default means most are no-ops. REFUSE findings from the supply-chain
@@ -168,9 +171,8 @@ incremental: the field is optional and defaults to the area owner.
 ## The rules that keep it honest
 
 - **CI is never bypassed by trust.** The gate is `ci-required` + `gitleaks` +
-  `skill-conform` — the three required contexts; a human approval unlocks merge
-  only _after_ they are green.
-  The maintainer ladder controls _who may approve_, not _whether checks run_.
+  `skill-conform` — the three required contexts. The maintainer ladder controls
+  who owns, reviews, and may merge an area; it does not weaken or unlock checks.
 - **High-trust areas stay Lead-owned** until an Approver has passed the competency
   gate for that area. Being trusted in `plugins-design` does not grant `ci-infra`.
 - **Scope is per-area, and areas are explicit.** If it is not written in

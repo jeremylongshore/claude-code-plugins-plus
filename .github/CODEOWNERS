@@ -1,9 +1,10 @@
 # CODEOWNERS for claude-code-plugins-plus-skills
 #
-# GitHub auto-requests the owners listed here whenever a matching path changes,
-# and — with branch protection "Require review from Code Owners" — an owner's
-# approval is the structural merge gate. The *last* matching rule wins; more
-# specific paths near the bottom override the catch-all at the top.
+# GitHub can auto-request the owners listed here whenever a matching path changes.
+# On the current personal-repository policy, these entries route ownership and
+# optional review; branch protection does not require an approving or code-owner
+# review. The *last* matching rule wins; more specific paths near the bottom
+# override the catch-all at the top.
 #
 # This file is the ownership half of the maintainer ladder. The tiers, areas, and
 # who-owns-what policy live in GOVERNANCE.md; the roster is MAINTAINERS.md; the
