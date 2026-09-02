@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
@@ -14,6 +15,8 @@ const PARSER_SECURITY_SUITES = [
   'marketplace/scripts/discover-skills.test.mjs',
   'marketplace/scripts/md-to-html.test.mjs',
 ];
+const RED_PROOF_CHILD = 'GENERATED_CONTENT_SECURITY_RED_PROOF_CHILD';
+const RED_PROOF_TARGET = 'GENERATED_CONTENT_SECURITY_RED_PROOF_TARGET';
 const DISCOVER_SKILLS = readFileSync(`${ROOT}/marketplace/scripts/discover-skills.mjs`, 'utf8');
 const VENDORED_JS_YAML = `${ROOT}/scripts/vendor/js-yaml-4.1.1/js-yaml.mjs`;
 const VENDORED_JS_YAML_SHA256 = 'efbc45850bf15f0c8ee3434983f512be656002d7507dc292c7ade4449b5d57fa';
@@ -30,6 +33,30 @@ function jobBlock(name) {
   const rest = WORKFLOW.slice(start + marker.length);
   const next = rest.search(/^ {2}[a-zA-Z0-9_-]+:\n/m);
   return rest.slice(0, next === -1 ? undefined : next);
+}
+
+function workflowRunScript(name) {
+  const lines = jobBlock(name).split('\n');
+  const runIndex = lines.indexOf('        run: |');
+  assert.notEqual(runIndex, -1, `missing run script in workflow job ${name}`);
+
+  const commands = [];
+  for (const line of lines.slice(runIndex + 1)) {
+    if (!line.startsWith('          ')) break;
+    commands.push(line.slice(10));
+  }
+  assert.notEqual(commands.length, 0, `empty run script in workflow job ${name}`);
+  return commands.join('\n');
+}
+
+function assertPlantedFailure(result, target, caller) {
+  assert.equal(result.error, undefined, `${caller} could not execute: ${result.error?.message}`);
+  assert.notEqual(result.status, 0, `${caller} admitted planted failure in ${target}`);
+  assert.match(
+    `${result.stdout}\n${result.stderr}`,
+    new RegExp(`GENERATED_CONTENT_SECURITY_RED_PROOF:${target}`),
+    `${caller} failed without executing the planted ${target} failure`,
+  );
 }
 
 test('generated content drift job is unconditional, credential-free, and exact', () => {
@@ -103,6 +130,49 @@ test('canonical generated content command executes parser security suites exactl
   );
   assert.match(GENERATED_CONTENT_COMMAND, /node marketplace\/scripts\/sync-catalog\.mjs --check/);
 });
+
+test(
+  'planted parser-suite failures make the local command and required workflow job red',
+  { skip: process.env[RED_PROOF_CHILD] === '1' },
+  () => {
+    const workflowCommand = workflowRunScript('generated-content-drift');
+
+    for (const target of ['discover-skills', 'md-to-html']) {
+      const env = {
+        ...process.env,
+        [RED_PROOF_CHILD]: '1',
+        [RED_PROOF_TARGET]: target,
+      };
+      // Node marks test-runner workers with this variable. Do not leak it into
+      // the nested CLI proof or `node --test` will treat the child as recursive
+      // and skip the very suites this test is proving.
+      delete env.NODE_TEST_CONTEXT;
+      const local = spawnSync(
+        'bash',
+        ['--noprofile', '--norc', '-e', '-o', 'pipefail', '-c', GENERATED_CONTENT_COMMAND],
+        {
+          cwd: ROOT,
+          encoding: 'utf8',
+          env,
+          timeout: 30_000,
+        },
+      );
+      assertPlantedFailure(local, target, 'validate:generated-content package script');
+
+      const workflow = spawnSync(
+        'bash',
+        ['--noprofile', '--norc', '-e', '-o', 'pipefail', '-c', workflowCommand],
+        {
+          cwd: ROOT,
+          encoding: 'utf8',
+          env,
+          timeout: 30_000,
+        },
+      );
+      assertPlantedFailure(workflow, target, 'generated-content-drift');
+    }
+  },
+);
 
 test('generated content drift is aggregated exactly once without a new context', () => {
   const aggregate = jobBlock('ci-required');

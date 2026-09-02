@@ -3,6 +3,12 @@ import test from 'node:test';
 
 import { inlineFormat, isSafeLinkTarget, mdToHtml } from './md-to-html.mjs';
 
+if (process.env.GENERATED_CONTENT_SECURITY_RED_PROOF_TARGET === 'md-to-html') {
+  test('planted red proof: md-to-html security suite failure reaches its callers', () => {
+    assert.fail('GENERATED_CONTENT_SECURITY_RED_PROOF:md-to-html');
+  });
+}
+
 test('keeps inline code opaque and escapes its contents', () => {
   for (const identifier of [
     'QUERY_ATTRIBUTION_HISTORY',

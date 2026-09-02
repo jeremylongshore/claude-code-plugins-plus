@@ -8,6 +8,12 @@ import {
   resolveSkillVersion,
 } from './discover-skills.mjs';
 
+if (process.env.GENERATED_CONTENT_SECURITY_RED_PROOF_TARGET === 'discover-skills') {
+  test('planted red proof: discover-skills security suite failure reaches its callers', () => {
+    assert.fail('GENERATED_CONTENT_SECURITY_RED_PROOF:discover-skills');
+  });
+}
+
 const SNOWFLAKE_MIGRATION_DESCRIPTION =
   'Plan and govern evidence-backed migrations to Snowflake from Redshift, ' +
   'BigQuery, on-premises databases, or another Snowflake account. Use when ' +
