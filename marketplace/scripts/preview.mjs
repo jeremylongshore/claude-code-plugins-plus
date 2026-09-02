@@ -1,9 +1,9 @@
 import { createServer } from 'node:http';
-import { readFile, stat } from 'node:fs/promises';
+import { readFile, realpath, stat } from 'node:fs/promises';
 import { extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { securityHeadersForPath } from './security-policy.mjs';
+import { normalizeRequestPath, securityHeadersForPath } from './security-policy.mjs';
 
 const DEFAULT_ROOT = fileURLToPath(new URL('../dist/', import.meta.url));
 const CONTENT_TYPES = Object.freeze({
@@ -28,25 +28,24 @@ const CONTENT_TYPES = Object.freeze({
 });
 
 function safePath(root, pathname) {
-  let decoded;
-  try {
-    decoded = decodeURIComponent(pathname);
-  } catch {
-    return null;
-  }
-  if (decoded.includes('\0') || decoded.includes('\\')) return null;
-
   const absoluteRoot = resolve(root);
-  const candidate = resolve(absoluteRoot, decoded.replace(/^\/+/, '') || '.');
+  const candidate = resolve(absoluteRoot, pathname.replace(/^\/+/, '') || '.');
   if (candidate !== absoluteRoot && !candidate.startsWith(`${absoluteRoot}${sep}`)) return null;
   return candidate;
 }
 
-async function isFile(path) {
+async function canonicalFileWithinRoot(root, path) {
   try {
-    return (await stat(path)).isFile();
+    const [canonicalRoot, canonicalPath] = await Promise.all([realpath(root), realpath(path)]);
+    if (
+      canonicalPath !== canonicalRoot &&
+      !canonicalPath.startsWith(`${canonicalRoot}${sep}`)
+    ) {
+      return null;
+    }
+    return (await stat(canonicalPath)).isFile() ? canonicalPath : undefined;
   } catch (error) {
-    if (error?.code === 'ENOENT' || error?.code === 'ENOTDIR') return false;
+    if (error?.code === 'ENOENT' || error?.code === 'ENOTDIR') return undefined;
     throw error;
   }
 }
@@ -60,7 +59,9 @@ export async function resolvePreviewAsset(root, pathname) {
   candidates.push(resolve(base, 'index.html'));
 
   for (const candidate of candidates) {
-    if (await isFile(candidate)) return candidate;
+    const canonicalFile = await canonicalFileWithinRoot(root, candidate);
+    if (canonicalFile === null) return null;
+    if (canonicalFile) return canonicalFile;
   }
   return undefined;
 }
@@ -79,10 +80,8 @@ export function createPreviewServer({ root = DEFAULT_ROOT } = {}) {
       return;
     }
 
-    let pathname;
-    try {
-      pathname = new URL(requestTarget, 'http://localhost').pathname;
-    } catch {
+    const pathname = normalizeRequestPath(requestTarget);
+    if (pathname === null) {
       response.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
       response.end('Bad Request\n');
       return;

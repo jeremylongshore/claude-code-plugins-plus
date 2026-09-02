@@ -144,9 +144,37 @@ export const MARKETPLACE_CHAT_SECURITY_HEADERS = Object.freeze({
   'Content-Security-Policy': serializeCsp(CHAT_CSP_DIRECTIVES),
 });
 
-export function securityHeadersForPath(pathname) {
-  const normalizedPath = new URL(pathname, 'https://tonsofskills.invalid').pathname;
-  return normalizedPath === '/chats' || normalizedPath.startsWith('/chats/')
+export function normalizeRequestPath(requestTarget) {
+  if (
+    typeof requestTarget !== 'string' ||
+    !requestTarget.startsWith('/') ||
+    requestTarget.startsWith('//')
+  ) {
+    return null;
+  }
+
+  const rawPath = requestTarget.split(/[?#]/u, 1)[0];
+  let normalizedPath;
+  try {
+    normalizedPath = decodeURIComponent(rawPath);
+  } catch {
+    return null;
+  }
+  if (
+    !normalizedPath.startsWith('/') ||
+    normalizedPath.startsWith('//') ||
+    normalizedPath.includes('\0') ||
+    normalizedPath.includes('\\')
+  ) {
+    return null;
+  }
+  return normalizedPath;
+}
+
+export function securityHeadersForPath(requestTarget) {
+  const normalizedPath = normalizeRequestPath(requestTarget);
+  return normalizedPath !== null &&
+    (normalizedPath === '/chats' || normalizedPath.startsWith('/chats/'))
     ? MARKETPLACE_CHAT_SECURITY_HEADERS
     : MARKETPLACE_SECURITY_HEADERS;
 }

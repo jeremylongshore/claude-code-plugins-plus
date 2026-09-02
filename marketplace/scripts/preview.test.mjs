@@ -1,11 +1,16 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises';
+import { connect } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 
 import { createPreviewServer, resolvePreviewAsset } from './preview.mjs';
-import { MARKETPLACE_CHAT_SECURITY_HEADERS, MARKETPLACE_SECURITY_HEADERS } from './security-policy.mjs';
+import {
+  MARKETPLACE_CHAT_SECURITY_HEADERS,
+  MARKETPLACE_SECURITY_HEADERS,
+  normalizeRequestPath,
+} from './security-policy.mjs';
 
 async function fixture(t) {
   const parent = await mkdtemp(join(tmpdir(), 'marketplace-preview-'));
@@ -30,7 +35,21 @@ async function fixture(t) {
   });
   const address = server.address();
   assert.ok(address && typeof address === 'object');
-  return { base: `http://127.0.0.1:${address.port}`, root };
+  return { base: `http://127.0.0.1:${address.port}`, port: address.port, root };
+}
+
+async function rawRequest(port, request) {
+  return await new Promise((accept, reject) => {
+    const socket = connect(port, '127.0.0.1');
+    let response = '';
+    socket.setEncoding('utf8');
+    socket.once('error', reject);
+    socket.on('data', (chunk) => {
+      response += chunk;
+    });
+    socket.on('end', () => accept(response));
+    socket.on('connect', () => socket.end(request));
+  });
 }
 
 test('serves built pages with exact route-aware security headers', async (t) => {
@@ -62,7 +81,10 @@ test('serves static assets and HEAD requests with correct metadata', async (t) =
 
 test('fails closed on traversal, malformed paths, and unsupported methods', async (t) => {
   const { base, root } = await fixture(t);
-  assert.equal(await resolvePreviewAsset(root, '/%2e%2e%2fsecret.txt'), null);
+  assert.equal(
+    await resolvePreviewAsset(root, normalizeRequestPath('/%2e%2e%2fsecret.txt')),
+    null,
+  );
 
   const traversal = await fetch(`${base}/%2e%2e%2fsecret.txt`);
   assert.equal(traversal.status, 400);
@@ -74,4 +96,45 @@ test('fails closed on traversal, malformed paths, and unsupported methods', asyn
   const post = await fetch(`${base}/`, { method: 'POST' });
   assert.equal(post.status, 405);
   assert.equal(post.headers.get('allow'), 'GET, HEAD');
+});
+
+test('rejects malformed and ambiguous request targets without crashing', async (t) => {
+  const { base, port } = await fixture(t);
+  const malformed = await rawRequest(
+    port,
+    'GET http://[ HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n',
+  );
+  assert.match(malformed, /^HTTP\/1\.1 400 Bad Request/m);
+
+  const ambiguous = await rawRequest(
+    port,
+    'GET //evil.invalid/chats HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n',
+  );
+  assert.match(ambiguous, /^HTTP\/1\.1 400 Bad Request/m);
+  assert.match(
+    ambiguous,
+    new RegExp(`content-security-policy: ${MARKETPLACE_SECURITY_HEADERS['Content-Security-Policy']}`, 'i'),
+  );
+
+  const after = await fetch(`${base}/`);
+  assert.equal(after.status, 200);
+});
+
+test('normalizes encoded chat paths to the same route policy used by Caddy', async (t) => {
+  const { base } = await fixture(t);
+  const response = await fetch(`${base}/%63hats/`);
+  assert.equal(response.status, 200);
+  assert.equal(
+    response.headers.get('content-security-policy'),
+    MARKETPLACE_CHAT_SECURITY_HEADERS['Content-Security-Policy'],
+  );
+});
+
+test('refuses symlinks that resolve outside the configured build root', async (t) => {
+  const { base, root } = await fixture(t);
+  await symlink('../secret.txt', join(root, 'exposed.txt'));
+
+  const response = await fetch(`${base}/exposed.txt`);
+  assert.equal(response.status, 400);
+  assert.notEqual(await response.text(), 'must not escape root');
 });

@@ -70,6 +70,10 @@ test('WebSocket schemes are scoped only to the chats route', () => {
   assert.equal(securityHeadersForPath('/chats'), MARKETPLACE_CHAT_SECURITY_HEADERS);
   assert.equal(securityHeadersForPath('/chats/'), MARKETPLACE_CHAT_SECURITY_HEADERS);
   assert.equal(securityHeadersForPath('/chats/session?id=1'), MARKETPLACE_CHAT_SECURITY_HEADERS);
+  assert.equal(securityHeadersForPath('/%63hats/'), MARKETPLACE_CHAT_SECURITY_HEADERS);
+  assert.equal(securityHeadersForPath('//evil.invalid/chats'), MARKETPLACE_SECURITY_HEADERS);
+  assert.equal(securityHeadersForPath('http://evil.invalid/chats'), MARKETPLACE_SECURITY_HEADERS);
+  assert.equal(securityHeadersForPath('/%E0%A4%A'), MARKETPLACE_SECURITY_HEADERS);
   assert.equal(securityHeadersForPath('/chats-other'), MARKETPLACE_SECURITY_HEADERS);
 });
 
