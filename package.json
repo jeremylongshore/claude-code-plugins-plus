@@ -23,7 +23,7 @@
     "validate:published-count-cohorts": "node --test scripts/check-published-count-cohorts.test.mjs && node scripts/check-published-count-cohorts.mjs",
     "validate:jrig-db-boundary": "node --test scripts/check-jrig-db-boundary.test.mjs && node scripts/check-jrig-db-boundary.mjs",
     "validate:changelog-coverage": "node --test scripts/check-changelog-coverage.test.mjs && node scripts/check-changelog-coverage.mjs",
-    "validate:stats-freshness": "node --test scripts/check-stats-freshness.test.mjs && node scripts/check-stats-freshness.mjs --report",
+    "validate:stats-freshness": "node --test scripts/check-stats-freshness.test.mjs scripts/fetch-npm-stats.test.mjs && node scripts/check-stats-freshness.mjs --report",
     "validate:sources-lock-parity": "node --test scripts/check-sources-lock-parity.test.mjs && node scripts/check-sources-lock-parity.mjs",
     "validate:mirror-licenses": "node scripts/check-mirror-licenses.mjs",
     "validate:privileged-action-pins": "node --test scripts/check-privileged-action-pins.test.mjs && node scripts/check-privileged-action-pins.mjs",
