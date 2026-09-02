@@ -6,6 +6,8 @@
  * Keeping the values here prevents those enforcement layers from drifting.
  */
 
+import { posix } from 'node:path';
+
 export const CSP_INLINE_JUSTIFICATIONS = Object.freeze({
   'script-src':
     'Astro emits page-scoped inline modules and JSON-LD, and legacy event attributes remain; removal is tracked by Bead claude-i076 with an exact-inventory gate.',
@@ -168,7 +170,7 @@ export function normalizeRequestPath(requestTarget) {
   ) {
     return null;
   }
-  return normalizedPath;
+  return posix.normalize(normalizedPath);
 }
 
 export function securityHeadersForPath(requestTarget) {

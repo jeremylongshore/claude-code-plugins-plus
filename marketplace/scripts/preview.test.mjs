@@ -48,8 +48,16 @@ async function rawRequest(port, request) {
       response += chunk;
     });
     socket.on('end', () => accept(response));
-    socket.on('connect', () => socket.end(request));
+    socket.on('connect', () => socket.write(request));
   });
+}
+
+function rawHeader(response, name) {
+  const prefix = `${name.toLowerCase()}:`;
+  const line = response
+    .split('\r\n')
+    .find((candidate) => candidate.toLowerCase().startsWith(prefix));
+  return line?.slice(prefix.length).trim();
 }
 
 test('serves built pages with exact route-aware security headers', async (t) => {
@@ -83,11 +91,11 @@ test('fails closed on traversal, malformed paths, and unsupported methods', asyn
   const { base, root } = await fixture(t);
   assert.equal(
     await resolvePreviewAsset(root, normalizeRequestPath('/%2e%2e%2fsecret.txt')),
-    null,
+    undefined,
   );
 
   const traversal = await fetch(`${base}/%2e%2e%2fsecret.txt`);
-  assert.equal(traversal.status, 400);
+  assert.equal(traversal.status, 404);
   assert.notEqual(await traversal.text(), 'must not escape root');
 
   const malformed = await fetch(`${base}/%E0%A4%A`);
@@ -111,9 +119,9 @@ test('rejects malformed and ambiguous request targets without crashing', async (
     'GET //evil.invalid/chats HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n',
   );
   assert.match(ambiguous, /^HTTP\/1\.1 400 Bad Request/m);
-  assert.match(
-    ambiguous,
-    new RegExp(`content-security-policy: ${MARKETPLACE_SECURITY_HEADERS['Content-Security-Policy']}`, 'i'),
+  assert.equal(
+    rawHeader(ambiguous, 'content-security-policy'),
+    MARKETPLACE_SECURITY_HEADERS['Content-Security-Policy'],
   );
 
   const after = await fetch(`${base}/`);
@@ -137,4 +145,20 @@ test('refuses symlinks that resolve outside the configured build root', async (t
   const response = await fetch(`${base}/exposed.txt`);
   assert.equal(response.status, 400);
   assert.notEqual(await response.text(), 'must not escape root');
+});
+
+test('collapses dot-segment chat aliases before policy and asset selection', async (t) => {
+  const { port } = await fixture(t);
+  for (const requestTarget of ['/chats/../', '/chats/%2e%2e/', '/chats/../index.html']) {
+    const response = await rawRequest(
+      port,
+      `GET ${requestTarget} HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n`,
+    );
+    assert.match(response, /^HTTP\/1\.1 200 OK/m);
+    assert.equal(
+      rawHeader(response, 'content-security-policy'),
+      MARKETPLACE_SECURITY_HEADERS['Content-Security-Policy'],
+    );
+    assert.match(response, /<h1>home<\/h1>/);
+  }
 });
