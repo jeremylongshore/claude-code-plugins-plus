@@ -498,6 +498,53 @@ class BuildForgeProofReceiptTests(unittest.TestCase):
         )
 
 
+class PreserveLegacyForgeProofReceiptTests(unittest.TestCase):
+    def test_later_empty_run_cannot_overwrite_immutable_legacy_receipt(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            reports = Path(tmp)
+            existing = {
+                "schema_version": "forge-proof-demotion/v2",
+                "status": "immutable-ledger-snapshot",
+                "source_run_id": 14,
+                "records": [{"plugin_name": "databricks-pack", "jrig_run_id": 2}],
+            }
+            path = reports / "legacy-forge-proofs-demotion.json"
+            original = json.dumps(existing, indent=2) + "\n"
+            path.write_text(original)
+            later = {
+                "run_id": 22,
+                "to_tag": "run-22",
+                "dolt_commit": "a" * 32,
+                "forge_proofs": {
+                    "records_sha256": hashlib.sha256(b"[]").hexdigest(),
+                    "records": [],
+                    "total_e2_e3": 0,
+                },
+            }
+
+            run_delta.preserve_legacy_forge_proof_receipt(reports, later)
+
+            self.assertEqual(path.read_text(), original)
+
+    def test_empty_first_run_does_not_fabricate_a_legacy_receipt(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            reports = Path(tmp)
+            report = {
+                "run_id": 1,
+                "to_tag": "run-1",
+                "dolt_commit": "a" * 32,
+                "forge_proofs": {
+                    "records_sha256": hashlib.sha256(b"[]").hexdigest(),
+                    "records": [],
+                    "total_e2_e3": 0,
+                },
+            }
+
+            path = run_delta.preserve_legacy_forge_proof_receipt(reports, report)
+
+            self.assertFalse(path.exists())
+
+
 class EmitBindingTests(unittest.TestCase):
     def test_emit_rejects_commit_not_bound_to_tag_before_writing(self):
         with tempfile.TemporaryDirectory() as tmp:
