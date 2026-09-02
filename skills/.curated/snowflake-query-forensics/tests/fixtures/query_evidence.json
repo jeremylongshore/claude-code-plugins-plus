@@ -1,17 +1,20 @@
 {
+  "schema_version": "2.0",
   "metadata": {
-    "query_id": "01abc-example",
+    "query_id": "01abcdef-0123-4567-89ab-cdef01234567",
     "account": "ORG-ACCOUNT",
     "role": "QUERY_AUDITOR",
     "experiment_owner": "warehouse-performance-oncall",
     "history_source": "SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY",
-    "history_source_max_time": "2026-08-30T10:30:00Z",
+    "history_source_max_time": "2026-08-30T10:22:33Z",
+    "source_max_age_seconds": 2700,
     "collected_at": "2026-08-30T11:00:00Z"
   },
   "query_history": {
-    "query_id": "01abc-example",
+    "query_id": "01abcdef-0123-4567-89ab-cdef01234567",
     "execution_status": "success",
     "warehouse_name": "ETL_WH",
+    "role_name": "QUERY_AUDITOR",
     "start_time": "2026-08-30T10:20:00Z",
     "end_time": "2026-08-30T10:22:33Z",
     "query_hash": "hash-1",
@@ -31,6 +34,7 @@
   },
   "operators": [
     {
+      "query_id": "01abcdef-0123-4567-89ab-cdef01234567",
       "operator_id": 3,
       "operator_type": "Join",
       "operator_statistics": {
@@ -53,6 +57,7 @@
       }
     },
     {
+      "query_id": "01abcdef-0123-4567-89ab-cdef01234567",
       "operator_id": 4,
       "operator_type": "TableScan",
       "operator_statistics": {
@@ -73,6 +78,7 @@
   ],
   "query_insights": [
     {
+      "query_id": "01abcdef-0123-4567-89ab-cdef01234567",
       "type_id": "QUERY_INSIGHT_REMOTE_SPILLAGE",
       "message": "Remote spillage detected"
     }

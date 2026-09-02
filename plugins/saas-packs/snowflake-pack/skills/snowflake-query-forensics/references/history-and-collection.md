@@ -7,7 +7,9 @@ Primary sources:
 
 - [QUERY_HISTORY Account Usage view](https://docs.snowflake.com/en/sql-reference/account-usage/query_history)
 - [GET_QUERY_OPERATOR_STATS](https://docs.snowflake.com/en/sql-reference/functions/get_query_operator_stats)
+- [QUERY_INSIGHTS Account Usage view](https://docs.snowflake.com/en/sql-reference/account-usage/query_insights)
 - [Using Query Insights](https://docs.snowflake.com/en/user-guide/query-insights)
+- [SYSTEM$CANCEL_QUERY query-ID format](https://docs.snowflake.com/en/sql-reference/functions/system_cancel_query)
 
 ## Surface selection
 
@@ -126,6 +128,52 @@ A before/after comparison is defensible only after documenting:
 If these cannot be aligned, call the comparison directional or inconclusive rather than
 causal.
 
+Comparison runs are not anchor evidence. They may use different Snowflake UUID query IDs
+when they share the reviewed fingerprint and every comparison-alignment field. Keep
+those rows in `query_runs`; never place a comparison run's ID on an anchor history,
+operator-statistics, or Query Insights row.
+
+## Freshness and query binding
+
+Treat the query ID as the join key across every anchor diagnostic surface. Snowflake's
+primary documentation describes query IDs as UUID text strings. The normalized history
+row, each operator-statistics row, and each Query Insights row must repeat the same UUID
+as `metadata.query_id`. Reject a malformed or mismatched ID. Exclude an
+operator or insight row that lacks the ID rather than attributing it to the anchor by
+position or file name. For a running or otherwise nonterminal query, mark evidence
+binding incomplete and block all confirmed/completeness claims whether the optional arrays
+are populated or empty. A terminal full-evidence packet requires at least one bound
+operator row. An empty or missing operator array is a partial packet, never vacuous proof
+that evidence binding is complete. Query Insights rows remain optional and their absence
+is reported as unknown coverage rather than positive evidence.
+
+Set `metadata.source_max_age_seconds` to a positive incident-specific bound. Snowflake
+documents up to 45 minutes of latency for the Account Usage `QUERY_HISTORY` view and up
+to 90 minutes for `QUERY_INSIGHTS`; those are platform ceilings, not automatic incident
+objectives. `GET_QUERY_OPERATOR_STATS` is limited to completed queries from the past 14
+days and requires `OPERATE` or `MONITOR` on the warehouse. Pass the bound to the query
+collector. Receipt schema `2` records the maximum timestamp across all receipted
+history rows as informational `dataset_max_time`. Normalized input schema `2.0` must
+set `metadata.history_source_max_time` from the latest timestamp on the receipt row
+whose UUID equals the anchor query ID. The analyzer repeats both derivations; unrelated
+fresh rows cannot freshen an old anchor. A mismatch makes freshness `UNVERIFIED` and
+blocks completeness rather than accepting caller-edited metadata.
+
+The receipt checksum checks its own contents but does not authenticate the collector.
+Record the final normalized bundle digest at a trusted local boundary, preserve it on
+an independent channel, and supply it with `--trusted-input-sha256`. Without that
+external boundary, confirmed and completeness claims remain blocked. A digest is not a
+signature or proof of collector identity, and computing it from the same untrusted
+copy creates no trust.
+
+`metadata.history_source` must exactly match the query-history source named by the
+receipt. The anchor receipt row must contain `role_name`, and it must exactly match
+`metadata.role`. Apply terminal statuses only to their source: Account Usage supports
+`success`, `fail`, and `incident`; Information Schema supports `success`,
+`failed_with_error`, and `failed_with_incident`. The bundled live collector currently
+receipts Account Usage. Information Schema discovery remains partial unless a separately
+reviewed receipt proves that surface.
+
 ## Redaction
 
 Default evidence excludes query text. Preserve query ID and hashes. Before sharing:
@@ -135,6 +183,30 @@ Default evidence excludes query text. Preserve query ID and hashes. Before shari
 - retain object names only when the report audience is authorized;
 - never capture credentials, client configuration, or environment variables;
 - store any query-text mapping separately under the operator's access controls.
+
+The deterministic analyzer also applies a final recursive output redaction pass to every
+string in JSON and Markdown. Identifier fields such as operator ID/type and experiment
+owner use bounded grammars and reject credential-bearing or raw-SQL-like values before
+rendering. Explicit Authorization headers consume their complete folded values for any
+valid scheme. Headerless values redact only when a standardized scheme has credential
+evidence from token shape/position or a recognized sensitive parameter; parameter names
+use the full token grammar, and the registered SCRAM-SHA-1/SHA-256 family shares one
+boundary. Known ambiguous capability/status phrases such as `Bearer
+support` and `DPoP enabled` remain prose, so this boundary deliberately does not promise
+complete detection of arbitrary alphabetic headerless token68. This also preserves
+OAuth-flow and non-secret Signature-algorithm prose. Password/token tails
+are removed as one unit. Raw SQL is detected after optional labels and empty leading
+statements are removed, then quote-aware comments are stripped and lexical statement-family
+classification covers comments between keywords, chained diagnostic labels,
+positional/named binds, quoted file URIs, arbitrary integration subtypes, modifiers such
+as `OR ALTER`, and the shared statement-verb family inside Snowflake scripting blocks.
+Expression and sentence continuations distinguish parenthesized SQL from
+ordinary Select/Values prose. Sensitive keys are normalized across snake,
+kebab, camel, and case
+variants. Credential-adjacent presence flags (`hasPassword`, `has_pat`,
+`hasRsaPublicKey`, and `has-workload-identity`) bypass redaction only for actual boolean
+values. Free-text evidence is preserved when safe and replaced with explicit redaction
+markers otherwise.
 
 ## Missing evidence
 

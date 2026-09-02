@@ -3,6 +3,7 @@
 Primary source:
 
 - [Using query insights to improve performance](https://docs.snowflake.com/en/user-guide/query-insights)
+- [QUERY_INSIGHTS Account Usage view](https://docs.snowflake.com/en/sql-reference/account-usage/query_insights)
 
 Query Insights is a platform signal, not a complete health verdict. Each returned
 insight describes a detected condition and can include a general next step.
@@ -63,6 +64,7 @@ The report must say which interpretation is supported.
 For every supplied insight record:
 
 ```text
+anchor query ID
 type ID
 sanitized message
 query/operator association if returned

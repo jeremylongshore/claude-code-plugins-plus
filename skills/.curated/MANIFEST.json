@@ -31833,6 +31833,7 @@
         "scripts/analyze_query_evidence.py",
         "scripts/collect_snowflake_evidence.py",
         "scripts/sql/query.sql",
+        "tests/fixtures/collector_query_output.json",
         "tests/fixtures/query_evidence.json",
         "tests/fixtures/query_evidence_incomplete.json",
         "tests/test_analyze_query_evidence.py"

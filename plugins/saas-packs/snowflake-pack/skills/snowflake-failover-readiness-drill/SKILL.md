@@ -12,7 +12,7 @@ description: |
   or "client redirect validation".
 allowed-tools: Read, Bash(python3:*)
 argument-hint: "[redacted-evidence.json]"
-version: 2.1.0
+version: 3.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection

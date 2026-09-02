@@ -1,0 +1,33 @@
+[
+  {
+    "EVIDENCE": {
+      "_dataset": "query_history",
+      "query_id": "01abcdef-0123-4567-89ab-cdef01234567",
+      "query_hash": "hash-1",
+      "query_parameterized_hash": "phash-1",
+      "warehouse_name": "ETL_WH",
+      "warehouse_size": "SMALL",
+      "user_name_sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "role_name": "QUERY_AUDITOR",
+      "query_tag_sha256": null,
+      "query_tag_present": false,
+      "execution_status": "success",
+      "start_time": "2026-08-30T10:20:00Z",
+      "end_time": "2026-08-30T10:22:33Z",
+      "total_elapsed_time_ms": 153000,
+      "compilation_time_ms": 500,
+      "execution_time_ms": 120000,
+      "queued_overload_time_ms": 30000,
+      "queued_provisioning_time_ms": 0,
+      "queued_repair_time_ms": 0,
+      "transaction_blocked_time_ms": 2500,
+      "bytes_scanned": 1048576,
+      "bytes_spilled_to_local_storage": 2048,
+      "bytes_spilled_to_remote_storage": 8192,
+      "bytes_written": 0,
+      "rows_produced": 100,
+      "partitions_scanned": 100,
+      "partitions_total": 1000
+    }
+  }
+]

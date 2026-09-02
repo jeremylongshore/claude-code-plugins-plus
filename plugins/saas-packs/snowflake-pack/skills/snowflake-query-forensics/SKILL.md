@@ -12,7 +12,7 @@ allowed-tools: Read, Write, Bash(python3:*)
 argument-hint: "[query-id-or-evidence-json]"
 model: inherit
 effort: high
-version: 2.1.0
+version: 3.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -48,6 +48,8 @@ compute.
   warehouse when operator statistics are required.
 - A completed query within the documented operator-stat retrieval window for operator
   analysis.
+- One Snowflake UUID query ID repeated on the anchor history, operator-statistics, and
+  Query Insights rows, plus a positive source-freshness bound in seconds.
 - A writable local working directory. Use `Write` only for new local evidence and
   report artifacts; never use it to alter SQL or Snowflake state.
 
@@ -65,13 +67,33 @@ compute.
   `MONITOR` on the warehouse. Report missing access; do not grant it.
 - **Operator evidence exists only for completed queries and only within the platform's
   documented retrieval window.** Do not invent operator findings for running, too-old,
-  or inaccessible queries.
+  or inaccessible queries. Every nonterminal query is a partial packet even when no
+  operator or insight rows were supplied. A terminal full-evidence packet requires at
+  least one bound operator row; otherwise binding is incomplete, completeness is blocked,
+  and confirmed/derived/hypothesis sections stay empty.
 - **History surfaces have different windows and latency.** Account Usage query history
   can lag; Information Schema history is more immediate but narrower. Record which
-  surface produced every field.
+  surface produced every field. The normalized `metadata.history_source` and `role` must
+  exactly match the receipted anchor row and source; a digest cannot repair a semantic
+  mismatch.
+- **Do not mix anchor evidence across query IDs.** Snowflake documents query IDs as UUID
+  text strings; require that form and reject a history, operator, or insight row that
+  names another query. Exclude an operator or insight row with no query ID and block
+  completeness until the evidence is recollected with its anchor. Aligned comparison
+  runs legitimately use other Snowflake UUID query IDs; keep them in `query_runs`, never
+  attribute them to the anchor, and require the explicit comparison-alignment fields.
 - **Query text is sensitive.** Do not export it by default. Use query ID, hashes,
   sanitized operator attributes, and an operator-approved redacted SQL fragment only
-  when needed.
+  when needed. The analyzer rejects unsafe identifier fields and recursively redacts
+  credential-bearing or raw-SQL-like scalar text before either JSON or Markdown output,
+  using a syntax-aware boundary: any explicit Authorization/Proxy-Authorization value,
+  plus headerless standardized schemes (including the registered SCRAM-SHA-1/SHA-256 family) only when the token shape or a recognized sensitive
+  parameter supplies credential evidence (ordinary capability/status words stay visible), password/token
+  tails, and tokenized Snowflake statement families (including chained diagnostic/statement labels,
+  empty prefixes, positional or named binds, quoted file URIs, object modifiers, and DML
+  scripting across the full recognized statement-verb family). Ordinary authentication/OAuth status
+  evidence, request counters, and prose beginning with “Select” must remain visible.
+  Credential-adjacent `has_*` metadata is safe only when its value is an actual boolean.
 - **No universal thresholds.** Record exact queue time, spill bytes, partitions, row
   counts, and operator-time percentages. Compare against the same workload's baseline
   or a user-supplied objective; do not invent “slow,” “high,” or “bad” cutoffs.
@@ -88,26 +110,20 @@ approved Snowflake CLI profile:
 ```bash
 python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
   --surface query --connection <approved-readonly-profile> \
-  --output ./snowflake-query-collector.json
+  --source-max-age-seconds <positive-incident-bound> \
+  --output snowflake-query-collector.json
 ```
 
-Map `datasets.query_history` and `datasets.warehouse_load` into the normalized
-evidence file and retain the collector receipt. Collect `GET_QUERY_OPERATOR_STATS`
-only for the anchored completed query through the operator's approved session; add
-redacted Query Insights rows and their availability/exclusion reason as separate
-datasets. The collector never guesses a query ID, requests `OPERATE`/`MONITOR`, or
-executes a function with side effects.
-If `truncation_possible` is true, narrow or partition the collection window before
-making a regression, workload, or absence claim.
-The history row must carry the same `query_id` as metadata. Warehouse-load rows are
-usable only when their warehouse and interval overlap the target query. Hash
-comparisons require an explicit aligned comparison receipt covering data scope,
-parameters, cache state, and session parameters.
-The analyzer treats a missing collector receipt as unverified and blocks completeness
-and regression claims. When supplied, it verifies the receipt's surface, source views,
-reviewed SQL hash, receipt hash, dataset rows, status, and cap. An error, mismatch,
-missing integrity field, or possible truncation is surfaced in the packet and blocks
-completeness/regression claims.
+Use normalized input schema `2.0` and collector receipt schema `2`. Before analysis,
+apply the complete contract in
+[History and collection](references/history-and-collection.md), including exact anchor
+UUID, source, role, source-specific terminal status, anchor-only maximum time, reviewed
+SQL cap, and an independently preserved input digest. Treat an embedded checksum as
+consistency evidence, never authenticity. A missing or mismatched receipt field, stale
+anchor, cap hit, truncation, or absent external digest blocks confirmed, completeness,
+comparison, regression, and ROI claims. Keep aligned comparison runs in `query_runs`;
+do not attribute them to the anchor. Narrow or partition any truncated collection before
+making workload or absence claims.
 
 ## Instructions
 
@@ -117,9 +133,10 @@ Follow this sequence:
 2. Select the history surface and record its freshness boundary.
 3. Have the operator collect the minimal redacted history, operator, and insight
    fields through the approved read-only session.
-4. Run the deterministic analyzer.
-5. Corroborate every causal hypothesis against a competing explanation.
-6. Deliver the read-only root-cause packet and stop before mutation.
+4. Assemble the normalized bundle and record its digest at the trusted local boundary.
+5. Run the deterministic analyzer with the separately preserved digest.
+6. Corroborate every causal hypothesis against a competing explanation.
+7. Deliver the read-only root-cause packet and stop before mutation.
 
 ### 1. Anchor the investigation
 
@@ -143,6 +160,12 @@ are slow,” first identify a bounded candidate set; do not scan unbounded histo
   insight does not prove absence of a problem.
 - Use `GET_QUERY_OPERATOR_STATS(QUERY_ID)` only after confirming the query completed,
   is within the supported retrieval window, and the role has warehouse visibility.
+
+Use only the source-specific terminal statuses listed in
+[History and collection](references/history-and-collection.md). Unknown, running,
+queued, blocked, and warehouse-resume states remain nonterminal and fail closed. The
+bundled collector receipts Account Usage; Information Schema discovery remains partial
+without its own reviewed matching receipt.
 
 The detailed choice table and bounded SQL are in
 [references/history-and-collection.md](references/history-and-collection.md).
@@ -224,11 +247,13 @@ Use [references/output-contract.md](references/output-contract.md). Required con
 ## Validation
 
 Before delivery, verify that the packet names the query ID and evidence surfaces, gives
-actual source timestamps, contains no raw query text or credentials, and keeps all three
-confidence classes separate. Re-run the analyzer on the saved normalized JSON; the
-machine-readable result must be identical for identical input. If a proposed experiment
-appears, confirm it changes one variable, uses a user-supplied success objective, names
-an approver, and has not been executed.
+actual source timestamps, reports `evidence_binding: BOUND` and `source_freshness:
+FRESH` before making a completeness claim, contains no raw query text or credentials,
+includes at least one operator row bound to a surface-compatible terminal query, and
+keeps all three confidence classes separate. Re-run the analyzer on the saved
+normalized JSON; the machine-readable result must be identical for identical input. If
+a proposed experiment appears, confirm it changes one variable, uses a user-supplied
+success objective, names an approver, and has not been executed.
 
 ## Output
 

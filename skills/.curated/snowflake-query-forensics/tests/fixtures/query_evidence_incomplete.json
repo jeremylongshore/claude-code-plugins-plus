@@ -1,17 +1,20 @@
 {
+  "schema_version": "2.0",
   "metadata": {
-    "query_id": "01running-example",
+    "query_id": "01fedcba-9876-4321-89ab-cdef01234567",
     "account": "ORG-ACCOUNT",
     "role": "QUERY_AUDITOR",
     "experiment_owner": "warehouse-performance-oncall",
     "history_source": "INFORMATION_SCHEMA.QUERY_HISTORY",
     "history_source_max_time": "2026-08-30T10:59:00Z",
+    "source_max_age_seconds": 300,
     "collected_at": "2026-08-30T11:00:00Z"
   },
   "query_history": {
-    "query_id": "01running-example",
+    "query_id": "01fedcba-9876-4321-89ab-cdef01234567",
     "execution_status": "running",
     "warehouse_name": "ETL_WH",
+    "role_name": "QUERY_AUDITOR",
     "queued_overload_time_ms": 0
   },
   "operators": [],
