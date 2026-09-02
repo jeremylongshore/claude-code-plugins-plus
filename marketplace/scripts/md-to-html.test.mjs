@@ -1,7 +1,21 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 
 import { inlineFormat, isSafeLinkTarget, mdToHtml } from './md-to-html.mjs';
+
+// Test-only sentinel consumed by scripts/generated-content-ci.test.mjs.
+if (process.env.GENERATED_CONTENT_SECURITY_RED_PROOF_TARGET === 'md-to-html') {
+  test('planted red proof: md-to-html security suite failure reaches its callers', () => {
+    assert.fail('GENERATED_CONTENT_SECURITY_RED_PROOF:md-to-html');
+  });
+}
+
+const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
 test('keeps inline code opaque and escapes its contents', () => {
   for (const identifier of [
@@ -69,6 +83,98 @@ test('escapes raw Markdown HTML instead of passing executable elements to set:ht
   assert.equal(rendered.includes('<svg'), false);
   assert.match(rendered, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
   assert.match(rendered, /&lt;img src=x onerror=&quot;alert\(1\)&quot;&gt;/);
+});
+
+test('accounts for the authoritative README presentation cohort without editing mirrors', async () => {
+  const registryPath = join(ROOT_DIR, 'marketplace', 'ops', 'readme-presentation-routes.json');
+  const registry = JSON.parse(await readFile(registryPath, 'utf8'));
+  const sourcesLock = JSON.parse(await readFile(join(ROOT_DIR, 'sources.lock.json'), 'utf8'));
+
+  assert.equal(registry.schema_version, 'readme-presentation-routes/v1');
+  assert.equal(registry.audit.intentional_raw_html_tag_tokens, 178);
+  assert.match(registry.audit.source_commit, /^[0-9a-f]{40}$/u);
+  assert.doesNotThrow(() =>
+    execFileSync('git', ['cat-file', '-e', `${registry.audit.source_commit}^{commit}`], {
+      cwd: ROOT_DIR,
+      stdio: 'ignore',
+    }),
+  );
+  assert.equal(registry.entries.length, 8);
+  assert.deepEqual(registry.entries.map(({ plugin }) => plugin).sort(), [
+    'claudebase',
+    'databricks-workspace-mcp',
+    'hermes-tweet',
+    'kobiton-automate',
+    'portaljs',
+    'servicegraph',
+    'slack-channel',
+    'tonone',
+  ]);
+
+  const firstParty = registry.entries.filter(({ ownership }) => ownership === 'first-party');
+  assert.deepEqual(
+    firstParty.map(({ plugin }) => plugin),
+    ['databricks-workspace-mcp'],
+  );
+
+  for (const entry of registry.entries) {
+    const readmeBytes = await readFile(join(ROOT_DIR, entry.readme));
+    const readme = readmeBytes.toString('utf8');
+    assert.ok(readme.length > 0, entry.readme);
+    const sourceBytes = execFileSync(
+      'git',
+      ['show', `${registry.audit.source_commit}:${entry.readme}`],
+      { cwd: ROOT_DIR },
+    );
+    const sourceHash = createHash('sha256').update(sourceBytes).digest('hex');
+    const currentHash = createHash('sha256').update(readmeBytes).digest('hex');
+    assert.equal(entry.source_sha256, sourceHash, `${entry.plugin} source audit hash`);
+    assert.equal(entry.current_sha256, currentHash, `${entry.plugin} current hash`);
+
+    const route = new URL(entry.route);
+    assert.equal(route.protocol, 'https:', entry.plugin);
+    assert.equal(route.hostname, 'github.com', entry.plugin);
+
+    if (entry.ownership === 'first-party') {
+      assert.equal(entry.disposition, 'resolved-safe-markdown');
+      assert.equal(entry.sources_lock_key, undefined);
+      assert.notEqual(entry.source_sha256, entry.current_sha256);
+      assert.doesNotMatch(readme, /<\/?[A-Za-z][^>]*>/u);
+      continue;
+    }
+
+    assert.equal(entry.ownership, 'upstream-mirror');
+    const provenance = JSON.parse(await readFile(join(ROOT_DIR, entry.provenance), 'utf8'));
+    assert.equal(provenance.synced_from.repo, entry.upstream, entry.plugin);
+    if (Array.isArray(provenance.files)) assert.ok(provenance.files.includes('README.md'));
+    const lockEntry = sourcesLock.sources[entry.sources_lock_key];
+    assert.ok(lockEntry, `${entry.plugin} must resolve through sources.lock.json`);
+    assert.equal(lockEntry.repo, entry.upstream, entry.plugin);
+    assert.equal(lockEntry.files['README.md'], `sha256:${entry.current_sha256}`, entry.plugin);
+    assert.equal(entry.source_sha256, entry.current_sha256, `${entry.plugin} mirror changed`);
+    assert.match(
+      route.pathname,
+      new RegExp(`^/${entry.upstream.replace('/', '\\/')}/issues/new$`, 'u'),
+    );
+  }
+});
+
+test('retains the first-party README meaning through safe Markdown only', async () => {
+  const readme = await readFile(
+    join(ROOT_DIR, 'plugins', 'mcp', 'databricks-workspace-mcp', 'README.md'),
+    'utf8',
+  );
+  const intro = readme.slice(0, readme.indexOf('\n---\n'));
+  const rendered = mdToHtml(intro);
+
+  assert.match(rendered, /<h1>databricks-workspace-mcp<\/h1>/u);
+  assert.match(rendered, /Databricks <strong>control plane<\/strong>/u);
+  assert.match(rendered, /<code>system\.\*<\/code>/u);
+  assert.match(rendered, /<li><strong>License:<\/strong> MIT<\/li>/u);
+  assert.match(rendered, /<li><strong>Transport:<\/strong> MCP over stdio and HTTP<\/li>/u);
+  assert.match(rendered, /<li><strong>Access:<\/strong> Read-only<\/li>/u);
+  assert.doesNotMatch(rendered, /&lt;(?:h1|p|img|strong|br|code)\b/iu);
+  assert.doesNotMatch(rendered, /(?:javascript|data|vbscript):/iu);
 });
 
 test('rejects executable, obfuscated, and attribute-injection link targets', () => {

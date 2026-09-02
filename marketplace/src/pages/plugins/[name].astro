@@ -8,6 +8,7 @@ import DetailCta from '../../components/DetailCta.astro';
 import PluginCard from '../../components/PluginCard.astro';
 import skillsCatalog from '../../data/skills-catalog.json';
 import readmeSections from '../../data/readme-sections.json';
+import { truncateHtml } from '../../../scripts/truncate-html.mjs';
 
 export async function getStaticPaths() {
   const catalogPath = join(process.cwd(), '../.claude-plugin/marketplace.extended.json');
@@ -206,9 +207,7 @@ statsItems.push({
                 </div>
                 <div class="gist-content" style="display: none;">
                   <div class="gist-content-inner" set:html={
-                    skill.content
-                      ? skill.content.slice(0, 3000)
-                      : ''
+                    skill.content ? truncateHtml(skill.content, 3000) : ''
                   } />
                 </div>
               </div>

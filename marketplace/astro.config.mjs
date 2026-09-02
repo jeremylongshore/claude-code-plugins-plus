@@ -2,6 +2,24 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
+import { securityHeadersForPath } from './scripts/security-policy.mjs';
+
+function marketplaceSecurityHeaders() {
+  const installMiddleware = (server) => {
+    server.middlewares.use((request, response, next) => {
+      for (const [name, value] of Object.entries(securityHeadersForPath(request.url ?? '/'))) {
+        response.setHeader(name, value);
+      }
+      next();
+    });
+  };
+
+  return {
+    name: 'marketplace-security-headers',
+    configureServer: installMiddleware,
+  };
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://tonsofskills.com',
@@ -36,19 +54,22 @@ export default defineConfig({
   },
   build: {
     assets: '_astro',
-    inlineStylesheets: 'auto'
+    inlineStylesheets: 'auto',
   },
   output: 'static',
-  compressHTML: false,  // Disabled: iOS Safari fails with lines > 5000 chars
+  compressHTML: false, // Disabled: iOS Safari fails with lines > 5000 chars
   vite: {
-    plugins: [tailwindcss()],
+    // Route-aware middleware keeps the development server strict while
+    // allowing user-supplied WebSocket endpoints only on /chats. The static
+    // preview server and production Caddy use the same policy module.
+    plugins: [tailwindcss(), marketplaceSecurityHeaders()],
     build: {
       cssCodeSplit: true,
       rollupOptions: {
         output: {
-          assetFileNames: '_astro/[name].[hash][extname]'
-        }
-      }
-    }
-  }
+          assetFileNames: '_astro/[name].[hash][extname]',
+        },
+      },
+    },
+  },
 });

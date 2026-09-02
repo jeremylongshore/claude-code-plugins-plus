@@ -8,6 +8,13 @@ import {
   resolveSkillVersion,
 } from './discover-skills.mjs';
 
+// Test-only sentinel consumed by scripts/generated-content-ci.test.mjs.
+if (process.env.GENERATED_CONTENT_SECURITY_RED_PROOF_TARGET === 'discover-skills') {
+  test('planted red proof: discover-skills security suite failure reaches its callers', () => {
+    assert.fail('GENERATED_CONTENT_SECURITY_RED_PROOF:discover-skills');
+  });
+}
+
 const SNOWFLAKE_MIGRATION_DESCRIPTION =
   'Plan and govern evidence-backed migrations to Snowflake from Redshift, ' +
   'BigQuery, on-premises databases, or another Snowflake account. Use when ' +
@@ -74,7 +81,10 @@ test('normalizes complete description metadata to one searchable line', () => {
     normalizeDescription('First line.\n  Second line with\tspacing.\n'),
     'First line. Second line with spacing.',
   );
-  assert.equal(normalizeDescription(SNOWFLAKE_MIGRATION_DESCRIPTION), SNOWFLAKE_MIGRATION_DESCRIPTION);
+  assert.equal(
+    normalizeDescription(SNOWFLAKE_MIGRATION_DESCRIPTION),
+    SNOWFLAKE_MIGRATION_DESCRIPTION,
+  );
   assert.throws(() => normalizeDescription(['not', 'a', 'string']), /must be a string/);
 });
 
@@ -87,7 +97,10 @@ test('resolves top-level and AgentSkills metadata versions without silent fallba
     /conflicts/,
   );
   assert.throws(() => resolveSkillVersion({ metadata: 'invalid' }), /must be a mapping/);
-  assert.throws(() => resolveSkillVersion({ metadata: { version: ['0.6.0'] } }), /must be a string/);
+  assert.throws(
+    () => resolveSkillVersion({ metadata: { version: ['0.6.0'] } }),
+    /must be a string/,
+  );
 });
 
 test('normalizes every supported tool-list YAML shape without syntax artifacts', () => {
@@ -102,7 +115,10 @@ test('normalizes every supported tool-list YAML shape without syntax artifacts',
     const metadata = parseFrontmatter(`---\nname: tools\n${source}\n---\n`);
     const tools = normalizeListField(metadata['allowed-tools'], 'allowed-tools');
     assert.deepEqual(tools, ['Read', 'Write', 'Bash(git:*)']);
-    assert.equal(tools.some((tool) => !tool || /^[\[\]'\"]|[\[\]'\"]$/.test(tool)), false);
+    assert.equal(
+      tools.some((tool) => !tool || /^[\[\]'\"]|[\[\]'\"]$/.test(tool)),
+      false,
+    );
   }
 
   assert.throws(

@@ -41,6 +41,8 @@ on:
       - 'marketplace/src/layouts/**'
       - 'marketplace/src/styles/**'
       - 'marketplace/src/scripts/**'
+      - 'marketplace/scripts/preview.mjs'
+      - 'marketplace/package.json'
       - 'marketplace/public/**'
       # Regenerated catalog data (JSON) is not a UI change — excluding it stops
       # every plugin PR (which touches this dir via sync-marketplace) from
@@ -58,6 +60,8 @@ on:
       - 'marketplace/src/layouts/**'
       - 'marketplace/src/styles/**'
       - 'marketplace/src/scripts/**'
+      - 'marketplace/scripts/preview.mjs'
+      - 'marketplace/package.json'
       - 'marketplace/public/**'
       # Regenerated catalog data (JSON) is not a UI change — excluding it stops
       # every plugin PR (which touches this dir via sync-marketplace) from

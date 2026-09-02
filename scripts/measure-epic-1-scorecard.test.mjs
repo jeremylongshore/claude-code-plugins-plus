@@ -176,7 +176,7 @@ function fixture() {
           printf '%s  %s\\n' "$dolt_sha256" "$dolt_archive" | sha256sum --check --strict
           tar -xzf "$dolt_archive" -C "$dolt_extract"
           sudo install -m 0755 "$dolt_extract/dolt-linux-amd64/bin/dolt" /usr/local/bin/dolt
-          installed_dolt_version="$(dolt version | awk '{print $3}')"
+          installed_dolt_version="$(dolt version | awk 'NR == 1 { print $3 }')"
           readonly installed_dolt_version
           test "$installed_dolt_version" = "$dolt_version"`,
   );
