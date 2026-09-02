@@ -46,7 +46,14 @@ export async function buildPreviewAssetIndex(root) {
           await walk(absolutePath);
           return;
         }
-        if (entry.isFile()) files.set(relativePath, absolutePath);
+        if (entry.isFile()) {
+          const body = await readFile(absolutePath);
+          files.set(relativePath, {
+            body,
+            contentType:
+              CONTENT_TYPES[extname(relativePath).toLowerCase()] ?? 'application/octet-stream',
+          });
+        }
       }),
     );
   }
@@ -63,8 +70,8 @@ export function resolvePreviewAsset(index, pathname) {
 
   for (const candidate of candidates) {
     if (index.symlinks.has(candidate)) return null;
-    const asset = index.files.get(candidate);
-    if (asset) return asset;
+    const snapshot = index.files.get(candidate);
+    if (snapshot) return snapshot;
   }
   return undefined;
 }
@@ -109,12 +116,11 @@ export function createPreviewServer({ root = DEFAULT_ROOT } = {}) {
         return;
       }
 
-      const body = await readFile(asset);
       response.writeHead(200, {
-        'Content-Length': String(body.byteLength),
-        'Content-Type': CONTENT_TYPES[extname(asset).toLowerCase()] ?? 'application/octet-stream',
+        'Content-Length': String(asset.body.byteLength),
+        'Content-Type': asset.contentType,
       });
-      response.end(request.method === 'HEAD' ? undefined : body);
+      response.end(request.method === 'HEAD' ? undefined : asset.body);
     } catch (error) {
       console.error(error);
       response.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });

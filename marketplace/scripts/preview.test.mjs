@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, symlink, unlink, writeFile } from 'node:fs/promises';
 import { connect } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -24,6 +24,7 @@ async function fixture(t) {
   await writeFile(join(root, 'index.html'), '<h1>home</h1>');
   await writeFile(join(root, 'chats', 'index.html'), '<h1>chat</h1>');
   await writeFile(join(root, '_astro', 'app.js'), 'export const ok = true;');
+  await writeFile(join(root, 'public.txt'), 'public snapshot');
   await writeFile(join(parent, 'secret.txt'), 'must not escape root');
 
   const server = createPreviewServer({ root });
@@ -150,6 +151,20 @@ test('refuses symlinks that resolve outside the configured build root', async (t
   const response = await fetch(`${base}/exposed.txt`);
   assert.equal(response.status, 400);
   assert.notEqual(await response.text(), 'must not escape root');
+});
+
+test('serves an immutable snapshot after an indexed file is swapped for an outside symlink', async (t) => {
+  const { base, root } = await fixture(t);
+  const before = await fetch(`${base}/public.txt`);
+  assert.equal(before.status, 200);
+  assert.equal(await before.text(), 'public snapshot');
+
+  await unlink(join(root, 'public.txt'));
+  await symlink('../secret.txt', join(root, 'public.txt'));
+
+  const after = await fetch(`${base}/public.txt`);
+  assert.equal(after.status, 200);
+  assert.equal(await after.text(), 'public snapshot');
 });
 
 test('collapses dot-segment chat aliases before policy and asset selection', async (t) => {
