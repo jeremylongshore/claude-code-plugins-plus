@@ -4,7 +4,17 @@ import { expect, test } from '@playwright/test';
 // @ts-expect-error JavaScript policy module has no separate declaration file.
 import { MARKETPLACE_SECURITY_HEADERS } from '../scripts/security-policy.mjs';
 
-const pages = ['/', '/skills/', '/plugins/skill-creator/', '/docs/', '/explore/'];
+const pages = [
+  '/',
+  '/skills/',
+  '/plugins/skill-creator/',
+  '/docs/',
+  '/explore/',
+  '/chats/',
+  '/terms/',
+  '/privacy/',
+  '/acceptable-use/',
+];
 
 for (const path of pages) {
   test(`${path} emits the reviewed CSP without runtime violations`, async ({ page }) => {

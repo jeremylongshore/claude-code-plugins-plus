@@ -12,6 +12,25 @@ import {
 } from './security-policy.mjs';
 
 const caddyPath = new URL('../ops/tonsofskills-security-headers.caddy', import.meta.url);
+const workflowPath = new URL('../../.github/workflows/validate-plugins.yml', import.meta.url);
+const packagePath = new URL('../../package.json', import.meta.url);
+
+function assertSecurityHeaderCiWiring(workflow, packageJson) {
+  assert.equal(
+    workflow.split('run: pnpm run validate:security-headers').length - 1,
+    1,
+    'validate must invoke the security-header gate exactly once',
+  );
+  assert.match(workflow, /- name: Enforce marketplace response-security policy/);
+  assert.match(
+    packageJson.scripts['validate:security-headers'],
+    /security-policy\.test\.mjs marketplace\/scripts\/install-security-headers\.test\.mjs/,
+  );
+  assert.match(
+    packageJson.scripts['validate:security-headers'],
+    /render-security-headers-caddy\.mjs --check/,
+  );
+}
 
 test('policy fails closed on the high-value XSS boundaries', () => {
   const policy = serializeCsp();
@@ -56,5 +75,20 @@ test('planted weakening is rejected by the policy assertions', () => {
   assert.throws(
     () => validateSecurityPolicy(CSP_DIRECTIVES, { 'style-src': 'only one exception' }),
     /script-src unsafe-inline requires/,
+  );
+});
+
+test('required validation keeps the security policy and projection gate wired', () => {
+  const workflow = readFileSync(workflowPath, 'utf8');
+  const packageJson = JSON.parse(readFileSync(packagePath, 'utf8'));
+  assertSecurityHeaderCiWiring(workflow, packageJson);
+
+  const plantedDisappearance = workflow.replace(
+    'run: pnpm run validate:security-headers',
+    'run: echo planted-security-header-gate-removal',
+  );
+  assert.throws(
+    () => assertSecurityHeaderCiWiring(plantedDisappearance, packageJson),
+    /security-header gate exactly once/,
   );
 });

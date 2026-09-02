@@ -1,5 +1,13 @@
 import assert from 'node:assert/strict';
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  chmodSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -70,5 +78,60 @@ test('installer is idempotent when the exact import already exists', () => {
     assert.equal(result.status, 0, result.stderr);
   } finally {
     rmSync(paths.directory, { recursive: true, force: true });
+  }
+});
+
+test('post-install validation failure restores prior and absent target states', () => {
+  for (const targetBefore of [null, 'previous-fragment\n']) {
+    const paths = fixture();
+    const reloadLog = join(paths.directory, 'reload.log');
+    try {
+      const mainBefore = readFileSync(paths.main, 'utf8');
+      if (targetBefore !== null) writeFileSync(paths.target, targetBefore);
+      writeFileSync(
+        join(paths.bin, 'caddy'),
+        '#!/usr/bin/env sh\n[ "$1" = "adapt" ] && exit 0\n[ "$1" = "validate" ] && exit 42\nexit 2\n',
+      );
+      writeFileSync(
+        join(paths.bin, 'sudo'),
+        '#!/usr/bin/env sh\nwhile [ "$#" -gt 0 ]; do\n  case "$1" in\n    -n) shift ;;\n    -u) shift 2 ;;\n    *) break ;;\n  esac\ndone\nexec "$@"\n',
+      );
+      writeFileSync(
+        join(paths.bin, 'systemctl'),
+        '#!/usr/bin/env sh\nprintf "%s\\n" "$*" >> "$SYSTEMCTL_LOG"\n',
+      );
+      for (const command of ['caddy', 'sudo', 'systemctl']) {
+        chmodSync(join(paths.bin, command), 0o755);
+      }
+
+      const result = spawnSync(
+        '/usr/bin/sudo',
+        [
+          '-n',
+          'env',
+          `PATH=${paths.bin}:/usr/bin:/bin`,
+          `SYSTEMCTL_LOG=${reloadLog}`,
+          'bash',
+          installer,
+          source,
+          paths.target,
+          paths.main,
+          'example.invalid {',
+        ],
+        { encoding: 'utf8' },
+      );
+
+      assert.notEqual(result.status, 0, 'planted caddy validate failure must fail install');
+      assert.match(result.stderr, /rolled back/);
+      assert.equal(readFileSync(paths.main, 'utf8'), mainBefore);
+      if (targetBefore === null) {
+        assert.equal(existsSync(paths.target), false, 'new target must be removed');
+      } else {
+        assert.equal(readFileSync(paths.target, 'utf8'), targetBefore);
+      }
+      assert.equal(readFileSync(reloadLog, 'utf8'), 'reload caddy\n');
+    } finally {
+      rmSync(paths.directory, { recursive: true, force: true });
+    }
   }
 });

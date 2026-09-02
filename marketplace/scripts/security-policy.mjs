@@ -44,7 +44,9 @@ export const CSP_DIRECTIVES = Object.freeze({
     'https://region1.google-analytics.com',
     'https://stats.g.doubleclick.net',
     'https://gettermscdn.com',
-    // /chats is an explicit WebSocket client for user-supplied endpoints.
+    // Deliberate scheme-wide exception: /chats accepts user-supplied WebSocket
+    // endpoints, so a static global CSP cannot enumerate hosts. `ws:` supports
+    // local HTTP preview; browsers still block mixed-content ws:// in production.
     'wss:',
     'ws:',
   ],
