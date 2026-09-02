@@ -72,32 +72,32 @@ Every number below names the cohort it counts and the command that reproduces it
 
 ### 📦 Live npm Downloads
 
-Across **396 published packages** in the [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
+Across **394 published packages** in the [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window        | All packages | Established (>30d) |
 | ------------- | -----------: | -----------------: |
-| Last 24 hours |          962 |                962 |
-| Last 7 days   |        2,920 |              2,916 |
-| Last 30 days  |       12,868 |             12,779 |
+| Last 24 hours |          641 |                641 |
+| Last 7 days   |        3,272 |              3,272 |
+| Last 30 days  |       11,794 |             11,794 |
 
 <sub>"Established" excludes packages first published within the last 30 days, so a bulk-publish event doesn't dominate the headline.</sub>
 
 **Top 10 by last 30 days:**
 
-| #   | Package                                                                                                                      | Last 30d |
-| --- | ---------------------------------------------------------------------------------------------------------------------------- | -------: |
-| 1   | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack)                     |      556 |
-| 2   | [`@intentsolutionsio/groq-pack`](https://www.npmjs.com/package/@intentsolutionsio/groq-pack)                                 |      496 |
-| 3   | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack)                     |      274 |
-| 4   | [`@intentsolutionsio/clickhouse-pack`](https://www.npmjs.com/package/@intentsolutionsio/clickhouse-pack)                     |      273 |
-| 5   | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor)     |      263 |
-| 6   | [`@intentsolutionsio/notion-pack`](https://www.npmjs.com/package/@intentsolutionsio/notion-pack)                             |      258 |
-| 7   | [`@intentsolutionsio/elevenlabs-pack`](https://www.npmjs.com/package/@intentsolutionsio/elevenlabs-pack)                     |      244 |
-| 8   | [`@intentsolutionsio/freshie-inventory-manager`](https://www.npmjs.com/package/@intentsolutionsio/freshie-inventory-manager) |      214 |
-| 9   | [`@intentsolutionsio/supabase-pack`](https://www.npmjs.com/package/@intentsolutionsio/supabase-pack)                         |      210 |
-| 10  | [`@intentsolutionsio/agency-os`](https://www.npmjs.com/package/@intentsolutionsio/agency-os)                                 |      204 |
+| #   | Package                                                                                                                  | Last 30d |
+| --- | ------------------------------------------------------------------------------------------------------------------------ | -------: |
+| 1   | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack)                 |    1,026 |
+| 2   | [`@intentsolutionsio/groq-pack`](https://www.npmjs.com/package/@intentsolutionsio/groq-pack)                             |      734 |
+| 3   | [`@intentsolutionsio/mistral-pack`](https://www.npmjs.com/package/@intentsolutionsio/mistral-pack)                       |      264 |
+| 4   | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack)                 |      216 |
+| 5   | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) |      211 |
+| 6   | [`@intentsolutionsio/shopify-pack`](https://www.npmjs.com/package/@intentsolutionsio/shopify-pack)                       |      155 |
+| 7   | [`@intentsolutionsio/openbb-terminal`](https://www.npmjs.com/package/@intentsolutionsio/openbb-terminal)                 |      151 |
+| 8   | [`@intentsolutionsio/ccpi`](https://www.npmjs.com/package/@intentsolutionsio/ccpi)                                       |      139 |
+| 9   | [`@intentsolutionsio/penetration-tester`](https://www.npmjs.com/package/@intentsolutionsio/penetration-tester)           |      125 |
+| 10  | [`@intentsolutionsio/langchain-py-pack`](https://www.npmjs.com/package/@intentsolutionsio/langchain-py-pack)             |      121 |
 
-<sub>Last refreshed 2026-08-19T03:03:05.709Z.</sub>
+<sub>Last refreshed 2026-09-02T04:55:57.759Z.</sub>
 
 <!-- NPM-STATS:END -->
 
