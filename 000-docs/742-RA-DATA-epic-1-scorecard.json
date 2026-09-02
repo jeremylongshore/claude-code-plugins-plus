@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3075,
-        "tracked_files": 23748
+        "tracked_files": 23750
       }
     },
     "2": {
@@ -1739,7 +1739,11 @@
       "dimension": "Marketplace-tier validator runs that block a merge",
       "limitations": ["static workflow analysis does not execute GitHub expression control flow"],
       "reproduce": "pnpm run measure:e1 --row=40 --stdout",
-      "source": [".github/workflows/minimax-review.yml", ".github/workflows/promote-curated.yml"],
+      "source": [
+        ".github/workflows/minimax-review.yml",
+        ".github/workflows/pr-prescreen.yml",
+        ".github/workflows/promote-curated.yml"
+      ],
       "status": "partial",
       "values": {
         "blocking_candidates": 0,
@@ -1748,6 +1752,11 @@
             "blocking_candidate": false,
             "line": 247,
             "path": ".github/workflows/minimax-review.yml"
+          },
+          {
+            "blocking_candidate": false,
+            "line": 172,
+            "path": ".github/workflows/pr-prescreen.yml"
           },
           {
             "blocking_candidate": false,
@@ -1910,7 +1919,7 @@
         "invalid_patterns": 0,
         "invisible_files": 22,
         "target_invisible_files": 0,
-        "tracked_files": 23748
+        "tracked_files": 23750
       }
     },
     "47": {
