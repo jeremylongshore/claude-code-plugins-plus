@@ -4583,7 +4583,7 @@ def marketplace_baseline_payload(
     return {
         "$comment": (
             "Shrink-only. Entries may ONLY be REMOVED. Regenerate ONLY via --emit-baseline "
-            "in a dedicated, CODEOWNERS-approved CI run."
+            "in the owner-dispatched CI capture whose immutable artifact is verified by required CI."
         ),
         "schema_version": SCHEMA_VERSION,
         "generated_from": {

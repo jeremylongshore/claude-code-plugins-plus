@@ -2,13 +2,20 @@
 
 from __future__ import annotations
 
+import copy
 import importlib.util
+import json
+import subprocess
+import sys
+import tempfile
 import unittest
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "check-marketplace-compliance-baseline.py"
+CAPTURE_WORKFLOW = ROOT / ".github" / "workflows" / "capture-marketplace-compliance-baseline.yml"
+VALIDATE_WORKFLOW = ROOT / ".github" / "workflows" / "validate-plugins.yml"
 
 
 def load_module():
@@ -111,10 +118,157 @@ class MarketplaceComplianceRatchetTests(unittest.TestCase):
                 {"scripts/.marketplace-compliance-baseline.json", "plugins/example/SKILL.md"},
                 "feature/ordinary-change",
             ),
-            "baseline growth may only occur in a one-file baseline-only pull request",
+            "a permissive baseline policy-envelope change may only occur in a one-file baseline-only pull request",
         )
 
-    def test_baseline_growth_is_only_allowed_on_the_ci_capture_branch(self):
+    def test_capture_branch_name_alone_cannot_authorize_growth(self):
+        baseline = {"entries": ["a/SKILL.md :: E-ONE :: name"]}
+        current = {"entries": ["a/SKILL.md :: E-ONE :: name", "b/SKILL.md :: E-TWO :: tags"]}
+        self.assertEqual(
+            self.ratchet.baseline_growth_error(
+                baseline,
+                current,
+                {"scripts/.marketplace-compliance-baseline.json"},
+                "automation/compliance-baseline-123",
+            ),
+            "a permissive baseline policy-envelope change requires an owner-dispatched capture artifact verified by required CI",
+        )
+
+    def test_strict_entry_and_metric_improvements_do_not_need_capture(self):
+        baseline = {
+            "entries": ["a/SKILL.md :: E-ONE :: name", "b/SKILL.md :: E-TWO :: tags"],
+            "totals": {"errors": 2, "grade_A_plus_B_pct": 50.0},
+        }
+        current = {
+            "entries": ["a/SKILL.md :: E-ONE :: name"],
+            "totals": {"errors": 1, "grade_A_plus_B_pct": 75.0},
+        }
+        self.assertEqual(self.ratchet.capture_required_reasons(baseline, current), [])
+
+    def run_ordinary_baseline_mutation(self, mutate):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir)
+            baseline_path = repo / "scripts" / ".marketplace-compliance-baseline.json"
+            baseline_path.parent.mkdir()
+            subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+            subprocess.run(["git", "config", "user.name", "Test"], cwd=repo, check=True)
+            subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=repo, check=True)
+            baseline = {
+                "$comment": "shrink only",
+                "schema_version": "4.1.0",
+                "rule_inventory": ["E-ONE"],
+                "corpus_definition": "resolveCorpus('graded')",
+                "corpus": {"skill_files": 3628, "command_files": 373},
+                "entries": ["a/SKILL.md :: E-ONE :: name"],
+                "generated_from": {"sha": "a" * 40},
+                "totals": {"errors": 2132, "grade_A_plus_B": 2979, "grade_A_plus_B_pct": 82.1114},
+            }
+            baseline_path.write_text(json.dumps(baseline, sort_keys=True) + "\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=repo, check=True)
+            subprocess.run(["git", "commit", "-qm", "base"], cwd=repo, check=True)
+            source_sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
+
+            current = copy.deepcopy(baseline)
+            mutate(current)
+            baseline_path.write_text(json.dumps(current, sort_keys=True) + "\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=repo, check=True)
+            subprocess.run(["git", "commit", "-qm", "mutate"], cwd=repo, check=True)
+            return subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--check-growth-only",
+                    "--repo-root",
+                    str(repo),
+                    "--baseline",
+                    str(baseline_path),
+                    "--base",
+                    source_sha,
+                    "--head-ref",
+                    "feature/ordinary-change",
+                ],
+                capture_output=True,
+                text=True,
+            )
+
+    def test_cli_regular_branch_refuses_permissive_metric_mutations(self):
+        mutations = {
+            "errors-increase": lambda payload: payload["totals"].__setitem__("errors", 3132),
+            "grade-share-decrease": lambda payload: payload["totals"].__setitem__("grade_A_plus_B_pct", 0),
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name):
+                result = self.run_ordinary_baseline_mutation(mutate)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("permissive baseline policy-envelope change", result.stderr)
+
+    def test_cli_regular_branch_refuses_other_envelope_mutations(self):
+        mutations = {
+            "schema-version": lambda payload: payload.__setitem__("schema_version", "99.0.0"),
+            "rule-inventory": lambda payload: payload["rule_inventory"].append("E-NEW"),
+            "corpus-definition": lambda payload: payload.__setitem__("corpus_definition", "partial"),
+            "corpus-denominator": lambda payload: payload["corpus"].__setitem__("skill_files", 1),
+            "grade-count-denominator": lambda payload: payload["totals"].__setitem__("grade_A_plus_B", 1),
+            "generated-provenance": lambda payload: payload["generated_from"].__setitem__("sha", "b" * 40),
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name):
+                result = self.run_ordinary_baseline_mutation(mutate)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("permissive baseline policy-envelope change", result.stderr)
+
+    def capture_provenance(self):
+        source_sha = "a" * 40
+        head_sha = "b" * 40
+        baseline_bytes = b'{"entries": []}\n'
+        return {
+            "current": {"generated_from": {"sha": source_sha}},
+            "head_ref": "automation/compliance-baseline-123",
+            "repository": "jeremylongshore/tons-of-skills-marketplace",
+            "repository_owner": "jeremylongshore",
+            "base_ref": "main",
+            "pr_number": 456,
+            "head_sha": head_sha,
+            "head_parents": [source_sha],
+            "run": {
+                "id": 123,
+                "event": "workflow_dispatch",
+                "path": ".github/workflows/capture-marketplace-compliance-baseline.yml",
+                "head_branch": "main",
+                "head_sha": source_sha,
+                "run_attempt": 1,
+                "head_repository": {"full_name": "jeremylongshore/tons-of-skills-marketplace"},
+                "actor": {"login": "jeremylongshore"},
+                "triggering_actor": {"login": "jeremylongshore"},
+            },
+            "jobs": {
+                "jobs": [
+                    {
+                        "name": "capture-baseline-artifact",
+                        "status": "completed",
+                        "conclusion": "success",
+                    }
+                ]
+            },
+            "pull_requests": [
+                {
+                    "number": 456,
+                    "state": "open",
+                    "head": {
+                        "ref": "automation/compliance-baseline-123",
+                        "sha": head_sha,
+                        "repo": {"full_name": "jeremylongshore/tons-of-skills-marketplace"},
+                    },
+                    "base": {"ref": "main"},
+                }
+            ],
+            "artifact_bytes": baseline_bytes,
+            "baseline_bytes": baseline_bytes,
+        }
+
+    def test_owner_capture_artifact_authorizes_one_file_growth(self):
+        provenance = self.capture_provenance()
+        self.assertEqual(self.ratchet.capture_provenance_errors(**provenance), [])
         baseline = {"entries": ["a/SKILL.md :: E-ONE :: name"]}
         current = {"entries": ["a/SKILL.md :: E-ONE :: name", "b/SKILL.md :: E-TWO :: tags"]}
         self.assertIsNone(
@@ -123,8 +277,181 @@ class MarketplaceComplianceRatchetTests(unittest.TestCase):
                 current,
                 {"scripts/.marketplace-compliance-baseline.json"},
                 "automation/compliance-baseline-123",
+                capture_authorized=True,
             )
         )
+
+    def test_non_owner_dispatch_is_refused(self):
+        provenance = self.capture_provenance()
+        provenance["run"]["triggering_actor"] = {"login": "contributor"}
+        self.assertIn(
+            "capture run triggering_actor is not the repository owner",
+            self.ratchet.capture_provenance_errors(**provenance),
+        )
+
+    def test_wrong_workflow_is_refused(self):
+        provenance = self.capture_provenance()
+        provenance["run"]["path"] = ".github/workflows/untrusted.yml"
+        self.assertIn(
+            "capture run used an unexpected workflow",
+            self.ratchet.capture_provenance_errors(**provenance),
+        )
+
+    def test_failed_capture_job_is_refused(self):
+        provenance = self.capture_provenance()
+        provenance["jobs"]["jobs"][0]["conclusion"] = "failure"
+        self.assertIn(
+            "capture run has no successful capture-baseline-artifact job",
+            self.ratchet.capture_provenance_errors(**provenance),
+        )
+
+    def test_artifact_mismatch_is_refused(self):
+        provenance = self.capture_provenance()
+        provenance["artifact_bytes"] = b'{"entries": ["smuggled"]}\n'
+        self.assertIn(
+            "pull request baseline is not byte-identical to the immutable capture artifact",
+            self.ratchet.capture_provenance_errors(**provenance),
+        )
+
+    def test_replayed_capture_branch_is_refused(self):
+        provenance = self.capture_provenance()
+        provenance["pull_requests"].append(
+            {
+                "number": 123,
+                "state": "closed",
+                "head": provenance["pull_requests"][0]["head"],
+                "base": {"ref": "main"},
+            }
+        )
+        self.assertIn(
+            "capture branch must belong to exactly one pull request and cannot be replayed",
+            self.ratchet.capture_provenance_errors(**provenance),
+        )
+
+    def test_fork_capture_branch_is_refused(self):
+        provenance = self.capture_provenance()
+        provenance["pull_requests"][0]["head"]["repo"] = {"full_name": "attacker/fork"}
+        self.assertIn(
+            "capture pull request head is not in this repository",
+            self.ratchet.capture_provenance_errors(**provenance),
+        )
+
+    def test_extra_or_reparented_commit_is_refused(self):
+        provenance = self.capture_provenance()
+        provenance["head_parents"] = ["c" * 40]
+        self.assertIn(
+            "pull request head must be one capture commit directly atop the capture source",
+            self.ratchet.capture_provenance_errors(**provenance),
+        )
+
+    def test_capture_branch_requires_exact_run_id_shape(self):
+        self.assertEqual(self.ratchet.capture_run_id("automation/compliance-baseline-123"), 123)
+        self.assertIsNone(self.ratchet.capture_run_id("automation/compliance-baseline-123-extra"))
+        self.assertIsNone(self.ratchet.capture_run_id("automation/compliance-baseline-0"))
+
+    def test_required_ci_wires_the_owner_capture_receipt(self):
+        capture = CAPTURE_WORKFLOW.read_text(encoding="utf-8")
+        validation = VALIDATE_WORKFLOW.read_text(encoding="utf-8")
+
+        for required_capture_fragment in (
+            'test "$ACTOR" = "$REPOSITORY_OWNER"',
+            'test "$TRIGGERING_ACTOR" = "$REPOSITORY_OWNER"',
+            "name: marketplace-compliance-baseline-${{ github.run_id }}",
+            "include-hidden-files: true",
+            "GH_TOKEN: ${{ secrets.BOT_PR_TOKEN }}",
+        ):
+            self.assertIn(required_capture_fragment, capture)
+        self.assertNotIn("secrets.GITHUB_TOKEN", capture)
+
+        for required_validation_fragment in (
+            "marketplace-compliance-ratchet:",
+            '--capture-run-metadata "$evidence_dir/run.json"',
+            '--capture-run-jobs "$evidence_dir/jobs.json"',
+            '--capture-pull-requests "$evidence_dir/pulls.json"',
+            '--capture-artifact "${artifact_files[0]}"',
+            "- marketplace-compliance-ratchet",
+        ):
+            self.assertIn(required_validation_fragment, validation)
+
+    def test_growth_cli_requires_and_accepts_exact_capture_receipt(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir)
+            baseline_path = repo / "scripts" / ".marketplace-compliance-baseline.json"
+            baseline_path.parent.mkdir()
+            subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+            subprocess.run(["git", "config", "user.name", "Test"], cwd=repo, check=True)
+            subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=repo, check=True)
+            baseline_path.write_text('{"entries": []}\n', encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=repo, check=True)
+            subprocess.run(["git", "commit", "-qm", "base"], cwd=repo, check=True)
+            source_sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
+
+            payload = {"entries": ["a/SKILL.md :: E-ONE :: name"], "generated_from": {"sha": source_sha}}
+            baseline_bytes = (json.dumps(payload, sort_keys=True) + "\n").encode()
+            baseline_path.write_bytes(baseline_bytes)
+            subprocess.run(["git", "add", "."], cwd=repo, check=True)
+            subprocess.run(["git", "commit", "-qm", "capture"], cwd=repo, check=True)
+            head_sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
+
+            run_path = repo / "run.json"
+            jobs_path = repo / "jobs.json"
+            pulls_path = repo / "pulls.json"
+            artifact_path = repo / "artifact.json"
+            provenance = self.capture_provenance()
+            provenance["current"] = payload
+            provenance["head_sha"] = head_sha
+            provenance["head_parents"] = [source_sha]
+            provenance["run"]["head_sha"] = source_sha
+            provenance["pull_requests"][0]["head"]["sha"] = head_sha
+            run_path.write_text(json.dumps(provenance["run"]), encoding="utf-8")
+            jobs_path.write_text(json.dumps(provenance["jobs"]), encoding="utf-8")
+            pulls_path.write_text(json.dumps(provenance["pull_requests"]), encoding="utf-8")
+            artifact_path.write_bytes(baseline_bytes)
+
+            common = [
+                sys.executable,
+                str(SCRIPT),
+                "--check-growth-only",
+                "--repo-root",
+                str(repo),
+                "--baseline",
+                str(baseline_path),
+                "--base",
+                source_sha,
+                "--head-ref",
+                "automation/compliance-baseline-123",
+            ]
+            missing_receipt = subprocess.run(common, capture_output=True, text=True)
+            self.assertEqual(missing_receipt.returncode, 1)
+            self.assertIn("requires an owner-dispatched capture artifact", missing_receipt.stderr)
+
+            accepted = subprocess.run(
+                common
+                + [
+                    "--head-sha",
+                    head_sha,
+                    "--repository",
+                    "jeremylongshore/tons-of-skills-marketplace",
+                    "--repository-owner",
+                    "jeremylongshore",
+                    "--base-ref",
+                    "main",
+                    "--pr-number",
+                    "456",
+                    "--capture-run-metadata",
+                    str(run_path),
+                    "--capture-run-jobs",
+                    str(jobs_path),
+                    "--capture-pull-requests",
+                    str(pulls_path),
+                    "--capture-artifact",
+                    str(artifact_path),
+                ],
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(accepted.returncode, 0, accepted.stderr)
+            self.assertIn("OK (no unauthorized permissive baseline mutation)", accepted.stdout)
 
 
 if __name__ == "__main__":

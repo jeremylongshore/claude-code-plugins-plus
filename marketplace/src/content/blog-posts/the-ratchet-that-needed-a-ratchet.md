@@ -10,6 +10,8 @@ The claude-code-plugins marketplace carries thousands of skill and agent markdow
 
 That leaves two bad options and one good one. Fail CI on the whole corpus and nothing merges again. Ignore the findings and the debt compounds quietly. Or ratchet: pin what exists today, fail on anything new.
 
+> **Governance update — September 2, 2026:** the repository no longer requires human review for ordinary changes. E6.6 now permits any baseline change that could relax or redefine the policy envelope only when a one-file PR byte-matches the immutable artifact from a first-attempt, owner-dispatched capture on the protected default branch. That includes accepted entries, monotone totals, schema/rule inventory, corpus/denominators, and provenance. Required CI verifies the run, source commit, artifact, and single-use branch; naming a branch is no longer sufficient.
+
 I built the ratchet on 2026-08-26, across 424 commits on the mainline of that repo. It took eight iterations, and only two of them were about the debt itself.
 
 ## How do you ratchet compliance debt without blocking merges?
@@ -93,7 +95,7 @@ Comparing sets of violations is not enough, because you can shrink the set by ch
 /scripts/.marketplace-compliance-baseline.json @jeremylongshore @blueandyellow44
 ```
 
-That routes any change to the pinned file to two named owners. It requests review; whether review is mandatory depends on branch protection, which is configuration and not code. The claim I am willing to make from the repository alone is the E6.6 one: a growing baseline is rejected outright unless it arrives as a single-file change on an `automation/compliance-baseline-` branch. That rule lives in the script, so it holds regardless of settings.
+That routes any change to the pinned file to two named owners. At the time of this implementation, the code-level E6.6 claim was that a growing baseline was rejected unless it arrived as a single-file change on an `automation/compliance-baseline-` branch. The September 2 governance amendment strengthened that boundary: every permissive envelope mutation—not only a new entry—requires a branch encoding an owner-dispatched Actions run, a successful capture job, an immutable artifact that byte-matches the PR, and a branch that cannot be replayed. CODEOWNERS still routes ownership but is not a required-review gate.
 
 **8. `f53930446` fix(ci): run marketplace ratchet before legacy checks.** Ordering, +13/-7 in `validate-plugins.yml`. A gate that runs after the noisy checks gets read after everyone has stopped reading.
 
@@ -156,7 +158,7 @@ marketplace-compliance-ratchet:
   timeout-minutes: 2
 ```
 
-It is listed in the `ci-required` aggregate job's `needs:` array alongside validate, verify, test, and 19 others, for 23 entries in all, so it is a required check rather than an advisory one. It runs two steps: "Refuse unauthorized marketplace baseline growth" (pull_request only, calling the script with `--check-growth-only --base --head-ref`) and "Reject marketplace compliance debt outside the pinned baseline", which is the plain full check.
+It is listed in the `ci-required` aggregate job's `needs:` array alongside validate, verify, test, and 19 others, for 23 entries in all, so it is a required check rather than an advisory one. It runs two steps: "Refuse unauthorized marketplace baseline policy-envelope changes" (pull request only, validating the base/head range and any owner-run capture receipt) and "Reject marketplace compliance debt outside the pinned baseline", which is the plain full check.
 
 The comment above that job explains iteration 4 better than I did:
 
