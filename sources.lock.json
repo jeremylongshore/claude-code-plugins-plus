@@ -737,6 +737,23 @@
         "skills/servicegraph/SKILL.md": "sha256:3e358f9451696f5690bc90006eff12737a76b4b5aad3eeb550343233ed9042dc"
       }
     },
+    "skillcrossroads": {
+      "repo": "sgharlow/skillcrossroads",
+      "resolved_ref": "7f1a7b2caca117ea1e64b935c17a7f6f2493292d",
+      "locked_at": "2026-09-03T18:17:18.274Z",
+      "files": {
+        ".claude-plugin/plugin.json": "sha256:2735a18b14021fa118dd8246004590b8c172bd9103043947c3409b319e325359",
+        "LICENSE": "sha256:4dcc217acd1eee58ad0cc6631e02326433a9209cb36cd856e94df90aee379792",
+        "README.md": "sha256:62336ba4c5bc60d254cdca5ccc422537bcfb0541372a8b704bc9fd2a602ad046",
+        "docs/PRD.md": "sha256:8b9b633f646424fb7e2edbcc6a266a08d8fa715c4f4dea66617b8c623ec090c9",
+        "skills/audit-skill/SKILL.md": "sha256:edc0cf8f9e25b4fc5dd2ea8bf84e08bdc5268229ed81b5f7bb51178c637642b2",
+        "skills/audit-skill/evals/audit-and-fix-low-grade-skill.md": "sha256:dc4577518fe99c9b091fa985c8bf6ae7234e34fad7caba2eb291a10fdf2e0ffa",
+        "skills/audit-skill/evals/audit-clean-skill.md": "sha256:1ed278c8245a724eba39a6f4889d8d17b1d2e54341e525fdadd9e686cdf14edd",
+        "skills/audit-skill/evals/npx-unavailable.md": "sha256:db24f74274c9cab2842c9dc06446af77b1442c466ef18a729c8c45a83cc16dba",
+        "skills/audit-skill/references/flags-quick-reference.md": "sha256:f00fa749749a3c3ecc8712955ed83bd81aeae2eb602d8cb6a27ac376d7f6ae55",
+        "skills/audit-skill/references/rubric-categories.md": "sha256:c4f07c149a035e4cfa5c8702aca33937445db7ec4521c6ddc0d26d20f068eb8b"
+      }
+    },
     "skills-janitor": {
       "repo": "khendzel/skills-janitor",
       "resolved_ref": "c63c3478edbfee1fe19da8c9b7f2b8e0d60d134e",
