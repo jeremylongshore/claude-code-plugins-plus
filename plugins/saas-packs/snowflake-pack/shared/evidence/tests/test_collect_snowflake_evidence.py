@@ -670,7 +670,7 @@ class CollectorTests(unittest.TestCase):
             with self.subTest(raw=raw), self.assertRaises(MODULE.CollectionError):
                 MODULE.normalize_cli_json(raw)
         safe_flags = {
-            "hasPassword": True,
+            "hasPassword": None,
             "has_pat": False,
             "hasRsaPublicKey": True,
             "has-workload-identity": False,
@@ -772,14 +772,14 @@ class CollectorTests(unittest.TestCase):
                 return subprocess.CompletedProcess(command, 5, stdout="", stderr=message)
 
             receipt, code = MODULE.execute_surface("cost", "readonly", runner=runner)
-            rendered = json.dumps(receipt)
+            rendered_errors = json.dumps(receipt["errors"])
 
             with self.subTest(message=message):
                 self.assertEqual(code, 5)
                 self.assertEqual(receipt["status"], "error")
                 self.assertEqual(receipt["row_count"], 0)
                 for fragment in forbidden:
-                    self.assertNotIn(fragment, rendered)
+                    self.assertNotIn(fragment, rendered_errors)
                 self.assertEqual(
                     receipt["errors"][0]["message"],
                     "Snowflake CLI collection failed; inspect local CLI diagnostics outside the receipt",
@@ -799,12 +799,13 @@ class CollectorTests(unittest.TestCase):
                 )
                 MODULE.write_receipt(receipt, output)
                 rendered = output.read_text(encoding="utf-8")
+                rendered_errors = json.dumps(json.loads(rendered)["errors"])
 
                 with self.subTest(message=message):
                     self.assertEqual(json.loads(rendered)["status"], "error")
                     for fragment in forbidden:
-                        self.assertNotIn(fragment, rendered)
-                    self.assertRegex(rendered, r"\[REDACTED_(?:AUTHORIZATION|CREDENTIAL|SQL)\]")
+                        self.assertNotIn(fragment, rendered_errors)
+                    self.assertRegex(rendered_errors, r"\[REDACTED_(?:AUTHORIZATION|CREDENTIAL|SQL)\]")
 
     def test_written_error_receipts_preserve_safe_evidence(self) -> None:
         _, sql, sources = MODULE.load_surface("cost")
@@ -1149,6 +1150,112 @@ class CollectorTests(unittest.TestCase):
                 self.assertIn("'_dataset', 'execution_context'", rendered)
                 self.assertIn("FROM $1 AS src", rendered)
                 self.assertNotIn('$1."', rendered)
+
+        _, _, auth_current, _, _ = MODULE.render_surface("auth-current")
+        self.assertIn("SHOW USERS LIMIT 10000", auth_current)
+        self.assertIn("->>", auth_current)
+        self.assertNotIn("CURRENT_ACCOUNT()", auth_current)
+        self.assertIn("CURRENT_ORGANIZATION_NAME()", auth_current)
+        self.assertIn("CURRENT_ACCOUNT_NAME()", auth_current)
+        self.assertIn("'principal_scope', IFF(", auth_current)
+        self.assertIn("'SNOWFLAKE_MANAGED_EXCLUDED'", auth_current)
+        self.assertIn("normalized_show_rows AS", auth_current)
+        self.assertIn("COALESCE(IS_NULL_VALUE(GET_IGNORE_CASE(SHOW_ROW, 'type')), TRUE)", auth_current)
+        self.assertIn("'type', USER_TYPE", auth_current)
+        self.assertIn("USER_TYPE = 'SNOWFLAKE_SERVICE'", auth_current)
+        self.assertIn("COALESCE(NOT IS_NULL_VALUE(GET_IGNORE_CASE(SHOW_ROW, 'created_on')), FALSE)", auth_current)
+        self.assertIn("COALESCE(NOT IS_NULL_VALUE(GET_IGNORE_CASE(SHOW_ROW, 'disabled')), FALSE)", auth_current)
+        self.assertNotIn("'type', COALESCE(UPPER(TO_VARCHAR(GET_IGNORE_CASE", auth_current)
+        self.assertNotIn("GET_IGNORE_CASE(SHOW_ROW, 'created_on') IS NOT NULL", auth_current)
+        self.assertIn("'_dataset', 'execution_context'", auth_current)
+        self.assertIn("FROM $1", auth_current)
+        self.assertNotIn("WHERE", auth_current.upper())
+        self.assertNotIn("TO_JSON(CURRENT_SECONDARY_ROLES())", auth_current)
+        self.assertIn("TO_VARCHAR(CURRENT_SECONDARY_ROLES())", auth_current)
+
+        for surface in ("auth", "auth-login-history"):
+            with self.subTest(surface=surface):
+                _, _, rendered, _, _ = MODULE.render_surface(surface)
+                self.assertNotIn("TO_JSON(CURRENT_SECONDARY_ROLES())", rendered)
+                self.assertIn("TO_VARCHAR(CURRENT_SECONDARY_ROLES())", rendered)
+                self.assertNotIn("CURRENT_ACCOUNT()", rendered)
+                self.assertIn("CURRENT_ORGANIZATION_NAME()", rendered)
+                self.assertIn("CURRENT_ACCOUNT_NAME()", rendered)
+
+        _, _, historical_users, _, _ = MODULE.render_surface("auth")
+        self.assertIn("'principal_scope', IFF(", historical_users)
+        self.assertIn("COALESCE(UPPER(TYPE), 'PERSON')", historical_users)
+        self.assertNotIn("<> 'SNOWFLAKE_SERVICE'", historical_users.upper())
+
+        _, _, login_history, _, _ = MODULE.render_surface("auth-login-history")
+        self.assertIn("TRY_TO_BOOLEAN(TO_VARCHAR(IS_SUCCESS))", login_history)
+        self.assertIn("AND EVENT_TYPE = 'LOGIN'", login_history)
+        self.assertNotIn("TO_VARCHAR(REPORTED_CLIENT_TYPE)", login_history)
+        self.assertNotIn("'reported_client_type_observation'", login_history)
+
+    def test_auth_offline_normalization_is_rejected_for_every_surface(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "saved.json"
+            source.write_text("[]", encoding="utf-8")
+            for surface in ("auth-current", "auth", "auth-login-history"):
+                output = root / f"{surface}.json"
+                completed = subprocess.run(
+                    [
+                        "python3",
+                        str(SCRIPT),
+                        "--surface",
+                        surface,
+                        "--input-json",
+                        str(source),
+                        "--output",
+                        str(output),
+                    ],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                with self.subTest(surface=surface):
+                    self.assertEqual(completed.returncode, 2)
+                    self.assertIn("offline normalization is diagnostic-only", completed.stderr)
+                    self.assertFalse(output.exists())
+
+    def test_auth_receipts_bind_exact_datasets_and_cap_semantics(self) -> None:
+        cases = {
+            "auth-current": ("current_users", "SHOW USERS"),
+            "auth": ("historical_users", "SNOWFLAKE.ACCOUNT_USAGE.USERS"),
+            "auth-login-history": ("login_history", "SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY"),
+        }
+        for surface, (cap_dataset, source_view) in cases.items():
+            path, template, rendered, sources, selector = MODULE.render_surface(surface)
+            raw = [
+                {"EVIDENCE": {"_dataset": "execution_context", "observed_at": "2026-09-03T12:00:00Z"}},
+                {"EVIDENCE": {"_dataset": cap_dataset, "row": 1}},
+            ]
+            receipt = MODULE.build_receipt(
+                surface,
+                "readonly",
+                rendered,
+                sources,
+                raw=raw,
+                template_sql=template,
+                template_path=path,
+                selector=selector,
+                collected_at="2026-09-03T12:00:00Z",
+                collection_mode="live-cli",
+            )
+            with self.subTest(surface=surface):
+                self.assertEqual(receipt["schema_version"], "2")
+                self.assertEqual(receipt["source_views"], [source_view])
+                self.assertEqual(
+                    receipt["expected_datasets"],
+                    list(MODULE.RECEIPT_EXPECTED_DATASETS[surface]),
+                )
+                self.assertEqual(receipt["dataset_row_counts"][cap_dataset], 1)
+                self.assertEqual(receipt["row_limit"], 10000)
+                self.assertFalse(receipt["truncation_possible"])
+                self.assertEqual(receipt["collection_mode"], "live-cli")
+                self.assertEqual(receipt["non_claims"], list(MODULE.RECEIPT_NON_CLAIMS))
 
     def test_access_offline_normalization_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

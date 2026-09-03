@@ -31641,15 +31641,20 @@
       "files": [
         "SKILL.md",
         "eval-spec.yaml",
+        "references/current-evidence-contract.md",
         "references/cutover-and-recovery.md",
         "references/identity-types-and-inventory.md",
         "references/mcp-oauth-role-scoping.md",
         "references/workload-auth-options.md",
         "scripts/analyze_auth.py",
+        "scripts/analyze_auth_evidence.py",
         "scripts/collect_snowflake_evidence.py",
+        "scripts/sql/auth-current.sql",
+        "scripts/sql/auth-login-history.sql",
         "scripts/sql/auth.sql",
         "tests/fixtures/auth.json",
-        "tests/test_auth_analyzer.py"
+        "tests/test_auth_analyzer.py",
+        "tests/test_auth_evidence.py"
       ]
     },
     {
