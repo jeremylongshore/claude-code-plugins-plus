@@ -2,7 +2,7 @@
 name: replit-incident-runbook
 description: 'Triage a Replit published-app incident, separate platform from application failures, contain safely, and preserve redacted evidence. Use when handling outages, crash loops, failed releases, database errors, or production authentication failures. Trigger with phrases like "replit incident", "replit outage", "replit down", or "replit crash".'
 allowed-tools: Read, Grep, Bash(curl:*), Bash(jq:*)
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

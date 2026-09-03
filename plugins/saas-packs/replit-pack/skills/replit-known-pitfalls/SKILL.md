@@ -2,7 +2,7 @@
 name: replit-known-pitfalls
 description: 'Audit a Replit App for persistence, Secrets, publishing, port, authentication, and deployment mistakes. Use when reviewing Replit code or diagnosing a Preview-to-production mismatch. Trigger with phrases like "replit mistakes", "replit anti-patterns", "replit pitfalls", or "replit code review".'
 allowed-tools: Read, Grep, Bash(grep:*)
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

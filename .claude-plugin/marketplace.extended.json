@@ -5882,7 +5882,7 @@
       "name": "replit-pack",
       "source": "./plugins/saas-packs/replit-pack",
       "description": "Complete Replit integration skill pack with 30 skills covering cloud IDE, deployments, AI assistance, and collaborative coding. Flagship+ tier vendor pack.",
-      "version": "1.13.0",
+      "version": "1.14.0",
       "category": "saas-packs",
       "keywords": [
         "replit",
