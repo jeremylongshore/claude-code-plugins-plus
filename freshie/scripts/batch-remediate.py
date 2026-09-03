@@ -199,7 +199,6 @@ SAAS_SERVICE_HINTS: dict[str, list[str]] = {
     "notion": ["productivity", "notion"],
     "openai": ["ai", "openai"],
     "pagerduty": ["devops", "incident-management"],
-    "perplexity": ["ai", "search"],
     "pinecone": ["vector-db", "ai"],
     "planetscale": ["database", "mysql"],
     "posthog": ["analytics", "product"],

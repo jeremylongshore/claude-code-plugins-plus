@@ -16,7 +16,6 @@ Every pack needs a real vendor YAML with actual SDK names, real API URLs, real w
 - [ ] openrouter (ai-ml)
 - [ ] klingai (ai-ml)
 - [ ] retellai (ai-ml)
-- [ ] perplexity (ai-ml)
 - [ ] windsurf (developer-tools)
 - [ ] firecrawl (developer-tools)
 - [ ] clay (sales-crm)
