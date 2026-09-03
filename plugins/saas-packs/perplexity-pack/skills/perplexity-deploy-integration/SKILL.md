@@ -12,7 +12,7 @@ description: 'Deploy Perplexity Sonar API integrations to Vercel, Cloud Run, and
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

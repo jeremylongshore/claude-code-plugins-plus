@@ -11,7 +11,7 @@ description: 'Implement content moderation, model selection policy, citation qua
 
   '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

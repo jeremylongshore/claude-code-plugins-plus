@@ -13,7 +13,7 @@ description: 'Configure Perplexity Sonar API across development, staging, and pr
 
   '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
