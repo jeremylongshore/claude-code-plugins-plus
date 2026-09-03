@@ -29,8 +29,10 @@ it by hand.
 2. The audit-fix-re-audit loop measurably raises the grade (before → after reported to the
    user) or terminates with each residual finding explicitly acknowledged as an intentional
    trade-off.
-3. Keyless runs score all six rubric categories deterministically; with `ANTHROPIC_API_KEY`
-   set, the LLM-judge upgrade is used and the mode that ran is reported.
+3. Runs are deterministic and local by default: every command passes `--no-llm`, scoring all
+   six rubric categories without contacting any model, whether or not `ANTHROPIC_API_KEY` is
+   set. The LLM-judge upgrade is reachable only through the consented `--suggest` path in
+   SKILL.md step 4, and the mode that ran is reported either way.
 
 ## Functional requirements
 
@@ -53,7 +55,19 @@ artifact and follows the repo-wide convention of publishing catalog plugins unde
 ## Out of scope
 
 - Grading artifacts other than by delegating to the CLI (no hand-rolled rubric in the skill).
-- Auto-publishing, badge hosting, or any network call beyond fetching the pinned CLI from
-  the npm registry.
+- Auto-publishing or badge hosting.
+- Any network call the user has not agreed to. Two are possible, and both are named here
+  rather than implied: fetching the pinned CLI from the npm registry (every run), and the
+  opt-in `--suggest` in SKILL.md step 4, which sends up to 24,000 characters of the target
+  skill's entry file to Anthropic's Messages API under the user's own `ANTHROPIC_API_KEY`
+  after explicit consent. Every other command this skill issues passes `--no-llm` and is
+  fully local.
+
+  > Corrected 2026-09-03. This bullet previously read "any network call beyond fetching the
+  > pinned CLI from the npm registry", which was not true of the CLI's behaviour: without
+  > `--no-llm` it contacts Anthropic whenever `ANTHROPIC_API_KEY` is set in the environment,
+  > without prompting. The skill now passes `--no-llm` everywhere except the consented
+  > `--suggest` path, so the boundary this document describes is the one the commands
+  > actually enforce.
 - Editing skills without the user's awareness — every fix is applied from a cited finding
   the user can inspect.

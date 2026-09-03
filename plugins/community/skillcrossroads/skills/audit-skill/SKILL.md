@@ -5,6 +5,7 @@ description: 'Audit and improve a Claude Code skill using Skill Crossroads. Use 
   trigger", or "lint my SKILL.md" — or before publishing any skill, to get an evidence-cited
   quality score, ranked fix list, and badge. Trigger with "audit my skill".'
 allowed-tools: Read, Edit, Grep, Glob, Bash(npx:*)
+disable-model-invocation: true
 argument-hint: <skill-dir — path to the directory containing SKILL.md>
 version: 0.11.3
 author: Steve Harlow <sgharlow@users.noreply.github.com>
@@ -38,10 +39,20 @@ the grade stops improving.
 - Node.js 18+ with `npx` available, and network access to the npm registry (the CLI is
   fetched on demand; the version is pinned below for reproducibility).
 - A skill directory containing a `SKILL.md` file.
-- Authentication is optional: keyless runs score all six rubric categories
-  deterministically. Setting the `ANTHROPIC_API_KEY` environment variable (an Anthropic
-  API key — treat it as a credential, never echo or commit it) upgrades the Triggering
-  category to an LLM judge and adds checks VERIFY-04, CLARITY-02, and CLARITY-05.
+- **No credential is required, and by default nothing about your skill leaves the machine.**
+  Every command in this skill passes `--no-llm`, so all six rubric categories are scored
+  deterministically and locally.
+- **The one exception is `--suggest` in step 4, which is opt-in and requires your explicit
+  consent.** Without `--no-llm`, the CLI sends content to Anthropic's Messages API
+  (`api.anthropic.com`) whenever `ANTHROPIC_API_KEY` is present in the environment — it does
+  not prompt. That path upgrades the Triggering category to an LLM judge and adds checks
+  VERIFY-04, CLARITY-02 and CLARITY-05, sending per-check excerpts of 1,500-2,500 characters;
+  `--suggest` sends up to 24,000 characters of the entry file. Requests are billed to your own
+  key. Treat the key as a credential: never echo or commit it.
+- **Model results are cached on disk** between runs, keyed by content hash:
+  `./.beacon-cache` if that directory already exists, otherwise
+  `%LOCALAPPDATA%\skillcrossroads\cache` on Windows, `$XDG_CACHE_HOME/skillcrossroads` when
+  set, or `~/.cache/skillcrossroads`.
 
 ## Steps
 
@@ -56,24 +67,40 @@ the grade stops improving.
    directory or ask the user for a safe path first.
 
    ```bash
-   npx skillcrossroads@0.11.3 '<skill-dir>' --markdown
+   npx skillcrossroads@0.11.3 '<skill-dir>' --no-llm --markdown
    ```
 
 3. Report the scorecard and the **Top fixes** list (ranked by grade impact) to the user.
    **Auditing is read-only.** If the user asked only to audit, grade, check, or lint, stop
    here — do not edit anything. Proceed to step 4 only when the user explicitly asked to fix
    or improve the skill, or confirms they want the fixes applied after seeing the report.
-4. Apply fixes (only on explicit request or confirmation). Optionally, if `ANTHROPIC_API_KEY`
-   is set, run `npx skillcrossroads@0.11.3 '<skill-dir>' --suggest` to get proposed
-   current → proposed fixes for the top findings — treat them as proposals to review, never
-   apply one unread. For each fix, Read the cited file:line, confirm the finding is real,
-   and apply the smallest Edit that resolves it.
+4. Apply fixes (only on explicit request or confirmation). The deterministic report from
+   step 2 is normally enough to work from.
+
+   Optionally, model-drafted rewrites are available — but `--suggest` is the **only** command
+   in this skill that sends anything off the machine, so **ask the user before running it**
+   and proceed only on an explicit yes:
+
+   > `--suggest` sends up to 24,000 characters of this skill's entry file to Anthropic's API
+   > (`api.anthropic.com`), billed to your own `ANTHROPIC_API_KEY`, and caches the result on
+   > disk. Run it, or continue with the local findings?
+
+   On a yes, and only when `ANTHROPIC_API_KEY` is set:
+
+   ```bash
+   npx skillcrossroads@0.11.3 '<skill-dir>' --suggest
+   ```
+
+   If the user declines, or no key is set, continue with the step 2 findings — they already
+   cover all six rubric categories. Either way, treat suggestions as proposals to review and
+   never apply one unread. For each fix, Read the cited file:line, confirm the finding is
+   real, and apply the smallest Edit that resolves it.
    Typical high-impact fixes: rewrite the frontmatter `description` to lead with the use case
    and include the phrases a user would actually say; add a verification step; state
    constraints and failure modes; remove hardcoded secrets or over-broad `allowed-tools`.
 5. Re-run the audit. Repeat steps 4–5 until the grade stops improving or only intentional
    trade-offs remain.
-6. Offer the badge: `npx skillcrossroads@0.11.3 '<skill-dir>' --badge` writes an SVG the user
+6. Offer the badge: `npx skillcrossroads@0.11.3 '<skill-dir>' --no-llm --badge` writes an SVG the user
    can embed in their README, linking to https://skillcrossroads.com for the hosted version.
 
 ## Output
@@ -105,7 +132,7 @@ the grade stops improving.
 User: *"Audit my skill in `skills/deploy-checker` — why doesn't it trigger?"*
 
 ```bash
-npx skillcrossroads@0.11.3 'skills/deploy-checker' --markdown
+npx skillcrossroads@0.11.3 'skills/deploy-checker' --no-llm --markdown
 ```
 
 The report grades Triggering low, citing `SKILL.md:3` — the description lacks the phrases a
@@ -117,7 +144,7 @@ to review proposed rewrites before applying them.
 ## Verify
 
 Done means: for an audit-only request, the scorecard and Top fixes list were reported with no
-files modified. For a fix request: the final `npx skillcrossroads@0.11.3 '<skill-dir>' --markdown`
+files modified. For a fix request: the final `npx skillcrossroads@0.11.3 '<skill-dir>' --no-llm --markdown`
 run shows the improved grade with **no fail-status findings remaining** (or each remaining one
 acknowledged by the user as intentional), and the before → after grades are reported to the user.
 
