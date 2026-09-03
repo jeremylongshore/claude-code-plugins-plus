@@ -13,7 +13,7 @@ description: 'Apply Perplexity security best practices for API key management an
 
   '
 allowed-tools: Read, Write, Grep
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
