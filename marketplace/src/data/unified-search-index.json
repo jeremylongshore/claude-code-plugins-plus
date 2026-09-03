@@ -187,6 +187,7 @@
       "Bash(memory:*)",
       "Bash(metrics:*)",
       "Bash(mkdir:*)",
+      "Bash(mktemp:*)",
       "Bash(mlr*)",
       "Bash(mongodump:*)",
       "Bash(mongosh:*)",
@@ -62064,9 +62065,8 @@
       "allowedTools": [
         "Read",
         "Grep",
-        "Bash(kubectl:*)",
         "Bash(curl:*)",
-        "Bash(tcpdump:*)"
+        "Bash(jq:*)"
       ],
       "compatibleWith": [],
       "version": "1.12.0",
@@ -62074,7 +62074,7 @@
         "name": "perplexity-pack",
         "category": "saas-packs"
       },
-      "searchText": "perplexity-advanced-troubleshooting apply advanced debugging techniques for hard-to-diagnose perplexity sonar api issues. use when standard troubleshooting fails, investigating inconsistent citations, or preparing evidence for support escalation. trigger with phrases like \"perplexity hard bug\", \"perplexity mystery error\", \"perplexity inconsistent results\", \"difficult perplexity issue\", \"perplexity deep debug\". saas-packs read grep bash(kubectl:*) bash(curl:*) bash(tcpdump:*) "
+      "searchText": "perplexity-advanced-troubleshooting apply advanced debugging techniques for hard-to-diagnose perplexity sonar api issues. use when standard troubleshooting fails, investigating inconsistent citations, or preparing evidence for support escalation. trigger with phrases like \"perplexity hard bug\", \"perplexity mystery error\", \"perplexity inconsistent results\", \"difficult perplexity issue\", \"perplexity deep debug\". saas-packs read grep bash(curl:*) bash(jq:*) "
     },
     {
       "type": "skill",
@@ -62126,7 +62126,8 @@
       "allowedTools": [
         "Read",
         "Grep",
-        "Bash(curl:*)"
+        "Bash(curl:*)",
+        "Bash(jq:*)"
       ],
       "compatibleWith": [],
       "version": "1.12.0",
@@ -62134,7 +62135,7 @@
         "name": "perplexity-pack",
         "category": "saas-packs"
       },
-      "searchText": "perplexity-common-errors diagnose and fix perplexity sonar api errors and exceptions. use when encountering perplexity errors, debugging failed requests, or troubleshooting integration issues. trigger with phrases like \"perplexity error\", \"fix perplexity\", \"perplexity not working\", \"debug perplexity\", \"perplexity 429\". saas-packs read grep bash(curl:*) "
+      "searchText": "perplexity-common-errors diagnose and fix perplexity sonar api errors and exceptions. use when encountering perplexity errors, debugging failed requests, or troubleshooting integration issues. trigger with phrases like \"perplexity error\", \"fix perplexity\", \"perplexity not working\", \"debug perplexity\", \"perplexity 429\". saas-packs read grep bash(curl:*) bash(jq:*) "
     },
     {
       "type": "skill",
@@ -62314,8 +62315,11 @@
       "allowedTools": [
         "Read",
         "Grep",
-        "Bash(kubectl:*)",
-        "Bash(curl:*)"
+        "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(mktemp:*)",
+        "Bash(tar:*)",
+        "Bash(rm:*)"
       ],
       "compatibleWith": [],
       "version": "1.12.0",
@@ -62323,7 +62327,7 @@
         "name": "perplexity-pack",
         "category": "saas-packs"
       },
-      "searchText": "perplexity-incident-runbook execute perplexity incident response procedures with triage, mitigation, and postmortem. use when responding to perplexity api outages, investigating search failures, or running post-incident reviews for perplexity integration issues. trigger with phrases like \"perplexity incident\", \"perplexity outage\", \"perplexity down\", \"perplexity on-call\", \"perplexity emergency\". saas-packs read grep bash(kubectl:*) bash(curl:*) "
+      "searchText": "perplexity-incident-runbook execute perplexity incident response procedures with triage, mitigation, and postmortem. use when responding to perplexity api outages, investigating search failures, or running post-incident reviews for perplexity integration issues. trigger with phrases like \"perplexity incident\", \"perplexity outage\", \"perplexity down\", \"perplexity on-call\", \"perplexity emergency\". saas-packs read grep bash(curl:*) bash(jq:*) bash(mktemp:*) bash(tar:*) bash(rm:*) "
     },
     {
       "type": "skill",
@@ -62584,7 +62588,7 @@
       "id": "perplexity-reliability-patterns",
       "slug": "perplexity-reliability-patterns",
       "name": "perplexity-reliability-patterns",
-      "description": "Implement reliability patterns for Perplexity Sonar API: circuit breaker, model fallback, streaming timeout, and citation validation. Trigger with phrases like \"perplexity reliability\", \"perplexity circuit breaker\", \"perplexity fallback\", \"perplexity resilience\", \"perplexity timeout\".",
+      "description": "Implement reliability patterns for Perplexity Sonar API: circuit breaker, model fallback, streaming timeout, and citation validation. Use when production search needs bounded retries, tenant-safe cache fallback, stream cancellation, or untrusted citation handling. Trigger with phrases like \"perplexity reliability\", \"perplexity circuit breaker\", \"perplexity fallback\", \"perplexity resilience\", \"perplexity timeout\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -62597,7 +62601,7 @@
         "name": "perplexity-pack",
         "category": "saas-packs"
       },
-      "searchText": "perplexity-reliability-patterns implement reliability patterns for perplexity sonar api: circuit breaker, model fallback, streaming timeout, and citation validation. trigger with phrases like \"perplexity reliability\", \"perplexity circuit breaker\", \"perplexity fallback\", \"perplexity resilience\", \"perplexity timeout\". saas-packs read write edit "
+      "searchText": "perplexity-reliability-patterns implement reliability patterns for perplexity sonar api: circuit breaker, model fallback, streaming timeout, and citation validation. use when production search needs bounded retries, tenant-safe cache fallback, stream cancellation, or untrusted citation handling. trigger with phrases like \"perplexity reliability\", \"perplexity circuit breaker\", \"perplexity fallback\", \"perplexity resilience\", \"perplexity timeout\". saas-packs read write edit "
     },
     {
       "type": "skill",

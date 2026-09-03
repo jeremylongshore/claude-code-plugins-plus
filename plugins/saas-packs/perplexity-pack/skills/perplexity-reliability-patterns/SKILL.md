@@ -5,6 +5,10 @@ description: 'Implement reliability patterns for Perplexity Sonar API: circuit b
 
   streaming timeout, and citation validation.
 
+  Use when production search needs bounded retries, tenant-safe cache fallback,
+
+  stream cancellation, or untrusted citation handling.
+
   Trigger with phrases like "perplexity reliability", "perplexity circuit breaker",
 
   "perplexity fallback", "perplexity resilience", "perplexity timeout".
@@ -33,6 +37,8 @@ Production reliability patterns for Perplexity Sonar API. Perplexity performs li
 - Understanding of search latency variability
 
 ## Instructions
+
+Use `Read` to map the existing request path, then use `Write` or `Edit` only for the selected bounded pattern. Preserve the application's authorization, tenant, data-classification, and observability boundaries while applying the steps below.
 
 ### Step 1: Model Tier Fallback
 
@@ -69,10 +75,16 @@ async function resilientSearch(
         model: response.model,
         fallback: model !== preferredModel,
       };
-    } catch (err: any) {
-      lastError = err;
-      if (err.status === 401 || err.status === 402) throw err; // Don't retry auth/billing
-      console.warn(`[Reliability] ${model} failed (${err.status || err.message}), trying next`);
+    } catch (err: unknown) {
+      const status = typeof err === "object" && err !== null && "status" in err
+        ? Number((err as { status: unknown }).status)
+        : 0;
+      lastError = err instanceof Error ? err : new Error("Perplexity request failed");
+
+      // Fallback is only for transient/provider failures. Retrying 4xx request,
+      // authentication, or billing failures through another model amplifies harm.
+      if (status !== 408 && status !== 429 && status < 500) throw lastError;
+      console.warn(`[Reliability] ${model} had a retryable failure; trying the bounded fallback.`);
     }
   }
 
@@ -93,7 +105,11 @@ class CircuitBreaker {
     private resetTimeMs: number = 60000
   ) {}
 
-  async execute<T>(fn: () => Promise<T>, fallback: () => Promise<T>): Promise<T> {
+  async execute<T>(
+    fn: () => Promise<T>,
+    fallback: () => Promise<T>,
+    isTripFailure: (error: unknown) => boolean,
+  ): Promise<T> {
     if (this.state === "open") {
       if (Date.now() - this.lastFailure > this.resetTimeMs) {
         this.state = "half-open";
@@ -110,7 +126,8 @@ class CircuitBreaker {
         this.failures = 0;
       }
       return result;
-    } catch (err) {
+    } catch (err: unknown) {
+      if (!isTripFailure(err)) throw err;
       this.failures++;
       this.lastFailure = Date.now();
       if (this.failures >= this.threshold) {
@@ -132,7 +149,13 @@ const cachedFallback = () => getCachedResult(query);
 
 const result = await breaker.execute(
   () => resilientSearch(query, "sonar-pro"),
-  cachedFallback
+  cachedFallback,
+  (error) => {
+    const status = typeof error === "object" && error !== null && "status" in error
+      ? Number((error as { status: unknown }).status)
+      : 0;
+    return status === 408 || status === 429 || status >= 500;
+  },
 );
 ```
 
@@ -144,27 +167,46 @@ async function* streamWithTimeout(
   model: string = "sonar",
   chunkTimeoutMs: number = 10000
 ): AsyncGenerator<{ type: "text" | "citations" | "timeout"; data: any }> {
-  const stream = await perplexity.chat.completions.create({
-    model,
-    messages: [{ role: "user", content: query }],
-    stream: true,
-    max_tokens: 2048,
-  });
+  const controller = new AbortController();
+  const stream = await perplexity.chat.completions.create(
+    {
+      model,
+      messages: [{ role: "user", content: query }],
+      stream: true,
+      max_tokens: 2048,
+    },
+    { signal: controller.signal },
+  );
+  const iterator = stream[Symbol.asyncIterator]();
 
-  let lastChunkAt = Date.now();
+  try {
+    while (true) {
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const next = iterator.next();
+      const timed = new Promise<never>((_, reject) => {
+        timer = setTimeout(() => reject(new Error("chunk-timeout")), chunkTimeoutMs);
+      });
 
-  for await (const chunk of stream) {
-    if (Date.now() - lastChunkAt > chunkTimeoutMs) {
-      yield { type: "timeout", data: "Stream stalled — no data for 10s" };
-      return;
+      try {
+        const item = await Promise.race([next, timed]);
+        if (item.done) return;
+        const text = item.value.choices[0]?.delta?.content || "";
+        if (text) yield { type: "text", data: text };
+        const citations = (item.value as { citations?: string[] }).citations;
+        if (citations) yield { type: "citations", data: citations };
+      } catch (error) {
+        if (error instanceof Error && error.message === "chunk-timeout") {
+          controller.abort();
+          yield { type: "timeout", data: "Stream stalled before the next chunk." };
+          return;
+        }
+        throw error;
+      } finally {
+        if (timer) clearTimeout(timer);
+      }
     }
-
-    lastChunkAt = Date.now();
-    const text = chunk.choices[0]?.delta?.content || "";
-    if (text) yield { type: "text", data: text };
-
-    const citations = (chunk as any).citations;
-    if (citations) yield { type: "citations", data: citations };
+  } finally {
+    controller.abort();
   }
 }
 
@@ -187,17 +229,26 @@ const reliabilityCache = new LRUCache<string, any>({
   ttl: 24 * 3600_000, // 24-hour stale cache for reliability
 });
 
-async function searchWithCacheFallback(query: string, model = "sonar") {
-  const key = createHash("sha256").update(`${model}:${query}`).digest("hex");
+async function searchWithCacheFallback(
+  tenantId: string,
+  query: string,
+  model = "sonar",
+  cacheable = false,
+) {
+  if (!/^[A-Za-z0-9_-]{1,64}$/.test(tenantId)) throw new Error("invalid tenant id");
+  const normalizedQuery = query.normalize("NFKC").trim();
+  const key = createHash("sha256")
+    .update(`${tenantId}:${model}:${normalizedQuery}`)
+    .digest("hex");
 
   try {
     const response = await resilientSearch(query, model);
-    // Update cache on success
-    reliabilityCache.set(key, response);
+    // Cache only data explicitly classified for this tenant and retention window.
+    if (cacheable) reliabilityCache.set(key, response);
     return { ...response, source: "live" };
   } catch {
     // Serve stale cache as last resort
-    const cached = reliabilityCache.get(key);
+    const cached = cacheable ? reliabilityCache.get(key) : undefined;
     if (cached) {
       console.warn("[Reliability] Serving stale cached result");
       return { ...cached, source: "stale-cache" };
@@ -210,34 +261,32 @@ async function searchWithCacheFallback(query: string, model = "sonar") {
 ### Step 5: Citation URL Validation
 
 ```typescript
-async function validateCitations(
-  citations: string[],
-  timeoutMs: number = 5000
-): Promise<Array<{ url: string; status: number; valid: boolean }>> {
-  const results = await Promise.allSettled(
-    citations.slice(0, 5).map(async (url) => {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), timeoutMs);
-      try {
-        const response = await fetch(url, {
-          method: "HEAD",
-          signal: controller.signal,
-          redirect: "follow",
-        });
-        return { url, status: response.status, valid: response.status < 400 };
-      } catch {
-        return { url, status: 0, valid: false };
-      } finally {
-        clearTimeout(timeout);
-      }
-    })
-  );
+import { isIP } from "node:net";
 
-  return results.map((r) =>
-    r.status === "fulfilled" ? r.value : { url: "", status: 0, valid: false }
-  );
+function validateCitations(
+  citations: string[],
+  allowedHosts: ReadonlySet<string>,
+): Array<{ url: string; valid: boolean; reason?: string }> {
+  return citations.slice(0, 20).map((raw) => {
+    try {
+      const url = new URL(raw);
+      const host = url.hostname.toLowerCase().replace(/\.$/, "");
+      const allowed = [...allowedHosts].some(
+        (candidate) => host === candidate || host.endsWith(`.${candidate}`),
+      );
+      if (url.protocol !== "https:") return { url: raw, valid: false, reason: "https-required" };
+      if (url.username || url.password) return { url: raw, valid: false, reason: "userinfo-forbidden" };
+      if (host === "localhost" || isIP(host) !== 0) return { url: raw, valid: false, reason: "local-or-ip-host" };
+      if (!allowed) return { url: raw, valid: false, reason: "host-not-allowlisted" };
+      return { url: url.href, valid: true };
+    } catch {
+      return { url: raw, valid: false, reason: "invalid-url" };
+    }
+  });
 }
 ```
+
+This validator deliberately performs no server-side fetch. Citation URLs are model-supplied, untrusted input; following them from backend infrastructure creates SSRF, redirect, DNS-rebinding, and tracking risk. If availability checks are required, send normalized allowlisted URLs to an isolated egress-controlled service.
 
 ## Error Handling
 
@@ -247,6 +296,16 @@ async function validateCitations(
 | Stream stalls | Search hanging on source | Per-chunk timeout detection |
 | Broken citation links | Source pages moved/deleted | Validate URLs before displaying |
 | All models failing | Perplexity outage | Serve stale cache, circuit breaker |
+
+## Examples
+
+### Tenant-safe degraded search
+
+For a tenant whose request is explicitly cacheable, key the cache by tenant, model, and normalized query. On a retryable provider failure, serve only that tenant's retained result and label it stale. For authentication, billing, validation, or policy failures, bypass both model fallback and cached success so the caller sees the actionable error.
+
+### Reject an unsafe citation without fetching it
+
+Pass `https://docs.example.com/research` with `docs.example.com` in the approved host set and retain the normalized URL. Reject `http://example.com`, `https://127.0.0.1/admin`, `https://user:pass@example.com`, and `https://unapproved.example.net`. The application may render valid citations as user-clicked links with normal browser protections; the backend does not probe them.
 
 ## Output
 
@@ -260,6 +319,7 @@ async function validateCitations(
 
 - [Perplexity API Documentation](https://docs.perplexity.ai)
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
+- [Reliability verification matrix](references/reliability-test-matrix.md)
 
 ## Next Steps
 

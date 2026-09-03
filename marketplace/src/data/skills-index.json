@@ -25997,7 +25997,7 @@
     {
       "slug": "perplexity-reliability-patterns",
       "name": "perplexity-reliability-patterns",
-      "description": "Implement reliability patterns for Perplexity Sonar API: circuit breaker, model fallback, streaming timeout, and citation validation. Trigger with phrases like \"perplexity reliability\", \"perplexity circuit breaker\", \"perplexity fallback\", \"perplexity resilience\", \"perplexity timeout\".",
+      "description": "Implement reliability patterns for Perplexity Sonar API: circuit breaker, model fallback, streaming timeout, and citation validation. Use when production search needs bounded retries, tenant-safe cache fallback, stream cancellation, or untrusted citation handling. Trigger with phrases like \"perplexity reliability\", \"perplexity circuit breaker\", \"perplexity fallback\", \"perplexity resilience\", \"perplexity timeout\".",
       "version": "1.12.0",
       "category": "saas-packs",
       "parentPlugin": "perplexity-pack",
@@ -35812,7 +35812,7 @@
     }
   ],
   "count": 2984,
-  "generatedAt": "2026-09-03T00:04:21.806Z",
+  "generatedAt": "2026-09-03T01:04:01.203Z",
   "categories": [
     "ai-agency",
     "ai-ml",

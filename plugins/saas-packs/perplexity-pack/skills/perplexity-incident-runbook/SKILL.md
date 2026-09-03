@@ -12,7 +12,7 @@ description: 'Execute Perplexity incident response procedures with triage, mitig
   "perplexity down", "perplexity on-call", "perplexity emergency".
 
   '
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+allowed-tools: Read, Grep, Bash(curl:*), Bash(jq:*), Bash(mktemp:*), Bash(tar:*), Bash(rm:*)
 version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -28,6 +28,22 @@ compatibility: Designed for Claude Code
 
 Rapid incident response for Perplexity Sonar API issues. Perplexity-specific: the API depends on live web search, so outages can be partial (search degraded but API responding), model-specific (sonar-pro down but sonar working), or citation-related (answers returned but no sources).
 
+## Prerequisites
+
+- Incident commander, severity, affected tenant or route, and next update time assigned
+- `PERPLEXITY_API_KEY` supplied by the approved secret manager
+- `curl`, `jq`, `mktemp`, and `tar` installed for the metadata-only evidence collector
+- A synthetic prompt that contains no customer, employee, credential, or regulated data
+- Approved fallback and cache policy; never expose stale or cross-tenant content implicitly
+
+## Instructions
+
+1. Declare the incident and freeze unrelated changes. Use `Read` and `Grep` only on approved telemetry to record aggregate symptoms and provider request IDs, never prompts, answers, API keys, or raw logs.
+2. Run the bounded triage against the fixed Perplexity API origin with a synthetic prompt. Treat non-200 and malformed 200 responses as failures.
+3. Classify the fault as credential/billing, throttling, provider 5xx, network, model-specific, or citation-quality degradation before choosing mitigation.
+4. Apply only a pre-approved mitigation: bounded retry, concurrency reduction, model fallback for compatible requests, or tenant-scoped cache fallback.
+5. Verify recovery with the same probe, monitor one complete traffic window, then create the allowlisted evidence bundle and postmortem.
+
 ## Severity Levels
 
 | Level | Definition | Response Time | Example |
@@ -41,12 +57,17 @@ Rapid incident response for Perplexity Sonar API issues. Perplexity-specific: th
 
 ```bash
 set -euo pipefail
+test -n "${PERPLEXITY_API_KEY:-}" || {
+  echo "PERPLEXITY_API_KEY is not set" >&2
+  exit 1
+}
 echo "=== Perplexity Triage ==="
 
 # 1. Test sonar model
 echo -n "sonar: "
-curl -s -w "HTTP %{http_code} in %{time_total}s" -o /dev/null \
-  -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
+curl --silent --show-error --connect-timeout 5 --max-time 30 \
+  --write-out "HTTP %{http_code} in %{time_total}s" --output /dev/null \
+  -H "Authorization: Bearer ${PERPLEXITY_API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{"model":"sonar","messages":[{"role":"user","content":"test"}],"max_tokens":5}' \
   https://api.perplexity.ai/chat/completions
@@ -54,25 +75,16 @@ echo ""
 
 # 2. Test sonar-pro model
 echo -n "sonar-pro: "
-curl -s -w "HTTP %{http_code} in %{time_total}s" -o /dev/null \
-  -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
+curl --silent --show-error --connect-timeout 5 --max-time 30 \
+  --write-out "HTTP %{http_code} in %{time_total}s" --output /dev/null \
+  -H "Authorization: Bearer ${PERPLEXITY_API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{"model":"sonar-pro","messages":[{"role":"user","content":"test"}],"max_tokens":5}' \
   https://api.perplexity.ai/chat/completions
 echo ""
 
-# 3. Check API key validity
-echo -n "Auth: "
-curl -s -o /dev/null -w "%{http_code}" \
-  -H "Authorization: Bearer invalid-key" \
-  -H "Content-Type: application/json" \
-  -d '{"model":"sonar","messages":[{"role":"user","content":"test"}],"max_tokens":5}' \
-  https://api.perplexity.ai/chat/completions
-echo " (expect 401 = API reachable)"
-
-# 4. DNS check
-echo -n "DNS: "
-dig +short api.perplexity.ai
+# A 200 status proves authenticated reachability. Do not send a deliberately
+# invalid credential: it creates avoidable authentication noise and no stronger proof.
 ```
 
 ## Decision Tree
@@ -87,7 +99,7 @@ API returning errors?
 │   ├─ All models affected?
 │   │   ├─ YES → Perplexity outage. Enable fallback/cache.
 │   │   └─ NO → Model-specific issue. Route to working model.
-│   └─ Check Perplexity community forum for status
+│   └─ Check the official Perplexity system-status page
 ├─ Timeout: No response
 │   ├─ DNS resolves? → Check network/firewall
 │   └─ DNS fails? → DNS issue. Use alternative resolver.
@@ -101,29 +113,21 @@ API returning errors?
 
 ```bash
 set -euo pipefail
-# Verify current key
-echo "Key prefix: ${PERPLEXITY_API_KEY:0:5}"
-echo "Key length: ${#PERPLEXITY_API_KEY}"
-
-# If key is invalid: regenerate at perplexity.ai/settings/api
-# Update in secret manager:
-# gcloud secrets versions add perplexity-api-key --data-file=<(echo -n "NEW_KEY")
-# kubectl create secret generic perplexity-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-# kubectl rollout restart deployment/your-app
+test -n "${PERPLEXITY_API_KEY:-}" || {
+  echo "credential is absent from this process" >&2
+  exit 1
+}
+printf '%s\n' "credential is configured; do not print its prefix, length, or value"
 ```
+
+If rotation is required, use the organization secret manager's audited rotation procedure, update the workload reference without placing the value on a command line, and verify rollout health before revoking the previous version.
 
 ### Rate Limited (429)
 
 ```bash
 set -euo pipefail
-# Check if we're making too many requests
-# Default limit: 50 RPM per API key
-
-# Immediate: reduce concurrency
-# kubectl set env deployment/your-app PERPLEXITY_MAX_CONCURRENT=1
-
-# Enable request queuing if not already active
-# kubectl set env deployment/your-app PERPLEXITY_QUEUE_MODE=true
+printf '%s\n' "pause admission or reduce concurrency through the approved deployment control"
+printf '%s\n' "honor bounded Retry-After and queue overflow; do not guess a universal RPM limit"
 ```
 
 ### Model-Specific Fallback
@@ -136,15 +140,18 @@ async function resilientSearch(query: string) {
       model: "sonar-pro",
       messages: [{ role: "user", content: query }],
     });
-  } catch (err: any) {
-    if (err.status >= 500) {
+  } catch (err: unknown) {
+    const status = typeof err === "object" && err !== null && "status" in err
+      ? Number((err as { status: unknown }).status)
+      : 0;
+    if (status === 408 || status >= 500) {
       console.warn("sonar-pro unavailable, falling back to sonar");
       return await perplexity.chat.completions.create({
         model: "sonar",
         messages: [{ role: "user", content: query }],
       });
     }
-    throw err;
+    throw err instanceof Error ? err : new Error("Perplexity request failed");
   }
 }
 ```
@@ -169,20 +176,62 @@ IC: @[name]
 
 ```bash
 set -euo pipefail
-# Collect debug bundle
-mkdir -p incident-evidence
+umask 077
+test -n "${PERPLEXITY_API_KEY:-}" || {
+  echo "PERPLEXITY_API_KEY is not set" >&2
+  exit 1
+}
+case "${PERPLEXITY_INCIDENT_ID:-}" in
+  ""|*[!A-Za-z0-9._-]*)
+    echo "PERPLEXITY_INCIDENT_ID must use only letters, digits, dot, underscore, or hyphen" >&2
+    exit 1
+    ;;
+esac
 
-# API response during incident
-curl -s \
-  -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
+evidence_dir="$(mktemp -d)"
+trap 'rm -rf -- "${evidence_dir}"' EXIT
+
+response="$(curl --silent --show-error --connect-timeout 5 --max-time 30 \
+  --write-out $'\n%{http_code}\n%{time_total}' \
+  -H "Authorization: Bearer ${PERPLEXITY_API_KEY}" \
   -H "Content-Type: application/json" \
-  -d '{"model":"sonar","messages":[{"role":"user","content":"test"}],"max_tokens":5}' \
-  https://api.perplexity.ai/chat/completions > incident-evidence/api-response.json
+  --data '{"model":"sonar","messages":[{"role":"user","content":"Reply with the single word ready."}],"max_tokens":8}' \
+  https://api.perplexity.ai/chat/completions)"
 
-# Application logs
-kubectl logs -l app=your-app --since=1h > incident-evidence/app-logs.txt 2>/dev/null || true
+latency_seconds="${response##*$'\n'}"
+without_latency="${response%$'\n'*}"
+http_status="${without_latency##*$'\n'}"
+body="${without_latency%$'\n'*}"
+test "${http_status}" = "200" || {
+  echo "evidence probe failed with HTTP ${http_status}; body suppressed" >&2
+  exit 1
+}
 
-tar -czf "incident-$(date +%Y%m%d-%H%M%S).tar.gz" incident-evidence/
+printf '%s\n' "${body}" | jq -e \
+  --arg incident_id "${PERPLEXITY_INCIDENT_ID}" \
+  --arg status "${http_status}" \
+  --arg latency "${latency_seconds}" '
+    {
+      schema_version: "perplexity-incident-summary/v1",
+      incident_id: $incident_id,
+      provider: "perplexity",
+      http_status: ($status | tonumber),
+      latency_seconds: ($latency | tonumber),
+      model: (.model | select(type == "string" and length > 0)),
+      finish_reason: (.choices[0].finish_reason | select(type == "string")),
+      citation_count: ((.citations // []) | length),
+      usage: {
+        prompt_tokens: (.usage.prompt_tokens | select(type == "number")),
+        completion_tokens: (.usage.completion_tokens | select(type == "number")),
+        total_tokens: (.usage.total_tokens | select(type == "number"))
+      }
+    }
+  ' >"${evidence_dir}/summary.json"
+
+# Archive one explicit allowlisted file. Raw API bodies, prompts, answers,
+# citations, request headers, environment, and application logs are never collected.
+tar -czf "perplexity-incident-${PERPLEXITY_INCIDENT_ID}.tar.gz" \
+  -C "${evidence_dir}" summary.json
 ```
 
 ### Postmortem Template
@@ -216,6 +265,16 @@ tar -czf "incident-$(date +%Y%m%d-%H%M%S).tar.gz" incident-evidence/
 | Latency spike | Complex searches | Timeout + fallback to sonar |
 | No citations | Search degradation | Log and monitor, usually resolves |
 
+## Examples
+
+### Provider degradation with a healthy fallback
+
+If `sonar-pro` produces repeated 5xx responses while `sonar` passes the same synthetic probe, route only compatible requests to `sonar`, mark responses as degraded where product behavior differs, and keep the circuit open for a bounded interval. Do not retry authentication, billing, or invalid-request failures through another model.
+
+### Safe post-incident evidence
+
+Set a non-sensitive incident identifier such as `INC-2026-0042`, run the evidence collector, and inspect the archive manifest. It must contain exactly `summary.json`; the JSON must contain only the documented schema fields. Store provider request IDs separately in the incident system, whose access and retention controls are already approved.
+
 ## Output
 
 - Issue triaged and categorized
@@ -226,7 +285,9 @@ tar -czf "incident-$(date +%Y%m%d-%H%M%S).tar.gz" incident-evidence/
 ## Resources
 
 - [Perplexity Community Forum](https://community.perplexity.ai)
+- [Perplexity System Status](https://docs.perplexity.ai/docs/resources/status)
 - [Perplexity API Documentation](https://docs.perplexity.ai)
+- [Evidence bundle contract](references/evidence-contract.md)
 
 ## Next Steps
 

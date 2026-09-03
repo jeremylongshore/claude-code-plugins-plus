@@ -2323,10 +2323,10 @@ plugins/saas-packs/palantir-pack/skills/palantir-sdk-patterns,B,82
 plugins/saas-packs/palantir-pack/skills/palantir-security-basics,B,85
 plugins/saas-packs/palantir-pack/skills/palantir-upgrade-migration,B,84
 plugins/saas-packs/palantir-pack/skills/palantir-webhooks-events,B,82
-plugins/saas-packs/perplexity-pack/skills/perplexity-advanced-troubleshooting,B,81
+plugins/saas-packs/perplexity-pack/skills/perplexity-advanced-troubleshooting,A,96
 plugins/saas-packs/perplexity-pack/skills/perplexity-architecture-variants,C,74
 plugins/saas-packs/perplexity-pack/skills/perplexity-ci-integration,B,85
-plugins/saas-packs/perplexity-pack/skills/perplexity-common-errors,B,84
+plugins/saas-packs/perplexity-pack/skills/perplexity-common-errors,A,98
 plugins/saas-packs/perplexity-pack/skills/perplexity-core-workflow-a,B,85
 plugins/saas-packs/perplexity-pack/skills/perplexity-core-workflow-b,C,78
 plugins/saas-packs/perplexity-pack/skills/perplexity-cost-tuning,B,85
@@ -2335,9 +2335,9 @@ plugins/saas-packs/perplexity-pack/skills/perplexity-debug-bundle,B,87
 plugins/saas-packs/perplexity-pack/skills/perplexity-deploy-integration,B,80
 plugins/saas-packs/perplexity-pack/skills/perplexity-enterprise-rbac,C,78
 plugins/saas-packs/perplexity-pack/skills/perplexity-hello-world,B,86
-plugins/saas-packs/perplexity-pack/skills/perplexity-incident-runbook,C,76
+plugins/saas-packs/perplexity-pack/skills/perplexity-incident-runbook,A,97
 plugins/saas-packs/perplexity-pack/skills/perplexity-install-auth,B,88
-plugins/saas-packs/perplexity-pack/skills/perplexity-known-pitfalls,B,80
+plugins/saas-packs/perplexity-pack/skills/perplexity-known-pitfalls,A,98
 plugins/saas-packs/perplexity-pack/skills/perplexity-load-scale,B,81
 plugins/saas-packs/perplexity-pack/skills/perplexity-local-dev-loop,B,80
 plugins/saas-packs/perplexity-pack/skills/perplexity-migration-deep-dive,C,78
@@ -2348,7 +2348,7 @@ plugins/saas-packs/perplexity-pack/skills/perplexity-policy-guardrails,C,77
 plugins/saas-packs/perplexity-pack/skills/perplexity-prod-checklist,B,87
 plugins/saas-packs/perplexity-pack/skills/perplexity-rate-limits,B,82
 plugins/saas-packs/perplexity-pack/skills/perplexity-reference-architecture,B,87
-plugins/saas-packs/perplexity-pack/skills/perplexity-reliability-patterns,C,76
+plugins/saas-packs/perplexity-pack/skills/perplexity-reliability-patterns,B,89
 plugins/saas-packs/perplexity-pack/skills/perplexity-sdk-patterns,C,79
 plugins/saas-packs/perplexity-pack/skills/perplexity-security-basics,B,82
 plugins/saas-packs/perplexity-pack/skills/perplexity-upgrade-migration,B,83
