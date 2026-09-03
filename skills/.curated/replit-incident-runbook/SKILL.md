@@ -1,18 +1,7 @@
 ---
 name: replit-incident-runbook
-description: 'Execute Replit incident response: triage deployment failures, database
-  issues, and platform outages.
-
-  Use when responding to Replit-related outages, investigating deployment crashes,
-
-  or running post-incident reviews for Replit app failures.
-
-  Trigger with phrases like "replit incident", "replit outage",
-
-  "replit down", "replit emergency", "replit broken", "replit crash".
-
-  '
-allowed-tools: Read, Grep, Bash(curl:*)
+description: 'Triage a Replit published-app incident, separate platform from application failures, contain safely, and preserve redacted evidence. Use when handling outages, crash loops, failed releases, database errors, or production authentication failures. Trigger with phrases like "replit incident", "replit outage", "replit down", or "replit crash".'
+allowed-tools: Read, Grep, Bash(curl:*), Bash(jq:*)
 version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -27,253 +16,131 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Rapid incident response for Replit deployment failures, database issues, and platform outages. Covers triage, diagnosis, remediation, rollback, and communication.
+Restore a Replit published app without turning an outage into a data, credential, or billing incident. Separate a Replit platform event from an application regression, keep evidence allowlisted, and use only a recovery action that the owner approved before the incident.
 
 ## Prerequisites
 
-- Access to Replit Workspace and Deployment settings
-- Deployment URL for health checks
-- Communication channel (Slack, email)
-- Rollback awareness (Deployment History)
+- The published `replit.app` hostname, incident identifier, impact statement, and owner-defined severity policy.
+- Read-only access to Publishing status, logs, monitoring, and the source revision.
+- A named incident commander, communications owner, and production-data owner.
+- The last verified release, migration state, and a tested rollback or fix-forward path.
+- Approval requirements for republishing, changing deployment type/capacity, rotating Secrets, or modifying production data.
 
-## Severity Levels
+## Instructions
 
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | App returns 5xx, DB down |
-| P2 | Degraded service | < 1 hour | Slow responses, intermittent errors |
-| P3 | Minor impact | < 4 hours | Non-critical feature broken |
-| P4 | No user impact | Next business day | Monitoring gap |
+### Step 1 — Establish impact and freeze unrelated changes
 
-## Quick Triage (First 5 Minutes)
+Record the failing user journey, first-seen time, affected population, and current deployment version. Pause unrelated releases. Do not change capacity, DNS, access, Secrets, or data while the failure domain is unknown.
 
-```bash
-set -euo pipefail
-DEPLOY_URL="https://your-app.replit.app"
+### Step 2 — Run metadata-only triage
 
-echo "=== TRIAGE ==="
+This probe accepts only a single-label Replit-owned production hostname. It emits the public platform indicator, HTTP status, and duration; it never prints the response body.
 
-# 1. Check Replit platform status
-echo -n "Replit Status: "
-curl -s https://status.replit.com/api/v2/summary.json | \
-  python3 -c "import sys,json;print(json.load(sys.stdin)['status']['description'])" 2>/dev/null || \
-  echo "Check https://status.replit.com"
-
-# 2. Check your deployment health
-echo -n "App Health: "
-curl -s -o /dev/null -w "HTTP %{http_code} (%{time_total}s)" "$DEPLOY_URL/health" 2>/dev/null || echo "UNREACHABLE"
-echo ""
-
-# 3. Get health details
-echo "Health Response:"
-curl -s "$DEPLOY_URL/health" 2>/dev/null | python3 -m json.tool 2>/dev/null || echo "No response"
-
-# 4. Check if it's a cold start issue (Autoscale)
-echo -n "Second request: "
-curl -s -o /dev/null -w "HTTP %{http_code} (%{time_total}s)\n" "$DEPLOY_URL/health"
-```
-
-## Decision Tree
-
-```
-App not responding?
-├─ YES: Is status.replit.com reporting an incident?
-│   ├─ YES → Platform issue. Wait for Replit. Communicate to users.
-│   └─ NO → Your deployment issue. Continue below.
-│
-│   Can you access the Replit Workspace?
-│   ├─ YES → Check deployment logs:
-│   │   ├─ Build error → Fix code, redeploy
-│   │   ├─ Runtime crash → Check logs, fix, redeploy
-│   │   └─ Secret missing → Add to Secrets tab, redeploy
-│   └─ NO → Network/browser issue. Try incognito window.
-│
-└─ App responds but with errors?
-    ├─ 5xx errors → Check logs for crash/exception
-    ├─ Slow responses → Check database, cold start, memory
-    └─ Auth not working → Verify deployment domain, not dev URL
-```
-
-## Remediation by Error Type
-
-### Deployment Crash (5xx / App Unreachable)
-
-```markdown
-1. Open Replit Workspace
-2. Go to Deployment Settings > Logs
-3. Look for the crash reason:
-   - "Error: Cannot find module..." → Missing dependency
-   - "FATAL: Missing secrets..." → Add to Secrets tab
-   - "EADDRINUSE" → Port conflict in .replit config
-   - "JavaScript heap out of memory" → Increase VM size or fix memory leak
-
-4. Fix the issue in code
-5. Click "Deploy" to redeploy
-6. If fix is unclear, ROLLBACK:
-   - Deployment Settings > History
-   - Click "Rollback" on last known-good version
-```
-
-### Database Connection Failure
-
-```markdown
-1. Check database status in Database pane
-2. Verify DATABASE_URL is set in Secrets
-3. Test connection:
-```
-
-```bash
-# From Replit Shell
-node -e "
-const {Pool} = require('pg');
-const pool = new Pool({connectionString: process.env.DATABASE_URL, ssl:{rejectUnauthorized:false}});
-pool.query('SELECT NOW()').then(r => console.log('OK:', r.rows[0])).catch(e => console.error('FAIL:', e.message)).finally(() => pool.end());
-"
-```
-
-```markdown
-4. If connection fails:
-   - Check if PostgreSQL is provisioned (Database pane)
-   - Try creating a new database
-   - Check for connection pool exhaustion (max connections)
-```
-
-### Cold Start Too Slow (Autoscale)
-
-```markdown
-If cold starts exceed acceptable latency:
-1. Check deployment type: Autoscale scales to zero
-2. Options:
-   a. Switch to Reserved VM (always-on, no cold starts)
-   b. Set up external keep-alive (ping /health every 4 min)
-   c. Optimize startup: lazy imports, defer DB connection
-3. To switch:
-   - Update .replit: deploymentTarget = "cloudrun"
-   - Redeploy
-```
-
-### Secrets Missing After Deploy
-
-```markdown
-1. Open Secrets tab (lock icon in sidebar)
-2. Verify all required secrets are present
-3. Check Deployment Settings > Environment Variables
-4. Secrets should auto-sync (2025+), but if not:
-   - Remove and re-add the secret
-   - Redeploy
-5. For Account-level secrets:
-   - Account Settings > Secrets
-   - These apply to ALL Repls
-```
-
-## Rollback Procedure
-
-```markdown
-Replit supports one-click rollback to any previous deployment:
-
-1. Deployment Settings > History
-2. Find the last successful deployment
-3. Click "Rollback to this version"
-4. Verify health endpoint
-5. Investigate root cause before redeploying fix
-
-Rollback restores:
-- Code at that deployment's commit
-- Deployment configuration at that time
-- Does NOT rollback database changes
-```
-
-## Communication Templates
-
-### Internal (Slack)
-
-```
-P[1-4] INCIDENT: [App Name] on Replit
-Status: INVESTIGATING / IDENTIFIED / MONITORING / RESOLVED
-Impact: [What users are experiencing]
-Cause: [If known]
-Action: [What we're doing]
-ETA: [When we expect resolution]
-Next update: [Time]
-```
-
-### External (Status Page)
-
-```
-[App Name] Service Disruption
-
-We are experiencing issues with [specific feature/service].
-[Describe user impact].
-
-We have identified the cause and are working on a fix.
-Estimated resolution: [time].
-
-Last updated: [timestamp]
-```
-
-## Post-Incident
-
-### Evidence Collection
+Use `Read` for the source revision and configuration, and `Grep` only for incident-relevant call sites or request identifiers; do not export whole files or logs.
 
 ```bash
 set -euo pipefail
-# Capture deployment logs
-# Go to Deployment Settings > Logs > Copy relevant entries
+: "${REPLIT_DEPLOY_URL:?Set the exact https://<app>.replit.app origin}"
 
-# Capture timeline
-echo "Timeline of events:" > incident-report.md
-echo "- [time] Issue detected" >> incident-report.md
-echo "- [time] Investigation started" >> incident-report.md
-echo "- [time] Root cause identified" >> incident-report.md
-echo "- [time] Fix deployed / rollback executed" >> incident-report.md
-echo "- [time] Service restored" >> incident-report.md
+if [[ ! "$REPLIT_DEPLOY_URL" =~ ^https://[a-z0-9]([a-z0-9-]*[a-z0-9])?\.replit\.app$ ]]; then
+  printf 'Refusing unapproved deployment origin\n' >&2
+  exit 64
+fi
+
+# Bound the third-party status payload to 64 KiB before parsing it.
+status_json="$(curl --silent --show-error --fail --location --max-redirs 2 \
+  --connect-timeout 5 --max-time 10 --max-filesize 65536 --proto '=https' \
+  'https://status.replit.com/api/v2/summary.json')" || {
+  printf 'Unable to retrieve Replit status safely\n' >&2
+  exit 1
+}
+platform_indicator="$(printf '%s' "$status_json" | jq -er \
+  '.status.indicator | select(type == "string" and length <= 32)')" || {
+  printf 'Invalid Replit status response\n' >&2
+  exit 1
+}
+
+app_probe="$(curl --silent --show-error --output /dev/null \
+  --write-out '%{http_code} %{time_total}' --connect-timeout 5 --max-time 10 \
+  --proto '=https' "$REPLIT_DEPLOY_URL/healthz")" || {
+  printf 'Published app probe failed\n' >&2
+  exit 1
+}
+read -r app_status duration_seconds <<<"$app_probe"
+[[ "$app_status" =~ ^[0-9]{3}$ && "$duration_seconds" =~ ^[0-9]+([.][0-9]+)?$ ]] || {
+  printf 'Invalid probe metadata\n' >&2
+  exit 1
+}
+
+jq -cn --arg platform "$platform_indicator" --arg status "$app_status" \
+  --arg duration "$duration_seconds" \
+  '{platform_indicator:$platform,http_status:$status,duration_seconds:$duration}'
 ```
 
-### Postmortem Template
+Do not add authorization headers, cookies, query tokens, or arbitrary custom origins to this probe. Review custom domains separately.
 
-```markdown
-## Incident: [Title]
-**Date:** YYYY-MM-DD
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
+### Step 3 — Classify the failure domain
 
-### Summary
-[1-2 sentence description of what happened]
+| Evidence | Likely domain | Next safe check |
+|---|---|---|
+| Replit status indicates an incident | Platform | communicate impact; avoid speculative app changes |
+| Preview fails before publishing | Application/build | run command, dependency, port, application error |
+| Preview passes; publishing fails | Release configuration | Publishing logs, build/run commands, production Secrets |
+| Release succeeds; public URL fails | Runtime/environment | callback URLs, database, access policy, storage |
+| Only some users fail | Auth/authorization/data | two-user isolation and tenant-scoped queries |
+| Error rate/latency rises with load | Capacity/dependency | Monitoring, pool limits, downstream latency |
 
-### Root Cause
-[Technical explanation]
+### Step 4 — Contain with the smallest reversible action
 
-### Timeline
-- HH:MM — First alert
-- HH:MM — Investigation started
-- HH:MM — Root cause found
-- HH:MM — Fix deployed / rollback
-- HH:MM — Service restored
+- Platform incident: communicate, preserve evidence, and monitor. Do not churn configuration.
+- Bad release with a verified prior version: use the preapproved recovery procedure exposed by the current Publishing/version-control flow, then verify the public URL.
+- Missing production configuration: add only the approved Secret name/value through Publishing; never paste it into chat, logs, or source.
+- Capacity exhaustion: shed optional work or apply an approved capacity change with cost owner acknowledgment.
+- Bad database migration: follow the database-specific recovery plan. An application release change does not reverse data mutations.
 
-### Impact
-- Users affected: [N]
-- Downtime: [duration]
+### Step 5 — Inspect logs without exporting them wholesale
 
-### Action Items
-- [ ] [Prevention measure] — Owner — Due date
+Search Publishing logs for the relevant time window, request identifier, and error class. Record only timestamp, deployment version, coarse error class, request identifier, and redacted finding. Never archive or paste unrestricted logs, prompts, request bodies, headers, URLs containing tokens, environment output, or customer records.
+
+### Step 6 — Verify recovery
+
+Repeat the failed user journey at the published URL, confirm coarse health and monitoring recovery, test authentication/tenant isolation when implicated, and observe for the owner-defined stabilization window. Resume releases only after the incident commander records the outcome.
+
+## Examples
+
+Platform degradation:
+
+```text
+Evidence: public Replit status is degraded; multiple unrelated apps affected
+Action: communicate impact, pause releases, monitor provider recovery
+Avoid: changing app configuration without app-specific evidence
 ```
+
+Application regression:
+
+```text
+Evidence: Replit status normal; Preview passes; new published release returns 5xx
+Action: compare release revision and production configuration, then use the pretested recovery
+Verify: original user journey, public health, error rate, and tenant isolation
+```
+
+## Output
+
+Produce a redacted incident record containing incident ID, severity, impact, first/last timestamps, published revision, Replit status indicator, HTTP status, failure domain, containment, recovery action, verification, owners, and follow-ups. Link restricted evidence rather than embedding raw logs or customer data.
 
 ## Error Handling
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Can't access Workspace | Replit outage | Use status.replit.com, wait |
-| Rollback not available | No previous deployments | Fix forward, deploy fix |
-| Logs too short | Container restarted | Set up external log aggregator |
-| DB rollback needed | Bad migration | Restore from Replit DB snapshot |
+- If the probe rejects the hostname, verify the Replit-owned origin manually; do not weaken the allowlist during an incident.
+- If Replit status cannot be parsed, mark provider state unknown and continue with application evidence.
+- If logs contain possible credentials or customer data, stop copying and use the approved security review channel.
+- If no verified recovery exists, fix forward with a bounded change instead of improvising a destructive rollback.
+- If production data may be inconsistent, freeze writes when the owner-approved plan permits and involve the data owner.
 
 ## Resources
 
 - [Replit Status](https://status.replit.com)
-- [Deployment Rollbacks](https://blog.replit.com/introducing-deployment-rollbacks)
-- [Monitoring Deployments](https://docs.replit.com/cloud-services/deployments/monitoring-a-deployment)
-- [Replit Support](https://replit.com/support)
-
-## Next Steps
-
-For data handling patterns, see `replit-data-handling`.
+- [Troubleshoot publishing](https://docs.replit.com/build/troubleshooting)
+- [Publishing overview](https://docs.replit.com/features/publishing/overview)
+- [Deployment types](https://docs.replit.com/features/publishing/deployment-types)
+- [Secrets](https://docs.replit.com/core-concepts/project-editor/app-setup/secrets)
+- [Storage and Databases](https://docs.replit.com/learn/projects-and-artifacts/storage-and-databases)
