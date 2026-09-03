@@ -72150,7 +72150,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.2.0",
+      "version": "3.3.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72170,7 +72170,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.2.0",
+      "version": "3.3.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72189,7 +72189,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.2.0",
+      "version": "3.3.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72209,7 +72209,7 @@
         "Bash(terraform:plan*)"
       ],
       "compatibleWith": [],
-      "version": "3.2.0",
+      "version": "3.3.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72228,7 +72228,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.2.0",
+      "version": "3.3.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72247,7 +72247,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.2.0",
+      "version": "3.3.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72267,7 +72267,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.2.0",
+      "version": "3.3.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72286,7 +72286,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.2.0",
+      "version": "3.3.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
