@@ -1,7 +1,7 @@
-# CLI flags quick reference (skillcrossroads 0.11.3)
+# CLI flags quick reference (skillcrossroads 0.11.4)
 
 All invocations in this skill pin the version and pass `--no-llm`:
-`npx skillcrossroads@0.11.3 '<skill-dir>' --no-llm <flags>`.
+`npx skillcrossroads@0.11.4 '<skill-dir>' --no-llm <flags>`.
 Single-quote the directory argument (see SKILL.md step 2 for the shell-safety rationale).
 
 ⚠️ **`--no-llm` is not the CLI's own default.** Without it, the CLI sends content to

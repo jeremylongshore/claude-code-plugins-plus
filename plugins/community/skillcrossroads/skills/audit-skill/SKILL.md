@@ -7,7 +7,7 @@ description: 'Audit and improve a Claude Code skill using Skill Crossroads. Use 
 allowed-tools: Read, Edit, Grep, Glob, Bash(npx:*)
 disable-model-invocation: true
 argument-hint: <skill-dir — path to the directory containing SKILL.md>
-version: 0.11.3
+version: 0.11.4
 author: Steve Harlow <sgharlow@users.noreply.github.com>
 license: MIT
 tags:
@@ -67,7 +67,7 @@ the grade stops improving.
    directory or ask the user for a safe path first.
 
    ```bash
-   npx skillcrossroads@0.11.3 '<skill-dir>' --no-llm --markdown
+   npx skillcrossroads@0.11.4 '<skill-dir>' --no-llm --markdown
    ```
 
 3. Report the scorecard and the **Top fixes** list (ranked by grade impact) to the user.
@@ -88,7 +88,7 @@ the grade stops improving.
    On a yes, and only when `ANTHROPIC_API_KEY` is set:
 
    ```bash
-   npx skillcrossroads@0.11.3 '<skill-dir>' --suggest
+   npx skillcrossroads@0.11.4 '<skill-dir>' --suggest
    ```
 
    If the user declines, or no key is set, continue with the step 2 findings — they already
@@ -100,7 +100,7 @@ the grade stops improving.
    constraints and failure modes; remove hardcoded secrets or over-broad `allowed-tools`.
 5. Re-run the audit. Repeat steps 4–5 until the grade stops improving or only intentional
    trade-offs remain.
-6. Offer the badge: `npx skillcrossroads@0.11.3 '<skill-dir>' --no-llm --badge` writes an SVG the user
+6. Offer the badge: `npx skillcrossroads@0.11.4 '<skill-dir>' --no-llm --badge` writes an SVG the user
    can embed in their README, linking to https://skillcrossroads.com for the hosted version.
    It lands in the **current working directory** as `<name>.beacon.svg`, not inside the skill
    directory; pass `--badge=<path>` to choose where it goes.
@@ -134,7 +134,7 @@ the grade stops improving.
 User: *"Audit my skill in `skills/deploy-checker` — why doesn't it trigger?"*
 
 ```bash
-npx skillcrossroads@0.11.3 'skills/deploy-checker' --no-llm --markdown
+npx skillcrossroads@0.11.4 'skills/deploy-checker' --no-llm --markdown
 ```
 
 The report grades Triggering low, citing `SKILL.md:3` — the description lacks the phrases a
@@ -146,7 +146,7 @@ to review proposed rewrites before applying them.
 ## Verify
 
 Done means: for an audit-only request, the scorecard and Top fixes list were reported with no
-files modified. For a fix request: the final `npx skillcrossroads@0.11.3 '<skill-dir>' --no-llm --markdown`
+files modified. For a fix request: the final `npx skillcrossroads@0.11.4 '<skill-dir>' --no-llm --markdown`
 run shows the improved grade with **no fail-status findings remaining** (or each remaining one
 acknowledged by the user as intentional), and the before → after grades are reported to the user.
 
@@ -154,7 +154,7 @@ acknowledged by the user as intentional), and the before → after grades are re
 
 - [references/rubric-categories.md](references/rubric-categories.md) — the six rubric categories, their weights, and keyless vs. LLM-upgraded coverage.
 - [references/flags-quick-reference.md](references/flags-quick-reference.md) — `--markdown` / `--suggest` / `--badge` / `--min-grade` at a glance.
-- [skillcrossroads on npm](https://www.npmjs.com/package/skillcrossroads) — the CLI this skill runs (pinned to 0.11.3).
+- [skillcrossroads on npm](https://www.npmjs.com/package/skillcrossroads) — the CLI this skill runs (pinned to 0.11.4).
 - [skillcrossroads.com](https://skillcrossroads.com) — hosted scans, badges, and per-check fix documentation.
 - [Check reference](https://skillcrossroads.com/docs/checks) — what every rubric check measures and how to fix it.
 - [Source repository](https://github.com/sgharlow/skillcrossroads) — `plugin/` there is the

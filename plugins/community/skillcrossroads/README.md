@@ -25,7 +25,7 @@ Upstream source: [github.com/sgharlow/skillcrossroads](https://github.com/sgharl
 Two npm packages are involved, with different owners by design:
 
 - **`skillcrossroads`** (un-scoped) — the CLI this skill runs, published and maintained
-  from the upstream source repo above. The skill pins it (`npx skillcrossroads@0.11.3`).
+  from the upstream source repo above. The skill pins it (`npx skillcrossroads@0.11.4`).
 - **`@intentsolutionsio/skillcrossroads`** — the `package.json` in *this* directory. It is
   the marketplace's generated tracking/proof artifact (every catalog plugin is scaffolded
   under the `@intentsolutionsio` scope for npm download tracking) and is not the CLI.

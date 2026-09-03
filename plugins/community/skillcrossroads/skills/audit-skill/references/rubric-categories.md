@@ -1,4 +1,4 @@
-# The six rubric categories (skillcrossroads 0.11.3)
+# The six rubric categories (skillcrossroads 0.11.4)
 
 Every scan scores the artifact across six weighted categories. The overall letter grade is
 the weighted average; each finding in the scorecard belongs to exactly one category and

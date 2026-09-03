@@ -739,19 +739,19 @@
     },
     "skillcrossroads": {
       "repo": "sgharlow/skillcrossroads",
-      "resolved_ref": "8a9b6ce588d0cf64eb3f2b433504125c99419745",
-      "locked_at": "2026-09-03T18:28:47.114Z",
+      "resolved_ref": "32a705ca207a58be7a77be59058ed4cd36406172",
+      "locked_at": "2026-09-03T19:55:46.289Z",
       "files": {
-        ".claude-plugin/plugin.json": "sha256:2735a18b14021fa118dd8246004590b8c172bd9103043947c3409b319e325359",
+        ".claude-plugin/plugin.json": "sha256:53d966fa235d2ac67056ff3931aba0d6c04d1148b30224934e08e52986855b61",
         "LICENSE": "sha256:4dcc217acd1eee58ad0cc6631e02326433a9209cb36cd856e94df90aee379792",
-        "README.md": "sha256:62336ba4c5bc60d254cdca5ccc422537bcfb0541372a8b704bc9fd2a602ad046",
-        "docs/PRD.md": "sha256:8b9b633f646424fb7e2edbcc6a266a08d8fa715c4f4dea66617b8c623ec090c9",
-        "skills/audit-skill/SKILL.md": "sha256:382ec9929473c2cfbd7625d33856ff276125380151b94450668e757b74e8e17e",
+        "README.md": "sha256:e3b17a6a2e06d4ccd967ec54b40df7fc5803daafd63dad126f168c089294c097",
+        "docs/PRD.md": "sha256:03bc0e5dd169fffd328d79f15a719b19143a1d75221f8d813b7807cbf14041f6",
+        "skills/audit-skill/SKILL.md": "sha256:14d1c7635bfe4a8114a611753b6a71447515b90762caba1ea2cc4b0727cf9818",
         "skills/audit-skill/evals/audit-and-fix-low-grade-skill.md": "sha256:dc4577518fe99c9b091fa985c8bf6ae7234e34fad7caba2eb291a10fdf2e0ffa",
-        "skills/audit-skill/evals/audit-clean-skill.md": "sha256:1ed278c8245a724eba39a6f4889d8d17b1d2e54341e525fdadd9e686cdf14edd",
-        "skills/audit-skill/evals/npx-unavailable.md": "sha256:db24f74274c9cab2842c9dc06446af77b1442c466ef18a729c8c45a83cc16dba",
-        "skills/audit-skill/references/flags-quick-reference.md": "sha256:ded995264c6adb9a5657586c7f845ad377ffb89436201276cd06152bc39947be",
-        "skills/audit-skill/references/rubric-categories.md": "sha256:c4f07c149a035e4cfa5c8702aca33937445db7ec4521c6ddc0d26d20f068eb8b"
+        "skills/audit-skill/evals/audit-clean-skill.md": "sha256:36de5c1ae9b531111c815b5e88666deb1fc29a7b95f93acdf72ff1bc107e4042",
+        "skills/audit-skill/evals/npx-unavailable.md": "sha256:08dc274b83cf54db638a04673e27a706af2adb78bdf1f7416bd02595c631bd94",
+        "skills/audit-skill/references/flags-quick-reference.md": "sha256:9460bb2e33386b9f5de1d90496c5f5b85c5aac01a4f8324fd0ba82ada715595a",
+        "skills/audit-skill/references/rubric-categories.md": "sha256:01e696caaefae1d9d0d6664f62924983e02b8e4fbbcd242591d51235f3131827"
       }
     },
     "skills-janitor": {

@@ -6,7 +6,7 @@
 description with "Use when..." trigger cues, an evals/ folder, no secrets).
 
 **Expect:**
-- Runs `npx skillcrossroads@0.11.3 './my-skill' --no-llm --markdown` (does not hand-estimate a grade).
+- Runs `npx skillcrossroads@0.11.4 './my-skill' --no-llm --markdown` (does not hand-estimate a grade).
 - Reports the actual overall score/grade and states whether the LLM-assisted checks ran
   (i.e. whether `ANTHROPIC_API_KEY` was set).
 - Since there are no fail-status findings, does NOT invent fixes to apply — reports the

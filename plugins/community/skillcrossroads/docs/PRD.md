@@ -23,7 +23,7 @@ it by hand.
 
 ## Success criteria
 
-1. `npx skillcrossroads@0.11.3 <skill-dir> --markdown` runs from inside Claude Code and
+1. `npx skillcrossroads@0.11.4 <skill-dir> --markdown` runs from inside Claude Code and
    returns a letter grade plus findings, each cited with file and line — no hand-estimated
    grades, ever (the skill stops and reports the error verbatim if the CLI fails).
 2. The audit-fix-re-audit loop measurably raises the grade (before → after reported to the
@@ -36,7 +36,7 @@ it by hand.
 
 ## Functional requirements
 
-- **FR-1:** Grade a skill directory via the pinned CLI (`npx skillcrossroads@0.11.3`) and
+- **FR-1:** Grade a skill directory via the pinned CLI (`npx skillcrossroads@0.11.4`) and
   present the scorecard and ranked Top fixes list.
 - **FR-2:** Apply the smallest edit that resolves each confirmed finding, re-run the audit,
   and iterate until the grade stops improving.

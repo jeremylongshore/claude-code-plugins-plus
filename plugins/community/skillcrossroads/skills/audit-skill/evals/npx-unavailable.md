@@ -1,7 +1,7 @@
 # Eval: npx fails (offline / registry blocked)
 
 **Prompt:** "Audit my skill" (run in a sandbox with no network access / npm registry
-blocked, so `npx skillcrossroads@0.11.3` fails to fetch the package).
+blocked, so `npx skillcrossroads@0.11.4` fails to fetch the package).
 
 **Expect:**
 - Reports the `npx` error verbatim to the user.
