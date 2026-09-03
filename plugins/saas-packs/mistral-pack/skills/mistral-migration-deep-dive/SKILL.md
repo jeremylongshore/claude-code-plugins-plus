@@ -12,7 +12,7 @@ description: 'Execute migration to Mistral AI from OpenAI, Anthropic, or other p
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

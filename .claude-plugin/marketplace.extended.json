@@ -6599,7 +6599,7 @@
       "name": "mistral-pack",
       "source": "./plugins/saas-packs/mistral-pack",
       "description": "Complete Mistral AI integration skill pack with 24 skills covering model inference, embeddings, fine-tuning, and production deployments. Flagship tier vendor pack.",
-      "version": "1.12.0",
+      "version": "1.13.0",
       "category": "saas-packs",
       "keywords": [
         "mistral",

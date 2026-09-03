@@ -12,7 +12,7 @@ description: 'Deploy Mistral AI integrations to Vercel, Docker, and Cloud Run pl
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(docker:*), Bash(gcloud:*)
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
