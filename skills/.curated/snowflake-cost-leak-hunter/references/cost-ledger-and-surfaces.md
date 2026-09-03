@@ -48,6 +48,45 @@ particular:
 Declare `metadata.expected_surfaces` and provide one `surface_inventory` row per
 surface. Do not remove an unavailable surface from the denominator.
 
+## Analyzer envelope and exact keys
+
+Pass the collector's normalized rows without renaming their top-level keys:
+
+| Evidence class | Exact top-level keys |
+|---|---|
+| Baseline datasets | `warehouse_metering`, `query_attribution`, `warehouse_load`, `serverless_usage` |
+| Supplemental datasets | `adaptive_usage`, `storage_usage`, `data_transfer_usage`, `internal_transfer_usage`, `ai_usage` |
+| Coverage and proof | `surface_inventory`, `collector_receipt`, `supplemental_receipts`, `source_max_times` |
+| Controls and billing | `controls_inventory`, `invoice_usage`, `credit_rates` |
+
+`serverless_usage` is the compatibility key for generic `METERING_HISTORY`, not a
+serverless-only claim. `source_max_times` uses the four baseline dataset keys and is
+descriptive activity evidence only; it cannot prove ingestion freshness.
+
+Do not hand-build or trim receipts. Preserve `collected_at`,
+`collection_started_at`, `collection_completed_at`, `source_views`, `sql_sha256`,
+`template_sha256`, `rendered_sql_sha256`, `selector_fingerprint`, `result_sha256`,
+`receipt_sha256`, row-count/cap fields, `truncation_possible`, and the complete
+`datasets` object emitted by the reviewed collector. The baseline receipt belongs at
+`collector_receipt`; each optional surface receipt belongs at
+`supplemental_receipts.<dataset_key>`. `truncation_possible` must be exactly `false`
+before that surface can support completeness.
+
+The receipt's single `execution_context` row has an exact reviewed shape. Its
+`account_identifier_sha256`, `collector_user_sha256`, `primary_role_sha256`, and
+`secondary_roles_sha256` values are lowercase 64-hex digests; `session_timezone` is
+`UTC`; and `observed_at` falls inside the collection interval. `primary_role_type`
+must be `ROLE`, or `APPLICATION_INSTANCE` only in a native-app context.
+`DATABASE_ROLE` is not a valid result of `CURRENT_ROLE_TYPE()`.
+
+For query rows, keep `query_tag_present` boolean exactly aligned with the presence of
+`query_tag_sha256`. Preserve optional `query_hash` and `query_parameterized_hash` only
+as lowercase 64-hex organization/account-scoped digests. See
+[warehouse and idle evidence](warehouse-and-idle-evidence.md) for the normalized row
+example and rate-card shape. `controls_inventory` is an object with
+`resource_monitors` and `budgets` arrays; `invoice_usage` remains invoice-only, and
+`credit_rates` can create estimates but never prove reconciliation.
+
 ```json
 {
   "surface": "adaptive_usage",

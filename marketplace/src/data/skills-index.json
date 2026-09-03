@@ -31061,7 +31061,7 @@
     {
       "slug": "snowflake-cost-leak-hunter",
       "name": "snowflake-cost-leak-hunter",
-      "description": "Audit Snowflake warehouse, serverless, Adaptive, storage, transfer, and AI cost evidence with a typed ledger that prevents double counting and exposes freshness, attribution, control, and invoice boundaries. Use when a Snowflake bill increased, a team needs chargeback/showback evidence, credits appear unexplained, or an operator asks which usage merits investigation. Trigger with \"Snowflake bill increased\", \"find idle Snowflake credits\", \"Snowflake cost attribution\", or \"untagged Snowflake spend\". Do not use to mutate cost controls or claim savings.",
+      "description": "Audit and analyze Snowflake warehouse, serverless, Adaptive, storage, transfer, and AI cost evidence with a typed ledger that prevents double counting and exposes freshness, attribution, control, and invoice boundaries. Use when a Snowflake bill increased, a team needs chargeback/showback evidence, credits appear unexplained, or an operator asks which usage merits investigation. Trigger with \"Snowflake bill increased\", \"find idle Snowflake credits\", \"Snowflake cost attribution\", or \"untagged Snowflake spend\". Do not use to mutate cost controls or claim savings.",
       "version": "3.5.0",
       "category": "saas-packs",
       "parentPlugin": "snowflake-pack",
@@ -35452,7 +35452,7 @@
     }
   ],
   "count": 2954,
-  "generatedAt": "2026-09-03T18:49:17.482Z",
+  "generatedAt": "2026-09-03T19:41:27.864Z",
   "categories": [
     "ai-agency",
     "ai-ml",

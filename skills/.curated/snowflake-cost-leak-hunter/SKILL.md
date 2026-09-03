@@ -1,7 +1,7 @@
 ---
 name: snowflake-cost-leak-hunter
 description: >-
-  Audit Snowflake warehouse, serverless, Adaptive, storage, transfer, and AI cost
+  Audit and analyze Snowflake warehouse, serverless, Adaptive, storage, transfer, and AI cost
   evidence with a typed ledger that prevents double counting and exposes freshness,
   attribution, control, and invoice boundaries. Use when a Snowflake bill increased,
   a team needs chargeback/showback evidence, credits appear unexplained, or an
@@ -103,36 +103,16 @@ python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
   --output /tmp/snowflake-cost-collector.json
 ```
 
-Map its `datasets.warehouse_metering`, `query_attribution`, `warehouse_load`, and
-`serverless_usage` rows into the analyzer schema. `serverless_usage` is a legacy
-input key for generic `METERING_HISTORY` rows, not a product classification; public
-ledger domains and metrics use `metering:<SERVICE_TYPE>`. Preserve `collected_at`,
-source views, row count, and sanitized errors. The collector's current-week query is a
-discovery aid; it cannot support a settled claim unless both UTC bounds and the
-applicable fixed latency cutoff are bound into the receipt. Call out rows outside or
-missing from the requested window.
-If `truncation_possible` is true, do not issue a completeness or savings verdict;
-narrow or partition the window and recollect until every receipt is below its cap.
-Every usage row must carry `start_time` and `end_time` wholly inside the requested
-window. Query attribution uses `query_tag_present` and optional
-`query_tag_sha256`; never supply raw user names or query tags.
-The reviewed collector re-hashes Snowflake's query and parameterized-query hashes with
-the organization/account scope before export; both analyzer fingerprint fields must be
-lowercase 64-hex digests.
-The analyzer treats a missing collector receipt as unverified and blocks completeness
-and savings claims. When supplied, it verifies the receipt's surface, source views,
-reviewed SQL hash, receipt hash, dataset rows, status, and cap. An error, mismatch,
-missing integrity field, or possible truncation is surfaced in the report and blocks
-completeness/savings claims. A verified self-checksum establishes only local
-self-consistency; it does not authenticate Snowflake, the connection, or the collector.
-The bundled collector currently supplies the baseline warehouse, query, load, and
-generic metering receipt. Supplemental canonical templates live under
-`scripts/sql/cost-*.sql`; collect each needed surface with the same bundled collector,
-for example `--surface cost-storage --window-start <UTC> --window-end <UTC>`. Put its complete JSON receipt under
-`supplemental_receipts.<surface_inventory_name>`. The analyzer verifies the exact
-template, source, normalized payload, collection time, cap, and canonical receipt hash.
-An unavailable region, edition, view, or privilege is a bounded finding, never a reason
-to broaden privileges or treat the surface as zero.
+Map the baseline receipt's warehouse, query, load, and generic metering datasets into
+the analyzer schema. The legacy input key `serverless_usage` means generic
+`METERING_HISTORY`; public labels use `metering:<SERVICE_TYPE>`. Preserve every receipt
+field and reject out-of-window rows, cap uncertainty, missing integrity fields, and
+unscoped fingerprints. A self-checksum proves local consistency, not Snowflake origin.
+
+Collect needed supplemental `cost-*` surfaces with the same bounded collector and put
+each complete receipt under `supplemental_receipts.<surface_inventory_name>`. Follow
+[the surface contract](references/cost-ledger-and-surfaces.md) for the exact dataset
+keys, hashes, latency cutoffs, privacy rules, and unavailable-surface behavior.
 
 ## Instructions
 
@@ -177,51 +157,16 @@ Use the queries and field definitions in
 Export only the normalized fields accepted by
 `scripts/analyze_cost_evidence.py`; exclude raw SQL text and credentials.
 
-The input JSON has these optional evidence arrays:
+The input accepts baseline warehouse/query/load/metering arrays; supplemental
+Adaptive, storage, transfer, AI, monitor, and budget evidence; optional invoice rows;
+and user-supplied credit rates. Read
+[the surface contract](references/cost-ledger-and-surfaces.md) for the exact keys and
+overlap rules. Inventory assertions without matching receipts block completeness.
 
-- `warehouse_metering`: hourly or pre-aggregated warehouse credit observations;
-- `query_attribution`: per-query attributed compute and query-acceleration credits;
-- `serverless_usage`: legacy compatibility name for generic metering rows, which can
-  include warehouses, serverless, cloud services, and Openflow and must not be
-  described as serverless-only; output labels use `metering:<SERVICE_TYPE>`, and the
-  reviewed SQL sums same-service/hour entity rows before applying its cap;
-- `adaptive_usage`: per-query Adaptive credits from `QUERY_METERING_HISTORY`;
-- `storage_usage`: daily average-byte snapshots converted across non-overlapping
-  intervals to explicitly labeled `byte-days`, never additive raw bytes or invoice truth;
-- `data_transfer_usage` and `internal_transfer_usage`: transfer bytes retained in
-  their native unit;
-- `ai_usage`: detailed Cortex AI Functions credits. Snowflake's general
-  [service-type taxonomy](https://docs.snowflake.com/en/sql-reference/service-types)
-  labels this usage `AI_FUNCTIONS`, while
-  [`METERING_HISTORY`](https://docs.snowflake.com/en/sql-reference/account-usage/metering_history)
-  exposes the broader `AI_SERVICES` total. Treat the detail as attribution beneath an
-  aligned `AI_SERVICES` row when present, without asserting equality; `AI_SERVICES`
-  also includes Cortex Analyst, and this detail surface does not cover all Cortex/AI
-  products;
-- `surface_inventory`: operator assertions about availability, privilege, latency,
-  freshness, and truncation for every expected surface; the matching collector receipt
-  and fixed policy remain authoritative;
-- `supplemental_receipts`: exact collector envelopes keyed by `adaptive_usage`,
-  `storage_usage`, `data_transfer_usage`, `internal_transfer_usage`, `ai_usage`,
-  `resource_monitors`, or `budgets`; an inventory assertion without its matching
-  receipt blocks completeness;
-- `controls_inventory`: visibility-scoped resource-monitor and budget inventory;
-- `invoice_usage`: optional customer-supplied billing-statement rows, kept as
-  `invoice-only` entries and never inferred from usage views;
-- `credit_rates`: user-supplied rate-card entries used only for estimates.
-
-Every supplied source must include its maximum returned activity timestamp in
-`source_max_times`. This is descriptive and cannot establish ingestion freshness; an
-absent source is not zero usage.
-Set `metadata.identity_disclosure_authorized` explicitly. When it is `true`, also
-supply the trusted-digest-bound `metadata.identity_disclosure_authority`; only then may
-`account`, `role`, `review_owner`, and `approval_boundary` contain safe display text.
-When it is `false`, omit the authority and supply all four fields as lowercase 64-hex
-organization-and-account-scoped digests. Never export raw user names, query tags,
-query text, notification addresses, contract numbers, credentials, or connection
-values. Collector `primary_role_type` must be `ROLE`, or `APPLICATION_INSTANCE` only
-inside a native-app context; `DATABASE_ROLE` is not a valid return from
-`CURRENT_ROLE_TYPE()`.
+Record each source's maximum activity timestamp only as descriptive context; it does
+not prove freshness, and an absent source is not zero usage. Apply the reference's
+identity-disclosure contract. Never export raw users, tags, query text, notification
+addresses, contract numbers, credentials, or connection values.
 
 ### 4. Run deterministic analysis
 
@@ -246,15 +191,8 @@ python3 "${CLAUDE_SKILL_DIR}/scripts/analyze_cost_evidence.py" \
 ```
 
 The script validates non-negative numeric evidence, sums with decimal arithmetic, and
-keeps five ledger roles separate:
-
-- **Total** — additive usage totals such as warehouse metering or generic service
-  metering.
-- **Attribution** — a child breakdown of a total, such as query or AI-function usage;
-  never additive with its parent.
-- **Context** — non-price operational measures such as storage or transfer bytes.
-- **Estimate** — a non-additive currency conversion from an applicable customer rate.
-- **Invoice-only** — billing truth that cannot be inferred from operational views.
+keeps `total`, `attribution`, `context`, `estimate`, and `invoice-only` ledger roles
+separate. Their additive and overlap rules are defined in the surface contract.
 
 It does not apply magnitude thresholds, infer a price, or recommend a warehouse size.
 Daily average storage snapshots must remain per day or use an explicitly labeled
