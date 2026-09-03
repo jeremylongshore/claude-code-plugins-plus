@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-09-02T04:55:57.759Z",
+  "generatedAt": "2026-09-03T04:13:59.701Z",
   "max_age_hours": 72,
-  "publishedCount": 394,
-  "establishedCount": 394,
-  "candidateCount": 423,
-  "totalDay": 641,
-  "totalWeek": 3272,
-  "totalMonth": 11794,
-  "establishedDay": 641,
-  "establishedWeek": 3272,
-  "establishedMonth": 11794,
+  "publishedCount": 393,
+  "establishedCount": 393,
+  "candidateCount": 422,
+  "totalDay": 637,
+  "totalWeek": 3250,
+  "totalMonth": 11725,
+  "establishedDay": 637,
+  "establishedWeek": 3250,
+  "establishedMonth": 11725,
   "top": [
     {
       "name": "@intentsolutionsio/openrouter-pack",
@@ -226,15 +226,6 @@
       "lastMonth": 72,
       "createdAt": 1776741243728,
       "latestVersion": "2.1.7"
-    },
-    {
-      "name": "@intentsolutionsio/perplexity-pack",
-      "status": "published",
-      "lastDay": 4,
-      "lastWeek": 22,
-      "lastMonth": 69,
-      "createdAt": 1767929523683,
-      "latestVersion": "1.0.2"
     },
     {
       "name": "@intentsolutionsio/hubspot-pack",
@@ -3559,9 +3550,9 @@
     }
   ],
   "telemetry": {
-    "candidates": 423,
-    "probed": 423,
-    "published": 394,
+    "candidates": 422,
+    "probed": 422,
+    "published": 393,
     "unpublished": 27,
     "foreign": 2,
     "rateLimited": 0,

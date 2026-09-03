@@ -72,13 +72,13 @@ Every number below names the cohort it counts and the command that reproduces it
 
 ### 📦 Live npm Downloads
 
-Across **394 published packages** in the [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
+Across **393 published packages** in the [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window        | All packages | Established (>30d) |
 | ------------- | -----------: | -----------------: |
-| Last 24 hours |          641 |                641 |
-| Last 7 days   |        3,272 |              3,272 |
-| Last 30 days  |       11,794 |             11,794 |
+| Last 24 hours |          637 |                637 |
+| Last 7 days   |        3,250 |              3,250 |
+| Last 30 days  |       11,725 |             11,725 |
 
 <sub>"Established" excludes packages first published within the last 30 days, so a bulk-publish event doesn't dominate the headline.</sub>
 
@@ -97,7 +97,7 @@ Across **394 published packages** in the [claude-code-plugins](https://www.npmjs
 | 9   | [`@intentsolutionsio/penetration-tester`](https://www.npmjs.com/package/@intentsolutionsio/penetration-tester)           |      125 |
 | 10  | [`@intentsolutionsio/langchain-py-pack`](https://www.npmjs.com/package/@intentsolutionsio/langchain-py-pack)             |      121 |
 
-<sub>Last refreshed 2026-09-02T04:55:57.759Z.</sub>
+<sub>Last refreshed 2026-09-03T04:13:59.701Z.</sub>
 
 <!-- NPM-STATS:END -->
 
