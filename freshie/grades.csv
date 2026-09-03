@@ -2348,7 +2348,7 @@ plugins/saas-packs/perplexity-pack/skills/perplexity-policy-guardrails,C,77
 plugins/saas-packs/perplexity-pack/skills/perplexity-prod-checklist,B,87
 plugins/saas-packs/perplexity-pack/skills/perplexity-rate-limits,B,82
 plugins/saas-packs/perplexity-pack/skills/perplexity-reference-architecture,B,87
-plugins/saas-packs/perplexity-pack/skills/perplexity-reliability-patterns,B,89
+plugins/saas-packs/perplexity-pack/skills/perplexity-reliability-patterns,A,90
 plugins/saas-packs/perplexity-pack/skills/perplexity-sdk-patterns,C,79
 plugins/saas-packs/perplexity-pack/skills/perplexity-security-basics,B,82
 plugins/saas-packs/perplexity-pack/skills/perplexity-upgrade-migration,B,83

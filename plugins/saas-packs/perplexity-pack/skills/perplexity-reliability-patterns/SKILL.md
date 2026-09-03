@@ -42,6 +42,8 @@ Use `Read` to map the existing request path, then use `Write` or `Edit` only for
 
 ### Step 1: Model Tier Fallback
 
+Add the status, SDK transport, and bounded `Retry-After` helpers from [the reliability verification matrix](references/reliability-test-matrix.md) in the same module before applying this fallback.
+
 ```typescript
 import OpenAI from "openai";
 
@@ -52,112 +54,78 @@ const perplexity = new OpenAI({
 
 async function resilientSearch(
   query: string,
-  preferredModel: string = "sonar-pro"
+  preferredModel: string = "sonar-pro",
+  options: {
+    maxElapsedMs?: number;
+    maxRateLimitRetriesPerModel?: number;
+    sleep?: (delayMs: number) => Promise<void>;
+    now?: () => number;
+  } = {},
 ) {
-  const fallbackChain = [preferredModel, "sonar"];
-  let lastError: Error | null = null;
+  const fallbackChain = [...new Set([preferredModel, "sonar"])];
+  const requestedElapsedMs = options.maxElapsedMs ?? 15_000;
+  const requestedRateLimitRetries = options.maxRateLimitRetriesPerModel ?? 1;
+  const maxElapsedMs = Number.isFinite(requestedElapsedMs)
+    ? Math.min(30_000, Math.max(1, Math.trunc(requestedElapsedMs)))
+    : 15_000;
+  const maxRateLimitRetries = Number.isFinite(requestedRateLimitRetries)
+    ? Math.min(2, Math.max(0, Math.trunc(requestedRateLimitRetries)))
+    : 1;
+  const sleep = options.sleep ?? ((delayMs) => new Promise((resolve) => setTimeout(resolve, delayMs)));
+  const now = options.now ?? Date.now;
+  const startedAt = now();
+  let lastError: unknown;
 
   for (const model of fallbackChain) {
-    try {
-      const response = await perplexity.chat.completions.create({
-        model,
-        messages: [{ role: "user", content: query }],
-        max_tokens: model === "sonar-pro" ? 2048 : 512,
-      });
+    let rateLimitRetries = 0;
+    while (true) {
+      if (lastError !== undefined && now() - startedAt >= maxElapsedMs) throw lastError;
+      try {
+        const response = await perplexity.chat.completions.create({
+          model,
+          messages: [{ role: "user", content: query }],
+          max_tokens: model === "sonar-pro" ? 2048 : 512,
+        });
 
-      if (model !== preferredModel) {
-        console.warn(`[Reliability] Fell back from ${preferredModel} to ${model}`);
+        if (model !== preferredModel) {
+          console.warn(`[Reliability] Fell back from ${preferredModel} to ${model}`);
+        }
+
+        return {
+          answer: response.choices[0].message.content || "",
+          citations: (response as any).citations || [],
+          model: response.model,
+          fallback: model !== preferredModel,
+        };
+      } catch (error: unknown) {
+        lastError = error;
+        if (!isRetryablePerplexityError(error)) throw error;
+
+        if (perplexityStatus(error) === 429 && rateLimitRetries < maxRateLimitRetries) {
+          const delayMs = boundedRetryAfterMs(error);
+          if (now() - startedAt + delayMs > maxElapsedMs) throw error;
+          rateLimitRetries++;
+          try {
+            await sleep(delayMs);
+          } catch {
+            throw error;
+          }
+          continue;
+        }
+
+        console.warn(`[Reliability] ${model} had a retryable failure; trying the bounded fallback.`);
+        break;
       }
-
-      return {
-        answer: response.choices[0].message.content || "",
-        citations: (response as any).citations || [],
-        model: response.model,
-        fallback: model !== preferredModel,
-      };
-    } catch (err: unknown) {
-      const status = typeof err === "object" && err !== null && "status" in err
-        ? Number((err as { status: unknown }).status)
-        : 0;
-      lastError = err instanceof Error ? err : new Error("Perplexity request failed");
-
-      // Fallback is only for transient/provider failures. Retrying 4xx request,
-      // authentication, or billing failures through another model amplifies harm.
-      if (status !== 408 && status !== 429 && status < 500) throw lastError;
-      console.warn(`[Reliability] ${model} had a retryable failure; trying the bounded fallback.`);
     }
   }
 
-  throw lastError || new Error("All models failed");
+  throw lastError ?? new Error("All models failed");
 }
 ```
 
 ### Step 2: Circuit Breaker
 
-```typescript
-class CircuitBreaker {
-  private failures = 0;
-  private lastFailure = 0;
-  private state: "closed" | "open" | "half-open" = "closed";
-
-  constructor(
-    private threshold: number = 5,
-    private resetTimeMs: number = 60000
-  ) {}
-
-  async execute<T>(
-    fn: () => Promise<T>,
-    fallback: () => Promise<T>,
-    isTripFailure: (error: unknown) => boolean,
-  ): Promise<T> {
-    if (this.state === "open") {
-      if (Date.now() - this.lastFailure > this.resetTimeMs) {
-        this.state = "half-open";
-      } else {
-        console.warn("[CircuitBreaker] Open — using fallback");
-        return fallback();
-      }
-    }
-
-    try {
-      const result = await fn();
-      if (this.state === "half-open") {
-        this.state = "closed";
-        this.failures = 0;
-      }
-      return result;
-    } catch (err: unknown) {
-      if (!isTripFailure(err)) throw err;
-      this.failures++;
-      this.lastFailure = Date.now();
-      if (this.failures >= this.threshold) {
-        this.state = "open";
-        console.warn(`[CircuitBreaker] Opened after ${this.failures} failures`);
-      }
-      return fallback();
-    }
-  }
-
-  get status() {
-    return { state: this.state, failures: this.failures };
-  }
-}
-
-// Usage
-const breaker = new CircuitBreaker(5, 60000);
-const cachedFallback = () => getCachedResult(query);
-
-const result = await breaker.execute(
-  () => resilientSearch(query, "sonar-pro"),
-  cachedFallback,
-  (error) => {
-    const status = typeof error === "object" && error !== null && "status" in error
-      ? Number((error as { status: unknown }).status)
-      : 0;
-    return status === 408 || status === 429 || status >= 500;
-  },
-);
-```
+Trip the breaker only for `isRetryablePerplexityError(error)`. Terminal authentication, billing, validation, policy, and unknown failures must bypass the breaker and its fallback so the original error reaches the caller. Read the circuit-breaker implementation in [the reliability verification matrix](references/reliability-test-matrix.md); it contains the reusable class and the half-open concurrency contract.
 
 ### Step 3: Streaming with Timeout Protection
 
@@ -165,48 +133,80 @@ const result = await breaker.execute(
 async function* streamWithTimeout(
   query: string,
   model: string = "sonar",
-  chunkTimeoutMs: number = 10000
+  chunkTimeoutMs: number = 10_000,
+  establishmentTimeoutMs: number = 10_000,
 ): AsyncGenerator<{ type: "text" | "citations" | "timeout"; data: any }> {
   const controller = new AbortController();
-  const stream = await perplexity.chat.completions.create(
-    {
-      model,
-      messages: [{ role: "user", content: query }],
-      stream: true,
-      max_tokens: 2048,
-    },
-    { signal: controller.signal },
-  );
-  const iterator = stream[Symbol.asyncIterator]();
 
   try {
-    while (true) {
-      let timer: ReturnType<typeof setTimeout> | undefined;
-      const next = iterator.next();
-      const timed = new Promise<never>((_, reject) => {
-        timer = setTimeout(() => reject(new Error("chunk-timeout")), chunkTimeoutMs);
-      });
+    const stream = await withStreamDeadline(
+      perplexity.chat.completions.create(
+        {
+          model,
+          messages: [{ role: "user", content: query }],
+          stream: true,
+          max_tokens: 2048,
+        },
+        { signal: controller.signal },
+      ),
+      establishmentTimeoutMs,
+      controller,
+      "establishment",
+    );
+    const iterator = stream[Symbol.asyncIterator]();
 
-      try {
-        const item = await Promise.race([next, timed]);
-        if (item.done) return;
-        const text = item.value.choices[0]?.delta?.content || "";
-        if (text) yield { type: "text", data: text };
-        const citations = (item.value as { citations?: string[] }).citations;
-        if (citations) yield { type: "citations", data: citations };
-      } catch (error) {
-        if (error instanceof Error && error.message === "chunk-timeout") {
-          controller.abort();
-          yield { type: "timeout", data: "Stream stalled before the next chunk." };
-          return;
-        }
-        throw error;
-      } finally {
-        if (timer) clearTimeout(timer);
-      }
+    while (true) {
+      const item = await withStreamDeadline(
+        iterator.next(),
+        chunkTimeoutMs,
+        controller,
+        "chunk",
+      );
+      if (item.done) return;
+      const text = item.value.choices[0]?.delta?.content || "";
+      if (text) yield { type: "text", data: text };
+      const citations = (item.value as { citations?: string[] }).citations;
+      if (citations) yield { type: "citations", data: citations };
     }
+  } catch (error) {
+    if (error instanceof StreamDeadlineError) {
+      const message = error.phase === "establishment"
+        ? "Stream establishment timed out."
+        : "Stream stalled before the next chunk.";
+      yield { type: "timeout", data: message };
+      return;
+    }
+    throw error;
   } finally {
     controller.abort();
+  }
+}
+
+class StreamDeadlineError extends Error {
+  constructor(readonly phase: "establishment" | "chunk") {
+    super(`${phase}-timeout`);
+  }
+}
+
+async function withStreamDeadline<T>(
+  operation: Promise<T>,
+  timeoutMs: number,
+  controller: AbortController,
+  phase: "establishment" | "chunk",
+): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      reject(new StreamDeadlineError(phase));
+      controller.abort();
+    }, timeoutMs);
+  });
+  try {
+    // Promise.race attaches handlers to both inputs, so a late rejection from
+    // the aborted losing operation cannot become an unhandled rejection.
+    return await Promise.race([operation, timeout]);
+  } finally {
+    if (timer) clearTimeout(timer);
   }
 }
 
@@ -246,56 +246,33 @@ async function searchWithCacheFallback(
     // Cache only data explicitly classified for this tenant and retention window.
     if (cacheable) reliabilityCache.set(key, response);
     return { ...response, source: "live" };
-  } catch {
-    // Serve stale cache as last resort
+  } catch (error: unknown) {
+    // Stale data is a resilience response only to a classified transient
+    // provider failure. Preserve terminal auth, billing, validation, policy,
+    // and unknown statusless errors so callers retain actionable context.
+    if (!isRetryablePerplexityError(error)) throw error;
     const cached = cacheable ? reliabilityCache.get(key) : undefined;
     if (cached) {
       console.warn("[Reliability] Serving stale cached result");
       return { ...cached, source: "stale-cache" };
     }
-    throw new Error("Perplexity unavailable and no cached result");
+    throw error;
   }
 }
 ```
 
 ### Step 5: Citation URL Validation
 
-```typescript
-import { isIP } from "node:net";
-
-function validateCitations(
-  citations: string[],
-  allowedHosts: ReadonlySet<string>,
-): Array<{ url: string; valid: boolean; reason?: string }> {
-  return citations.slice(0, 20).map((raw) => {
-    try {
-      const url = new URL(raw);
-      const host = url.hostname.toLowerCase().replace(/\.$/, "");
-      const allowed = [...allowedHosts].some(
-        (candidate) => host === candidate || host.endsWith(`.${candidate}`),
-      );
-      if (url.protocol !== "https:") return { url: raw, valid: false, reason: "https-required" };
-      if (url.username || url.password) return { url: raw, valid: false, reason: "userinfo-forbidden" };
-      if (host === "localhost" || isIP(host) !== 0) return { url: raw, valid: false, reason: "local-or-ip-host" };
-      if (!allowed) return { url: raw, valid: false, reason: "host-not-allowlisted" };
-      return { url: url.href, valid: true };
-    } catch {
-      return { url: raw, valid: false, reason: "invalid-url" };
-    }
-  });
-}
-```
-
-This validator deliberately performs no server-side fetch. Citation URLs are model-supplied, untrusted input; following them from backend infrastructure creates SSRF, redirect, DNS-rebinding, and tracking risk. If availability checks are required, send normalized allowlisted URLs to an isolated egress-controlled service.
+Use the citation validator in [the reliability verification matrix](references/reliability-test-matrix.md). It normalizes bracketed IPv6 before IP classification and deliberately performs no server-side fetch. Citation URLs are model-supplied, untrusted input; following them from backend infrastructure creates SSRF, redirect, DNS-rebinding, and tracking risk. If availability checks are required, send normalized allowlisted URLs to an isolated egress-controlled service.
 
 ## Error Handling
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| sonar-pro timeout >15s | Complex multi-source search | Fall back to sonar |
-| Stream stalls | Search hanging on source | Per-chunk timeout detection |
+| Classified SDK timeout/transport failure | Provider or network path is transiently unavailable | Retry only within the attempt and elapsed-time budget |
+| Stream establishment or chunk stalls | Request or source search does not progress | Abort the same request signal at the phase deadline |
 | Broken citation links | Source pages moved/deleted | Validate URLs before displaying |
-| All models failing | Perplexity outage | Serve stale cache, circuit breaker |
+| Terminal 4xx or unknown statusless failure | Auth, billing, validation, policy, or unclassified defect | Preserve the original error; never serve stale cache |
 
 ## Examples
 

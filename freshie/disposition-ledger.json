@@ -3,7 +3,7 @@
   "authority": "Blueprint 727 §8; Freshie graded export",
   "source": {
     "path": "freshie/grades.csv",
-    "sha256": "0208bc0e4d8efee107527ef95dc6e8c65e47b0ea90b1957f4ac3117c5455a956",
+    "sha256": "2534c55b13cce7592dba3779e0141aafcd2b7e6855d3dcbad6079192f6f476a8",
     "artifact_count": 3575
   },
   "rule_order": [
@@ -29573,8 +29573,8 @@
     },
     {
       "path": "plugins/saas-packs/perplexity-pack/skills/perplexity-reliability-patterns/SKILL.md",
-      "grade": "B",
-      "score": 89,
+      "grade": "A",
+      "score": 90,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
