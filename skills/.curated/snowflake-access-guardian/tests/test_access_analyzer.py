@@ -99,7 +99,7 @@ class AccessAnalyzerFixtureTests(unittest.TestCase):
         self.assertEqual(report["effective_access"]["status"], "INCOMPLETE_REQUEST")
         self.assertIn("incomplete-grant", {item["category"] for item in report["findings"]})
 
-    def test_direct_user_grant_is_independent_of_secondary_roles_context(self):
+    def test_direct_user_grant_requires_secondary_roles_all(self):
         base = {
             "users": [{"name": "U", "primary_role": "R"}],
             "roles": [{"name": "R"}],
@@ -116,10 +116,8 @@ class AccessAnalyzerFixtureTests(unittest.TestCase):
             data = json.loads(json.dumps(base))
             data["users"][0]["secondary_roles_mode"] = mode
             with self.subTest(mode=mode):
-                self.assertEqual(
-                    analyze(data, "U", "DB.S.T", "SELECT")["effective_access"]["status"],
-                    "OBJECT_PRIVILEGE_PATH_PROVEN",
-                )
+                expected = "OBJECT_PRIVILEGE_PATH_PROVEN" if mode == "ALL" else "NOT_PROVEN"
+                self.assertEqual(analyze(data, "U", "DB.S.T", "SELECT")["effective_access"]["status"], expected)
 
     def test_proof_receipts_must_match_requested_context_and_window(self):
         data = json.loads(json.dumps(self.fixture))
@@ -135,6 +133,15 @@ class AccessAnalyzerFixtureTests(unittest.TestCase):
         no_request = analyze(json.loads(json.dumps(self.fixture)))
         self.assertEqual(no_request["verification"]["positive_proof"]["status"], "NOT_PROVEN")
         self.assertEqual(no_request["verification"]["negative_proof"]["status"], "NOT_PROVEN")
+
+    def test_behavior_proof_after_window_end_is_not_proven(self):
+        data = json.loads(json.dumps(self.fixture))
+        data["metadata"]["collected_at"] = "2026-08-30T12:05:00Z"
+        data["metadata"]["freshness"]["checked_at"] = "2026-08-30T12:05:00Z"
+        data["verification"]["positive"][0]["observed_at"] = "2026-08-30T12:01:00Z"
+        report = analyze(data, "ALICE", "ANALYTICS.CURATED.ORDERS", "SELECT")
+        self.assertEqual(report["verification"]["positive_proof"]["status"], "NOT_PROVEN")
+        self.assertIn("access-proof-timestamp", {item["category"] for item in report["findings"]})
 
     def test_future_or_misordered_freshness_never_passes(self):
         data = json.loads(json.dumps(self.fixture))

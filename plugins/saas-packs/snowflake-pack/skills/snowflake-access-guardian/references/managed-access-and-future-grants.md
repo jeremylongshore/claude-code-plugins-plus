@@ -21,15 +21,18 @@ Never convert ownership findings into automatic `GRANT OWNERSHIP` SQL.
 ## Future grant precedence
 
 Future grants seed privileges on objects created later; they do not repair an
-existing object's current grants. Snowflake documents schema-level future grants
-as taking precedence over database-level future grants for the same object type
-in a schema. Therefore a database future grant and a schema future grant can make
-the effective policy differ from what an operator expects. Compare scope,
-object type, grantee, privilege, and grantor, then test creation in a disposable
-schema if approved.
+existing object's current grants, and revoking a future template does not revoke
+grants already materialized on objects. Snowflake documents schema-level future
+grants as completely replacing database-level definitions for the same object
+type in that schema—even when the grantees differ. They are not applied by table
+rename or swap, cannot be assigned directly to users, and are unsupported for
+some object classes. Compare paired database/schema receipts, object type,
+grantee, privilege, and grantor, then test creation in a disposable schema if
+approved.
 
 ## Sources
 
 - [Managed access schemas](https://docs.snowflake.com/en/user-guide/security-access-control-configure#label-managed-access-schemas)
 - [Future grants](https://docs.snowflake.com/en/user-guide/security-access-control-configure#label-future-grants)
 - [`GRANT OWNERSHIP`](https://docs.snowflake.com/en/sql-reference/sql/grant-ownership)
+- [`GRANT <privileges>` future-grant rules](https://docs.snowflake.com/en/sql-reference/sql/grant-privilege)

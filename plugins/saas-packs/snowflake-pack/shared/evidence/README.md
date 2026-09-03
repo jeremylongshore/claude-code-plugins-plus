@@ -13,12 +13,37 @@ python3 shared/evidence/collect_snowflake_evidence.py \
   --output ./snowflake-query-evidence.json
 ```
 
-Supported surfaces are `cost`, `query`, `pipeline`, `access`, `auth`,
-`data-quality`, and `replication`. Each query is capped and intentionally collects
+Top-level surfaces are `cost`, `query`, `pipeline`, `access`, `auth`,
+`data-quality`, and `replication`. Access also has narrowly scoped `access-*`
+sub-surfaces for the current session, grants to/of a role, user grants, database-
+role grants, and paired database/schema future grants. Each query is bounded and intentionally collects
 metadata rather than SQL text, raw failed rows, credential values, or customer
 payloads. `row_limit` and `truncation_possible` in every receipt expose the reviewed
 cap; a receipt at the cap is partial until a narrower query or pagination proves
 completeness.
+
+Current access sub-surfaces are live-only. Each scoped `SHOW` uses Snowflake's
+pipe operator to project allowlisted grant columns and exactly one execution
+context row in the same statement. The analyzer compares authorization-context
+fingerprints across independent invocations; matching profile names alone are
+not evidence, and different session IDs are never described as one session.
+
+Access receipt schema `2` additionally binds each scoped `SHOW` collection to
+its canonical template hash, rendered SQL hash, selector fingerprint, expected
+datasets, exact per-dataset counts, and selector-presence metadata. Dynamic SQL
+is written with mode `0600` outside the package and removed on success, CLI
+failure, timeout, malformed output, or unexpected runner error. The receipt does
+not expose the selector value. The access analyzer recomputes every binding from
+the schema `2.0` bundle and blocks completeness unless the whole bundle matches
+a separately recorded digest. A match is an operator assertion of byte identity,
+not authentication or provenance.
+
+The access baseline uses `SNOWFLAKE.SECURITY_VIEWER` and can lag by up to 120
+minutes. Current `SHOW` output is limited by the executing primary role. Full
+visibility requires `MANAGE GRANTS`, which can mutate authorization; the
+collector never grants it, switches to `ACCOUNTADMIN`, or changes primary or
+secondary roles. A database future receipt without its relevant schema receipt
+cannot support a precedence claim.
 
 The query surface requires a positive incident freshness bound. Query receipt schema
 `2` records the maximum visible query-history timestamp across all receipted rows as
@@ -36,19 +61,12 @@ boundary. That digest is not a signature or secret-backed MAC. Preserve it separ
 from the evidence transport; computing it from the same untrusted copy creates no
 trust.
 
-Collector error receipts use the same deterministic scalar sanitizer as query-forensics
-output: explicit Authorization and Proxy-Authorization headers consume any valid scheme and
-complete value. Headerless credentials require evidence from a standardized scheme's token
-shape/position or a recognized sensitive parameter using the complete token-name grammar;
-registered SCRAM-SHA-1 and SCRAM-SHA-256 share the same family-safe classification.
-known ambiguous capability/status words remain prose, so arbitrary alphabetic headerless
-token68 is not claimed as complete coverage. Password/token tails, normalized sensitive-key variants, and tokenized Snowflake
-statement families—including chained diagnostic labels, empty prefixes, positional/named
-binds, quoted file URIs, arbitrary integration subtypes, modifiers, and scripting driven
-by a shared statement-verb family—are removed
-before receipt hashing or serialization. Ordinary authentication/OAuth status evidence,
-request counters, and safe prose are preserved. Credential-adjacent `has_*` fields pass
-only when their values are actual booleans.
+Live CLI error receipts never persist free-form stdout or stderr. They contain a
+bounded error code, exit code, and generic local-diagnostics message. The
+deterministic scalar sanitizer remains a defense for explicitly constructed
+error envelopes, but it is not treated as proof that arbitrary provider text is
+safe to serialize. Credential-adjacent `has_*` fields pass only when their
+values are actual booleans.
 
 The bundled query SQL emits analyzer field names directly, including the `_ms` timing
 suffixes. Preserve those row objects exactly when mapping `datasets.query_history`
@@ -112,6 +130,7 @@ Regeneration refuses missing skill structure, unregistered shared-collector
 copies, orphan templates, symlinks, and unexpected destination files. It writes
 only registered collector and SQL files in a pre-staged transaction, rolls the
 complete projection set back if a replacement fails, preserves canonical
-modes, and verifies SHA-256 parity afterward. Receipt
-`sql_sha256` values bind execution to the same canonical template content; they
-are integrity metadata, not proof of origin.
+modes, and verifies SHA-256 parity afterward. Receipt `sql_sha256` values bind
+execution to the same canonical template content; generated selectors also have
+a separate rendered hash and opaque fingerprint. They are integrity metadata,
+not proof of origin.
