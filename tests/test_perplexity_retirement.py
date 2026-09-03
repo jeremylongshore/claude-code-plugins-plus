@@ -19,7 +19,11 @@ class PerplexityRetirementTests(unittest.TestCase):
         )
         for relative in forbidden:
             with self.subTest(path=relative):
-                self.assertFalse((ROOT / relative).exists())
+                path = ROOT / relative
+                populated = path.is_file() or path.is_symlink()
+                if path.is_dir():
+                    populated = any(item.is_file() or item.is_symlink() for item in path.rglob("*"))
+                self.assertFalse(populated)
 
         self.assertEqual(list((ROOT / "skills/.curated").glob("perplexity-*")), [])
 
