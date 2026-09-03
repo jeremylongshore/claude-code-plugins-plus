@@ -12,14 +12,16 @@ The analyzer requires three independent live collector receipts:
 |---|---|---|---|---|
 | `current` | `auth-current` | `SHOW USERS` | `current_users` | Near-current configuration posture, subject to active-role visibility |
 | `historical` | `auth` | `SNOWFLAKE.ACCOUNT_USAGE.USERS` | `historical_users` | Delayed configuration corroboration |
-| `login_history` | `auth-login-history` | `SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY` | `login_history` | Settled seven-day authentication observations |
+| `login_history` | `auth-login-history` | `SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY` | `login_history` | Settled portion of the trailing seven-day authentication horizon |
 
 Each receipt also contains exactly one same-statement `execution_context` row.
 The account, collector user, primary role, and secondary-role representation are
 SHA-256 pseudonyms. The analyzer requires equivalent authorization context across
 all three invocations but does not claim they used one physical session.
 
-The reviewed LOGIN_HISTORY SQL deliberately excludes the newest two hours. Both
+The reviewed `LOGIN_HISTORY` SQL deliberately excludes the newest two hours, so
+its effective settled interval is the older portion of the trailing seven-day
+horizon rather than seven full settled days. Both
 Account Usage sources can lag by up to 120 minutes. A present event is an
 observation. An absent event does not prove that authentication never occurred.
 
@@ -50,6 +52,13 @@ must match the current receipt and the operator user mapping exactly.
     "max_age_seconds": 3600,
     "connection_profile": "auth-readonly",
     "login_history_latency_seconds": 7200,
+    "authorization_context": {
+      "account_identifier_sha256": "<64-lowercase-hex>",
+      "collector_user_sha256": "<64-lowercase-hex>",
+      "primary_role_sha256": "<64-lowercase-hex>",
+      "primary_role_type": "ROLE",
+      "secondary_roles_sha256": "<64-lowercase-hex>"
+    },
     "coverage": {
       "user_name_sha256": ["<64-lowercase-hex>"]
     }
@@ -99,6 +108,10 @@ must match the current receipt and the operator user mapping exactly.
 Use stable internal workload and change references; do not put ticket prose or
 secrets in receipt rows. Raw names in the separate owner inventory are local
 operator inputs and are never inferred from pseudonyms or emitted as collector evidence.
+The top-level bundle, metadata object, receipt wrapper, receipt, datasets, and
+projected rows are exact schemas: unknown fields fail closed. A connection profile
+is only a local profile name containing letters, digits, dot, underscore, or
+hyphen; it is never a connection string or credential field.
 
 ## Trust and freshness
 
@@ -111,15 +124,20 @@ Only `DIGEST_MATCHED_OPERATOR_ASSERTED` permits receipt datasets into scoped
 reconciliation. This status means byte identity with the separately recorded
 bundle; it is not a signature, origin attestation, or statement about who collected it.
 
-Every receipt must be live, recent, internally ordered, below its reviewed cap,
-and bound to the exact bundled SQL and expected source/dataset fields. Offline,
+`metadata.evaluated_at` must be within five minutes of the analyzer's actual UTC
+clock, and `metadata.max_age_seconds` cannot exceed 3600. This prevents a caller
+from moving the entire evidence timeline backward or declaring arbitrarily old
+receipts fresh. Every receipt must be live, recent, internally ordered, below its reviewed cap,
+and bound to the exact bundled SQL, canonical nonclaims, expected authorization
+context, and expected source/dataset fields. Offline,
 stale, future-dated, errored, capped, privilege-filtered, or context-mismatched
 receipts are quarantined.
 
 ## Reconciliation and claims
 
 The current and historical rows join only on `user_name_sha256`. The analyzer
-compares `disabled`, `type`, and the password, RSA, MFA, PAT, and workload-identity
+also compares normalized `created_on` to detect same-name principal recreation,
+then compares `disabled`, `type`, and the password, RSA, MFA, PAT, and workload-identity
 posture flags. `NULL` means unknown, never false. Current-only, historical-only,
 duplicate, malformed, or field-drift rows require review; delayed history never
 overrides the current SHOW observation.
@@ -128,6 +146,13 @@ overrides the current SHOW observation.
 It is not account-wide proof. `LOGIN_HISTORY` cannot set canary, recovery, or
 cutover readiness by itself. Positive target login/action, negative old-path and
 scope outcomes, and a separately tested recovery path remain human approval gates.
+Likewise, `supported_auth` is an operator declaration, not independent proof that
+the runtime, driver, connector, or Snowflake integration supports the selected
+target. Current posture flags describe current configuration only.
+
+The analyzer performs no Snowflake operation, and the reviewed collector SQL is
+read-only. Neither component attests to actions taken elsewhere in the surrounding
+session or workflow.
 
 ## Least-privilege and source limitations
 

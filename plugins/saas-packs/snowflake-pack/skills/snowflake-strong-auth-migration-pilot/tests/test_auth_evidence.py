@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import ast
 import copy
 import hashlib
 import importlib.util
+import io
 import unittest
+from contextlib import redirect_stderr
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -60,6 +63,12 @@ class AuthEvidenceTests(unittest.TestCase):
             "primary_role_type": "ROLE",
             "secondary_roles_sha256": SECONDARY_HASH,
         }
+
+    def authorization_context(self, role_hash: str = ROLE_HASH) -> dict:
+        context = self.context(role_hash)
+        context.pop("_dataset")
+        context.pop("observed_at")
+        return context
 
     @staticmethod
     def user(dataset: str, digest: str = USER_HASH, *, password: bool = True) -> dict:
@@ -136,6 +145,7 @@ class AuthEvidenceTests(unittest.TestCase):
                 "connection_profile": "auth-readonly",
                 "login_history_latency_seconds": 7200,
                 "coverage": {"user_name_sha256": [USER_HASH]},
+                "authorization_context": self.authorization_context(),
             },
             "collections": {
                 "current": {"receipt": self.receipt("auth-current", [self.context(), self.user("current_users")])},
@@ -187,10 +197,17 @@ class AuthEvidenceTests(unittest.TestCase):
         self.assertTrue(report["evidence_scope_complete"])
         self.assertFalse(report["completeness_claim_blocked"])
         self.assertEqual(report["current_historical_reconciliation"]["status"], "MATCHED_WITHIN_SCOPE")
-        self.assertEqual(report["authorization_context"]["status"], "MATCHED_EQUIVALENT_CONTEXT")
+        self.assertEqual(report["authorization_context"]["status"], "MATCHED_DECLARED_EQUIVALENT_CONTEXT")
         self.assertFalse(report["claims"]["cutover_ready"])
         self.assertFalse(report["cutover_approval"]["eligible"])
-        self.assertFalse(report["safety"]["snowflake_mutations_executed"])
+        self.assertFalse(report["safety"]["analyzer_snowflake_operations_executed"])
+        self.assertFalse(report["safety"]["reviewed_collector_sql_mutating"])
+        self.assertEqual(report["safety"]["external_mutation_attestation"], "NOT_CLAIMED")
+        self.assertFalse(report["claims"]["target_capability_supported"])
+        self.assertEqual(
+            report["target_capability_assessment"]["status"],
+            "OPERATOR_DECLARED_NOT_INDEPENDENTLY_VERIFIED",
+        )
 
     def test_show_users_only_does_not_prove_migration(self) -> None:
         data = self.valid_bundle()
@@ -237,9 +254,38 @@ class AuthEvidenceTests(unittest.TestCase):
         receipt["datasets"]["execution_context"][0]["primary_role_sha256"] = hashlib.sha256(b"OTHER_ROLE").hexdigest()
         rehash(receipt)
         report = self.analyze_trusted(data)
-        self.assertTrue(all(item["complete"] for item in report["receipt_assessments"]))
+        self.assertFalse(report["receipt_assessments"][1]["complete"])
         self.assertTrue(report["completeness_claim_blocked"])
         self.assertEqual(report["authorization_context"]["status"], "UNVERIFIED")
+
+    def test_consistent_receipt_context_cannot_override_declared_context(self) -> None:
+        data = self.valid_bundle()
+        other = hashlib.sha256(b"OTHER_ROLE").hexdigest()
+        for collection in data["collections"].values():
+            receipt = collection["receipt"]
+            receipt["datasets"]["execution_context"][0]["primary_role_sha256"] = other
+            rehash(receipt)
+        report = self.analyze_trusted(data)
+        self.assertTrue(report["completeness_claim_blocked"])
+        self.assertTrue(
+            all("metadata.authorization_context" in " ".join(item["issues"]) for item in report["receipt_assessments"])
+        )
+
+    def test_all_context_dimensions_are_bound_to_declared_context(self) -> None:
+        replacements = {
+            "account_identifier_sha256": hashlib.sha256(b"OTHER_ACCOUNT").hexdigest(),
+            "collector_user_sha256": hashlib.sha256(b"OTHER_COLLECTOR").hexdigest(),
+            "primary_role_sha256": hashlib.sha256(b"OTHER_ROLE").hexdigest(),
+            "primary_role_type": "DATABASE_ROLE",
+            "secondary_roles_sha256": hashlib.sha256(b"OTHER_SECONDARY").hexdigest(),
+        }
+        for field, replacement in replacements.items():
+            with self.subTest(field=field):
+                data = self.valid_bundle()
+                receipt = data["collections"]["current"]["receipt"]
+                receipt["datasets"]["execution_context"][0][field] = replacement
+                rehash(receipt)
+                self.assertTrue(self.analyze_trusted(data)["completeness_claim_blocked"])
 
     def test_privilege_filtered_show_rows_block_completeness(self) -> None:
         data = self.valid_bundle()
@@ -258,6 +304,59 @@ class AuthEvidenceTests(unittest.TestCase):
         report = self.analyze_trusted(data)
         self.assertTrue(report["completeness_claim_blocked"])
         self.assertIn("privacy projection", " ".join(report["receipt_assessments"][1]["issues"]))
+
+    def test_unknown_receipt_fields_and_nonclaims_fail_closed(self) -> None:
+        mutations = (
+            ("unknown receipt field", lambda receipt: receipt.__setitem__("raw_user_name", "ETL_SVC")),
+            (
+                "nonclaim content",
+                lambda receipt: receipt["non_claims"].__setitem__(0, "email=alice@example.com"),
+            ),
+            ("malformed errors", lambda receipt: receipt.__setitem__("errors", "")),
+        )
+        for label, mutate in mutations:
+            with self.subTest(label=label):
+                data = self.valid_bundle()
+                receipt = data["collections"]["historical"]["receipt"]
+                mutate(receipt)
+                rehash(receipt)
+                report = self.analyze_trusted(data)
+                self.assertTrue(report["completeness_claim_blocked"])
+
+    def test_credential_field_and_unsafe_profiles_are_rejected(self) -> None:
+        data = self.valid_bundle()
+        data["password"] = "hunter2"
+        with self.assertRaises(ANALYZER.AuthEvidenceError):
+            self.analyze_trusted(data)
+        data = self.valid_bundle()
+        data["metadata"]["connection_profile"] = "password=hunter2"
+        with self.assertRaises(ANALYZER.AuthEvidenceError):
+            self.analyze_trusted(data)
+        data = self.valid_bundle()
+        receipt = data["collections"]["current"]["receipt"]
+        receipt["connection_profile"] = "password=hunter2"
+        rehash(receipt)
+        report = self.analyze_trusted(data)
+        self.assertTrue(report["completeness_claim_blocked"])
+        self.assertNotIn("hunter2", str(report))
+
+    def test_cli_error_output_sanitizes_credential_shaped_paths(self) -> None:
+        stderr = io.StringIO()
+        missing = HERE / "password=hunter2.json"
+        with redirect_stderr(stderr):
+            code = ANALYZER.main(["--input", str(missing)])
+        self.assertEqual(code, 2)
+        self.assertNotIn("hunter2", stderr.getvalue())
+        self.assertIn("REDACTED", stderr.getvalue())
+
+    def test_free_form_login_observations_are_rejected(self) -> None:
+        for unsafe in ("alice@example.com", "203.0.113.9", "SNOWFLAKE_CLI / alice@example.com"):
+            with self.subTest(unsafe=unsafe):
+                data = self.valid_bundle()
+                receipt = data["collections"]["login_history"]["receipt"]
+                receipt["datasets"]["login_history"][0]["reported_client_type_observation"] = unsafe
+                rehash(receipt)
+                self.assertTrue(self.analyze_trusted(data)["completeness_claim_blocked"])
 
     def test_reviewed_sql_hash_tamper_is_rejected(self) -> None:
         data = self.valid_bundle()
@@ -287,6 +386,16 @@ class AuthEvidenceTests(unittest.TestCase):
         self.assertEqual(report["current_historical_reconciliation"]["field_drift"][0]["field"], "has_password")
         self.assertTrue(report["completeness_claim_blocked"])
 
+    def test_recreated_same_name_user_is_identity_continuity_drift(self) -> None:
+        data = self.valid_bundle()
+        receipt = data["collections"]["historical"]["receipt"]
+        receipt["datasets"]["historical_users"][0]["created_on"] = "2025-01-01T00:00:00Z"
+        rehash(receipt)
+        report = self.analyze_trusted(data)
+        self.assertEqual(report["current_historical_reconciliation"]["status"], "DRIFT_REQUIRES_REVIEW")
+        self.assertEqual(report["current_historical_reconciliation"]["field_drift"][0]["field"], "created_on")
+        self.assertTrue(report["completeness_claim_blocked"])
+
     def test_unsettled_login_event_is_rejected_as_history_proof(self) -> None:
         data = self.valid_bundle()
         receipt = data["collections"]["login_history"]["receipt"]
@@ -311,17 +420,55 @@ class AuthEvidenceTests(unittest.TestCase):
         self.assertEqual(report["login_history_observation"]["status"], "NOT_OBSERVED")
         self.assertTrue(report["claims"]["account_wide_absence_claim_blocked"])
 
-    def test_row_cap_blocks_even_when_receipt_is_self_consistent(self) -> None:
+    def test_unknown_login_success_is_not_counted_as_failure(self) -> None:
         data = self.valid_bundle()
-        capped_rows = [self.context()]
-        capped_rows.extend(
-            self.user("current_users", hashlib.sha256(f"user-{index}".encode()).hexdigest()) for index in range(10000)
-        )
-        data["collections"]["current"]["receipt"] = self.receipt("auth-current", capped_rows)
+        receipt = data["collections"]["login_history"]["receipt"]
+        receipt["datasets"]["login_history"][0]["is_success"] = None
+        rehash(receipt)
         report = self.analyze_trusted(data)
-        self.assertTrue(report["receipt_assessments"][0]["truncation_possible"])
-        self.assertIn("reviewed row cap", " ".join(report["receipt_assessments"][0]["issues"]))
-        self.assertTrue(report["completeness_claim_blocked"])
+        counts = report["login_history_observation"]["by_user_name_sha256"][USER_HASH]
+        self.assertEqual(counts, {"successful": 0, "failed": 0, "unknown": 1})
+        self.assertTrue(report["evidence_scope_complete"])
+
+    def test_current_wif_flag_does_not_certify_declared_target_capability(self) -> None:
+        data = self.valid_bundle()
+        for key, dataset in (("current", "current_users"), ("historical", "historical_users")):
+            receipt = data["collections"][key]["receipt"]
+            receipt["datasets"][dataset][0]["has_workload_identity"] = False
+            rehash(receipt)
+        report = self.analyze_trusted(data)
+        capability = report["target_capability_assessment"]
+        self.assertTrue(report["evidence_scope_complete"])
+        self.assertFalse(report["claims"]["target_capability_supported"])
+        self.assertFalse(capability["workloads"][0]["current_configuration_observation"])
+        self.assertEqual(
+            capability["workloads"][0]["capability_status"], "OPERATOR_DECLARED_NOT_INDEPENDENTLY_VERIFIED"
+        )
+
+    def test_row_cap_blocks_every_auth_surface_even_when_receipt_is_self_consistent(self) -> None:
+        cases = (
+            ("current", "auth-current", "current_users", 0),
+            ("historical", "auth", "historical_users", 1),
+            ("login_history", "auth-login-history", "login_history", 2),
+        )
+        for key, surface, dataset, assessment_index in cases:
+            with self.subTest(surface=surface):
+                data = self.valid_bundle()
+                capped_rows = [self.context()]
+                for index in range(10000):
+                    digest = hashlib.sha256(f"user-{index}".encode()).hexdigest()
+                    if dataset == "login_history":
+                        row = self.login(user_hash=digest)
+                        row["auth_event_sha256"] = hashlib.sha256(f"event-{index}".encode()).hexdigest()
+                    else:
+                        row = self.user(dataset, digest)
+                    capped_rows.append(row)
+                data["collections"][key]["receipt"] = self.receipt(surface, capped_rows)
+                report = self.analyze_trusted(data)
+                assessment = report["receipt_assessments"][assessment_index]
+                self.assertTrue(assessment["truncation_possible"])
+                self.assertIn("reviewed row cap", " ".join(assessment["issues"]))
+                self.assertTrue(report["completeness_claim_blocked"])
 
     def test_enforcement_window_latency_boundary_is_explicit(self) -> None:
         data = self.valid_bundle()
@@ -329,9 +476,60 @@ class AuthEvidenceTests(unittest.TestCase):
         data["enforcement_windows"][0]["end"] = iso(cutoff + timedelta(seconds=1))
         report = self.analyze_trusted(data)
         self.assertFalse(report["enforcement_window_assessment"]["windows"][0]["account_usage_settled"])
+        self.assertEqual(report["enforcement_window_assessment"]["status"], "INVALID")
+        self.assertTrue(report["completeness_claim_blocked"])
         data["enforcement_windows"][0]["end"] = iso(cutoff)
         report = self.analyze_trusted(data)
         self.assertTrue(report["enforcement_window_assessment"]["windows"][0]["account_usage_settled"])
+        self.assertEqual(report["enforcement_window_assessment"]["status"], "VALID")
+        self.assertTrue(report["evidence_scope_complete"])
+
+    def test_evaluation_clock_and_max_age_cannot_be_caller_extended(self) -> None:
+        data = self.valid_bundle()
+        data["metadata"]["evaluated_at"] = iso(datetime.now(timezone.utc) - timedelta(minutes=6))
+        with self.assertRaises(ANALYZER.AuthEvidenceError):
+            self.analyze_trusted(data)
+        data = self.valid_bundle()
+        data["metadata"]["max_age_seconds"] = 86400
+        with self.assertRaises(ANALYZER.AuthEvidenceError):
+            self.analyze_trusted(data)
+
+    def test_exact_receipt_provenance_fields_and_timestamp_order_are_enforced(self) -> None:
+        mutations = (
+            ("template_sha256", lambda receipt: receipt.__setitem__("template_sha256", "sha256:" + "0" * 64)),
+            (
+                "rendered_sql_sha256",
+                lambda receipt: receipt.__setitem__("rendered_sql_sha256", "sha256:" + "0" * 64),
+            ),
+            ("source_views", lambda receipt: receipt.__setitem__("source_views", ["SHOW SOMETHING ELSE"])),
+            ("source_metadata", lambda receipt: receipt["source_metadata"].__setitem__("selector", {"x": True})),
+            ("expected_datasets", lambda receipt: receipt.__setitem__("expected_datasets", ["current_users"])),
+            ("dataset_row_counts", lambda receipt: receipt.__setitem__("dataset_row_counts", {})),
+            ("row_count", lambda receipt: receipt.__setitem__("row_count", 999)),
+            (
+                "timestamp order",
+                lambda receipt: receipt.__setitem__("collection_started_at", receipt["collection_completed_at"]),
+            ),
+        )
+        for label, mutate in mutations:
+            with self.subTest(label=label):
+                data = self.valid_bundle()
+                receipt = data["collections"]["current"]["receipt"]
+                mutate(receipt)
+                if label == "timestamp order":
+                    receipt["collection_completed_at"] = iso(self.started - timedelta(seconds=1))
+                rehash(receipt)
+                self.assertTrue(self.analyze_trusted(data)["completeness_claim_blocked"])
+
+    def test_analyzer_has_no_snowflake_or_subprocess_execution_import(self) -> None:
+        tree = ast.parse((SCRIPTS / "analyze_auth_evidence.py").read_text(encoding="utf-8"))
+        imported = {
+            alias.name.split(".")[0]
+            for node in ast.walk(tree)
+            if isinstance(node, (ast.Import, ast.ImportFrom))
+            for alias in node.names
+        }
+        self.assertTrue({"snowflake", "subprocess", "socket", "requests"}.isdisjoint(imported))
 
 
 if __name__ == "__main__":

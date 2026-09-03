@@ -17,17 +17,25 @@ from typing import Any
 HERE = Path(__file__).resolve().parent
 SQL_DIR = HERE / "sql"
 LEGACY_ANALYZER_PATH = HERE / "analyze_auth.py"
+COLLECTOR_PATH = HERE / "collect_snowflake_evidence.py"
 LEGACY_SPEC = importlib.util.spec_from_file_location("snowflake_auth_planner", LEGACY_ANALYZER_PATH)
 if LEGACY_SPEC is None or LEGACY_SPEC.loader is None:  # pragma: no cover - corrupt package
     raise RuntimeError(f"cannot load bundled analyzer: {LEGACY_ANALYZER_PATH}")
 LEGACY = importlib.util.module_from_spec(LEGACY_SPEC)
 LEGACY_SPEC.loader.exec_module(LEGACY)
+COLLECTOR_SPEC = importlib.util.spec_from_file_location("snowflake_auth_collector", COLLECTOR_PATH)
+if COLLECTOR_SPEC is None or COLLECTOR_SPEC.loader is None:  # pragma: no cover - corrupt package
+    raise RuntimeError(f"cannot load bundled collector: {COLLECTOR_PATH}")
+COLLECTOR = importlib.util.module_from_spec(COLLECTOR_SPEC)
+COLLECTOR_SPEC.loader.exec_module(COLLECTOR)
 
 DIGEST_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 HEX_RE = re.compile(r"^[0-9a-f]{64}$")
-SAFE_LABEL_RE = re.compile(r"^[^\x00-\x1f\x7f]{1,128}$")
+SAFE_OBSERVATION_RE = re.compile(r"^[A-Z][A-Z0-9_ -]{0,63}$")
 LOGIN_HISTORY_LATENCY_SECONDS = 7200
 LOGIN_HISTORY_WINDOW_SECONDS = 7 * 24 * 60 * 60
+MAX_EVALUATION_CLOCK_AGE_SECONDS = 300
+MAX_RECEIPT_AGE_SECONDS = 3600
 SURFACE_CONTRACTS: dict[str, tuple[str, list[str], tuple[str, ...], str]] = {
     "auth-current": (
         "auth-current.sql",
@@ -55,6 +63,51 @@ CONTEXT_FIELDS = {
     "primary_role_sha256",
     "primary_role_type",
     "secondary_roles_sha256",
+}
+AUTHORIZATION_CONTEXT_FIELDS = CONTEXT_FIELDS - {"observed_at"}
+SUPPORTED_ROLE_TYPES = {"APPLICATION_ROLE", "DATABASE_ROLE", "INSTANCE_ROLE", "ROLE"}
+BUNDLE_REQUIRED_FIELDS = {
+    "schema_version",
+    "metadata",
+    "collections",
+    "users",
+    "workloads",
+    "integrations",
+    "enforcement_windows",
+}
+BUNDLE_OPTIONAL_FIELDS = {"break_glass", "canary"}
+METADATA_FIELDS = {
+    "evaluated_at",
+    "max_age_seconds",
+    "connection_profile",
+    "login_history_latency_seconds",
+    "coverage",
+    "authorization_context",
+}
+AUTH_RECEIPT_FIELDS = {
+    "schema_version",
+    "surface",
+    "status",
+    "collected_at",
+    "connection_profile",
+    "sql_sha256",
+    "template_sha256",
+    "rendered_sql_sha256",
+    "selector_fingerprint",
+    "source_metadata",
+    "source_views",
+    "row_count",
+    "row_limit",
+    "truncation_possible",
+    "dataset_row_counts",
+    "expected_datasets",
+    "datasets",
+    "errors",
+    "non_claims",
+    "collection_mode",
+    "collection_started_at",
+    "collection_completed_at",
+    "receipt_sha256",
 }
 COMMON_USER_FIELDS = {
     "user_name_sha256",
@@ -124,10 +177,10 @@ def _receipt_hash_valid(receipt: dict[str, Any]) -> bool:
     return supplied == expected
 
 
-def _safe_label(value: Any, *, nullable: bool = True) -> bool:
+def _safe_observation(value: Any, *, nullable: bool = True) -> bool:
     if value is None and nullable:
         return True
-    return isinstance(value, str) and bool(SAFE_LABEL_RE.fullmatch(value))
+    return isinstance(value, str) and bool(SAFE_OBSERVATION_RE.fullmatch(value))
 
 
 def _hash_valid(value: Any, *, nullable: bool = False) -> bool:
@@ -154,8 +207,8 @@ def _context_issues(row: dict[str, Any], path: str) -> tuple[list[str], tuple[st
     ):
         if not _hash_valid(row.get(field)):
             issues.append(f"{path}.{field} is not a lowercase SHA-256 digest")
-    if not _safe_label(row.get("primary_role_type"), nullable=False):
-        issues.append(f"{path}.primary_role_type is invalid")
+    if row.get("primary_role_type") not in SUPPORTED_ROLE_TYPES:
+        issues.append(f"{path}.primary_role_type is not a supported role type")
     observed: datetime | None = None
     try:
         observed = parse_time(row.get("observed_at"), f"{path}.observed_at")
@@ -174,6 +227,24 @@ def _context_issues(row: dict[str, Any], path: str) -> tuple[list[str], tuple[st
             )
         )
     return issues, signature, observed
+
+
+def _authorization_context_signature(value: Any) -> tuple[str, ...]:
+    if not isinstance(value, dict) or set(value) != AUTHORIZATION_CONTEXT_FIELDS:
+        raise AuthEvidenceError(
+            "metadata.authorization_context must contain exactly the reviewed hashed context fields"
+        )
+    for field in (
+        "account_identifier_sha256",
+        "collector_user_sha256",
+        "primary_role_sha256",
+        "secondary_roles_sha256",
+    ):
+        if not _hash_valid(value.get(field)):
+            raise AuthEvidenceError(f"metadata.authorization_context.{field} must be a lowercase SHA-256 digest")
+    if value.get("primary_role_type") not in SUPPORTED_ROLE_TYPES:
+        raise AuthEvidenceError("metadata.authorization_context.primary_role_type is not a supported role type")
+    return tuple(str(value[field]) for field in sorted(AUTHORIZATION_CONTEXT_FIELDS))
 
 
 def _user_issues(dataset: str, values: Any) -> list[str]:
@@ -257,10 +328,10 @@ def _login_issues(values: Any, observed_at: datetime | None) -> list[str]:
             "second_authentication_factor",
             "reported_client_type_observation",
         ):
-            if not _safe_label(row.get(field)):
+            if not _safe_observation(row.get(field)):
                 issues.append(f"{path}.{field} is not a bounded observation label")
-        if type(row.get("is_success")) is not bool:
-            issues.append(f"{path}.is_success must be boolean")
+        if row.get("is_success") is not None and type(row.get("is_success")) is not bool:
+            issues.append(f"{path}.is_success must be boolean or null")
         if row.get("error_code") is not None and (type(row.get("error_code")) is not int or row.get("error_code") < 0):
             issues.append(f"{path}.error_code must be a non-negative integer or null")
         try:
@@ -280,6 +351,7 @@ def validate_receipt(
     evaluation_time: datetime,
     max_age_seconds: int,
     input_trusted: bool,
+    expected_context: tuple[str, ...],
 ) -> tuple[dict[str, Any], dict[str, list[dict[str, Any]]], tuple[str, ...] | None]:
     issues: list[str] = []
     if not isinstance(wrapper, dict):
@@ -291,6 +363,8 @@ def validate_receipt(
     if not isinstance(receipt, dict):
         receipt = {}
         issues.append("receipt is not an object")
+    if set(receipt) != AUTH_RECEIPT_FIELDS:
+        issues.append("receipt fields do not match the exact reviewed envelope")
     sql, filename, sources, expected_datasets, cap_dataset = _expected_sql(surface)
     expected_hash = f"sha256:{hashlib.sha256(sql).hexdigest()}"
     if receipt.get("schema_version") != "2":
@@ -299,12 +373,16 @@ def validate_receipt(
         issues.append(f"surface is not {surface}")
     if receipt.get("status") != "collected":
         issues.append("status is not collected")
-    if receipt.get("errors"):
-        issues.append("collector reported an error")
+    if receipt.get("errors") != []:
+        issues.append("errors must be exactly an empty array for a collected receipt")
+    if receipt.get("non_claims") != list(COLLECTOR.RECEIPT_NON_CLAIMS):
+        issues.append("non_claims do not match the canonical collector boundary")
     if receipt.get("collection_mode") != "live-cli":
         issues.append("collection_mode is not live-cli")
-    if not isinstance(receipt.get("connection_profile"), str) or not receipt.get("connection_profile", "").strip():
-        issues.append("connection_profile is missing")
+    receipt_profile = receipt.get("connection_profile")
+    profile_safe = isinstance(receipt_profile, str) and bool(COLLECTOR.PROFILE_RE.fullmatch(receipt_profile))
+    if not profile_safe:
+        issues.append("connection_profile does not match the safe profile-name grammar")
     collected = started = completed = None
     try:
         collected = parse_time(receipt.get("collected_at"), "receipt.collected_at")
@@ -371,6 +449,8 @@ def validate_receipt(
             contexts[0], "datasets.execution_context[0]"
         )
         issues.extend(context_findings)
+        if context_signature is not None and context_signature != expected_context:
+            issues.append("execution_context does not match metadata.authorization_context")
         if context_observed is not None and started is not None and completed is not None:
             if not started <= context_observed <= completed:
                 issues.append("execution_context.observed_at is outside the collection interval")
@@ -395,7 +475,7 @@ def validate_receipt(
             "status": status,
             "complete": complete,
             "issues": unique_issues,
-            "connection_profile": receipt.get("connection_profile"),
+            "connection_profile": receipt_profile if profile_safe else None,
             "collected_at": collected.isoformat() if collected else None,
             "collection_started_at": started.isoformat() if started else None,
             "collection_completed_at": completed.isoformat() if completed else None,
@@ -418,8 +498,21 @@ def _reconcile_users(current: list[dict[str, Any]], historical: list[dict[str, A
     historical_only = sorted(set(historical_map) - set(current_map))
     drift: list[dict[str, str]] = []
     for digest in sorted(set(current_map) & set(historical_map)):
-        for field in POSTURE_FIELDS:
-            if current_map[digest].get(field) != historical_map[digest].get(field):
+        for field in ("created_on", *POSTURE_FIELDS):
+            current_value = current_map[digest].get(field)
+            historical_value = historical_map[digest].get(field)
+            if field == "created_on":
+                current_value = (
+                    parse_time(current_value, "current_users.created_on").isoformat()
+                    if current_value is not None
+                    else None
+                )
+                historical_value = (
+                    parse_time(historical_value, "historical_users.created_on").isoformat()
+                    if historical_value is not None
+                    else None
+                )
+            if current_value != historical_value:
                 drift.append({"user_name_sha256": digest, "field": field})
     status = (
         "MATCHED_WITHIN_SCOPE" if not current_only and not historical_only and not drift else "DRIFT_REQUIRES_REVIEW"
@@ -513,6 +606,8 @@ def _window_assessment(
         if str(row.get("target_auth", "")).strip().upper() != selected:
             issues.append(f"{path}.target_auth does not match the deterministic plan")
         settled = end is not None and settled_through is not None and end <= settled_through
+        if not settled:
+            issues.append(f"{path} is inside the unsettled Account Usage latency boundary")
         assessed.append(
             {
                 "name": str(row.get("name", "")),
@@ -534,25 +629,76 @@ def _window_assessment(
     }
 
 
+def _target_capability_assessment(
+    data: dict[str, Any],
+    name_to_hash: dict[str, str],
+    current_users: list[dict[str, Any]],
+) -> dict[str, Any]:
+    current_by_hash = _user_map(current_users)
+    posture_field = {
+        "KEY_PAIR": "has_rsa_public_key",
+        "PASSWORD": "has_password",
+        "PAT": "has_pat",
+        "WIF": "has_workload_identity",
+    }
+    workloads: list[dict[str, Any]] = []
+    for row in data.get("workloads", []):
+        if not isinstance(row, dict):
+            continue
+        options = LEGACY.list_upper(
+            row.get("supported_auth") or row.get("target_auth_options") or row.get("allowed_auth_methods"),
+            "workloads.target_options",
+        )
+        target = LEGACY.choose_target(options)
+        identity = str(row.get("identity") or row.get("user") or row.get("service_user") or "").strip().upper()
+        digest = name_to_hash.get(identity)
+        field = posture_field.get(target)
+        configured = current_by_hash.get(str(digest), {}).get(field) if field else None
+        workloads.append(
+            {
+                "workload": str(row.get("name", "")).strip().upper(),
+                "selected_target": target,
+                "operator_declared_option": target != "MANUAL_REVIEW" and target in options,
+                "current_configuration_field": field,
+                "current_configuration_observation": configured,
+                "capability_status": "OPERATOR_DECLARED_NOT_INDEPENDENTLY_VERIFIED",
+            }
+        )
+    return {
+        "status": "OPERATOR_DECLARED_NOT_INDEPENDENTLY_VERIFIED",
+        "workloads": workloads,
+        "non_claim": (
+            "supported_auth is operator input. Current posture flags describe configuration, not runtime, "
+            "driver, connector, integration, or target-login capability."
+        ),
+    }
+
+
 def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = None) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise AuthEvidenceError("input must be a JSON object")
+    if not BUNDLE_REQUIRED_FIELDS <= set(data) or set(data) - BUNDLE_REQUIRED_FIELDS - BUNDLE_OPTIONAL_FIELDS:
+        raise AuthEvidenceError("input fields do not match the exact schema-2 bundle envelope")
     if data.get("schema_version") != "2.0":
         raise AuthEvidenceError("schema_version must be 2.0")
     metadata = data.get("metadata")
-    if not isinstance(metadata, dict):
-        raise AuthEvidenceError("metadata must be an object")
+    if not isinstance(metadata, dict) or set(metadata) != METADATA_FIELDS:
+        raise AuthEvidenceError("metadata fields do not match the exact schema-2 contract")
     evaluation_time = parse_time(metadata.get("evaluated_at"), "metadata.evaluated_at")
-    if evaluation_time > datetime.now(timezone.utc):
+    current_time = datetime.now(timezone.utc)
+    if evaluation_time > current_time:
         raise AuthEvidenceError("metadata.evaluated_at must not be in the future")
+    if (current_time - evaluation_time).total_seconds() > MAX_EVALUATION_CLOCK_AGE_SECONDS:
+        raise AuthEvidenceError("metadata.evaluated_at exceeds the five-minute analysis clock boundary")
     max_age_seconds = metadata.get("max_age_seconds")
-    if type(max_age_seconds) is not int or max_age_seconds <= 0:
-        raise AuthEvidenceError("metadata.max_age_seconds must be a positive integer")
+    if type(max_age_seconds) is not int or not 0 < max_age_seconds <= MAX_RECEIPT_AGE_SECONDS:
+        raise AuthEvidenceError("metadata.max_age_seconds must be an integer from 1 through 3600")
     connection_profile = metadata.get("connection_profile")
-    if not isinstance(connection_profile, str) or not connection_profile.strip():
-        raise AuthEvidenceError("metadata.connection_profile must be a non-empty string")
+    if not isinstance(connection_profile, str) or not COLLECTOR.PROFILE_RE.fullmatch(connection_profile):
+        raise AuthEvidenceError("metadata.connection_profile does not match the safe profile-name grammar")
     if metadata.get("login_history_latency_seconds") != LOGIN_HISTORY_LATENCY_SECONDS:
         raise AuthEvidenceError("metadata.login_history_latency_seconds must be 7200")
+    expected_context = _authorization_context_signature(metadata.get("authorization_context"))
     coverage_obj = metadata.get("coverage")
     if not isinstance(coverage_obj, dict) or set(coverage_obj) != {"user_name_sha256"}:
         raise AuthEvidenceError("metadata.coverage must contain only user_name_sha256")
@@ -589,7 +735,7 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
         ("login_history", "auth-login-history"),
     ):
         assessment, datasets, context = validate_receipt(
-            collections.get(key), surface, evaluation_time, max_age_seconds, input_trusted
+            collections.get(key), surface, evaluation_time, max_age_seconds, input_trusted, expected_context
         )
         assessment["collection"] = key
         assessments.append(assessment)
@@ -598,8 +744,8 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
             contexts.append(context)
     if any(item.get("connection_profile") != connection_profile for item in assessments):
         collection_issues.append("every receipt must use metadata.connection_profile")
-    if len(contexts) != 3 or len(set(contexts)) != 1:
-        collection_issues.append("receipt authorization contexts do not match")
+    if len(contexts) != 3 or len(set(contexts)) != 1 or any(context != expected_context for context in contexts):
+        collection_issues.append("receipt authorization contexts do not match the declared expected context")
     current_users = trusted_datasets["current"].get("current_users", [])
     historical_users = trusted_datasets["historical"].get("historical_users", [])
     login_rows = trusted_datasets["login_history"].get("login_history", [])
@@ -614,6 +760,7 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
                 "users": data.get("users", []),
                 "workloads": data.get("workloads", []),
                 "integrations": data.get("integrations", []),
+                "enforcement_windows": data.get("enforcement_windows", []),
                 "break_glass": data.get("break_glass", {}),
                 "canary": data.get("canary", {}),
             }
@@ -636,14 +783,20 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
         and not collection_issues
         and not operator_issues
         and reconciliation["status"] == "MATCHED_WITHIN_SCOPE"
+        and windows["status"] == "VALID"
     )
     login_by_user: dict[str, dict[str, int]] = {}
     for row in login_rows:
         digest = row.get("user_name_sha256")
         if not isinstance(digest, str):
             continue
-        counts = login_by_user.setdefault(digest, {"successful": 0, "failed": 0})
-        counts["successful" if row.get("is_success") is True else "failed"] += 1
+        counts = login_by_user.setdefault(digest, {"successful": 0, "failed": 0, "unknown": 0})
+        if row.get("is_success") is True:
+            counts["successful"] += 1
+        elif row.get("is_success") is False:
+            counts["failed"] += 1
+        else:
+            counts["unknown"] += 1
     planner_input = {
         "metadata": {
             "collected_at": metadata.get("evaluated_at"),
@@ -676,6 +829,7 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
         "canary": data.get("canary", {}),
     }
     plan = LEGACY.analyze(planner_input)
+    target_capability = _target_capability_assessment(data, name_to_hash, current_users)
     return {
         "schema_version": "2.0",
         "input_sha256": actual_digest,
@@ -687,11 +841,16 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
         "receipt_assessments": assessments,
         "evidence_issues": sorted(set(collection_issues + operator_issues)),
         "authorization_context": {
-            "status": "MATCHED_EQUIVALENT_CONTEXT" if len(contexts) == 3 and len(set(contexts)) == 1 else "UNVERIFIED",
+            "status": "MATCHED_DECLARED_EQUIVALENT_CONTEXT"
+            if len(contexts) == 3
+            and len(set(contexts)) == 1
+            and all(context == expected_context for context in contexts)
+            else "UNVERIFIED",
             "physical_session_claim": "NOT_CLAIMED_INDEPENDENT_INVOCATIONS",
         },
         "current_historical_reconciliation": reconciliation,
         "enforcement_window_assessment": windows,
+        "target_capability_assessment": target_capability,
         "login_history_observation": {
             "status": "OBSERVED" if login_by_user else ("NOT_OBSERVED" if receipt_complete else "UNTRUSTED"),
             "by_user_name_sha256": dict(sorted(login_by_user.items())),
@@ -702,6 +861,7 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
             "history_reconciliation_supported": evidence_scope_complete,
             "declared_workload_coverage_supported": evidence_scope_complete,
             "login_history_surface_supported": receipt_complete and not collection_issues,
+            "target_capability_supported": False,
             "canary_operational_proof_supported": False,
             "recovery_proof_supported": False,
             "cutover_ready": False,
@@ -716,11 +876,15 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
             else "UNVERIFIED_EVIDENCE",
             "reason": "The packet is read-only guidance. Bound positive, negative, and independently tested recovery receipts remain an operator approval gate.",
         },
-        "migration_plan_status": "EVIDENCE_BOUND_GUIDANCE" if evidence_scope_complete else "UNVERIFIED_PLAN",
+        "migration_plan_status": (
+            "POSTURE_EVIDENCE_BOUND_TARGET_CAPABILITY_UNVERIFIED" if evidence_scope_complete else "UNVERIFIED_PLAN"
+        ),
         "migration_plan": plan,
         "safety": {
             "edit_authority": False,
-            "snowflake_mutations_executed": False,
+            "analyzer_snowflake_operations_executed": False,
+            "reviewed_collector_sql_mutating": False,
+            "external_mutation_attestation": "NOT_CLAIMED",
             "credential_values_accepted": False,
         },
         "non_claims": [
@@ -728,7 +892,7 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
             "Account Usage USERS and LOGIN_HISTORY can lag by up to 120 minutes.",
             "An empty or non-matching LOGIN_HISTORY window does not prove that no authentication occurred.",
             "Pseudonymous SHA-256 identity values remain sensitive and can be dictionary-tested.",
-            "No user, credential, integration, network policy, or authentication policy mutation was executed.",
+            "The analyzer performed no Snowflake operation; reviewed collector statements are read-only; surrounding session and workflow operations are not attested.",
         ],
     }
 
@@ -765,7 +929,7 @@ def main(argv: list[str] | None = None) -> int:
             sys.stdout.write(rendered)
         return 0
     except (AuthEvidenceError, OSError, json.JSONDecodeError, ValueError) as exc:
-        print(f"error: {exc}", file=sys.stderr)
+        print(f"error: {COLLECTOR.sanitize_text(exc)}", file=sys.stderr)
         return 2
 
 

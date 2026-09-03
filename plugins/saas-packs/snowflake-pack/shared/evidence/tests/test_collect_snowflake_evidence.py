@@ -1157,6 +1157,19 @@ class CollectorTests(unittest.TestCase):
         self.assertIn("CURRENT_ACCOUNT()", auth_current)
         self.assertIn("'_dataset', 'execution_context'", auth_current)
         self.assertIn("FROM $1", auth_current)
+        self.assertNotIn("TO_JSON(CURRENT_SECONDARY_ROLES())", auth_current)
+        self.assertIn("TO_VARCHAR(CURRENT_SECONDARY_ROLES())", auth_current)
+
+        for surface in ("auth", "auth-login-history"):
+            with self.subTest(surface=surface):
+                _, _, rendered, _, _ = MODULE.render_surface(surface)
+                self.assertNotIn("TO_JSON(CURRENT_SECONDARY_ROLES())", rendered)
+                self.assertIn("TO_VARCHAR(CURRENT_SECONDARY_ROLES())", rendered)
+
+        _, _, login_history, _, _ = MODULE.render_surface("auth-login-history")
+        self.assertIn("TRY_TO_BOOLEAN(TO_VARCHAR(IS_SUCCESS))", login_history)
+        self.assertIn("AND EVENT_TYPE = 'LOGIN'", login_history)
+        self.assertIn("UPPER(TO_VARCHAR(REPORTED_CLIENT_TYPE))", login_history)
 
     def test_auth_offline_normalization_is_rejected_for_every_surface(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -1220,6 +1233,7 @@ class CollectorTests(unittest.TestCase):
                 self.assertEqual(receipt["row_limit"], 10000)
                 self.assertFalse(receipt["truncation_possible"])
                 self.assertEqual(receipt["collection_mode"], "live-cli")
+                self.assertEqual(receipt["non_claims"], list(MODULE.RECEIPT_NON_CLAIMS))
 
     def test_access_offline_normalization_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

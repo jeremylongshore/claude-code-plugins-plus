@@ -138,6 +138,15 @@ CAP_DATASET_BY_SURFACE = {
     "auth-login-history": "login_history",
     **{surface: "rows" for surface in SUBSURFACES if surface.startswith("access-") and surface != "access-session"},
 }
+RECEIPT_NON_CLAIMS = (
+    "No Snowflake mutation was executed by the reviewed collector SQL.",
+    "Missing rows or permission-blocked views do not prove health.",
+    "Account Usage evidence can lag and must not be treated as real-time state.",
+    "The selected domain skill must evaluate freshness and completeness.",
+    "A row count at the reviewed SQL limit may indicate truncated evidence.",
+    "The embedded receipt SHA-256 is a self-checksum, not proof of origin or authenticity.",
+    "The collector does not attest to operations performed elsewhere in the surrounding session or workflow.",
+)
 SENSITIVE_KEYS = {
     "accesstoken",
     "apikey",
@@ -1631,14 +1640,7 @@ def build_receipt(
         "expected_datasets": expected_datasets,
         "datasets": datasets,
         "errors": [sanitized_error] if sanitized_error else [],
-        "non_claims": [
-            "No Snowflake mutation was executed.",
-            "Missing rows or permission-blocked views do not prove health.",
-            "Account Usage evidence can lag and must not be treated as real-time state.",
-            "The selected domain skill must evaluate freshness and completeness.",
-            "A row count at the reviewed SQL limit may indicate truncated evidence.",
-            "The embedded receipt SHA-256 is a self-checksum, not proof of origin or authenticity.",
-        ],
+        "non_claims": list(RECEIPT_NON_CLAIMS),
     }
     if surface.startswith(("access", "auth")):
         receipt["collection_mode"] = collection_mode

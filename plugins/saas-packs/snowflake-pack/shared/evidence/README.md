@@ -31,7 +31,8 @@ not evidence, and different session IDs are never described as one session.
 
 Authentication evidence is also live-only and split deliberately across three
 independent caps: `auth-current` for privacy-projected `SHOW USERS`, `auth` for
-delayed Account Usage `USERS`, and `auth-login-history` for a seven-day window
+delayed Account Usage `USERS`, and `auth-login-history` for the settled portion
+of a trailing seven-day horizon
 that excludes the newest 120 minutes. Each emits the same pseudonymous execution-
 context fields. Raw usernames and event IDs never leave Snowflake. The auth
 analyzer requires all three exact schema-2 receipts plus an out-of-band whole-

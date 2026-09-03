@@ -38,7 +38,7 @@ WITH show_rows AS (
     'collector_user_sha256', SHA2(TO_VARCHAR(CURRENT_USER()), 256),
     'primary_role_sha256', SHA2(TO_VARCHAR(CURRENT_ROLE()), 256),
     'primary_role_type', CURRENT_ROLE_TYPE(),
-    'secondary_roles_sha256', SHA2(TO_JSON(CURRENT_SECONDARY_ROLES()), 256)
+    'secondary_roles_sha256', SHA2(TO_VARCHAR(CURRENT_SECONDARY_ROLES()), 256)
   ) AS EVIDENCE
 )
 SELECT EVIDENCE

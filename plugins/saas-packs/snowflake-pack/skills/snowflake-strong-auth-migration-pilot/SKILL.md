@@ -31,7 +31,8 @@ client behavior, and secondary-role controls cannot silently broaden access.
 ## Prerequisites
 
 - Three live schema-2 collector receipts: near-current `SHOW USERS`, delayed
-  Account Usage `USERS`, and a bounded, latency-settled `LOGIN_HISTORY` window.
+  Account Usage `USERS`, and the latency-settled portion of a bounded trailing
+  seven-day `LOGIN_HISTORY` horizon.
   Record the final bundle SHA-256 outside the bundle when it crosses the
   controlled local collection boundary; an embedded self-checksum is not provenance.
 - Named identity/workload owner, security approver, executor, recovery identity,
@@ -93,7 +94,8 @@ and verify account, edition, connector, client behavior, and feature availabilit
    Do not use `--input-json`: offline normalization cannot bind live posture or
    execution context. A cap hit, collector error, stale receipt, context mismatch,
    privilege-filtered SHOW row, or user-hash drift blocks scoped completeness.
-2. Build one schema-2 bundle containing those receipts, an explicit digest
+2. Build one schema-2 bundle containing those receipts, the exact expected
+   hashed account/user/role authorization context, an explicit digest
    coverage denominator, owner-backed users/workloads, and one approved bounded
    enforcement window per workload. Include method names and booleans only;
    omit credential values. The reference defines the exact envelope.
@@ -117,7 +119,7 @@ and verify account, edition, connector, client behavior, and feature availabilit
    ```
 
    The wrapper validates exact reviewed SQL hashes, sources, dataset fields,
-   row counts/caps, live mode, timestamps, authorization context, coverage, and
+   row counts/caps, live mode, wall-clock freshness, declared authorization context, coverage, and
    current/history reconciliation before allowing receipt rows into analysis.
    `analyze_auth.py` remains the metadata-only planning engine; it cannot certify evidence.
 5. Load [mcp-oauth-role-scoping.md](references/mcp-oauth-role-scoping.md) when
@@ -159,7 +161,7 @@ Return a JSON report plus a human-readable packet containing:
 - managed MCP/OAuth integration state, advertised scopes, client/default-role
   behavior, scope-setting location/object, allowed/blocked roles, secondary-role
   controls, and mismatches;
-- no-credential/no-mutation safety statement;
+- no-credential safety statement plus narrow analyzer/collector operation boundaries;
 - read-only inventory receipt, explicit `edit_authority: false`, and separately
   tested break-glass/canary evidence;
 - positive/negative verification receipts and a recovery plan; and
@@ -174,7 +176,7 @@ Return a JSON report plus a human-readable packet containing:
 | Raw username, email, IP, event ID, factor ID, connection ID, or free-form error appears in receipt rows | Reject the receipt; use only the reviewed pseudonymous projection. |
 | Credential-bearing field appears | Stop; remove it and rerun with metadata only. |
 | Service has no workload/owner | Do not disable it; open ownership discovery. |
-| WIF support is not proven | Do not assume it; evaluate key pair/OAuth from declared capability evidence. |
+| WIF support is not proven | Treat `supported_auth` as an unverified operator declaration; verify the exact runtime, driver, connector, integration, and target login before approval. |
 | MCP OAuth controls are missing or broad | Stop; capture scopes, client behavior, default role/warehouse, allow/block lists, and secondary-role mode. |
 | Canary or recovery test fails | Preserve the current path, use the approved recovery route, and record the failure. |
 | User requests mass disable/rotation | Convert to a staged, owner-approved packet; this skill does not execute mutations. |
