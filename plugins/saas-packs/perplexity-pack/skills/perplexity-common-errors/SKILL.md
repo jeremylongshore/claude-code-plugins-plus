@@ -11,8 +11,8 @@ description: 'Diagnose and fix Perplexity Sonar API errors and exceptions.
   "perplexity not working", "debug perplexity", "perplexity 429".
 
   '
-allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.12.0
+allowed-tools: Read, Grep, Bash(curl:*), Bash(jq:*)
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -25,12 +25,20 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Quick reference for the most common Perplexity Sonar API errors, their root causes, and fixes. All Perplexity errors follow the OpenAI error format since the API is OpenAI-compatible.
+Quick reference for common Perplexity Sonar API failures, their likely causes, and safe recovery paths. The Sonar API supports the OpenAI Chat Completions format, while the official Perplexity SDK exposes typed error classes; callers must still classify failures by observed status and response schema.
 
 ## Prerequisites
 
 - `PERPLEXITY_API_KEY` environment variable set
-- `curl` available for diagnostic commands
+- `curl` and `jq` available for metadata-only diagnostics
+- A synthetic, non-customer prompt approved for health checks
+
+## Instructions
+
+1. Use `Read` and `Grep` on approved application telemetry to capture the HTTP status, provider request ID, model, attempt count, and latency. Never record authorization headers, key fragments, prompts, answers, or raw error bodies.
+2. Classify the failure before retrying: request/authentication/billing failures are terminal; throttling, connection failures, and provider 5xx responses may be retried within a bounded budget.
+3. Reproduce once with the safe probe below and the fixed `https://api.perplexity.ai` origin. A malformed 200 response is a failure, not a success.
+4. Correct the request or operating condition, then rerun the same probe. Preserve only the metadata receipt.
 
 ## Error Reference
 
@@ -40,22 +48,43 @@ Quick reference for the most common Perplexity Sonar API errors, their root caus
 {"error": {"message": "Invalid API key", "type": "authentication_error", "code": 401}}
 ```
 
-**Causes:** Key missing, expired, revoked, or doesn't start with `pplx-`.
+**Causes:** Key missing, expired, revoked, or loaded from the wrong secret scope.
 
 **Fix:**
 
 ```bash
 set -euo pipefail
-# Verify key is set and has correct prefix
-echo "${PERPLEXITY_API_KEY:0:5}"  # Should print "pplx-"
+test -n "${PERPLEXITY_API_KEY:-}" || {
+  echo "PERPLEXITY_API_KEY is not set" >&2
+  exit 1
+}
 
-# Test key directly
-curl -s -o /dev/null -w "%{http_code}" \
-  -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
+response="$(curl --silent --show-error --connect-timeout 5 --max-time 30 \
+  --write-out $'\n%{http_code}' \
+  -H "Authorization: Bearer ${PERPLEXITY_API_KEY}" \
   -H "Content-Type: application/json" \
-  -d '{"model":"sonar","messages":[{"role":"user","content":"test"}],"max_tokens":5}' \
-  https://api.perplexity.ai/chat/completions
-# 200 = valid, 401 = invalid key
+  --data '{"model":"sonar","messages":[{"role":"user","content":"Reply with ready."}],"max_tokens":8}' \
+  https://api.perplexity.ai/chat/completions)"
+http_status="${response##*$'\n'}"
+body="${response%$'\n'*}"
+
+case "${http_status}" in
+  200)
+    printf '%s\n' "${body}" | jq -er '
+      .choices[0].finish_reason
+      | select(type == "string" and length > 0)
+    ' >/dev/null
+    printf 'Perplexity probe OK (HTTP %s)\n' "${http_status}"
+    ;;
+  401|402|429)
+    echo "Perplexity probe failed with HTTP ${http_status}; response body suppressed." >&2
+    exit 1
+    ;;
+  *)
+    echo "Perplexity probe failed with HTTP ${http_status}." >&2
+    exit 1
+    ;;
+esac
 ```
 
 Regenerate at [perplexity.ai/settings/api](https://www.perplexity.ai/settings/api).
@@ -68,19 +97,23 @@ Regenerate at [perplexity.ai/settings/api](https://www.perplexity.ai/settings/ap
 {"error": {"message": "Rate limit exceeded", "type": "rate_limit_error", "code": 429}}
 ```
 
-**Causes:** Exceeded requests per minute (RPM). Most tiers allow 50 RPM. Perplexity uses a leaky bucket algorithm.
+**Causes:** The active project, API, or model exceeded its current account-specific limit. Do not assume one universal requests-per-minute value.
 
 **Fix:**
 
 ```typescript
-async function withBackoff<T>(fn: () => Promise<T>, maxRetries = 5): Promise<T> {
+async function withBackoff<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
   for (let i = 0; i <= maxRetries; i++) {
     try {
       return await fn();
     } catch (err: any) {
       if (err.status !== 429 || i === maxRetries) throw err;
-      const delay = Math.pow(2, i) * 1000 + Math.random() * 500;
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      const retryAfter = Number(err.headers?.get?.("retry-after"));
+      const exponential = Math.min(2 ** i * 1000, 8_000);
+      const delay = Number.isFinite(retryAfter)
+        ? Math.min(retryAfter * 1000, 30_000)
+        : exponential + Math.random() * 250;
+      console.warn(`Rate limited; retry ${i + 1}/${maxRetries} after a bounded delay.`);
       await new Promise(r => setTimeout(r, delay));
     }
   }
@@ -140,13 +173,13 @@ Not an error, but a common surprise.
 "What are the key features of TypeScript 5.5 released in 2025?"
 ```
 
-Use `sonar-pro` for more citations (2x average citation count vs `sonar`).
+If citations are required, validate the `citations` or `search_results` field and fail or degrade explicitly when it is absent.
 
 ---
 
 ### Timeout / Hanging Request
 
-**Causes:** Complex query with `sonar-pro` or `sonar-deep-research`. Sonar: 1-3s typical. Sonar-pro: 3-8s. Deep research: 10-60s.
+**Causes:** Complex retrieval, provider congestion, or a caller timeout below the measured latency envelope.
 
 **Fix:**
 
@@ -180,19 +213,8 @@ try {
 ## Diagnostic Commands
 
 ```bash
-set -euo pipefail
-# Quick API health check
-curl -s -w "\nHTTP %{http_code} in %{time_total}s\n" \
-  -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"model":"sonar","messages":[{"role":"user","content":"ping"}],"max_tokens":5}' \
-  https://api.perplexity.ai/chat/completions
-
-# Check if key env var is set
-env | grep PERPLEXITY
-
-# Test DNS resolution
-dig api.perplexity.ai +short
+# Presence only: never print the variable, prefix, length, or environment.
+test -n "${PERPLEXITY_API_KEY:-}" && printf '%s\n' "credential configured"
 ```
 
 ## Error Handling
@@ -203,7 +225,17 @@ dig api.perplexity.ai +short
 | 401 | `authentication_error` | No | Regenerate API key |
 | 402 | `billing_error` | No | Add credits |
 | 429 | `rate_limit_error` | Yes | Exponential backoff |
-| 500+ | `server_error` | Yes | Retry after 2-5 seconds |
+| 500+ | `server_error` | Yes | Use bounded exponential delay and total deadline |
+
+## Examples
+
+### Authentication failure
+
+The probe returns 401 with no body printed. Confirm the workload references the intended secret name and environment, rotate the credential through the approved secret manager if necessary, and rerun the probe. Record only the 401-to-200 transition and provider request IDs.
+
+### Throttling burst
+
+When a bounded worker receives 429, pause new work, honor a valid `Retry-After` value within the configured ceiling, and retry no more than the operation budget. If the budget expires, enqueue the request or return an explicit degraded response instead of starting an unbounded retry storm.
 
 ## Output
 
@@ -213,8 +245,9 @@ dig api.perplexity.ai +short
 
 ## Resources
 
-- [Perplexity Error Handling Guide](https://docs.perplexity.ai/guides/perplexity-sdk-error-handling)
+- [Perplexity SDK Error Handling](https://docs.perplexity.ai/docs/sdk/error-handling)
 - [API Reference](https://docs.perplexity.ai/api-reference/chat-completions-post)
+- [Failure-classification reference](references/error-classification.md)
 
 ## Next Steps
 
