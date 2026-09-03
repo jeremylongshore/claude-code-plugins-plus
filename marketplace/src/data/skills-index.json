@@ -31061,8 +31061,8 @@
     {
       "slug": "snowflake-cost-leak-hunter",
       "name": "snowflake-cost-leak-hunter",
-      "description": "Audit Snowflake warehouse and query-attribution evidence to locate idle compute, unallocated or untagged usage, query-acceleration spend, and serverless visibility gaps without guessing prices or savings. Use when a Snowflake bill increased, a team needs chargeback/showback evidence, warehouse credits appear unexplained, or an operator asks which usage merits investigation. Trigger with \"Snowflake bill increased\", \"find idle Snowflake credits\", \"Snowflake cost attribution\", or \"untagged Snowflake spend\". Do not use to change warehouse size, suspend compute, create resource monitors, or claim invoice reconciliation.",
-      "version": "3.4.0",
+      "description": "Audit Snowflake warehouse, serverless, Adaptive, storage, transfer, and AI cost evidence with a typed ledger that prevents double counting and exposes freshness, attribution, control, and invoice boundaries. Use when a Snowflake bill increased, a team needs chargeback/showback evidence, credits appear unexplained, or an operator asks which usage merits investigation. Trigger with \"Snowflake bill increased\", \"find idle Snowflake credits\", \"Snowflake cost attribution\", or \"untagged Snowflake spend\". Do not use to mutate cost controls or claim savings.",
+      "version": "3.5.0",
       "category": "saas-packs",
       "parentPlugin": "snowflake-pack",
       "requires_env": [],
@@ -35452,7 +35452,7 @@
     }
   ],
   "count": 2954,
-  "generatedAt": "2026-09-03T12:59:59.573Z",
+  "generatedAt": "2026-09-03T18:33:50.830Z",
   "categories": [
     "ai-agency",
     "ai-ml",

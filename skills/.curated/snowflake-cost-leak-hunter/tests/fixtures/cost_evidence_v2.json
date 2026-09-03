@@ -1,0 +1,90 @@
+{
+  "metadata": {
+    "account": "ORG-ACCOUNT",
+    "role": "COST_AUDITOR",
+    "review_owner": "finops-oncall",
+    "approval_boundary": "FinOps owner plus Snowflake platform approver",
+    "identity_disclosure_authorized": true,
+    "identity_disclosure_authority": "trusted-test-fixture",
+    "window_start": "2026-08-01T00:00:00Z",
+    "window_end": "2026-08-08T00:00:00Z",
+    "generated_at": "2026-08-08T12:00:00Z",
+    "expected_surfaces": [
+      "warehouse_metering",
+      "query_attribution",
+      "warehouse_load",
+      "serverless_usage",
+      "adaptive_usage",
+      "storage_usage",
+      "data_transfer_usage",
+      "internal_transfer_usage",
+      "ai_usage",
+      "resource_monitors",
+      "budgets"
+    ]
+  },
+  "source_max_times": {
+    "warehouse_metering": "2026-08-08T09:00:00Z",
+    "query_attribution": "2026-08-08T04:00:00Z",
+    "warehouse_load": "2026-08-08T09:00:00Z",
+    "serverless_usage": "2026-08-08T09:00:00Z"
+  },
+  "surface_inventory": [
+    {"surface": "warehouse_metering", "source": "SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY", "status": "available", "privilege_status": "verified", "latest_timestamp": "2026-08-08T09:00:00Z", "documented_latency_hours": "6", "truncated": false},
+    {"surface": "query_attribution", "source": "SNOWFLAKE.ACCOUNT_USAGE.QUERY_ATTRIBUTION_HISTORY", "status": "available", "privilege_status": "verified", "latest_timestamp": "2026-08-08T04:00:00Z", "documented_latency_hours": "8", "truncated": false},
+    {"surface": "warehouse_load", "source": "SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_LOAD_HISTORY", "status": "available", "privilege_status": "verified", "latest_timestamp": "2026-08-08T09:00:00Z", "documented_latency_hours": "3", "truncated": false},
+    {"surface": "serverless_usage", "source": "SNOWFLAKE.ACCOUNT_USAGE.METERING_HISTORY", "status": "available", "privilege_status": "verified", "latest_timestamp": "2026-08-08T09:00:00Z", "documented_latency_hours": "12", "truncated": false},
+    {"surface": "adaptive_usage", "source": "SNOWFLAKE.ACCOUNT_USAGE.QUERY_METERING_HISTORY", "status": "available", "privilege_status": "verified", "latest_timestamp": "2026-08-08T11:00:00Z", "documented_latency_hours": "1", "truncated": false},
+    {"surface": "storage_usage", "source": "SNOWFLAKE.ACCOUNT_USAGE.STORAGE_USAGE", "status": "available", "privilege_status": "verified", "latest_timestamp": "2026-08-08T10:00:00Z", "documented_latency_hours": "2", "truncated": false},
+    {"surface": "data_transfer_usage", "source": "SNOWFLAKE.ACCOUNT_USAGE.DATA_TRANSFER_HISTORY", "status": "available", "privilege_status": "verified", "latest_timestamp": "2026-08-08T10:00:00Z", "documented_latency_hours": "2", "truncated": false},
+    {"surface": "internal_transfer_usage", "source": "SNOWFLAKE.ACCOUNT_USAGE.INTERNAL_DATA_TRANSFER_HISTORY", "status": "available", "privilege_status": "verified", "latest_timestamp": "2026-08-08T09:00:00Z", "documented_latency_hours": "3", "truncated": false},
+    {"surface": "ai_usage", "source": "SNOWFLAKE.ACCOUNT_USAGE.CORTEX_AI_FUNCTIONS_USAGE_HISTORY", "status": "available", "privilege_status": "verified", "latest_timestamp": "2026-08-08T11:55:00Z", "documented_latency_hours": "0.083334", "truncated": false},
+    {"surface": "resource_monitors", "source": "SHOW RESOURCE MONITORS", "status": "available", "privilege_status": "verified", "truncated": false},
+    {"surface": "budgets", "source": "SHOW SNOWFLAKE.CORE.BUDGET", "status": "available", "privilege_status": "verified", "truncated": false}
+  ],
+  "warehouse_metering": [
+    {"start_time": "2026-08-01T00:00:00Z", "end_time": "2026-08-02T00:00:00Z", "warehouse_id": "101", "warehouse_name_sha256": "1111111111111111111111111111111111111111111111111111111111111111", "credits_used_compute": "20", "credits_attributed_compute_queries": "15", "credits_used_cloud_services": "0.4"}
+  ],
+  "query_attribution": [
+    {"query_id_sha256": "2222222222222222222222222222222222222222222222222222222222222222", "query_parameterized_hash": "7777777777777777777777777777777777777777777777777777777777777777", "warehouse_name_sha256": "1111111111111111111111111111111111111111111111111111111111111111", "start_time": "2026-08-01T01:00:00Z", "end_time": "2026-08-01T02:00:00Z", "query_tag_sha256": "3333333333333333333333333333333333333333333333333333333333333333", "query_tag_present": true, "credits_attributed_compute": "15", "credits_used_query_acceleration": "0.5", "total_elapsed_time_ms": "1200"}
+  ],
+  "warehouse_load": [
+    {"warehouse_id": "101", "warehouse_name_sha256": "1111111111111111111111111111111111111111111111111111111111111111", "start_time": "2026-08-01T00:00:00Z", "end_time": "2026-08-02T00:00:00Z", "avg_running": "1", "avg_queued_load": "0", "avg_queued_provisioning": "0"}
+  ],
+  "serverless_usage": [
+    {"start_time": "2026-08-02T00:00:00Z", "end_time": "2026-08-02T01:00:00Z", "service_type": "AI_SERVICES", "credits_used": "5"},
+    {"start_time": "2026-08-02T01:00:00Z", "end_time": "2026-08-02T02:00:00Z", "service_type": "SNOWPIPE", "credits_used": "3"},
+    {"start_time": "2026-08-02T02:00:00Z", "end_time": "2026-08-02T03:00:00Z", "service_type": "QUERY_ACCELERATION", "credits_used": "0.5"}
+  ],
+  "adaptive_usage": [
+    {"start_time": "2026-08-03T00:00:00Z", "end_time": "2026-08-03T01:00:00Z", "query_id_sha256": "4444444444444444444444444444444444444444444444444444444444444444", "warehouse_id": "202", "warehouse_name_sha256": "5555555555555555555555555555555555555555555555555555555555555555", "query_hash": "8888888888888888888888888888888888888888888888888888888888888888", "query_parameterized_hash": "9999999999999999999999999999999999999999999999999999999999999999", "query_tag_sha256": null, "query_tag_present": false, "user_name_sha256": "6666666666666666666666666666666666666666666666666666666666666666", "credits_used": "2", "credits_used_compute": "1.8", "credits_used_cloud_services": "0.2", "query_start_time": "2026-08-03T00:05:00Z", "query_end_time": "2026-08-03T00:10:00Z"}
+  ],
+  "storage_usage": [
+    {"start_time": "2026-08-04T00:00:00Z", "end_time": "2026-08-05T00:00:00Z", "storage_bytes": "1000", "stage_bytes": "200", "failsafe_bytes": "300", "hybrid_table_storage_bytes": "50", "archive_storage_cool_bytes": "0", "archive_storage_cold_bytes": "0", "archive_storage_retrieval_temp_bytes": "0", "invoice_reconciliation": "not_reconciled"}
+  ],
+  "data_transfer_usage": [
+    {"start_time": "2026-08-05T00:00:00Z", "end_time": "2026-08-05T01:00:00Z", "transfer_type": "COPY", "bytes_transferred": "4096"}
+  ],
+  "internal_transfer_usage": [
+    {"start_time": "2026-08-05T01:00:00Z", "end_time": "2026-08-05T02:00:00Z", "transfer_type": "COMPUTE_POOL", "compute_pool_name_sha256": "7777777777777777777777777777777777777777777777777777777777777777", "bytes_transferred": "2048"}
+  ],
+  "ai_usage": [
+    {"start_time": "2026-08-06T00:00:00Z", "end_time": "2026-08-06T01:00:00Z", "function_name": "COMPLETE", "model_name_sha256": "8888888888888888888888888888888888888888888888888888888888888888", "query_id_sha256": "9999999999999999999999999999999999999999999999999999999999999999", "warehouse_id": "101", "query_tag_sha256": null, "user_id_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "credits_used": "4", "is_completed": true}
+  ],
+  "controls_inventory": {
+    "resource_monitors": [
+      {"name_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "owner_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", "level": "WAREHOUSE", "frequency": "MONTHLY", "credit_quota": "100", "used_credits": "10", "remaining_credits": "90", "notify": null, "suspend": "90", "suspend_immediate": "100"}
+    ],
+    "budgets": [
+      {"name_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", "database_name_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "schema_name_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", "current_version": "1", "owner_sha256": "abababababababababababababababababababababababababababababababab", "owner_role_type": "ROLE"}
+    ]
+  },
+  "credit_rates": {
+    "warehouse": {
+      "unit_price": "2.75",
+      "currency": "USD",
+      "provenance": "customer-rate-card-WH-2026",
+      "effective_period": "2026-Q3"
+    }
+  }
+}

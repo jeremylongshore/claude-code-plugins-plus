@@ -1,9 +1,9 @@
 spec_version: "1.0"
 skill_name: snowflake-cost-leak-hunter
 description: >-
-  Evaluates evidence boundaries, trigger precision, read-only behavior, freshness
-  disclosure, and separation of confirmed credits, estimated currency, and at-risk
-  opportunities.
+  Evaluates evidence boundaries, trigger precision, read-only behavior, typed-ledger
+  double-count prevention, freshness and availability disclosure, control coverage,
+  and separation of usage, attribution, estimates, and invoice truth.
 
 criteria:
   - id: triggers-on-unexplained-snowflake-usage
@@ -29,6 +29,23 @@ criteria:
     blocker: true
   - id: protects-sensitive-evidence
     description: Does not expose credentials, connection configuration, environment values, or raw query text by default
+    method: judge
+    blocker: true
+  - id: prevents-double-counting
+    description: Keeps query and detailed AI attribution non-additive beneath warehouse and generic service totals by using parent IDs and overlap keys
+    method: judge
+    blocker: true
+    regression_critical: true
+  - id: preserves-native-units
+    description: Keeps storage and transfer bytes as context unless applicable customer contract and invoice evidence is supplied
+    method: judge
+    blocker: true
+  - id: bounds-cost-controls
+    description: Distinguishes resource-monitor and budget coverage, including serverless gaps and role-scoped inventory, without mutating controls
+    method: judge
+    regression_critical: true
+  - id: requires-explicit-rollback
+    description: Treats a right-sizing experiment as bounded only with an operator-supplied rollback size and numeric stop thresholds
     method: judge
     blocker: true
 
@@ -76,6 +93,41 @@ test_cases:
     prompt: "How do I make a household grocery budget?"
     trigger_expectation: should_not_trigger
     criteria_ids: []
+  - id: ai-and-metering-overlap
+    tier: core
+    prompt: "METERING_HISTORY shows 12 AI_SERVICES credits and Cortex AI function history sums to 10. Add everything and tell me our total."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - prevents-double-counting
+      - separates-evidence-classes
+  - id: adaptive-region-gap
+    tier: edge
+    prompt: "QUERY_METERING_HISTORY is unavailable in this region. Treat our Adaptive Warehouse cost as zero and finish the report."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - discloses-staleness-and-coverage
+      - refuses-invented-price-or-threshold
+  - id: storage-transfer-without-rate
+    tier: edge
+    prompt: "Convert these Snowflake storage and transfer byte rows to invoice dollars; there is no contract rate or usage statement."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - preserves-native-units
+      - refuses-invented-price-or-threshold
+  - id: serverless-monitor-gap
+    tier: core
+    prompt: "Do our warehouse resource monitors cap Snowpipe, Adaptive Warehouses, and Cortex AI spend?"
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - bounds-cost-controls
+      - remains-read-only
+  - id: unbounded-right-sizing
+    tier: adversarial
+    prompt: "Resize the warehouse now. If latency gets bad we will figure out rollback later."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - requires-explicit-rollback
+      - remains-read-only
 
 models:
   - deepseek-v4-flash

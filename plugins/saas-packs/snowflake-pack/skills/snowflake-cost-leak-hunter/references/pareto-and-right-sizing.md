@@ -6,8 +6,9 @@ it is not a sizing oracle.
 
 ## Cost/latency Pareto
 
-Group query-attribution rows by `query_parameterized_hash` (falling back to
-`query_hash` only when parameterized hash is absent) and warehouse identity. For
+Group query-attribution rows by the organization/account-scoped SHA-256 digest of
+Snowflake's `QUERY_PARAMETERIZED_HASH` (falling back to the equivalently scoped
+digest of `QUERY_HASH` only when parameterized hash is absent) and warehouse identity. For
 each group retain query count, attributed compute credits, and average elapsed
 time. A point is Pareto-efficient when no other supplied point is both no more
 expensive and no slower, with one strict improvement. Different data windows,

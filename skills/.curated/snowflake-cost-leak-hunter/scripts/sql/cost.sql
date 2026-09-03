@@ -1,76 +1,120 @@
--- Bounded cost metadata; Account Usage can be delayed and is not invoice truth.
--- Raw user and query-tag values are excluded; hashes preserve stable grouping without
--- exporting operator-controlled identity or tenant metadata.
-WITH evidence AS (
-SELECT
-  'warehouse_metering' AS dataset,
-  CONCAT(COALESCE(WAREHOUSE_NAME, ''), '|', TO_VARCHAR(START_TIME)) AS sort_key,
-  OBJECT_CONSTRUCT_KEEP_NULL(
-  '_dataset', 'warehouse_metering',
-  'start_time', START_TIME,
-  'end_time', END_TIME,
-  'warehouse_id', WAREHOUSE_ID,
-  'warehouse_name', WAREHOUSE_NAME,
-  'credits_used_compute', CREDITS_USED_COMPUTE,
-  'credits_used_cloud_services', CREDITS_USED_CLOUD_SERVICES,
-  'credits_attributed_compute_queries', CREDITS_ATTRIBUTED_COMPUTE_QUERIES
-) AS evidence
-FROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY
-WHERE START_TIME >= DATEADD('day', -7, CURRENT_TIMESTAMP())
-UNION ALL
-SELECT
-  'query_attribution' AS dataset,
-  CONCAT(COALESCE(TO_VARCHAR(qa.QUERY_ID), ''), '|', TO_VARCHAR(qa.START_TIME)) AS sort_key,
-  OBJECT_CONSTRUCT_KEEP_NULL(
-  '_dataset', 'query_attribution',
-  'query_id', qa.QUERY_ID,
-  'query_hash', qa.QUERY_HASH,
-  'query_parameterized_hash', qa.QUERY_PARAMETERIZED_HASH,
-  'warehouse_name', qa.WAREHOUSE_NAME,
-  'user_name_sha256', IFF(qa.USER_NAME IS NULL, NULL, SHA2(TO_VARCHAR(qa.USER_NAME), 256)),
-  'query_tag_sha256', IFF(qa.QUERY_TAG IS NULL OR qa.QUERY_TAG = '', NULL, SHA2(TO_VARCHAR(qa.QUERY_TAG), 256)),
-  'query_tag_present', qa.QUERY_TAG IS NOT NULL AND qa.QUERY_TAG <> '',
-  'start_time', qa.START_TIME,
-  'end_time', qa.END_TIME,
-  'total_elapsed_time_ms', qh.TOTAL_ELAPSED_TIME,
-  'execution_status', qh.EXECUTION_STATUS,
-  'warehouse_size', qh.WAREHOUSE_SIZE,
-  'credits_attributed_compute', qa.CREDITS_ATTRIBUTED_COMPUTE,
-  'credits_used_query_acceleration', qa.CREDITS_USED_QUERY_ACCELERATION
-) AS evidence
-FROM SNOWFLAKE.ACCOUNT_USAGE.QUERY_ATTRIBUTION_HISTORY qa
-LEFT JOIN SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY qh ON qh.QUERY_ID = qa.QUERY_ID
-WHERE qa.START_TIME >= DATEADD('day', -7, CURRENT_TIMESTAMP())
-UNION ALL
-SELECT
-  'warehouse_load' AS dataset,
-  CONCAT(COALESCE(WAREHOUSE_NAME, ''), '|', TO_VARCHAR(START_TIME)) AS sort_key,
-  OBJECT_CONSTRUCT_KEEP_NULL(
-  '_dataset', 'warehouse_load',
-  'warehouse_name', WAREHOUSE_NAME,
-  'start_time', START_TIME,
-  'end_time', END_TIME,
-  'avg_running', AVG_RUNNING,
-  'avg_queued_load', AVG_QUEUED_LOAD,
-  'avg_queued_provisioning', AVG_QUEUED_PROVISIONING
-) AS evidence
-FROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_LOAD_HISTORY
-WHERE START_TIME >= DATEADD('day', -7, CURRENT_TIMESTAMP())
-UNION ALL
-SELECT
-  'serverless_usage' AS dataset,
-  CONCAT(COALESCE(SERVICE_TYPE, ''), '|', TO_VARCHAR(START_TIME)) AS sort_key,
-  OBJECT_CONSTRUCT_KEEP_NULL(
-  '_dataset', 'serverless_usage',
-  'start_time', START_TIME,
-  'end_time', END_TIME,
-  'service_type', SERVICE_TYPE,
-  'credits_used', CREDITS_USED
-) AS evidence
-FROM SNOWFLAKE.ACCOUNT_USAGE.METERING_HISTORY
-WHERE START_TIME >= DATEADD('day', -7, CURRENT_TIMESTAMP())
+-- Independently capped baseline cost evidence for one explicit half-open UTC
+-- window. Each source remains a separate dataset; the context row binds the
+-- account, operator, role set, timezone, and observation time in this statement.
+WITH warehouse_metering AS (
+  SELECT
+    CONCAT(COALESCE(TO_VARCHAR(WAREHOUSE_ID), ''), '|', TO_VARCHAR(START_TIME)) AS SORT_KEY,
+    OBJECT_CONSTRUCT_KEEP_NULL(
+      '_dataset', 'warehouse_metering',
+      'start_time', START_TIME,
+      'end_time', END_TIME,
+      'warehouse_id', WAREHOUSE_ID,
+      'warehouse_name_sha256', IFF(
+        WAREHOUSE_NAME IS NULL,
+        NULL,
+        SHA2(TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), CURRENT_ACCOUNT_NAME(), WAREHOUSE_NAME)), 256)
+      ),
+      'credits_used_compute', CREDITS_USED_COMPUTE,
+      'credits_used_cloud_services', CREDITS_USED_CLOUD_SERVICES,
+      'credits_attributed_compute_queries', CREDITS_ATTRIBUTED_COMPUTE_QUERIES
+    ) AS EVIDENCE
+  FROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY
+  WHERE START_TIME < TO_TIMESTAMP_TZ('__WINDOW_END_UTC__')
+    AND END_TIME > TO_TIMESTAMP_TZ('__WINDOW_START_UTC__')
+  ORDER BY START_TIME, WAREHOUSE_ID
+  LIMIT 5000
+), query_attribution AS (
+  SELECT
+    CONCAT(COALESCE(TO_VARCHAR(qa.QUERY_ID), ''), '|', TO_VARCHAR(qa.START_TIME)) AS SORT_KEY,
+    OBJECT_CONSTRUCT_KEEP_NULL(
+      '_dataset', 'query_attribution',
+      'query_id_sha256', SHA2(
+        TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), CURRENT_ACCOUNT_NAME(), qa.QUERY_ID)),
+        256
+      ),
+      'query_hash', IFF(qa.QUERY_HASH IS NULL, NULL, SHA2(TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), CURRENT_ACCOUNT_NAME(), qa.QUERY_HASH)), 256)),
+      'query_parameterized_hash', IFF(qa.QUERY_PARAMETERIZED_HASH IS NULL, NULL, SHA2(TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), CURRENT_ACCOUNT_NAME(), qa.QUERY_PARAMETERIZED_HASH)), 256)),
+      'warehouse_name_sha256', IFF(
+        qa.WAREHOUSE_NAME IS NULL,
+        NULL,
+        SHA2(TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), CURRENT_ACCOUNT_NAME(), qa.WAREHOUSE_NAME)), 256)
+      ),
+      'user_name_sha256', IFF(qa.USER_NAME IS NULL, NULL, SHA2(TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), CURRENT_ACCOUNT_NAME(), qa.USER_NAME)), 256)),
+      'query_tag_sha256', IFF(qa.QUERY_TAG IS NULL OR qa.QUERY_TAG = '', NULL, SHA2(TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), CURRENT_ACCOUNT_NAME(), qa.QUERY_TAG)), 256)),
+      'query_tag_present', qa.QUERY_TAG IS NOT NULL AND qa.QUERY_TAG <> '',
+      'start_time', qa.START_TIME,
+      'end_time', qa.END_TIME,
+      'total_elapsed_time_ms', qh.TOTAL_ELAPSED_TIME,
+      'execution_status', qh.EXECUTION_STATUS,
+      'warehouse_size', qh.WAREHOUSE_SIZE,
+      'credits_attributed_compute', qa.CREDITS_ATTRIBUTED_COMPUTE,
+      'credits_used_query_acceleration', COALESCE(qa.CREDITS_USED_QUERY_ACCELERATION, 0)
+    ) AS EVIDENCE
+  FROM SNOWFLAKE.ACCOUNT_USAGE.QUERY_ATTRIBUTION_HISTORY qa
+  LEFT JOIN SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY qh ON qh.QUERY_ID = qa.QUERY_ID
+  WHERE qa.START_TIME < TO_TIMESTAMP_TZ('__WINDOW_END_UTC__')
+    AND qa.END_TIME > TO_TIMESTAMP_TZ('__WINDOW_START_UTC__')
+  ORDER BY qa.START_TIME, qa.QUERY_ID
+  LIMIT 5000
+), warehouse_load AS (
+  SELECT
+    CONCAT(COALESCE(TO_VARCHAR(WAREHOUSE_ID), ''), '|', TO_VARCHAR(START_TIME)) AS SORT_KEY,
+    OBJECT_CONSTRUCT_KEEP_NULL(
+      '_dataset', 'warehouse_load',
+      'warehouse_id', WAREHOUSE_ID,
+      'warehouse_name_sha256', IFF(
+        WAREHOUSE_NAME IS NULL,
+        NULL,
+        SHA2(TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), CURRENT_ACCOUNT_NAME(), WAREHOUSE_NAME)), 256)
+      ),
+      'start_time', START_TIME,
+      'end_time', END_TIME,
+      'avg_running', AVG_RUNNING,
+      'avg_queued_load', AVG_QUEUED_LOAD,
+      'avg_queued_provisioning', AVG_QUEUED_PROVISIONING
+    ) AS EVIDENCE
+  FROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_LOAD_HISTORY
+  WHERE START_TIME < TO_TIMESTAMP_TZ('__WINDOW_END_UTC__')
+    AND END_TIME > TO_TIMESTAMP_TZ('__WINDOW_START_UTC__')
+  ORDER BY START_TIME, WAREHOUSE_ID
+  LIMIT 5000
+), service_metering AS (
+  SELECT
+    CONCAT(COALESCE(SERVICE_TYPE, ''), '|', TO_VARCHAR(START_TIME)) AS SORT_KEY,
+    OBJECT_CONSTRUCT_KEEP_NULL(
+      '_dataset', 'serverless_usage',
+      'start_time', START_TIME,
+      'end_time', END_TIME,
+      'service_type', SERVICE_TYPE,
+      'credits_used', SUM(CREDITS_USED)
+    ) AS EVIDENCE
+  FROM SNOWFLAKE.ACCOUNT_USAGE.METERING_HISTORY
+  WHERE START_TIME < TO_TIMESTAMP_TZ('__WINDOW_END_UTC__')
+    AND END_TIME > TO_TIMESTAMP_TZ('__WINDOW_START_UTC__')
+  GROUP BY SERVICE_TYPE, START_TIME, END_TIME
+  ORDER BY START_TIME, SERVICE_TYPE
+  LIMIT 5000
+), execution_context AS (
+  SELECT OBJECT_CONSTRUCT_KEEP_NULL(
+    '_dataset', 'execution_context',
+    'observed_at', CURRENT_TIMESTAMP(),
+    'account_identifier_sha256', SHA2(
+      TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), CURRENT_ACCOUNT_NAME())),
+      256
+    ),
+    'collector_user_sha256', SHA2(TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), CURRENT_ACCOUNT_NAME(), CURRENT_USER())), 256),
+    'primary_role_sha256', SHA2(TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), CURRENT_ACCOUNT_NAME(), CURRENT_ROLE())), 256),
+    'primary_role_type', CURRENT_ROLE_TYPE(),
+    'secondary_roles_sha256', SHA2(TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), CURRENT_ACCOUNT_NAME(), CURRENT_SECONDARY_ROLES())), 256),
+    'session_timezone', IFF(TO_CHAR(CURRENT_TIMESTAMP(), 'TZH:TZM') = '+00:00', 'UTC', TO_CHAR(CURRENT_TIMESTAMP(), 'TZH:TZM'))
+  ) AS EVIDENCE
 )
-SELECT evidence AS EVIDENCE
-FROM evidence
-ORDER BY dataset, sort_key
-LIMIT 5000;
+SELECT EVIDENCE
+FROM (
+  SELECT 0 AS SORT_GROUP, '' AS SORT_KEY, EVIDENCE FROM execution_context
+  UNION ALL SELECT 1, SORT_KEY, EVIDENCE FROM warehouse_metering
+  UNION ALL SELECT 2, SORT_KEY, EVIDENCE FROM query_attribution
+  UNION ALL SELECT 3, SORT_KEY, EVIDENCE FROM warehouse_load
+  UNION ALL SELECT 4, SORT_KEY, EVIDENCE FROM service_metering
+)
+ORDER BY SORT_GROUP, SORT_KEY;

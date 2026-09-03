@@ -136,9 +136,10 @@ observed age = collection timestamp - maximum source timestamp
 documented latency boundary checked on current official docs
 ```
 
-Report observed age numerically. The analyzer intentionally does not hard-code a
-“stale” threshold because the relevant documented latency depends on the view and can
-change.
+Report observed age numerically. The analyzer enforces its versioned, code-owned
+per-surface latency matrix and reports the contract version used. Re-verify those
+values against the cited official Snowflake references when updating the skill; never
+accept a caller-supplied optimistic latency.
 
 ## Invoice boundary
 

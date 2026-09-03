@@ -11,7 +11,7 @@ import re
 import subprocess
 import sys
 import tempfile
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable
 
@@ -86,6 +86,13 @@ SUBSURFACES = {
     "access-session": ("access-session.sql", ["Snowflake current-session context functions"], None),
     "access-user-current": ("access-user-current.sql", ["SHOW GRANTS TO USER"], "user"),
     "auth-current": ("auth-current.sql", ["SHOW USERS"], None),
+    "cost-adaptive": ("cost-adaptive.sql", ["SNOWFLAKE.ACCOUNT_USAGE.QUERY_METERING_HISTORY"], None),
+    "cost-ai-functions": ("cost-ai-functions.sql", ["SNOWFLAKE.ACCOUNT_USAGE.CORTEX_AI_FUNCTIONS_USAGE_HISTORY"], None),
+    "cost-budgets": ("cost-budgets.sql", ["SHOW SNOWFLAKE.CORE.BUDGET"], None),
+    "cost-internal-transfer": ("cost-internal-transfer.sql", ["SNOWFLAKE.ACCOUNT_USAGE.INTERNAL_DATA_TRANSFER_HISTORY"], None),
+    "cost-resource-monitors": ("cost-resource-monitors.sql", ["SHOW RESOURCE MONITORS"], None),
+    "cost-storage": ("cost-storage.sql", ["SNOWFLAKE.ACCOUNT_USAGE.STORAGE_USAGE"], None),
+    "cost-transfer": ("cost-transfer.sql", ["SNOWFLAKE.ACCOUNT_USAGE.DATA_TRANSFER_HISTORY"], None),
 }
 FORBIDDEN_SQL = {
     "ALTER",
@@ -119,6 +126,22 @@ SELECTOR_MARKERS = {
     "schema": "__SCHEMA_IDENTIFIER__",
     "user": "__USER_IDENTIFIER__",
 }
+WINDOW_SELECTOR_MARKERS = {
+    "window_start": "__WINDOW_START_UTC__",
+    "window_end": "__WINDOW_END_UTC__",
+}
+COST_WINDOW_SURFACES = {
+    "cost",
+    "cost-adaptive",
+    "cost-ai-functions",
+    "cost-internal-transfer",
+    "cost-storage",
+    "cost-transfer",
+}
+INTRINSIC_ROW_LIMITS = {"cost-resource-monitors": 10000}
+UTC_TIMESTAMP_RE = re.compile(
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$"
+)
 RECEIPT_EXPECTED_DATASETS = {
     "access": ("grants_to_roles", "grants_to_users", "roles"),
     "access-database-role-current": ("execution_context", "rows"),
@@ -131,12 +154,34 @@ RECEIPT_EXPECTED_DATASETS = {
     "auth": ("execution_context", "historical_users"),
     "auth-current": ("current_users", "execution_context"),
     "auth-login-history": ("execution_context", "login_history"),
+    "cost": (
+        "execution_context",
+        "warehouse_metering",
+        "query_attribution",
+        "warehouse_load",
+        "serverless_usage",
+    ),
+    "cost-adaptive": ("adaptive_usage", "execution_context"),
+    "cost-ai-functions": ("ai_usage", "execution_context"),
+    "cost-budgets": ("budgets", "execution_context"),
+    "cost-internal-transfer": ("execution_context", "internal_transfer_usage"),
+    "cost-resource-monitors": ("execution_context", "resource_monitors"),
+    "cost-storage": ("execution_context", "storage_usage"),
+    "cost-transfer": ("data_transfer_usage", "execution_context"),
 }
 CAP_DATASET_BY_SURFACE = {
     "auth": "historical_users",
     "auth-current": "current_users",
     "auth-login-history": "login_history",
     **{surface: "rows" for surface in SUBSURFACES if surface.startswith("access-") and surface != "access-session"},
+    **{
+        surface: datasets[0] if datasets[0] != "execution_context" else datasets[1]
+        for surface, datasets in RECEIPT_EXPECTED_DATASETS.items()
+        if surface.startswith("cost-")
+    },
+}
+CAP_DATASETS_BY_SURFACE = {
+    "cost": ("warehouse_metering", "query_attribution", "warehouse_load", "serverless_usage"),
 }
 RECEIPT_NON_CLAIMS = (
     "No Snowflake mutation was executed by the reviewed collector SQL.",
@@ -1504,6 +1549,8 @@ def render_surface(
     role: str | None = None,
     schema: str | None = None,
     user: str | None = None,
+    window_start: str | None = None,
+    window_end: str | None = None,
 ) -> tuple[Path, str, str, list[str], dict[str, str]]:
     """Render a reviewed SQL template with a strictly validated selector."""
 
@@ -1536,8 +1583,34 @@ def render_surface(
             )
         selector[selector_name] = value
 
+    if surface in COST_WINDOW_SURFACES:
+        if window_start is None or window_end is None:
+            raise CollectionError(f"surface {surface} requires both window_start and window_end")
+        for name, value in (("window_start", window_start), ("window_end", window_end)):
+            if not UTC_TIMESTAMP_RE.fullmatch(value):
+                raise CollectionError(f"{name} must be a canonical ISO-8601 UTC timestamp ending in Z")
+            try:
+                parsed = datetime.fromisoformat(value[:-1] + "+00:00")
+            except ValueError as exc:
+                raise CollectionError(f"{name} must be a valid ISO-8601 UTC timestamp") from exc
+            selector[name] = value
+            selector[f"_{name}_parsed"] = parsed.isoformat()
+        start_parsed = datetime.fromisoformat(selector.pop("_window_start_parsed"))
+        end_parsed = datetime.fromisoformat(selector.pop("_window_end_parsed"))
+        if start_parsed >= end_parsed:
+            raise CollectionError("window_start must be before window_end")
+        if end_parsed - start_parsed > timedelta(days=7):
+            raise CollectionError("cost collection windows cannot exceed seven days; partition longer audits")
+    elif window_start is not None or window_end is not None:
+        raise CollectionError(f"surface {surface} does not accept a time window")
+
     rendered_sql = template_sql
     for name, marker in SELECTOR_MARKERS.items():
+        if name in selector:
+            rendered_sql = rendered_sql.replace(marker, selector[name])
+        elif marker in rendered_sql:
+            raise CollectionError(f"surface {surface} requires selector: {name}")
+    for name, marker in WINDOW_SELECTOR_MARKERS.items():
         if name in selector:
             rendered_sql = rendered_sql.replace(marker, selector[name])
         elif marker in rendered_sql:
@@ -1593,6 +1666,13 @@ def build_receipt(
     collection_started_at: str | None = None,
     collection_completed_at: str | None = None,
 ) -> dict[str, Any]:
+    # A live collection's observation timestamp is the instant collection
+    # completed.  Derive it from the supplied completion time before sampling a
+    # new clock value so collector-produced receipts cannot claim that they were
+    # collected after their own collection interval.
+    effective_collected_at = collected_at or collection_completed_at or utc_now()
+    effective_started_at = collection_started_at or effective_collected_at
+    effective_completed_at = collection_completed_at or effective_collected_at
     datasets: dict[str, list[dict[str, Any]]] = {}
     row_count = 0
     if raw is not None:
@@ -1602,10 +1682,16 @@ def build_receipt(
         datasets.setdefault(dataset, [])
     datasets = dict(sorted(datasets.items()))
     limits = re.findall(r"\bLIMIT\s+(\d+)\b", sql, flags=re.IGNORECASE)
-    row_limit = int(limits[-1]) if limits else None
+    row_limit = int(limits[-1]) if limits else INTRINSIC_ROW_LIMITS.get(surface)
     cap_dataset = CAP_DATASET_BY_SURFACE.get(surface)
     capped_row_count = len(datasets.get(cap_dataset, [])) if cap_dataset else row_count
-    truncation_possible = row_limit is not None and capped_row_count >= row_limit
+    cap_datasets = CAP_DATASETS_BY_SURFACE.get(surface)
+    if cap_datasets:
+        truncation_possible = row_limit is not None and any(
+            len(datasets.get(dataset, [])) >= row_limit for dataset in cap_datasets
+        )
+    else:
+        truncation_possible = row_limit is not None and capped_row_count >= row_limit
     if surface == "query" and (
         not isinstance(source_max_age_seconds, int)
         or isinstance(source_max_age_seconds, bool)
@@ -1617,12 +1703,19 @@ def build_receipt(
     template_hash = f"sha256:{hashlib.sha256(canonical_template.encode('utf-8')).hexdigest()}"
     rendered_hash = f"sha256:{hashlib.sha256(sql.encode('utf-8')).hexdigest()}"
     selector_fingerprint = f"sha256:{hashlib.sha256(canonical_json(selector)).hexdigest()}" if selector else None
+    context_rows = datasets.get("execution_context", [])
+    account_scope = (
+        context_rows[0].get("account_identifier_sha256")
+        if len(context_rows) == 1 and isinstance(context_rows[0], dict)
+        else None
+    )
     receipt = {
-        "schema_version": "2" if surface == "query" or surface.startswith(("access", "auth")) else "1",
+        "schema_version": "2"
+        if surface == "query" or surface.startswith(("access", "auth", "cost"))
+        else "1",
         "surface": surface,
         "status": "error" if error else "collected",
-        "collected_at": collected_at or utc_now(),
-        "connection_profile": connection,
+        "collected_at": effective_collected_at,
         "sql_sha256": template_hash,
         "template_sha256": template_hash,
         "rendered_sql_sha256": rendered_hash,
@@ -1642,10 +1735,18 @@ def build_receipt(
         "errors": [sanitized_error] if sanitized_error else [],
         "non_claims": list(RECEIPT_NON_CLAIMS),
     }
-    if surface.startswith(("access", "auth")):
+    if surface.startswith("cost"):
+        receipt["cap_scope"] = "per_dataset" if cap_datasets else "single_dataset_or_result"
+        receipt["result_sha256"] = f"sha256:{hashlib.sha256(canonical_json(datasets)).hexdigest()}"
+        receipt["connection_profile_sha256"] = f"sha256:{hashlib.sha256(canonical_json([account_scope, connection])).hexdigest()}"
+        receipt["snowflake_query_id"] = None
+        receipt["snowflake_query_id_status"] = "not_exposed_by_snow_cli_json_ext"
+    else:
+        receipt["connection_profile"] = connection
+    if surface.startswith(("access", "auth", "cost")):
         receipt["collection_mode"] = collection_mode
-        receipt["collection_started_at"] = collection_started_at or collected_at or receipt["collected_at"]
-        receipt["collection_completed_at"] = collection_completed_at or collected_at or receipt["collected_at"]
+        receipt["collection_started_at"] = effective_started_at
+        receipt["collection_completed_at"] = effective_completed_at
     if surface == "query":
         receipt["freshness"] = {
             "dataset": "query_history",
@@ -1667,6 +1768,8 @@ def execute_surface(
     role: str | None = None,
     schema: str | None = None,
     user: str | None = None,
+    window_start: str | None = None,
+    window_end: str | None = None,
     runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
 ) -> tuple[dict[str, Any], int]:
     if not PROFILE_RE.fullmatch(connection):
@@ -1678,6 +1781,8 @@ def execute_surface(
         role=role,
         schema=schema,
         user=user,
+        window_start=window_start,
+        window_end=window_end,
     )
     temporary_path: Path | None = None
     collection_started_at = utc_now()
@@ -1828,6 +1933,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--role", help="One unquoted account-role identifier for role sub-surfaces")
     parser.add_argument("--schema", help="Two-part unquoted schema identifier for access-future-schema")
     parser.add_argument("--user", help="One unquoted user identifier for access-user-current")
+    parser.add_argument("--window-start", help="Canonical UTC lower bound for cost history surfaces")
+    parser.add_argument("--window-end", help="Canonical UTC exclusive upper bound for cost history surfaces")
     parser.add_argument("--validate-only", action="store_true", help="Validate the reviewed SQL and exit")
     args = parser.parse_args(argv)
     try:
@@ -1838,15 +1945,17 @@ def main(argv: list[str] | None = None) -> int:
             role=args.role,
             schema=args.schema,
             user=args.user,
+            window_start=args.window_start,
+            window_end=args.window_end,
         )
         if args.validate_only:
             return 0
         if args.surface == "query" and (args.source_max_age_seconds is None or args.source_max_age_seconds <= 0):
             raise CollectionError("--source-max-age-seconds must be positive for the query surface")
         if args.input_json:
-            if args.surface.startswith(("access", "auth")):
+            if args.surface.startswith(("access", "auth", "cost")):
                 raise CollectionError(
-                    "offline normalization is diagnostic-only and is not accepted for access or authentication evidence; collect live so Snowflake execution context is bound to the result"
+                    "offline normalization is diagnostic-only and is not accepted for access, authentication, or cost evidence; collect live so Snowflake execution context is bound to the result"
                 )
             raw = json.loads(args.input_json.read_text(encoding="utf-8"))
             receipt = build_receipt(
@@ -1873,6 +1982,8 @@ def main(argv: list[str] | None = None) -> int:
                 role=args.role,
                 schema=args.schema,
                 user=args.user,
+                window_start=args.window_start,
+                window_end=args.window_end,
             )
         write_receipt(receipt, args.output)
         return code

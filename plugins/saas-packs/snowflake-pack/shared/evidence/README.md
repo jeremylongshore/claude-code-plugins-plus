@@ -13,11 +13,14 @@ python3 shared/evidence/collect_snowflake_evidence.py \
   --output ./snowflake-query-evidence.json
 ```
 
-Top-level surfaces are `cost`, `query`, `pipeline`, `access`, `auth`,
-`auth-login-history`,
-`data-quality`, and `replication`. Access also has narrowly scoped `access-*`
-sub-surfaces for the current session, grants to/of a role, user grants, database-
-role grants, and paired database/schema future grants. Each query is bounded and intentionally collects
+Baseline surfaces are `cost`, `query`, `pipeline`, `access`, `auth`,
+`auth-login-history`, `data-quality`, and `replication`. Access also has narrowly
+scoped `access-*` sub-surfaces for the current session, grants to/of a role, user
+grants, database-role grants, and paired database/schema future grants. The cost
+skill also bundles independently
+receipted `cost-adaptive`, `cost-ai-functions`, `cost-budgets`,
+`cost-internal-transfer`, `cost-resource-monitors`, `cost-storage`, and
+`cost-transfer` surfaces. Each query is capped and intentionally collects
 metadata rather than SQL text, raw failed rows, credential values, or customer
 payloads. `row_limit` and `truncation_possible` in every receipt expose the reviewed
 cap; a receipt at the cap is partial until a narrower query or pagination proves
@@ -105,6 +108,12 @@ is collected only for an explicitly named pipe by the operator and is never repl
 For query-forensics completeness, preserve the anchor row's `role_name` and the exact
 query-history source. The analyzer rejects role/source mismatches, applies terminal
 statuses only to their matching surface, and requires at least one bound operator row.
+
+Run each supplemental cost surface separately and retain all receipts beside the
+normalized evidence. The cost analyzer accepts them under `supplemental_receipts`
+and verifies the exact template, source, payload, collection time, and canonical
+receipt hash. A surface-inventory row without its matching receipt cannot support a
+complete cost claim.
 
 The runner invokes only:
 
