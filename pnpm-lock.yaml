@@ -719,8 +719,6 @@ importers:
 
   plugins/saas-packs/palantir-pack: {}
 
-  plugins/saas-packs/perplexity-pack: {}
-
   plugins/saas-packs/persona-pack: {}
 
   plugins/saas-packs/podium-pack: {}

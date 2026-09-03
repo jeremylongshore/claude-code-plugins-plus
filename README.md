@@ -4,8 +4,8 @@
 
 [![Release](https://img.shields.io/badge/release-v4.33.0-green)](https://github.com/jeremylongshore/tons-of-skills-marketplace/releases/latest)
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
-[![Plugins](https://img.shields.io/badge/plugins-440-blue)](https://tonsofskills.com/explore)
-[![Skills](https://img.shields.io/badge/skills-2984-green)](https://tonsofskills.com/skills)
+[![Plugins](https://img.shields.io/badge/plugins-439-blue)](https://tonsofskills.com/explore)
+[![Skills](https://img.shields.io/badge/skills-2954-green)](https://tonsofskills.com/skills)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/tons-of-skills-marketplace?style=social)](https://github.com/jeremylongshore/tons-of-skills-marketplace)
 [![skills.sh](https://skills.sh/b/jeremylongshore/tons-of-skills-marketplace)](https://skills.sh/jeremylongshore/tons-of-skills-marketplace)
 [![Sponsor: Kobiton](https://img.shields.io/badge/Sponsor-kobiton.com-0487D9)](https://kobiton.com)
@@ -61,8 +61,8 @@ Every number below names the cohort it counts and the command that reproduces it
 
 | Count | Cohort                                 | Reproduce with                                                                                                          |
 | ----: | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-|   440 | catalog plugins (catalog-entry cohort) | `node scripts/generate-readme-toc.mjs` over `marketplace.extended.json`                                                 |
-| 2,984 | marketplace-visible skills (distinct)  | `node -e "import('./scripts/corpus-resolver.mjs').then(m=>console.log(m.resolveCorpus('marketplace-visible').length))"` |
+|   439 | catalog plugins (catalog-entry cohort) | `node scripts/generate-readme-toc.mjs` over `marketplace.extended.json`                                                 |
+| 2,954 | marketplace-visible skills (distinct)  | `node -e "import('./scripts/corpus-resolver.mjs').then(m=>console.log(m.resolveCorpus('marketplace-visible').length))"` |
 |   347 | agent definitions in plugins           | `git ls-files 'plugins/**' \| grep '/agents/.*\.md'`                                                                    |
 |    19 | plugin categories                      | `ls -d plugins/*/`                                                                                                      |
 
@@ -72,13 +72,13 @@ Every number below names the cohort it counts and the command that reproduces it
 
 ### 📦 Live npm Downloads
 
-Across **394 published packages** in the [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
+Across **393 published packages** in the [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window        | All packages | Established (>30d) |
 | ------------- | -----------: | -----------------: |
-| Last 24 hours |          641 |                641 |
-| Last 7 days   |        3,272 |              3,272 |
-| Last 30 days  |       11,794 |             11,794 |
+| Last 24 hours |          637 |                637 |
+| Last 7 days   |        3,250 |              3,250 |
+| Last 30 days  |       11,725 |             11,725 |
 
 <sub>"Established" excludes packages first published within the last 30 days, so a bulk-publish event doesn't dominate the headline.</sub>
 
@@ -97,7 +97,7 @@ Across **394 published packages** in the [claude-code-plugins](https://www.npmjs
 | 9   | [`@intentsolutionsio/penetration-tester`](https://www.npmjs.com/package/@intentsolutionsio/penetration-tester)           |      125 |
 | 10  | [`@intentsolutionsio/langchain-py-pack`](https://www.npmjs.com/package/@intentsolutionsio/langchain-py-pack)             |      121 |
 
-<sub>Last refreshed 2026-09-02T04:55:57.759Z.</sub>
+<sub>Last refreshed 2026-09-03T04:13:59.701Z.</sub>
 
 <!-- NPM-STATS:END -->
 
@@ -133,7 +133,7 @@ The 19 categories below link into the live marketplace. Plugin counts are the ca
 | 📦  | [Packages](https://tonsofskills.com/plugins#packages)               |       5 |
 | ⚡  | [Performance](https://tonsofskills.com/plugins#performance)         |      25 |
 | ✅  | [Productivity](https://tonsofskills.com/plugins#productivity)       |      29 |
-| 🎁  | [SaaS Skill Packs](https://tonsofskills.com/plugins#saas-packs)     |     105 |
+| 🎁  | [SaaS Skill Packs](https://tonsofskills.com/plugins#saas-packs)     |     104 |
 | 🔐  | [Security](https://tonsofskills.com/plugins#security)               |      27 |
 | ✨  | [Skill Enhancers](https://tonsofskills.com/plugins#skill-enhancers) |       9 |
 | 🧪  | [Testing](https://tonsofskills.com/plugins#testing)                 |      28 |

@@ -16,19 +16,19 @@
     "values": {
       "a_error_total": 35,
       "a_failing": 18,
-      "ab_error_total": 620,
-      "ab_failing": 302,
-      "b_failing": 284,
-      "error_files": 734,
-      "error_total": 3734,
+      "ab_error_total": 613,
+      "ab_failing": 297,
+      "b_failing": 279,
+      "error_files": 724,
+      "error_total": 3720,
       "grade_distribution": {
-        "A": 1890,
-        "B": 1104,
-        "C": 419,
+        "A": 1885,
+        "B": 1087,
+        "C": 411,
         "D": 157,
         "F": 5
       },
-      "rows": 3575
+      "rows": 3545
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3075,
-        "tracked_files": 23814
+        "raw_tracked_plugin_skill_files": 3045,
+        "tracked_files": 23718
       }
     },
     "2": {
@@ -53,9 +53,9 @@
       "status": "measured",
       "target_status": "pass",
       "values": {
-        "distinct_names": 443,
+        "distinct_names": 442,
         "duplicate_names": [],
-        "entries": 443
+        "entries": 442
       }
     },
     "3": {
@@ -80,45 +80,45 @@
       "values": {
         "agent_lane": {
           "error_total_all_validated_surfaces": 236,
-          "fully_compliant_surfaces": 770,
+          "fully_compliant_surfaces": 769,
           "terminal_denominator": {
             "agents": 358,
-            "files": 952,
+            "files": 951,
             "label": "agents_plus_plugin_manifests",
-            "plugin_manifests": 594
+            "plugin_manifests": 593
           },
           "validator_reported_mixed_denominator_percent": 80.9
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 3971,
-          "fully_compliant_surfaces": 1146,
+          "error_total_all_validated_surfaces": 3957,
+          "fully_compliant_surfaces": 1145,
           "terminal_denominator": {
             "agents": 358,
             "commands": 373,
-            "files": 4900,
+            "files": 4869,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
-            "plugin_manifests": 594,
-            "skills": 3575
+            "plugin_manifests": 593,
+            "skills": 3545
           },
-          "validated_plugin_manifests": 602,
-          "validator_reported_mixed_denominator_percent": 23.4
+          "validated_plugin_manifests": 601,
+          "validator_reported_mixed_denominator_percent": 23.5
         },
         "skill_rows": {
           "a_error_total": 35,
           "a_failing": 18,
-          "ab_error_total": 620,
-          "ab_failing": 302,
-          "b_failing": 284,
-          "error_files": 734,
-          "error_total": 3734,
+          "ab_error_total": 613,
+          "ab_failing": 297,
+          "b_failing": 279,
+          "error_files": 724,
+          "error_total": 3720,
           "grade_distribution": {
-            "A": 1890,
-            "B": 1104,
-            "C": 419,
+            "A": 1885,
+            "B": 1087,
+            "C": 411,
             "D": 157,
             "F": 5
           },
-          "rows": 3575
+          "rows": 3545
         }
       }
     },
@@ -129,22 +129,22 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "average_score": 87.4,
+        "average_score": 87.5,
         "grade_distribution": {
-          "A": 1890,
-          "B": 1104,
-          "C": 419,
+          "A": 1885,
+          "B": 1087,
+          "C": 411,
           "D": 157,
           "F": 5
         },
         "grade_percentages": {
-          "A": 52.9,
-          "B": 30.9,
-          "C": 11.7,
+          "A": 53.2,
+          "B": 30.7,
+          "C": 11.6,
           "D": 4.4,
           "F": 0.1
         },
-        "rows": 3575
+        "rows": 3545
       }
     },
     "6": {
@@ -156,12 +156,12 @@
       "values": {
         "a_error_total": 35,
         "a_failing": 18,
-        "ab_error_total": 620,
-        "ab_failing": 302,
-        "b_error_total": 585,
-        "b_failing": 284,
+        "ab_error_total": 613,
+        "ab_failing": 297,
+        "b_error_total": 578,
+        "b_failing": 279,
         "certified_target": 0,
-        "skill_summary_rows": 3575
+        "skill_summary_rows": 3545
       }
     },
     "7": {
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3564,
+        "declared": 3534,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 11,
-        "rows": 3575,
+        "rows": 3545,
         "target_malformed": 0
       }
     },
@@ -351,7 +351,7 @@
             "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18, a persistent local filesystem (the observe-decide-act loop passes state through local turn files), and ~/.kobiton/.credentials written by /automate:setup — scripts/appium.js reads that file directly and never calls the MCP getCredential tool, so it is required, not a fallback. An authenticated Kobiton MCP connection is additionally useful for device selection."
           },
           {
-            "count": 3251,
+            "count": 3221,
             "value": "Designed for Claude Code"
           },
           {
@@ -1188,7 +1188,7 @@
         "answers": [
           {
             "cohort": "curated-mirror",
-            "value": 2426
+            "value": 2404
           },
           {
             "cohort": "curriculum",
@@ -1196,15 +1196,15 @@
           },
           {
             "cohort": "first-party",
-            "value": 2731
+            "value": 2701
           },
           {
             "cohort": "graded",
-            "value": 3575
+            "value": 3545
           },
           {
             "cohort": "marketplace-visible",
-            "value": 2984
+            "value": 2954
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1919,7 +1919,7 @@
         "invalid_patterns": 0,
         "invisible_files": 23,
         "target_invisible_files": 0,
-        "tracked_files": 23814
+        "tracked_files": 23718
       }
     },
     "47": {
@@ -2004,17 +2004,17 @@
       "dimension": "Inventory header versus rows",
       "reproduce": "pnpm run measure:e1 --row=52 --stdout",
       "source": [
-        "freshie/reports/run-delta-25.json",
+        "freshie/reports/run-delta-29.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py"
       ],
       "status": "target_met",
       "values": {
-        "dolt_commit": "vta3ddt81a1g0n4ceq7jd7rdcifn7oft",
-        "header_total_skills": 2997,
-        "run_id": 25,
+        "dolt_commit": "7ebe5u1mc3tsoti4jl2ai6tqec7fhljp",
+        "header_total_skills": 2967,
+        "run_id": 29,
         "skill_row_delta": 0,
-        "skill_rows": 2997,
+        "skill_rows": 2967,
         "target_skill_row_delta": 0
       }
     },
@@ -2025,32 +2025,32 @@
       "source": [
         "freshie/grade-histogram.json",
         "freshie/grades.csv",
-        "freshie/reports/run-delta-25.json"
+        "freshie/reports/run-delta-29.json"
       ],
       "status": "target_met",
       "values": {
-        "compliance_rows": 3575,
-        "export_dolt_commit": "vta3ddt81a1g0n4ceq7jd7rdcifn7oft",
-        "export_run_id": 25,
-        "grades_csv_rows": 3575,
-        "grades_csv_sha256": "2534c55b13cce7592dba3779e0141aafcd2b7e6855d3dcbad6079192f6f476a8",
+        "compliance_rows": 3545,
+        "export_dolt_commit": "7ebe5u1mc3tsoti4jl2ai6tqec7fhljp",
+        "export_run_id": 29,
+        "grades_csv_rows": 3545,
+        "grades_csv_sha256": "dadd11f876ae8ab8af3de4612b55f687c0691a0b83566a5e136ff582f087764d",
         "histogram_grades": {
-          "A": 1890,
-          "B": 1104,
-          "C": 419,
+          "A": 1885,
+          "B": 1087,
+          "C": 411,
           "D": 157,
           "F": 5
         },
-        "histogram_total": 3575,
+        "histogram_total": 3545,
         "immutable_grade_counts": {
-          "A": 1890,
-          "B": 1104,
-          "C": 419,
+          "A": 1885,
+          "B": 1087,
+          "C": 411,
           "D": 157,
           "F": 5
         },
-        "inventory_dolt_commit": "vta3ddt81a1g0n4ceq7jd7rdcifn7oft",
-        "inventory_run_id": 25,
+        "inventory_dolt_commit": "7ebe5u1mc3tsoti4jl2ai6tqec7fhljp",
+        "inventory_run_id": 29,
         "target_lag_runs": 0
       }
     },
@@ -2061,7 +2061,7 @@
       "source": [
         "freshie/reports/legacy-forge-proofs-demotion.json",
         "freshie/reports/run-delta-19.json",
-        "freshie/reports/run-delta-25.json",
+        "freshie/reports/run-delta-29.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py",
         "scripts/record-jrig-proofs.mjs"
@@ -2074,7 +2074,7 @@
           "E2": 0,
           "E3": 0
         },
-        "current_run_id": 25,
+        "current_run_id": 29,
         "invalid_identities": 0,
         "legacy_e0_records": 3,
         "retained_e2_e3": 0,
@@ -2099,7 +2099,7 @@
         "000-docs/807-DR-STND-evaluation-evidence.md",
         "freshie/reports/legacy-forge-proofs-demotion.json",
         "freshie/reports/run-delta-19.json",
-        "freshie/reports/run-delta-25.json",
+        "freshie/reports/run-delta-29.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py"
       ],
@@ -2184,7 +2184,7 @@
       "values": {
         "adoption_percent": 0.72,
         "curated_copies": 22,
-        "plugin_skill_rows": 3075,
+        "plugin_skill_rows": 3045,
         "source_eval_specs": 22,
         "tracked_eval_specs": 44
       }
