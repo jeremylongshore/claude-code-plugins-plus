@@ -1,0 +1,19 @@
+{
+  "name": "orcarouter-pack",
+  "version": "1.0.0",
+  "description": "Claude Code skill pack for OrcaRouter, an OpenAI-compatible AI gateway: 6 skills covering install/auth, chat completions, model routing, fallback reliability, gateway agent security, and per-request cost observability against https://api.orcarouter.ai/v1.",
+  "author": {
+    "name": "Kus Wardhanie",
+    "email": "kuswardhanietidims-svg@users.noreply.github.com"
+  },
+  "license": "MIT",
+  "keywords": [
+    "orcarouter",
+    "ai-gateway",
+    "llm-routing",
+    "model-selection",
+    "fallback",
+    "agent-security",
+    "cost-observability"
+  ]
+}

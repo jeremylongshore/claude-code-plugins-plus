@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/orcarouter-pack",
+  "version": "1.0.0",
+  "description": "Claude Code skill pack for OrcaRouter, an OpenAI-compatible AI gateway: install/auth, chat completions, model routing, fallback reliability, gateway agent security, and per-request cost observability against https://api.orcarouter.ai/v1.",
+  "main": "README.md",
+  "type": "module",
+  "files": [
+    "README.md",
+    ".claude-plugin/",
+    "skills/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "orcarouter",
+    "ai-gateway",
+    "llm-routing",
+    "model-selection",
+    "failover",
+    "guardrails",
+    "agent-security",
+    "cost",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Kus Wardhanie",
+    "email": "kuswardhanietidims-svg@users.noreply.github.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/tons-of-skills-marketplace.git",
+    "directory": "plugins/saas-packs/orcarouter-pack"
+  },
+  "homepage": "https://www.orcarouter.ai",
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -5398,6 +5398,27 @@
       }
     },
     {
+      "name": "orcarouter-pack",
+      "source": "./plugins/saas-packs/orcarouter-pack",
+      "description": "Claude Code skill pack for OrcaRouter, an OpenAI-compatible AI gateway: 6 skills covering install/auth, chat completions, model routing, fallback reliability, gateway agent security, and per-request cost observability against https://api.orcarouter.ai/v1.",
+      "version": "1.0.0",
+      "category": "saas-packs",
+      "keywords": [
+        "orcarouter",
+        "ai-gateway",
+        "llm-routing",
+        "model-selection",
+        "fallback",
+        "agent-security",
+        "cost-observability"
+      ],
+      "author": {
+        "name": "Kus Wardhanie",
+        "email": "kuswardhanietidims-svg@users.noreply.github.com",
+        "url": "https://github.com/kuswardhanietidims-svg"
+      }
+    },
+    {
       "name": "replit-pack",
       "source": "./plugins/saas-packs/replit-pack",
       "description": "Complete Replit integration skill pack with 30 skills covering cloud IDE, deployments, AI assistance, and collaborative coding. Flagship+ tier vendor pack.",
