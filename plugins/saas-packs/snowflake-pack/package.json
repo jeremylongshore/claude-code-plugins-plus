@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/snowflake-pack",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Eight model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, and failover",
   "keywords": [
     "snowflake",
