@@ -28,6 +28,10 @@ SURFACES = {
         ],
     ),
     "auth": ("auth.sql", ["SNOWFLAKE.ACCOUNT_USAGE.USERS"]),
+    "auth-login-history": (
+        "auth-login-history.sql",
+        ["SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY"],
+    ),
     "cost": (
         "cost.sql",
         [
@@ -81,6 +85,7 @@ SUBSURFACES = {
     "access-role-parents": ("access-role-parents.sql", ["SHOW GRANTS OF ROLE"], "role"),
     "access-session": ("access-session.sql", ["Snowflake current-session context functions"], None),
     "access-user-current": ("access-user-current.sql", ["SHOW GRANTS TO USER"], "user"),
+    "auth-current": ("auth-current.sql", ["SHOW USERS"], None),
 }
 FORBIDDEN_SQL = {
     "ALTER",
@@ -114,7 +119,7 @@ SELECTOR_MARKERS = {
     "schema": "__SCHEMA_IDENTIFIER__",
     "user": "__USER_IDENTIFIER__",
 }
-ACCESS_EXPECTED_DATASETS = {
+RECEIPT_EXPECTED_DATASETS = {
     "access": ("grants_to_roles", "grants_to_users", "roles"),
     "access-database-role-current": ("execution_context", "rows"),
     "access-future-database": ("execution_context", "rows"),
@@ -123,6 +128,15 @@ ACCESS_EXPECTED_DATASETS = {
     "access-role-parents": ("execution_context", "rows"),
     "access-session": ("session_context",),
     "access-user-current": ("execution_context", "rows"),
+    "auth": ("execution_context", "historical_users"),
+    "auth-current": ("current_users", "execution_context"),
+    "auth-login-history": ("execution_context", "login_history"),
+}
+CAP_DATASET_BY_SURFACE = {
+    "auth": "historical_users",
+    "auth-current": "current_users",
+    "auth-login-history": "login_history",
+    **{surface: "rows" for surface in SUBSURFACES if surface.startswith("access-") and surface != "access-session"},
 }
 SENSITIVE_KEYS = {
     "accesstoken",
@@ -1574,15 +1588,14 @@ def build_receipt(
     row_count = 0
     if raw is not None:
         datasets, row_count = normalize_cli_json(raw)
-    expected_datasets = list(ACCESS_EXPECTED_DATASETS.get(surface, ()))
+    expected_datasets = list(RECEIPT_EXPECTED_DATASETS.get(surface, ()))
     for dataset in expected_datasets:
         datasets.setdefault(dataset, [])
     datasets = dict(sorted(datasets.items()))
     limits = re.findall(r"\bLIMIT\s+(\d+)\b", sql, flags=re.IGNORECASE)
     row_limit = int(limits[-1]) if limits else None
-    capped_row_count = (
-        len(datasets.get("rows", [])) if surface in SUBSURFACES and surface != "access-session" else row_count
-    )
+    cap_dataset = CAP_DATASET_BY_SURFACE.get(surface)
+    capped_row_count = len(datasets.get(cap_dataset, [])) if cap_dataset else row_count
     truncation_possible = row_limit is not None and capped_row_count >= row_limit
     if surface == "query" and (
         not isinstance(source_max_age_seconds, int)
@@ -1596,7 +1609,7 @@ def build_receipt(
     rendered_hash = f"sha256:{hashlib.sha256(sql.encode('utf-8')).hexdigest()}"
     selector_fingerprint = f"sha256:{hashlib.sha256(canonical_json(selector)).hexdigest()}" if selector else None
     receipt = {
-        "schema_version": "2" if surface == "query" or surface.startswith("access") else "1",
+        "schema_version": "2" if surface == "query" or surface.startswith(("access", "auth")) else "1",
         "surface": surface,
         "status": "error" if error else "collected",
         "collected_at": collected_at or utc_now(),
@@ -1627,7 +1640,7 @@ def build_receipt(
             "The embedded receipt SHA-256 is a self-checksum, not proof of origin or authenticity.",
         ],
     }
-    if surface.startswith("access"):
+    if surface.startswith(("access", "auth")):
         receipt["collection_mode"] = collection_mode
         receipt["collection_started_at"] = collection_started_at or collected_at or receipt["collected_at"]
         receipt["collection_completed_at"] = collection_completed_at or collected_at or receipt["collected_at"]
@@ -1829,9 +1842,9 @@ def main(argv: list[str] | None = None) -> int:
         if args.surface == "query" and (args.source_max_age_seconds is None or args.source_max_age_seconds <= 0):
             raise CollectionError("--source-max-age-seconds must be positive for the query surface")
         if args.input_json:
-            if args.surface.startswith("access"):
+            if args.surface.startswith(("access", "auth")):
                 raise CollectionError(
-                    "offline normalization is diagnostic-only and is not accepted for access evidence; collect live so Snowflake execution context is bound to the result"
+                    "offline normalization is diagnostic-only and is not accepted for access or authentication evidence; collect live so Snowflake execution context is bound to the result"
                 )
             raw = json.loads(args.input_json.read_text(encoding="utf-8"))
             receipt = build_receipt(
