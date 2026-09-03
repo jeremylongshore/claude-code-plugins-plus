@@ -183,8 +183,11 @@ async function* streamWithTimeout(
 }
 
 class StreamDeadlineError extends Error {
-  constructor(readonly phase: "establishment" | "chunk") {
+  readonly phase: "establishment" | "chunk";
+
+  constructor(phase: "establishment" | "chunk") {
     super(`${phase}-timeout`);
+    this.phase = phase;
   }
 }
 

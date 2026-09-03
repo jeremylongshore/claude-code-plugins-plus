@@ -73,28 +73,38 @@ def run_typescript(blocks: list[str], harness: str) -> subprocess.CompletedProce
         cwd = Path(tmp)
         source_path = cwd / "fixture.ts"
         source_path.write_text(typescript, encoding="utf-8")
-        runner = textwrap.dedent(
-            f"""
-            const fs = require("node:fs");
-            const ts = require({json.dumps(str(ROOT / "node_modules/typescript/lib/typescript.js"))});
-            const source = fs.readFileSync(process.argv[1], "utf8");
-            const result = ts.transpileModule(source, {{
-              compilerOptions: {{ target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS }},
-              reportDiagnostics: true,
-            }});
-            const errors = (result.diagnostics || []).filter(
-              (item) => item.category === ts.DiagnosticCategory.Error,
-            );
-            if (errors.length) {{
-              console.error(errors.map((item) => ts.flattenDiagnosticMessageText(item.messageText, "\\n")).join("\\n"));
-              process.exit(2);
-            }}
-            eval(result.outputText);
-            """
+        compiler_path = Path(
+            os.environ.get(
+                "PERPLEXITY_TEST_TYPESCRIPT_COMPILER",
+                ROOT / "node_modules/typescript/lib/typescript.js",
+            )
         )
+        if compiler_path.is_file():
+            runner = textwrap.dedent(
+                f"""
+                const fs = require("node:fs");
+                const ts = require({json.dumps(str(compiler_path))});
+                const source = fs.readFileSync(process.argv[1], "utf8");
+                const result = ts.transpileModule(source, {{
+                  compilerOptions: {{ target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS }},
+                  reportDiagnostics: true,
+                }});
+                const errors = (result.diagnostics || []).filter(
+                  (item) => item.category === ts.DiagnosticCategory.Error,
+                );
+                if (errors.length) {{
+                  console.error(errors.map((item) => ts.flattenDiagnosticMessageText(item.messageText, "\\n")).join("\\n"));
+                  process.exit(2);
+                }}
+                eval(result.outputText);
+                """
+            )
+            command = ["node", "-e", runner, str(source_path)]
+        else:
+            command = ["node", "--experimental-strip-types", str(source_path)]
         return subprocess.run(
-            ["node", "-e", runner, str(source_path)],
-            cwd=ROOT,
+            command,
+            cwd=cwd,
             text=True,
             capture_output=True,
             timeout=10,
