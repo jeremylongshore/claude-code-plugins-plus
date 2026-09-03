@@ -57,6 +57,21 @@ class HermeticFreshieCycleTests(unittest.TestCase):
         source = self._graded_fixture_source()
         self.skill.parent.parent.mkdir(parents=True)
         shutil.copytree(source.parent, self.skill.parent)
+        (self.root / "README.md").write_text("# Fixture repository\n", encoding="utf-8")
+        (self.root / "CHANGELOG.md").write_text("# Changelog\n", encoding="utf-8")
+        command = self.root / "plugins" / "testing" / "example" / "commands" / "check.md"
+        command.parent.mkdir(parents=True)
+        command.write_text(
+            "---\n"
+            "name: fixture-command\n"
+            "description: Exercise portable Freshie paths.\n"
+            "---\n\n"
+            "# Fixture command\n",
+            encoding="utf-8",
+        )
+        agent = self.root / "plugins" / "testing" / "example" / "agents" / "claim-verifier.md"
+        agent.parent.mkdir(parents=True)
+        shutil.copyfile(ROOT / ".claude" / "agents" / "claim-verifier.md", agent)
         self.resolver = Path(self.tmp.name) / "resolver.mjs"
         self.resolver.write_text(
             "#!/usr/bin/env node\n"
@@ -116,6 +131,105 @@ class HermeticFreshieCycleTests(unittest.TestCase):
             time.sleep(0.1)
         self.fail(f"dolt sql-server did not bind port {port}")
 
+    def _portable_inventory_rows(self, db: Path) -> dict[str, list[tuple]]:
+        with sqlite3.connect(db) as conn:
+            return {
+                "commands": conn.execute(
+                    "SELECT path, plugin_path, pack_name, plugin_name "
+                    "FROM command_files WHERE run_id=1 ORDER BY path"
+                ).fetchall(),
+                "agents": conn.execute(
+                    "SELECT path, plugin_path, pack_name, plugin_name "
+                    "FROM agent_files WHERE run_id=1 ORDER BY path"
+                ).fetchall(),
+                "root_docs": conn.execute(
+                    "SELECT path, doc_type, apparent_subject, subject_type "
+                    "FROM docs WHERE run_id=1 AND path IN ('README.md', 'CHANGELOG.md') "
+                    "ORDER BY path"
+                ).fetchall(),
+            }
+
+    def test_inventory_paths_are_identical_across_differently_named_clean_checkouts(self):
+        first_db = Path(self.tmp.name) / "first.sqlite"
+        second_db = Path(self.tmp.name) / "second.sqlite"
+        second_root = Path(self.tmp.name) / "temporary-retired-product-name-worktree"
+        self._run(["git", "clone", "-q", str(self.root), str(second_root)])
+
+        self._run(
+            [
+                sys.executable,
+                str(REBUILD),
+                "--repo-root",
+                str(self.root),
+                "--db",
+                str(first_db),
+                "--run-id",
+                "1",
+            ]
+        )
+        self._run(
+            [
+                sys.executable,
+                str(REBUILD),
+                "--repo-root",
+                str(second_root),
+                "--db",
+                str(second_db),
+                "--run-id",
+                "1",
+            ]
+        )
+
+        first_rows = self._portable_inventory_rows(first_db)
+        second_rows = self._portable_inventory_rows(second_db)
+        self.assertEqual(first_rows, second_rows)
+        self.assertEqual(
+            first_rows["commands"],
+            [("plugins/testing/example/commands/check.md", "plugins/testing/example", "testing", "example")],
+        )
+        self.assertEqual(
+            first_rows["agents"],
+            [
+                (
+                    "plugins/testing/example/agents/claim-verifier.md",
+                    "plugins/testing/example",
+                    "testing",
+                    "example",
+                )
+            ],
+        )
+        self.assertEqual(
+            first_rows["root_docs"],
+            [
+                ("CHANGELOG.md", "changelog", "repository", "plugin"),
+                ("README.md", "readme", "repository", "directory"),
+            ],
+        )
+        serialized = json.dumps(first_rows) + json.dumps(second_rows)
+        self.assertNotIn(str(self.root), serialized)
+        self.assertNotIn(str(second_root), serialized)
+
+    def test_scanner_refuses_a_symlinked_file_outside_the_repository(self):
+        outside = Path(self.tmp.name) / "outside-command.md"
+        outside.write_text("# Outside\n", encoding="utf-8")
+        leaked = self.root / "plugins" / "testing" / "example" / "commands" / "outside.md"
+        leaked.symlink_to(outside)
+
+        refusal = self._run(
+            [
+                sys.executable,
+                str(REBUILD),
+                "--repo-root",
+                str(self.root),
+                "--db",
+                str(Path(self.tmp.name) / "refused.sqlite"),
+                "--run-id",
+                "1",
+            ],
+            expected=1,
+        )
+        self.assertIn("refusing path outside repository root", refusal.stderr)
+
     def test_full_cycle_uses_only_scratch_state_and_refuses_live_server(self):
         self._run([sys.executable, str(REBUILD), "--repo-root", str(self.root), "--db", str(self.db), "--run-id", "1"])
         self._run(
@@ -152,6 +266,53 @@ class HermeticFreshieCycleTests(unittest.TestCase):
                 "--no-push",
             ]
         )
+
+        command_export = self._run(
+            [
+                "dolt",
+                "sql",
+                "-r",
+                "csv",
+                "-q",
+                "SELECT path, plugin_path FROM command_files WHERE run_id=1",
+            ],
+            cwd=self.dolt_dir,
+        ).stdout
+        agent_export = self._run(
+            [
+                "dolt",
+                "sql",
+                "-r",
+                "csv",
+                "-q",
+                "SELECT path, plugin_path FROM agent_files WHERE run_id=1",
+            ],
+            cwd=self.dolt_dir,
+        ).stdout
+        root_doc_export = self._run(
+            [
+                "dolt",
+                "sql",
+                "-r",
+                "csv",
+                "-q",
+                "SELECT path, apparent_subject FROM docs "
+                "WHERE run_id=1 AND path IN ('README.md', 'CHANGELOG.md') ORDER BY path",
+            ],
+            cwd=self.dolt_dir,
+        ).stdout
+        exported = command_export + agent_export + root_doc_export
+        self.assertIn(
+            "plugins/testing/example/commands/check.md,plugins/testing/example",
+            command_export,
+        )
+        self.assertIn(
+            "plugins/testing/example/agents/claim-verifier.md,plugins/testing/example",
+            agent_export,
+        )
+        self.assertIn("README.md,repository", root_doc_export)
+        self.assertIn("CHANGELOG.md,repository", root_doc_export)
+        self.assertNotIn(str(self.root), exported)
 
         self.assertTrue((self.out / "grades.csv").is_file())
         self.assertTrue((self.out / "reports" / "run-delta-1.json").is_file())

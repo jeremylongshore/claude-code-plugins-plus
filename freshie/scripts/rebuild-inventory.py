@@ -169,11 +169,22 @@ def file_size(path: Path) -> int:
 
 
 def rel(path: Path) -> str:
-    """Return repo-relative string path."""
+    """Return a canonical repository-relative path or refuse the input.
+
+    Freshie rows are durable and publicly exported to Dolt, so recording an
+    absolute checkout path would make identical trees differ by machine or
+    worktree name.  Resolving both sides also prevents a symlink inside the
+    checkout from smuggling an outside path into the inventory.
+    """
+    resolved_root = REPO_ROOT.resolve()
+    resolved_path = path.resolve()
     try:
-        return str(path.relative_to(REPO_ROOT))
-    except ValueError:
-        return str(path)
+        return resolved_path.relative_to(resolved_root).as_posix()
+    except ValueError as exc:
+        raise ValueError(
+            f"refusing path outside repository root: {resolved_path} "
+            f"(repository root: {resolved_root})"
+        ) from exc
 
 
 def git_commit_hash() -> str:
@@ -1324,8 +1335,11 @@ def scan_commands_agents(
         lines = text.splitlines()
         wc = word_count(text)
 
-        # Derive pack and plugin names from path
-        parts = cmd_path.parts
+        # Derive every durable identity from the repository-relative path.
+        # Absolute Path.parts includes the checkout prefix and previously
+        # leaked it into command_files.plugin_path.
+        command_rel = Path(rel(cmd_path))
+        parts = command_rel.parts
         try:
             plugins_idx = parts.index("plugins")
             pack = parts[plugins_idx + 1]
@@ -1334,7 +1348,7 @@ def scan_commands_agents(
             # plugin is the dir that contains the commands/ subdir
             cmd_idx = next(i for i, p in enumerate(parts) if p == "commands")
             plugin = parts[cmd_idx - 1]
-            plugin_path = str(Path(*parts[:cmd_idx]))
+            plugin_path = Path(*parts[:cmd_idx]).as_posix()
         except (ValueError, StopIteration, IndexError):
             pack = "unknown"
             plugin = "unknown"
@@ -1343,7 +1357,7 @@ def scan_commands_agents(
         cmd_batch.append(
             (
                 run_id,
-                rel(cmd_path),
+                command_rel.as_posix(),
                 plugin_path,
                 pack,
                 plugin,
@@ -1369,7 +1383,8 @@ def scan_commands_agents(
         lines = text.splitlines()
         wc = word_count(text)
 
-        parts = agent_path.parts
+        agent_rel = Path(rel(agent_path))
+        parts = agent_rel.parts
         try:
             plugins_idx = parts.index("plugins")
             pack = parts[plugins_idx + 1]
@@ -1377,7 +1392,7 @@ def scan_commands_agents(
                 pack = parts[plugins_idx + 2]
             agents_idx = next(i for i, p in enumerate(parts) if p == "agents")
             plugin = parts[agents_idx - 1]
-            plugin_path = str(Path(*parts[:agents_idx]))
+            plugin_path = Path(*parts[:agents_idx]).as_posix()
         except (ValueError, StopIteration, IndexError):
             pack = "unknown"
             plugin = "unknown"
@@ -1389,7 +1404,7 @@ def scan_commands_agents(
         agent_batch.append(
             (
                 run_id,
-                rel(agent_path),
+                agent_rel.as_posix(),
                 plugin_path,
                 pack,
                 plugin,
@@ -1445,7 +1460,8 @@ DOC_SKIP_PATTERNS = frozenset({"node_modules", "dist", "__pycache__", ".git", "f
 def infer_doc_type(path: Path) -> tuple[str, str, str]:
     """Return (doc_type, apparent_subject, subject_type)."""
     name_lower = path.name.lower()
-    parent = path.parent.name
+    relative_path = Path(rel(path))
+    parent = "repository" if relative_path.parent == Path(".") else relative_path.parent.name
 
     if name_lower == "readme.md":
         return "readme", parent, "plugin" if (path.parent.parent / ".claude-plugin").exists() else "directory"
