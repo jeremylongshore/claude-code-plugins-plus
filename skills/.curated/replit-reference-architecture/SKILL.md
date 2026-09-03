@@ -2,7 +2,7 @@
 name: replit-reference-architecture
 description: 'Design a production Replit App with explicit Preview/published boundaries, supported authentication, durable storage, safe configuration, health checks, and a workload-appropriate deployment type. Use when starting or reviewing a customer-facing Replit architecture. Trigger with phrases like "replit architecture", "replit production layout", or "replit best practices".'
 allowed-tools: Read, Grep
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

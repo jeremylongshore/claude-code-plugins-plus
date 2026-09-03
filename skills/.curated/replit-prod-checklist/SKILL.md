@@ -2,7 +2,7 @@
 name: replit-prod-checklist
 description: 'Prepare, publish, and verify a production Replit App with explicit access, Secrets, auth, storage, health, monitoring, cost, and recovery checks. Use when going live or republishing an Autoscale, Reserved VM, Static, or Scheduled workload. Trigger with phrases like "replit production", "publish replit", "replit launch checklist", or "replit prod ready".'
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

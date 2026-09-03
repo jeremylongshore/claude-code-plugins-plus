@@ -2,7 +2,7 @@
 name: replit-common-errors
 description: 'Diagnose Replit Preview and publishing failures involving commands, dependencies, ports, production Secrets, storage, authentication, or deployment type. Use when an app works in one Replit environment but fails in another. Trigger with phrases like "replit error", "replit not working", "replit deploy failed", or "debug replit".'
 allowed-tools: Read, Grep
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
