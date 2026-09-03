@@ -1364,7 +1364,7 @@ def is_sensitive_key(value: Any) -> bool:
 
 
 def is_safe_sensitive_metadata(key: Any, value: Any) -> bool:
-    return normalize_sensitive_key(key) in SAFE_SENSITIVE_METADATA_KEYS and isinstance(value, bool)
+    return normalize_sensitive_key(key) in SAFE_SENSITIVE_METADATA_KEYS and (isinstance(value, bool) or value is None)
 
 
 def _sanitize_output_tree(value: Any, depth: int, budget: list[int]) -> Any:
@@ -1430,7 +1430,7 @@ def reject_secret_fields(value: Any, path: str = "result", depth: int = 0, budge
     if isinstance(value, dict):
         for key, child in value.items():
             normalized = normalize_sensitive_key(key)
-            # Boolean metadata such as HAS_PASSWORD is safe; password material is not.
+            # Boolean/null posture metadata such as HAS_PASSWORD is safe; password material is not.
             if normalized in {"querytag", "username"}:
                 raise CollectionError(
                     f"raw identity/tag field is not accepted: {path}.{key}; use a Snowflake-side hash"

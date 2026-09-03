@@ -670,7 +670,7 @@ class CollectorTests(unittest.TestCase):
             with self.subTest(raw=raw), self.assertRaises(MODULE.CollectionError):
                 MODULE.normalize_cli_json(raw)
         safe_flags = {
-            "hasPassword": True,
+            "hasPassword": None,
             "has_pat": False,
             "hasRsaPublicKey": True,
             "has-workload-identity": False,
@@ -1157,7 +1157,9 @@ class CollectorTests(unittest.TestCase):
         self.assertNotIn("CURRENT_ACCOUNT()", auth_current)
         self.assertIn("CURRENT_ORGANIZATION_NAME()", auth_current)
         self.assertIn("CURRENT_ACCOUNT_NAME()", auth_current)
-        self.assertIn("<> 'SNOWFLAKE_SERVICE'", auth_current)
+        self.assertIn("'principal_scope', IFF(", auth_current)
+        self.assertIn("'SNOWFLAKE_MANAGED_EXCLUDED'", auth_current)
+        self.assertIn("COALESCE(UPPER(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'type'))), 'PERSON')", auth_current)
         self.assertIn("'_dataset', 'execution_context'", auth_current)
         self.assertIn("FROM $1", auth_current)
         self.assertNotIn("TO_JSON(CURRENT_SECONDARY_ROLES())", auth_current)
@@ -1173,7 +1175,8 @@ class CollectorTests(unittest.TestCase):
                 self.assertIn("CURRENT_ACCOUNT_NAME()", rendered)
 
         _, _, historical_users, _, _ = MODULE.render_surface("auth")
-        self.assertIn("<> 'SNOWFLAKE_SERVICE'", historical_users)
+        self.assertIn("'principal_scope', IFF(", historical_users)
+        self.assertIn("COALESCE(UPPER(TYPE), 'PERSON')", historical_users)
 
         _, _, login_history, _, _ = MODULE.render_surface("auth-login-history")
         self.assertIn("TRY_TO_BOOLEAN(TO_VARCHAR(IS_SUCCESS))", login_history)

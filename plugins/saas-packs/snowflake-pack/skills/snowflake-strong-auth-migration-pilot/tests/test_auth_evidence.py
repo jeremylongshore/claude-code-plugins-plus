@@ -71,13 +71,21 @@ class AuthEvidenceTests(unittest.TestCase):
         return context
 
     @staticmethod
-    def user(dataset: str, digest: str = USER_HASH, *, password: bool = True) -> dict:
+    def user(
+        dataset: str,
+        digest: str = USER_HASH,
+        *,
+        password: bool | None = True,
+        user_type: str = "LEGACY_SERVICE",
+        principal_scope: str = "OPERATOR_OWNED",
+    ) -> dict:
         row = {
             "_dataset": dataset,
             "user_name_sha256": digest,
             "created_on": "2026-01-01T00:00:00Z",
             "disabled": False,
-            "type": "SERVICE",
+            "type": user_type,
+            "principal_scope": principal_scope,
             "has_password": password,
             "has_rsa_public_key": False,
             "has_mfa": False,
@@ -155,7 +163,7 @@ class AuthEvidenceTests(unittest.TestCase):
                 {
                     "name": "ETL_SVC",
                     "user_name_sha256": USER_HASH,
-                    "type": "SERVICE",
+                    "type": "LEGACY_SERVICE",
                     "auth_methods": ["PASSWORD", "WIF"],
                     "owner": "data-platform",
                 }
@@ -354,6 +362,57 @@ class AuthEvidenceTests(unittest.TestCase):
         self.assertTrue(report["completeness_claim_blocked"])
         self.assertIn("current_auth", " ".join(report["evidence_issues"]))
 
+    def test_documented_service_nulls_are_known_non_applicable(self) -> None:
+        data = self.valid_bundle()
+        for key, dataset in (("current", "current_users"), ("historical", "historical_users")):
+            receipt = data["collections"][key]["receipt"]
+            row = receipt["datasets"][dataset][0]
+            row["type"] = "SERVICE"
+            row["has_password"] = None
+            row["has_mfa"] = None
+            rehash(receipt)
+        data["users"][0]["type"] = "SERVICE"
+        data["users"][0]["auth_methods"] = ["WIF"]
+        data["workloads"][0]["current_auth"] = "WIF"
+        self.assertTrue(self.analyze_trusted(data)["evidence_scope_complete"])
+
+    def test_snowflake_managed_principals_stay_in_cap_accounting_but_out_of_operator_scope(self) -> None:
+        managed_hash = hashlib.sha256(b"SYSTEM_MANAGED").hexdigest()
+        data = self.valid_bundle()
+        for key, dataset in (("current", "current_users"), ("historical", "historical_users")):
+            receipt = data["collections"][key]["receipt"]
+            managed_row = self.user(
+                dataset,
+                managed_hash,
+                password=None,
+                user_type="SNOWFLAKE_SERVICE",
+                principal_scope="SNOWFLAKE_MANAGED_EXCLUDED",
+            )
+            managed_row.pop("_dataset")
+            receipt["datasets"][dataset].append(managed_row)
+            receipt["dataset_row_counts"][dataset] += 1
+            receipt["row_count"] += 1
+            rehash(receipt)
+        report = self.analyze_trusted(data)
+        self.assertTrue(report["evidence_scope_complete"])
+        self.assertEqual(
+            report["managed_principal_exclusions"],
+            {
+                "current": 1,
+                "historical": 1,
+                "non_claim": "Snowflake-managed principals remain in cap accounting but are excluded from the operator migration denominator.",
+            },
+        )
+
+    def test_duplicate_workload_names_cannot_collapse_the_window_denominator(self) -> None:
+        data = self.valid_bundle()
+        data["workloads"].append(copy.deepcopy(data["workloads"][0]))
+        report = self.analyze_trusted(data)
+        self.assertTrue(report["completeness_claim_blocked"])
+        self.assertIn("duplicates another workload", " ".join(report["evidence_issues"]))
+        self.assertEqual(report["enforcement_window_assessment"]["status"], "INVALID")
+        self.assertEqual(report["migration_plan"]["plans"], [])
+
     def test_raw_identity_field_is_rejected_after_receipt_rehash(self) -> None:
         data = self.valid_bundle()
         receipt = data["collections"]["historical"]["receipt"]
@@ -470,14 +529,23 @@ class AuthEvidenceTests(unittest.TestCase):
         report = self.analyze_trusted(data)
         self.assertTrue(report["completeness_claim_blocked"])
         self.assertIn("predates", " ".join(report["evidence_issues"]))
+        self.assertEqual(
+            report["login_history_observation"]["status"],
+            "UNRESOLVED_PREDECESSOR_OBSERVATION",
+        )
+        self.assertNotIn(USER_HASH, report["login_history_observation"]["by_user_name_sha256"])
 
     def test_service_agent_is_treated_as_an_operator_owned_service(self) -> None:
         data = self.valid_bundle()
         for key, dataset in (("current", "current_users"), ("historical", "historical_users")):
             receipt = data["collections"][key]["receipt"]
             receipt["datasets"][dataset][0]["type"] = "SERVICE_AGENT"
+            receipt["datasets"][dataset][0]["has_password"] = None
+            receipt["datasets"][dataset][0]["has_mfa"] = None
             rehash(receipt)
         data["users"][0]["type"] = "SERVICE_AGENT"
+        data["users"][0]["auth_methods"] = ["WIF"]
+        data["workloads"][0]["current_auth"] = "WIF"
         report = self.analyze_trusted(data)
         self.assertTrue(report["evidence_scope_complete"])
         self.assertEqual(report["migration_plan"]["summary"]["services"], 1)
@@ -548,7 +616,13 @@ class AuthEvidenceTests(unittest.TestCase):
                         row = self.login(user_hash=digest)
                         row["auth_event_sha256"] = hashlib.sha256(f"event-{index}".encode()).hexdigest()
                     else:
-                        row = self.user(dataset, digest)
+                        row = self.user(
+                            dataset,
+                            digest,
+                            password=None if index == 0 else True,
+                            user_type="SNOWFLAKE_SERVICE" if index == 0 else "LEGACY_SERVICE",
+                            principal_scope="SNOWFLAKE_MANAGED_EXCLUDED" if index == 0 else "OPERATOR_OWNED",
+                        )
                     capped_rows.append(row)
                 data["collections"][key]["receipt"] = self.receipt(surface, capped_rows)
                 report = self.analyze_trusted(data)

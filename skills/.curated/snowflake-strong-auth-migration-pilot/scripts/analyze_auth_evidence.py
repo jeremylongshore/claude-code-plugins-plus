@@ -114,6 +114,7 @@ COMMON_USER_FIELDS = {
     "created_on",
     "disabled",
     "type",
+    "principal_scope",
     "has_password",
     "has_rsa_public_key",
     "has_mfa",
@@ -270,13 +271,18 @@ def _user_issues(dataset: str, values: Any) -> list[str]:
             parse_time(row.get("created_on"), f"{path}.created_on")
         except AuthEvidenceError as exc:
             issues.append(str(exc))
-        if str(row.get("type") or "").upper() not in {
+        user_type = str(row.get("type") or "").upper()
+        if user_type not in {
             "PERSON",
             "SERVICE",
             "LEGACY_SERVICE",
             "SERVICE_AGENT",
+            "SNOWFLAKE_SERVICE",
         }:
             issues.append(f"{path}.type is not a supported Snowflake user type")
+        expected_scope = "SNOWFLAKE_MANAGED_EXCLUDED" if user_type == "SNOWFLAKE_SERVICE" else "OPERATOR_OWNED"
+        if row.get("principal_scope") != expected_scope:
+            issues.append(f"{path}.principal_scope does not match the reviewed user classification")
         for field in (
             "disabled",
             "has_password",
@@ -285,11 +291,24 @@ def _user_issues(dataset: str, values: Any) -> list[str]:
             "has_pat",
             "has_workload_identity",
         ):
-            if type(row.get(field)) is not bool:
+            value = row.get(field)
+            service_non_applicable = user_type in {"SERVICE", "SERVICE_AGENT"} and field in {
+                "has_password",
+                "has_mfa",
+            }
+            if user_type == "SNOWFLAKE_SERVICE":
+                if value is not None and type(value) is not bool:
+                    issues.append(f"{path}.{field} must be boolean or null for an excluded managed principal")
+            elif service_non_applicable:
+                if value is not None and value is not False:
+                    issues.append(f"{path}.{field} must be false or null when not applicable to {user_type}")
+            elif type(value) is not bool:
                 issues.append(f"{path}.{field} must be boolean")
         if dataset == "current_users" and type(row.get("metadata_visible")) is not bool:
             issues.append(f"{path}.metadata_visible must be boolean")
-        elif dataset == "current_users" and row.get("metadata_visible") is not True:
+        elif (
+            dataset == "current_users" and user_type != "SNOWFLAKE_SERVICE" and row.get("metadata_visible") is not True
+        ):
             issues.append(f"{path} is privilege-filtered; SHOW USERS metadata is incomplete")
     if not values:
         issues.append(f"datasets.{dataset} is empty and cannot establish a user denominator")
@@ -538,7 +557,6 @@ def _operator_scope(
     current_by_hash = _user_map(current_users)
     method_fields = {
         "KEY_PAIR": "has_rsa_public_key",
-        "MFA": "has_mfa",
         "PAT": "has_pat",
         "WIF": "has_workload_identity",
     }
@@ -579,8 +597,14 @@ def _operator_scope(
         if methods & {"OAUTH", "SAML"}:
             issues.append(f"users[{index}].auth_methods includes methods not provable from user posture receipts")
         methods_by_hash[str(digest)] = methods
+    workload_names: set[str] = set()
     for index, row in enumerate(workloads):
         name = str(row.get("name", "")).strip()
+        normalized_name = name.upper()
+        if normalized_name in workload_names:
+            issues.append(f"workloads[{index}].name duplicates another workload")
+        elif normalized_name:
+            workload_names.add(normalized_name)
         identity = str(row.get("identity") or row.get("user") or row.get("service_user") or "").strip().upper()
         digest = row.get("identity_sha256")
         if not name or identity not in name_to_hash or digest != name_to_hash.get(identity):
@@ -595,8 +619,11 @@ def _operator_scope(
     return sorted(set(issues)), name_to_hash
 
 
-def _login_identity_issues(login_rows: list[dict[str, Any]], current_users: list[dict[str, Any]]) -> list[str]:
+def _login_identity_issues(
+    login_rows: list[dict[str, Any]], current_users: list[dict[str, Any]]
+) -> tuple[list[str], set[str]]:
     issues: list[str] = []
+    quarantined_events: set[str] = set()
     current_by_hash = _user_map(current_users)
     for index, row in enumerate(login_rows):
         digest = row.get("user_name_sha256")
@@ -610,9 +637,12 @@ def _login_identity_issues(login_rows: list[dict[str, Any]], current_users: list
                 issues.append(
                     f"datasets.login_history[{index}] predates the reconciled current principal creation time"
                 )
+                event_digest = row.get("auth_event_sha256")
+                if isinstance(event_digest, str):
+                    quarantined_events.add(event_digest)
         except AuthEvidenceError as exc:
             issues.append(str(exc))
-    return sorted(set(issues))
+    return sorted(set(issues)), quarantined_events
 
 
 def _window_assessment(
@@ -627,6 +657,9 @@ def _window_assessment(
     assessed: list[dict[str, Any]] = []
     if not isinstance(windows, list) or any(not isinstance(row, dict) for row in windows):
         return {"status": "INVALID", "issues": ["enforcement_windows must be an array of objects"], "windows": []}
+    workload_names = [str(row.get("name", "")).strip().upper() for row in workloads if isinstance(row, dict)]
+    if len(workload_names) != len(set(workload_names)):
+        issues.append("duplicate workload names cannot define an enforcement-window denominator")
     workload_map = {str(row.get("name", "")).strip().upper(): row for row in workloads if isinstance(row, dict)}
     observed_workloads: list[str] = []
     for index, row in enumerate(windows):
@@ -801,15 +834,18 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
         collection_issues.append("every receipt must use metadata.connection_profile")
     if len(contexts) != 3 or len(set(contexts)) != 1 or any(context != expected_context for context in contexts):
         collection_issues.append("receipt authorization contexts do not match the declared expected context")
-    current_users = trusted_datasets["current"].get("current_users", [])
-    historical_users = trusted_datasets["historical"].get("historical_users", [])
+    current_user_rows = trusted_datasets["current"].get("current_users", [])
+    historical_user_rows = trusted_datasets["historical"].get("historical_users", [])
+    current_users = [row for row in current_user_rows if row.get("principal_scope") == "OPERATOR_OWNED"]
+    historical_users = [row for row in historical_user_rows if row.get("principal_scope") == "OPERATOR_OWNED"]
     login_rows = trusted_datasets["login_history"].get("login_history", [])
     reconciliation = _reconcile_users(current_users, historical_users)
     current_hashes = sorted(row["user_name_sha256"] for row in current_users)
     if current_hashes != coverage:
         collection_issues.append("trusted current users do not exactly match declared digest coverage")
     operator_issues, name_to_hash = _operator_scope(data, coverage, current_users)
-    collection_issues.extend(_login_identity_issues(login_rows, current_users))
+    login_identity_issues, quarantined_login_events = _login_identity_issues(login_rows, current_users)
+    collection_issues.extend(login_identity_issues)
     try:
         LEGACY.reject_credentials(
             {
@@ -840,7 +876,11 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
     login_by_user: dict[str, dict[str, int]] = {}
     for row in login_rows:
         digest = row.get("user_name_sha256")
-        if not isinstance(digest, str) or digest not in coverage:
+        if (
+            not isinstance(digest, str)
+            or digest not in coverage
+            or row.get("auth_event_sha256") in quarantined_login_events
+        ):
             continue
         counts = login_by_user.setdefault(digest, {"successful": 0, "failed": 0, "unknown": 0})
         if row.get("is_success") is True:
@@ -874,8 +914,8 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
                 "max_age_seconds": max_age_seconds,
             },
         },
-        "users": data.get("users", []),
-        "workloads": data.get("workloads", []),
+        "users": data.get("users", []) if not operator_issues else [],
+        "workloads": data.get("workloads", []) if not operator_issues else [],
         "integrations": data.get("integrations", []),
         "break_glass": {},
         "canary": {},
@@ -901,10 +941,25 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
             "physical_session_claim": "NOT_CLAIMED_INDEPENDENT_INVOCATIONS",
         },
         "current_historical_reconciliation": reconciliation,
+        "managed_principal_exclusions": {
+            "current": sum(row.get("principal_scope") == "SNOWFLAKE_MANAGED_EXCLUDED" for row in current_user_rows),
+            "historical": sum(
+                row.get("principal_scope") == "SNOWFLAKE_MANAGED_EXCLUDED" for row in historical_user_rows
+            ),
+            "non_claim": "Snowflake-managed principals remain in cap accounting but are excluded from the operator migration denominator.",
+        },
         "enforcement_window_assessment": windows,
         "target_capability_assessment": target_capability,
         "login_history_observation": {
-            "status": "OBSERVED" if login_by_user else ("NOT_OBSERVED" if receipt_complete else "UNTRUSTED"),
+            "status": (
+                "UNRESOLVED_PREDECESSOR_OBSERVATION"
+                if quarantined_login_events
+                else "OBSERVED"
+                if login_by_user
+                else "NOT_OBSERVED"
+                if receipt_complete
+                else "UNTRUSTED"
+            ),
             "by_user_name_sha256": dict(sorted(login_by_user.items())),
             "non_claim": "LOGIN_HISTORY is delayed observation and does not by itself prove canary causality, policy enforcement, or absence.",
         },

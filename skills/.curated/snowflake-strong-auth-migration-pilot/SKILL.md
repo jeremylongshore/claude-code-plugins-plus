@@ -66,6 +66,9 @@ and verify account, edition, connector, client behavior, and feature availabilit
   connector, runtime, feature availability, owner, and approved change window.
 - A service without a named workload is an ownership gap, not permission to
   disable it. A LEGACY_SERVICE must be bound and tested before retirement.
+- Snowflake-managed `SNOWFLAKE_SERVICE` rows remain in receipt cap accounting
+  but are excluded from the operator migration denominator. `SERVICE_AGENT`
+  remains an operator-owned service classification.
 - Prefer WIF only when the exact cloud runtime, Snowflake integration, and
   connector support it. Otherwise evaluate key pair, OAuth, or a bounded PAT
   using [workload-auth-options.md](references/workload-auth-options.md).
@@ -101,6 +104,8 @@ and verify account, edition, connector, client behavior, and feature availabilit
    enforcement window per workload. Operator type and current authentication
    method declarations must match receipted posture. Include method names and
    booleans only; omit credential values and all canary/break-glass payloads.
+   Workload names must be unique. MFA posture is a separate factor observation,
+   not a primary `auth_methods` value.
    The reference defines the exact envelope.
 3. At the controlled local boundary, compute and separately record the final
    canonical bundle digest:
@@ -188,7 +193,7 @@ Return a JSON report plus a human-readable packet containing:
 
 ### Password-backed ETL service
 
-Declare `ETL_SVC` as `SERVICE`, bind it to `etl-prod`, and list only supported
+Declare a password-backed `ETL_SVC` as `LEGACY_SERVICE`, bind it to `etl-prod`, and list only supported
 target methods such as `["WIF", "KEY_PAIR"]`. The analyzer selects WIF first,
 then requires canary login, allowed-action, denied-old-path, and recovery receipts.
 

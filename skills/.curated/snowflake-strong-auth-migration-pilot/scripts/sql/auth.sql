@@ -8,7 +8,12 @@ WITH projected_users AS (
       'user_name_sha256', SHA2(TO_VARCHAR(NAME), 256),
       'created_on', CREATED_ON,
       'disabled', DISABLED,
-      'type', TYPE,
+      'type', COALESCE(UPPER(TYPE), 'PERSON'),
+      'principal_scope', IFF(
+        UPPER(TYPE) = 'SNOWFLAKE_SERVICE',
+        'SNOWFLAKE_MANAGED_EXCLUDED',
+        'OPERATOR_OWNED'
+      ),
       'has_password', HAS_PASSWORD,
       'has_rsa_public_key', HAS_RSA_PUBLIC_KEY,
       'has_mfa', HAS_MFA,
@@ -17,7 +22,6 @@ WITH projected_users AS (
     ) AS EVIDENCE
   FROM SNOWFLAKE.ACCOUNT_USAGE.USERS
   WHERE DELETED_ON IS NULL
-    AND COALESCE(UPPER(TYPE), '') <> 'SNOWFLAKE_SERVICE'
   ORDER BY NAME
   LIMIT 10000
 ), execution_context AS (

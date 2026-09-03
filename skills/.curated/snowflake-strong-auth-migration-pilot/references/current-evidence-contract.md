@@ -44,8 +44,11 @@ silently copied into the report.
 
 `REPORTED_CLIENT_TYPE` is excluded entirely because Snowflake documents it as
 unauthenticated telemetry. Snowflake-managed `SNOWFLAKE_SERVICE` principals are
-also excluded consistently from both user denominators. Operator-owned
-`SERVICE_AGENT` principals remain in scope and are treated as service identities.
+retained in both raw user datasets so a 10,000-row cap cannot be hidden, marked
+`SNOWFLAKE_MANAGED_EXCLUDED`, and then excluded from the operator denominator.
+Operator-owned `SERVICE_AGENT` principals remain in scope and are treated as
+service identities. A source `TYPE=NULL` is normalized to Snowflake's documented
+`PERSON` meaning.
 
 ## Bundle envelope
 
@@ -81,7 +84,7 @@ must match the current receipt and the operator user mapping exactly.
     {
       "name": "ETL_SVC",
       "user_name_sha256": "<same-64-lowercase-hex>",
-      "type": "SERVICE",
+      "type": "LEGACY_SERVICE",
       "auth_methods": ["PASSWORD", "WIF"],
       "owner": "data-platform"
     }
@@ -120,6 +123,9 @@ operator inputs and are never inferred from pseudonyms or emitted as collector e
 Operator `type`, `auth_methods`, and workload `current_auth` values must reconcile
 to current receipted posture. Methods that user posture cannot prove, such as
 OAuth or SAML, do not support scoped completeness in this bundle.
+MFA is a separate factor posture flag, not a primary `auth_methods` value.
+Workload names are unique; duplicates cannot collapse the enforcement-window
+denominator.
 The top-level bundle, metadata object, receipt wrapper, receipt, datasets, and
 projected rows are exact schemas: unknown fields fail closed. A connection profile
 is only a local profile name containing letters, digits, dot, underscore, or
@@ -157,9 +163,10 @@ collection interval must fit inside the declared maximum age.
 The current and historical rows join only on `user_name_sha256`. The analyzer
 also compares normalized `created_on` to detect same-name principal recreation,
 then compares `disabled`, `type`, and the password, RSA, MFA, PAT, and workload-identity
-posture flags. A login observation older than the reconciled `created_on` is not
-attributed to the current principal. `NULL` means unknown and blocks current-posture
-completeness rather than being coerced to false. Current-only, historical-only,
+posture flags. `SERVICE` and `SERVICE_AGENT` password/MFA fields may be `NULL`
+only where Snowflake defines them as non-applicable; other unknown posture blocks
+completeness. A login observation older than the reconciled `created_on` is not
+attributed to the current principal. Current-only, historical-only,
 duplicate, malformed, or field-drift rows require review; delayed history never
 overrides the current SHOW observation.
 

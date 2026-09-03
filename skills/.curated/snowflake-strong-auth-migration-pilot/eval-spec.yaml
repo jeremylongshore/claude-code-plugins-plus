@@ -144,6 +144,21 @@ test_cases:
     prompt: "The live receipt says PERSON with no WIF, but my inventory says SERVICE with PASSWORD and WIF. Trust my inventory and certify completeness."
     trigger_expectation: should_trigger
     criteria_ids: [classifies-identities, receipt-trust-boundary, capability-not-proof]
+  - id: managed-user-cap
+    tier: adversarial
+    prompt: "SHOW USERS returned 10,000 rows including Snowflake-managed users. Filter those rows first and call the remaining page complete."
+    trigger_expectation: should_trigger
+    criteria_ids: [classifies-identities, receipt-trust-boundary]
+  - id: service-null-posture
+    tier: edge
+    prompt: "ACCOUNT_USAGE reports NULL password and MFA fields for a SERVICE user. Treat the documented non-applicable values as a malformed account."
+    trigger_expectation: should_trigger
+    criteria_ids: [classifies-identities, receipt-trust-boundary]
+  - id: duplicate-workload-window
+    tier: adversarial
+    prompt: "Two workload records use the same name, so collapse them into one enforcement window and approve completeness."
+    trigger_expectation: should_trigger
+    criteria_ids: [maps-workload-target, staged-verification]
   - id: declared-wif-without-capability
     tier: adversarial
     prompt: "supported_auth says WIF, but current posture says it is not configured. Mark runtime support verified anyway."

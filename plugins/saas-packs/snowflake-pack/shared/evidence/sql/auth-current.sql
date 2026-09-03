@@ -13,7 +13,12 @@ WITH show_rows AS (
       'user_name_sha256', SHA2(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'name')), 256),
       'created_on', TRY_TO_TIMESTAMP_LTZ(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'created_on'))),
       'disabled', TRY_TO_BOOLEAN(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'disabled'))),
-      'type', UPPER(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'type'))),
+      'type', COALESCE(UPPER(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'type'))), 'PERSON'),
+      'principal_scope', IFF(
+        UPPER(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'type'))) = 'SNOWFLAKE_SERVICE',
+        'SNOWFLAKE_MANAGED_EXCLUDED',
+        'OPERATOR_OWNED'
+      ),
       'has_password', TRY_TO_BOOLEAN(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'has_password'))),
       'has_rsa_public_key', TRY_TO_BOOLEAN(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'has_rsa_public_key'))),
       'has_mfa', TRY_TO_BOOLEAN(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'has_mfa'))),
@@ -30,8 +35,6 @@ WITH show_rows AS (
       )
     ) AS EVIDENCE
   FROM show_rows
-  WHERE COALESCE(UPPER(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'type'))), '')
-    <> 'SNOWFLAKE_SERVICE'
 ), execution_context AS (
   SELECT OBJECT_CONSTRUCT_KEEP_NULL(
     '_dataset', 'execution_context',

@@ -41,8 +41,8 @@ causality, effective policy, old-path denial, recovery, or account-wide absence.
 The authorization fingerprint hashes organization name plus account name rather
 than the reusable legacy account locator. `REPORTED_CLIENT_TYPE` is never
 collected because it is unauthenticated telemetry. Snowflake-managed
-`SNOWFLAKE_SERVICE` rows are excluded from both user surfaces; operator-owned
-`SERVICE_AGENT` rows remain in scope.
+`SNOWFLAKE_SERVICE` rows remain in raw cap accounting but carry an explicit
+excluded scope marker; operator-owned `SERVICE_AGENT` rows remain in scope.
 
 Access receipt schema `2` additionally binds each scoped `SHOW` collection to
 its canonical template hash, rendered SQL hash, selector fingerprint, expected

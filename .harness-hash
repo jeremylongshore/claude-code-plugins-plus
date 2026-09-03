@@ -18,7 +18,7 @@ bcf6cd151df5eabc437ea58a67057fa5e3d24bf8bbcd7b969339f5824bfa00b7  plugins/saas-p
 467d93fab234171e723cfd40a184e8ecde8bdb43f78ab9444578b89e35a2291b  plugins/saas-packs/snowflake-pack/skills/snowflake-failover-readiness-drill/eval-spec.yaml
 928fd2578eeca26d9fb8107ae058bfa1871e6dc88a944b3fac4e44fa24482f19  plugins/saas-packs/snowflake-pack/skills/snowflake-pipeline-guardian/eval-spec.yaml
 28663182f51bbfa739771567e951bb2fabe9d6d02680060c200df770a2a4b003  plugins/saas-packs/snowflake-pack/skills/snowflake-query-forensics/eval-spec.yaml
-d7c0bf12cfe2708f99c0ad71bc1201dbd09fda4544d136ea7f9fff33d7162fc4  plugins/saas-packs/snowflake-pack/skills/snowflake-strong-auth-migration-pilot/eval-spec.yaml
+21ebceeb8b3d2e243aa688df85198fc28b3fbc4c0ca009ca583868e101073535  plugins/saas-packs/snowflake-pack/skills/snowflake-strong-auth-migration-pilot/eval-spec.yaml
 4f53213f21724766085a7a4d701b5e8ffd4f30782f67880c87bac7077c0f2796  plugins/saas-packs/supabase-pack/skills/supabase-known-pitfalls/eval-spec.yaml
 81eabecbc8b79a87d105d061bd0f3380e6d74648e412fa46f20885a1abf46160  plugins/skill-enhancers/skill-creator/skills/skill-creator/eval-spec.yaml
 903555ec7e0e7d80db9f18076b50b8b9184a2f0a2b438859d15c9f8757428220  skills/.curated/audit-tests/eval-spec.yaml
@@ -40,6 +40,6 @@ bcf6cd151df5eabc437ea58a67057fa5e3d24bf8bbcd7b969339f5824bfa00b7  skills/.curate
 467d93fab234171e723cfd40a184e8ecde8bdb43f78ab9444578b89e35a2291b  skills/.curated/snowflake-failover-readiness-drill/eval-spec.yaml
 928fd2578eeca26d9fb8107ae058bfa1871e6dc88a944b3fac4e44fa24482f19  skills/.curated/snowflake-pipeline-guardian/eval-spec.yaml
 28663182f51bbfa739771567e951bb2fabe9d6d02680060c200df770a2a4b003  skills/.curated/snowflake-query-forensics/eval-spec.yaml
-d7c0bf12cfe2708f99c0ad71bc1201dbd09fda4544d136ea7f9fff33d7162fc4  skills/.curated/snowflake-strong-auth-migration-pilot/eval-spec.yaml
+21ebceeb8b3d2e243aa688df85198fc28b3fbc4c0ca009ca583868e101073535  skills/.curated/snowflake-strong-auth-migration-pilot/eval-spec.yaml
 4f53213f21724766085a7a4d701b5e8ffd4f30782f67880c87bac7077c0f2796  skills/.curated/supabase-known-pitfalls/eval-spec.yaml
 b91ee2d8ee323ac9591cdad232d31dbf639d7d4b2d32cc105dfa4bb05ab83ec8  skills/.curated/validate-skillmd/eval-spec.yaml
