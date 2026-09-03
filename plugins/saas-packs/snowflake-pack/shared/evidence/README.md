@@ -26,6 +26,25 @@ payloads. `row_limit` and `truncation_possible` in every receipt expose the revi
 cap; a receipt at the cap is partial until a narrower query or pagination proves
 completeness.
 
+Pipeline evidence is live-only schema 2 and intentionally split across six
+single-statement surfaces. `pipeline` requires an explicit half-open UTC window
+of at most seven days and independently caps task, dynamic-table refresh, and
+copy history at 5,000 rows. Settlement is based on task completion, non-executing
+refresh end, and copy completion—not schedule/start time. `pipeline-task-current`,
+`pipeline-stream-current`, `pipeline-dynamic-table-current`, and
+`pipeline-pipe-current` collect role-visible current inventories with a 10,000
+object cap. `pipeline-pipe-status` accepts one strictly validated three-part
+pipe selector and returns only allowlisted state/count/timestamp fields. It
+never serializes raw pipe-status JSON, file paths, notification channels, or
+free-text errors. The pipeline analyzer requires exact receipt and row schemas,
+matching authorization contexts, an explicit evaluation timestamp, current
+observations no older than 15 minutes, and a separately recorded whole-bundle
+digest. It binds safe history-window selectors to rendered SQL and each pipe
+selector to a privacy-bound rendered-SQL digest derived from its scoped object
+hash. All admitted text values use finite documented domains; raw schedule,
+target-lag, reason-code, and provider-message strings are omitted. It keeps bounded evidence completeness
+separate from dependency-graph completeness and account-wide visibility.
+
 Current access sub-surfaces are live-only. Each scoped `SHOW` uses Snowflake's
 pipe operator to project allowlisted grant columns and exactly one execution
 context row in the same statement. The analyzer compares authorization-context
@@ -103,8 +122,9 @@ The `cost` and `query` surfaces include `WAREHOUSE_LOAD_HISTORY` rows so queue
 pressure can be reconciled with attribution and query latency. Operator statistics
 (`GET_QUERY_OPERATOR_STATS`) and `QUERY_INSIGHTS` require a concrete query ID and
 are supplied as a separately redacted dataset to the domain analyzer; the collector
-does not guess an ID or broaden privileges. Likewise, pipeline `SYSTEM$PIPE_STATUS`
-is collected only for an explicitly named pipe by the operator and is never replayed.
+does not guess an ID or broaden privileges. Pipeline `SYSTEM$PIPE_STATUS` is
+queried only through the named, privacy-projected `pipeline-pipe-status` surface;
+raw JSON is never retained and no pipe operation is executed.
 For query-forensics completeness, preserve the anchor row's `role_name` and the exact
 query-history source. The analyzer rejects role/source mismatches, applies terminal
 statuses only to their matching surface, and requires at least one bound operator row.

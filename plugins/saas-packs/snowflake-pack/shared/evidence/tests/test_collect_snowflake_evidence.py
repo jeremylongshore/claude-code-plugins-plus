@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import hashlib
 import json
+import re
 import subprocess
 import tempfile
 import unittest
@@ -868,7 +869,7 @@ class CollectorTests(unittest.TestCase):
                         "python3",
                         str(SCRIPT),
                         "--surface",
-                        "pipeline",
+                        "replication",
                         "--input-json",
                         str(source),
                         "--output",
@@ -907,7 +908,7 @@ class CollectorTests(unittest.TestCase):
                     "python3",
                     str(SCRIPT),
                     "--surface",
-                    "pipeline",
+                    "replication",
                     "--input-json",
                     str(safe_source),
                     "--output",
@@ -1189,6 +1190,289 @@ class CollectorTests(unittest.TestCase):
                         window_start="2026-08-01T00:00:00Z",
                         window_end="2026-08-09T00:00:01Z",
                     )
+
+    def test_pipeline_history_requires_a_bounded_half_open_utc_window(self) -> None:
+        start = "2026-08-01T00:00:00Z"
+        end = "2026-08-08T00:00:00Z"
+        _, template, rendered, _, selector = MODULE.render_surface(
+            "pipeline",
+            window_start=start,
+            window_end=end,
+        )
+        self.assertEqual(selector, {"window_start": start, "window_end": end})
+        self.assertNotRegex(template.upper(), r"DATEADD\(\s*'DAY'\s*,\s*-7")
+        self.assertIn(f"TO_TIMESTAMP_TZ('{start}')", rendered)
+        self.assertIn(f"TO_TIMESTAMP_TZ('{end}')", rendered)
+        for timestamp_column in ("COMPLETED_TIME", "REFRESH_END_TIME", "LAST_LOAD_TIME"):
+            with self.subTest(timestamp_column=timestamp_column):
+                self.assertRegex(
+                    rendered.upper(),
+                    rf"\b{timestamp_column}\s*>=\s*WINDOW_START_UTC",
+                )
+                self.assertRegex(
+                    rendered.upper(),
+                    rf"\b{timestamp_column}\s*<\s*LEAST\(\s*WINDOW_END_UTC",
+                )
+        self.assertIn("REFRESH_END_TIME IS NOT NULL", rendered.upper())
+        self.assertIn("STATE <> 'EXECUTING'", rendered.upper())
+        self.assertRegex(rendered.upper(), r"'PIPE_IDENTIFIER_SHA256'\s*,\s*IFF\(\s*PIPE_NAME IS NULL")
+
+        for invalid_start, invalid_end in (
+            (None, None),
+            (start, None),
+            (None, end),
+            (end, start),
+            (start, "2026-08-08T00:00:01Z"),
+            ("2026-08-01T00:00:00+00:00", end),
+        ):
+            kwargs = {}
+            if invalid_start is not None:
+                kwargs["window_start"] = invalid_start
+            if invalid_end is not None:
+                kwargs["window_end"] = invalid_end
+            with self.subTest(window=kwargs), self.assertRaises(MODULE.CollectionError):
+                MODULE.render_surface("pipeline", **kwargs)
+
+    def test_pipeline_history_receipt_is_schema2_and_privacy_bound(self) -> None:
+        path, template, rendered, sources, selector = MODULE.render_surface(
+            "pipeline",
+            window_start="2026-08-01T00:00:00Z",
+            window_end="2026-08-02T00:00:00Z",
+        )
+        raw = [
+            {
+                "EVIDENCE": {
+                    "_dataset": "execution_context",
+                    "observed_at": "2026-08-02T00:05:00Z",
+                    "account_identifier_sha256": "a" * 64,
+                }
+            },
+            {"EVIDENCE": {"_dataset": "task_history", "task_key_sha256": "b" * 64}},
+            {
+                "EVIDENCE": {
+                    "_dataset": "dynamic_table_refresh_history",
+                    "dynamic_table_key_sha256": "c" * 64,
+                }
+            },
+            {"EVIDENCE": {"_dataset": "copy_history", "target_key_sha256": "d" * 64}},
+        ]
+        receipt = MODULE.build_receipt(
+            "pipeline",
+            "raw-pipeline-profile",
+            rendered,
+            sources,
+            raw=raw,
+            template_sql=template,
+            template_path=path,
+            selector=selector,
+            collection_mode="live-cli",
+            collection_started_at="2026-08-02T00:04:00Z",
+            collection_completed_at="2026-08-02T00:05:00Z",
+        )
+        expected = {
+            "execution_context",
+            "task_history",
+            "dynamic_table_refresh_history",
+            "copy_history",
+        }
+        self.assertEqual(receipt["schema_version"], "2")
+        self.assertEqual(set(receipt["expected_datasets"]), expected)
+        self.assertEqual(set(receipt["datasets"]), expected)
+        self.assertEqual(receipt["cap_scope"], "per_dataset")
+        self.assertRegex(receipt["connection_profile_sha256"], r"^sha256:[0-9a-f]{64}$")
+        self.assertRegex(receipt["result_sha256"], r"^sha256:[0-9a-f]{64}$")
+        self.assertEqual(receipt["source_metadata"]["selector_values"], selector)
+        self.assertEqual(
+            receipt["selector_fingerprint"],
+            "sha256:" + hashlib.sha256(MODULE.canonical_json(selector)).hexdigest(),
+        )
+        self.assertEqual(
+            receipt["rendered_sql_sha256"],
+            "sha256:" + hashlib.sha256(rendered.encode("utf-8")).hexdigest(),
+        )
+        self.assertNotIn("connection_profile", receipt)
+        self.assertNotIn("raw-pipeline-profile", json.dumps(receipt))
+
+    def test_pipeline_history_caps_each_dataset_independently(self) -> None:
+        self.assertEqual(
+            set(MODULE.CAP_DATASETS_BY_SURFACE["pipeline"]),
+            {"task_history", "dynamic_table_refresh_history", "copy_history"},
+        )
+        _, sql, _ = MODULE.load_surface("pipeline")
+        self.assertEqual(len(re.findall(r"\bLIMIT\s+5000\b", sql, flags=re.IGNORECASE)), 3)
+        capped_sql = re.sub(r"\bLIMIT\s+5000\b", "LIMIT 2", sql, flags=re.IGNORECASE)
+        context = {"EVIDENCE": {"_dataset": "execution_context", "observed_at": "2026-08-02T00:05:00Z"}}
+        for dataset in MODULE.CAP_DATASETS_BY_SURFACE["pipeline"]:
+            rows = [
+                context,
+                {"EVIDENCE": {"_dataset": dataset, "row": 1}},
+                {"EVIDENCE": {"_dataset": dataset, "row": 2}},
+            ]
+            receipt = MODULE.build_receipt("pipeline", "readonly", capped_sql, ["pipeline"], raw=rows)
+            with self.subTest(capped_dataset=dataset):
+                self.assertEqual(receipt["cap_scope"], "per_dataset")
+                self.assertTrue(receipt["truncation_possible"])
+
+        below_each_cap = [
+            context,
+            *({"EVIDENCE": {"_dataset": dataset, "row": 1}} for dataset in MODULE.CAP_DATASETS_BY_SURFACE["pipeline"]),
+        ]
+        receipt = MODULE.build_receipt("pipeline", "readonly", capped_sql, ["pipeline"], raw=below_each_cap)
+        self.assertGreater(receipt["row_count"], receipt["row_limit"])
+        self.assertFalse(receipt["truncation_possible"])
+
+    def test_pipeline_current_surfaces_have_exact_dataset_contracts(self) -> None:
+        expected = {
+            "pipeline-task-current": {"current_tasks", "execution_context"},
+            "pipeline-stream-current": {"current_streams", "execution_context"},
+            "pipeline-dynamic-table-current": {"current_dynamic_tables", "execution_context"},
+            "pipeline-pipe-current": {"current_pipes", "execution_context"},
+            "pipeline-pipe-status": {"execution_context", "pipe_status"},
+        }
+        registered = set(MODULE.SURFACES) | set(MODULE.SUBSURFACES)
+        self.assertEqual(set(expected) & registered, set(expected))
+        for surface, datasets in expected.items():
+            with self.subTest(surface=surface):
+                self.assertEqual(set(MODULE.RECEIPT_EXPECTED_DATASETS[surface]), datasets)
+                path, template, rendered, sources, selector = MODULE.render_surface(
+                    surface,
+                    **({"pipe": "OPS.INGEST.EVENTS_PIPE"} if surface == "pipeline-pipe-status" else {}),
+                )
+                self.assertTrue(path.is_file())
+                self.assertTrue(sources)
+                self.assertIn("'_dataset', 'execution_context'", rendered)
+                receipt = MODULE.build_receipt(
+                    surface,
+                    "readonly",
+                    rendered,
+                    sources,
+                    raw=[],
+                    template_sql=template,
+                    template_path=path,
+                    selector=selector,
+                    collection_mode="live-cli",
+                )
+                self.assertEqual(set(receipt["datasets"]), datasets)
+                self.assertEqual(receipt["schema_version"], "2")
+
+    def test_pipeline_sql_omits_unbounded_provider_text_fields(self) -> None:
+        forbidden_by_surface = {
+            "pipeline": ("'scheduled_from',", "'error_code',", "'state_code',"),
+            "pipeline-task-current": ("'schedule',", "'target_completion_interval',"),
+            "pipeline-dynamic-table-current": ("'target_lag',",),
+        }
+        for surface, forbidden_fragments in forbidden_by_surface.items():
+            _, sql, _ = MODULE.load_surface(surface)
+            for fragment in forbidden_fragments:
+                with self.subTest(surface=surface, fragment=fragment):
+                    self.assertNotIn(fragment, sql)
+
+    def test_pipeline_pipe_status_requires_one_strict_three_part_selector(self) -> None:
+        path, template, rendered, sources, selector = MODULE.render_surface(
+            "pipeline-pipe-status",
+            pipe="OPS.INGEST.EVENTS_PIPE",
+        )
+        self.assertEqual(selector, {"pipe": "OPS.INGEST.EVENTS_PIPE"})
+        self.assertNotIn("__PIPE_IDENTIFIER__", rendered)
+        object_key = "9" * 64
+        receipt = MODULE.build_receipt(
+            "pipeline-pipe-status",
+            "readonly",
+            rendered,
+            sources,
+            raw=[
+                {"EVIDENCE": {"_dataset": "execution_context", "account_identifier_sha256": "a" * 64}},
+                {
+                    "EVIDENCE": {
+                        "_dataset": "pipe_status",
+                        "object_key_sha256": object_key,
+                        "execution_state": "RUNNING",
+                    }
+                },
+            ],
+            template_sql=template,
+            template_path=path,
+            selector=selector,
+            collection_mode="live-cli",
+        )
+        binding = {"pipe_object_key_sha256": object_key}
+        self.assertEqual(receipt["source_metadata"]["selector_binding"], binding)
+        self.assertEqual(receipt["source_metadata"]["rendered_sql_contract"], "privacy-bound-selector-v1")
+        self.assertEqual(
+            receipt["selector_fingerprint"],
+            "sha256:" + hashlib.sha256(MODULE.canonical_json(binding)).hexdigest(),
+        )
+        privacy_bound_sql = template.replace("__PIPE_IDENTIFIER__", f"__PIPE_OBJECT_KEY_SHA256_{object_key}__")
+        self.assertEqual(
+            receipt["rendered_sql_sha256"],
+            "sha256:" + hashlib.sha256(privacy_bound_sql.encode("utf-8")).hexdigest(),
+        )
+        self.assertNotIn("OPS.INGEST.EVENTS_PIPE", json.dumps(receipt))
+        for value in (
+            "EVENTS_PIPE",
+            "INGEST.EVENTS_PIPE",
+            "OPS.INGEST.EVENTS.PIPE",
+            'OPS.INGEST."EVENTS_PIPE"',
+            "OPS.INGEST.EVENTS_PIPE;DROP TABLE X",
+            "OPS.INGEST.EVENTS_PIPE--comment",
+            "OPS..EVENTS_PIPE",
+        ):
+            with self.subTest(pipe=value), self.assertRaises(MODULE.CollectionError):
+                MODULE.render_surface("pipeline-pipe-status", pipe=value)
+
+    def test_pipeline_pipe_status_error_receipt_does_not_hash_raw_selector(self) -> None:
+        path, template, rendered, sources, selector = MODULE.render_surface(
+            "pipeline-pipe-status",
+            pipe="OPS.INGEST.PRIVATE_CUSTOMER_PIPE",
+        )
+        receipt = MODULE.build_receipt(
+            "pipeline-pipe-status",
+            "readonly",
+            rendered,
+            sources,
+            error={"code": "SNOW_CLI_FAILED", "message": "collection failed"},
+            template_sql=template,
+            template_path=path,
+            selector=selector,
+            collection_mode="live-cli",
+        )
+        template_hash = "sha256:" + hashlib.sha256(template.encode("utf-8")).hexdigest()
+        raw_selector_hash = "sha256:" + hashlib.sha256(MODULE.canonical_json(selector)).hexdigest()
+        self.assertEqual(receipt["status"], "error")
+        self.assertEqual(receipt["rendered_sql_sha256"], template_hash)
+        self.assertIsNone(receipt["selector_fingerprint"])
+        self.assertNotEqual(receipt["selector_fingerprint"], raw_selector_hash)
+        self.assertNotIn("selector_binding", receipt["source_metadata"])
+        self.assertNotIn("PRIVATE_CUSTOMER_PIPE", json.dumps(receipt))
+
+    def test_pipeline_offline_normalization_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "saved.json"
+            output = root / "receipt.json"
+            source.write_text("[]", encoding="utf-8")
+            completed = subprocess.run(
+                [
+                    "python3",
+                    str(SCRIPT),
+                    "--surface",
+                    "pipeline",
+                    "--window-start",
+                    "2026-08-01T00:00:00Z",
+                    "--window-end",
+                    "2026-08-02T00:00:00Z",
+                    "--input-json",
+                    str(source),
+                    "--output",
+                    str(output),
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(completed.returncode, 2)
+            self.assertIn("offline normalization is diagnostic-only", completed.stderr)
+            self.assertFalse(output.exists())
 
     def test_cost_offline_normalization_is_rejected_for_every_surface(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

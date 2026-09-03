@@ -31600,6 +31600,7 @@
       "files": [
         "SKILL.md",
         "eval-spec.yaml",
+        "references/current-state.md",
         "references/observability-queries.md",
         "references/privilege-and-boundaries.md",
         "references/recovery-matrix.md",
@@ -31609,6 +31610,11 @@
         "scripts/collect_snowflake_evidence.py",
         "scripts/fixtures/pipe-schema-duplicates.json",
         "scripts/fixtures/stale-chain.json",
+        "scripts/sql/pipeline-dynamic-table-current.sql",
+        "scripts/sql/pipeline-pipe-current.sql",
+        "scripts/sql/pipeline-pipe-status.sql",
+        "scripts/sql/pipeline-stream-current.sql",
+        "scripts/sql/pipeline-task-current.sql",
         "scripts/sql/pipeline.sql",
         "scripts/test_analyze_pipeline_state.py"
       ]

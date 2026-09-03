@@ -97,6 +97,19 @@ SUBSURFACES = {
     "cost-resource-monitors": ("cost-resource-monitors.sql", ["SHOW RESOURCE MONITORS"], None),
     "cost-storage": ("cost-storage.sql", ["SNOWFLAKE.ACCOUNT_USAGE.STORAGE_USAGE"], None),
     "cost-transfer": ("cost-transfer.sql", ["SNOWFLAKE.ACCOUNT_USAGE.DATA_TRANSFER_HISTORY"], None),
+    "pipeline-dynamic-table-current": (
+        "pipeline-dynamic-table-current.sql",
+        ["SHOW DYNAMIC TABLES IN ACCOUNT"],
+        None,
+    ),
+    "pipeline-pipe-current": ("pipeline-pipe-current.sql", ["SHOW PIPES IN ACCOUNT"], None),
+    "pipeline-pipe-status": (
+        "pipeline-pipe-status.sql",
+        ["SYSTEM$PIPE_STATUS"],
+        "pipe",
+    ),
+    "pipeline-stream-current": ("pipeline-stream-current.sql", ["SHOW STREAMS IN ACCOUNT"], None),
+    "pipeline-task-current": ("pipeline-task-current.sql", ["SHOW TASKS IN ACCOUNT"], None),
 }
 FORBIDDEN_SQL = {
     "ALTER",
@@ -123,12 +136,16 @@ SAFE_START = {"DESCRIBE", "SELECT", "SHOW", "WITH"}
 PROFILE_RE = re.compile(r"^[A-Za-z0-9_.-]{1,128}$")
 IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_$]{0,254}$")
 QUALIFIED_IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_$]{0,254}\.[A-Za-z_][A-Za-z0-9_$]{0,254}$")
+THREE_PART_IDENTIFIER_RE = re.compile(
+    r"^[A-Za-z_][A-Za-z0-9_$]{0,254}\.[A-Za-z_][A-Za-z0-9_$]{0,254}\.[A-Za-z_][A-Za-z0-9_$]{0,254}$"
+)
 SELECTOR_MARKERS = {
     "database": "__DATABASE_IDENTIFIER__",
     "database_role": "__DATABASE_ROLE_IDENTIFIER__",
     "role": "__ROLE_IDENTIFIER__",
     "schema": "__SCHEMA_IDENTIFIER__",
     "user": "__USER_IDENTIFIER__",
+    "pipe": "__PIPE_IDENTIFIER__",
 }
 WINDOW_SELECTOR_MARKERS = {
     "window_start": "__WINDOW_START_UTC__",
@@ -142,7 +159,16 @@ COST_WINDOW_SURFACES = {
     "cost-storage",
     "cost-transfer",
 }
-INTRINSIC_ROW_LIMITS = {"cost-resource-monitors": 10000}
+PIPELINE_WINDOW_SURFACES = {"pipeline"}
+WINDOW_SURFACES = COST_WINDOW_SURFACES | PIPELINE_WINDOW_SURFACES
+INTRINSIC_ROW_LIMITS = {
+    "cost-resource-monitors": 10000,
+    "pipeline-dynamic-table-current": 10000,
+    "pipeline-pipe-current": 10000,
+    "pipeline-pipe-status": 1,
+    "pipeline-stream-current": 10000,
+    "pipeline-task-current": 10000,
+}
 UTC_TIMESTAMP_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$")
 RECEIPT_EXPECTED_DATASETS = {
     "access": ("grants_to_roles", "grants_to_users", "roles"),
@@ -170,6 +196,12 @@ RECEIPT_EXPECTED_DATASETS = {
     "cost-resource-monitors": ("execution_context", "resource_monitors"),
     "cost-storage": ("execution_context", "storage_usage"),
     "cost-transfer": ("data_transfer_usage", "execution_context"),
+    "pipeline": ("copy_history", "dynamic_table_refresh_history", "execution_context", "task_history"),
+    "pipeline-dynamic-table-current": ("current_dynamic_tables", "execution_context"),
+    "pipeline-pipe-current": ("current_pipes", "execution_context"),
+    "pipeline-pipe-status": ("execution_context", "pipe_status"),
+    "pipeline-stream-current": ("current_streams", "execution_context"),
+    "pipeline-task-current": ("current_tasks", "execution_context"),
 }
 CAP_DATASET_BY_SURFACE = {
     "auth": "historical_users",
@@ -181,9 +213,14 @@ CAP_DATASET_BY_SURFACE = {
         for surface, datasets in RECEIPT_EXPECTED_DATASETS.items()
         if surface.startswith("cost-")
     },
+    "pipeline-dynamic-table-current": "current_dynamic_tables",
+    "pipeline-pipe-current": "current_pipes",
+    "pipeline-stream-current": "current_streams",
+    "pipeline-task-current": "current_tasks",
 }
 CAP_DATASETS_BY_SURFACE = {
     "cost": ("warehouse_metering", "query_attribution", "warehouse_load", "serverless_usage"),
+    "pipeline": ("task_history", "dynamic_table_refresh_history", "copy_history"),
 }
 RECEIPT_NON_CLAIMS = (
     "No Snowflake mutation was executed by the reviewed collector SQL.",
@@ -1551,6 +1588,7 @@ def render_surface(
     role: str | None = None,
     schema: str | None = None,
     user: str | None = None,
+    pipe: str | None = None,
     window_start: str | None = None,
     window_end: str | None = None,
 ) -> tuple[Path, str, str, list[str], dict[str, str]]:
@@ -1566,6 +1604,7 @@ def render_surface(
             "role": role,
             "schema": schema,
             "user": user,
+            "pipe": pipe,
         }.items()
         if value is not None
     }
@@ -1577,15 +1616,26 @@ def render_surface(
         if set(supplied) != {selector_name}:
             raise CollectionError(f"surface {surface} requires only the {selector_name} selector")
         value = supplied[selector_name]
-        pattern = QUALIFIED_IDENTIFIER_RE if selector_name in {"database_role", "schema"} else IDENTIFIER_RE
+        if selector_name == "pipe":
+            pattern = THREE_PART_IDENTIFIER_RE
+        elif selector_name in {"database_role", "schema"}:
+            pattern = QUALIFIED_IDENTIFIER_RE
+        else:
+            pattern = IDENTIFIER_RE
         if not pattern.fullmatch(value):
-            qualification = "two-part" if pattern is QUALIFIED_IDENTIFIER_RE else "one-part"
+            qualification = (
+                "three-part"
+                if pattern is THREE_PART_IDENTIFIER_RE
+                else "two-part"
+                if pattern is QUALIFIED_IDENTIFIER_RE
+                else "one-part"
+            )
             raise CollectionError(
                 f"{selector_name} must be one validated {qualification} unquoted Snowflake identifier, not SQL or a fragment"
             )
         selector[selector_name] = value
 
-    if surface in COST_WINDOW_SURFACES:
+    if surface in WINDOW_SURFACES:
         if window_start is None or window_end is None:
             raise CollectionError(f"surface {surface} requires both window_start and window_end")
         for name, value in (("window_start", window_start), ("window_end", window_end)):
@@ -1602,7 +1652,8 @@ def render_surface(
         if start_parsed >= end_parsed:
             raise CollectionError("window_start must be before window_end")
         if end_parsed - start_parsed > timedelta(days=7):
-            raise CollectionError("cost collection windows cannot exceed seven days; partition longer audits")
+            domain = "pipeline" if surface in PIPELINE_WINDOW_SURFACES else "cost"
+            raise CollectionError(f"{domain} collection windows cannot exceed seven days; partition longer audits")
     elif window_start is not None or window_end is not None:
         raise CollectionError(f"surface {surface} does not accept a time window")
 
@@ -1694,6 +1745,10 @@ def build_receipt(
         )
     else:
         truncation_possible = row_limit is not None and capped_row_count >= row_limit
+    if surface == "pipeline-pipe-status":
+        # SYSTEM$PIPE_STATUS is invoked for exactly one validated named pipe;
+        # its one status row plus the context row are not a pageable result.
+        truncation_possible = False
     if surface == "query" and (
         not isinstance(source_max_age_seconds, int)
         or isinstance(source_max_age_seconds, bool)
@@ -1703,8 +1758,32 @@ def build_receipt(
     sanitized_error = sanitize_output_tree(redact_selector_values(error, selector)) if error else None
     canonical_template = template_sql if template_sql is not None else sql
     template_hash = f"sha256:{hashlib.sha256(canonical_template.encode('utf-8')).hexdigest()}"
-    rendered_hash = f"sha256:{hashlib.sha256(sql.encode('utf-8')).hexdigest()}"
-    selector_fingerprint = f"sha256:{hashlib.sha256(canonical_json(selector)).hexdigest()}" if selector else None
+    selector_binding: dict[str, str] | None = None
+    if surface == "pipeline-pipe-status":
+        status_rows = datasets.get("pipe_status", [])
+        object_key = status_rows[0].get("object_key_sha256") if len(status_rows) == 1 else None
+        if isinstance(object_key, str):
+            selector_binding = {"pipe_object_key_sha256": object_key}
+    receipt_rendered_sql = sql
+    fingerprint_value: dict[str, str] | None = selector_binding or selector
+    if surface == "pipeline-pipe-status":
+        if selector_binding is not None:
+            receipt_rendered_sql = canonical_template.replace(
+                "__PIPE_IDENTIFIER__",
+                f"__PIPE_OBJECT_KEY_SHA256_{selector_binding['pipe_object_key_sha256']}__",
+            )
+            fingerprint_value = selector_binding
+        else:
+            # An error response has no Snowflake-produced scoped object hash.
+            # Hashing either the rendered SQL or the raw selector would make a
+            # private pipe name dictionary-testable, so retain only the public
+            # reviewed template proof and no selector fingerprint.
+            receipt_rendered_sql = canonical_template
+            fingerprint_value = None
+    rendered_hash = f"sha256:{hashlib.sha256(receipt_rendered_sql.encode('utf-8')).hexdigest()}"
+    selector_fingerprint = (
+        f"sha256:{hashlib.sha256(canonical_json(fingerprint_value)).hexdigest()}" if fingerprint_value else None
+    )
     context_rows = datasets.get("execution_context", [])
     account_scope = (
         context_rows[0].get("account_identifier_sha256")
@@ -1712,7 +1791,9 @@ def build_receipt(
         else None
     )
     receipt = {
-        "schema_version": "2" if surface == "query" or surface.startswith(("access", "auth", "cost")) else "1",
+        "schema_version": "2"
+        if surface == "query" or surface.startswith(("access", "auth", "cost", "pipeline"))
+        else "1",
         "surface": surface,
         "status": "error" if error else "collected",
         "collected_at": effective_collected_at,
@@ -1735,7 +1816,12 @@ def build_receipt(
         "errors": [sanitized_error] if sanitized_error else [],
         "non_claims": list(RECEIPT_NON_CLAIMS),
     }
-    if surface.startswith("cost"):
+    if surface == "pipeline" and selector:
+        receipt["source_metadata"]["selector_values"] = dict(selector)
+    if surface == "pipeline-pipe-status" and selector_binding:
+        receipt["source_metadata"]["selector_binding"] = selector_binding
+        receipt["source_metadata"]["rendered_sql_contract"] = "privacy-bound-selector-v1"
+    if surface.startswith(("cost", "pipeline")):
         receipt["cap_scope"] = "per_dataset" if cap_datasets else "single_dataset_or_result"
         receipt["result_sha256"] = f"sha256:{hashlib.sha256(canonical_json(datasets)).hexdigest()}"
         receipt["connection_profile_sha256"] = (
@@ -1745,7 +1831,7 @@ def build_receipt(
         receipt["snowflake_query_id_status"] = "not_exposed_by_snow_cli_json_ext"
     else:
         receipt["connection_profile"] = connection
-    if surface.startswith(("access", "auth", "cost")):
+    if surface.startswith(("access", "auth", "cost", "pipeline")):
         receipt["collection_mode"] = collection_mode
         receipt["collection_started_at"] = effective_started_at
         receipt["collection_completed_at"] = effective_completed_at
@@ -1770,6 +1856,7 @@ def execute_surface(
     role: str | None = None,
     schema: str | None = None,
     user: str | None = None,
+    pipe: str | None = None,
     window_start: str | None = None,
     window_end: str | None = None,
     runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
@@ -1783,6 +1870,7 @@ def execute_surface(
         role=role,
         schema=schema,
         user=user,
+        pipe=pipe,
         window_start=window_start,
         window_end=window_end,
     )
@@ -1935,8 +2023,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--role", help="One unquoted account-role identifier for role sub-surfaces")
     parser.add_argument("--schema", help="Two-part unquoted schema identifier for access-future-schema")
     parser.add_argument("--user", help="One unquoted user identifier for access-user-current")
-    parser.add_argument("--window-start", help="Canonical UTC lower bound for cost history surfaces")
-    parser.add_argument("--window-end", help="Canonical UTC exclusive upper bound for cost history surfaces")
+    parser.add_argument("--pipe", help="Three-part unquoted pipe identifier for pipeline-pipe-status")
+    parser.add_argument("--window-start", help="Canonical UTC lower bound for bounded history surfaces")
+    parser.add_argument("--window-end", help="Canonical UTC exclusive upper bound for bounded history surfaces")
     parser.add_argument("--validate-only", action="store_true", help="Validate the reviewed SQL and exit")
     args = parser.parse_args(argv)
     try:
@@ -1947,6 +2036,7 @@ def main(argv: list[str] | None = None) -> int:
             role=args.role,
             schema=args.schema,
             user=args.user,
+            pipe=args.pipe,
             window_start=args.window_start,
             window_end=args.window_end,
         )
@@ -1955,9 +2045,9 @@ def main(argv: list[str] | None = None) -> int:
         if args.surface == "query" and (args.source_max_age_seconds is None or args.source_max_age_seconds <= 0):
             raise CollectionError("--source-max-age-seconds must be positive for the query surface")
         if args.input_json:
-            if args.surface.startswith(("access", "auth", "cost")):
+            if args.surface.startswith(("access", "auth", "cost", "pipeline")):
                 raise CollectionError(
-                    "offline normalization is diagnostic-only and is not accepted for access, authentication, or cost evidence; collect live so Snowflake execution context is bound to the result"
+                    "offline normalization is diagnostic-only and is not accepted for access, authentication, cost, or pipeline evidence; collect live so Snowflake execution context is bound to the result"
                 )
             raw = json.loads(args.input_json.read_text(encoding="utf-8"))
             receipt = build_receipt(
@@ -1984,6 +2074,7 @@ def main(argv: list[str] | None = None) -> int:
                 role=args.role,
                 schema=args.schema,
                 user=args.user,
+                pipe=args.pipe,
                 window_start=args.window_start,
                 window_end=args.window_end,
             )
