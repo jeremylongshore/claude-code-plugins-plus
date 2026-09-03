@@ -14,6 +14,7 @@ python3 shared/evidence/collect_snowflake_evidence.py \
 ```
 
 Top-level surfaces are `cost`, `query`, `pipeline`, `access`, `auth`,
+`auth-login-history`,
 `data-quality`, and `replication`. Access also has narrowly scoped `access-*`
 sub-surfaces for the current session, grants to/of a role, user grants, database-
 role grants, and paired database/schema future grants. Each query is bounded and intentionally collects
@@ -27,6 +28,15 @@ pipe operator to project allowlisted grant columns and exactly one execution
 context row in the same statement. The analyzer compares authorization-context
 fingerprints across independent invocations; matching profile names alone are
 not evidence, and different session IDs are never described as one session.
+
+Authentication evidence is also live-only and split deliberately across three
+independent caps: `auth-current` for privacy-projected `SHOW USERS`, `auth` for
+delayed Account Usage `USERS`, and `auth-login-history` for a seven-day window
+that excludes the newest 120 minutes. Each emits the same pseudonymous execution-
+context fields. Raw usernames and event IDs never leave Snowflake. The auth
+analyzer requires all three exact schema-2 receipts plus an out-of-band whole-
+bundle digest; SHOW flags and LOGIN_HISTORY observations never prove canary
+causality, effective policy, old-path denial, recovery, or account-wide absence.
 
 Access receipt schema `2` additionally binds each scoped `SHOW` collection to
 its canonical template hash, rendered SQL hash, selector fingerprint, expected

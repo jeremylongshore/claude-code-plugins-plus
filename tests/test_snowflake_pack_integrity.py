@@ -55,10 +55,7 @@ def npm_pack_files(pack: Path) -> set[str]:
 
 
 class SnowflakePackIntegrityTests(unittest.TestCase):
-    def test_curated_access_guardian_matches_packaged_source(self) -> None:
-        source = PACK / "skills" / "snowflake-access-guardian"
-        curated = ROOT / "skills" / ".curated" / "snowflake-access-guardian"
-
+    def test_curated_evidence_skills_match_packaged_source(self) -> None:
         def packaged_files(root: Path) -> dict[str, Path]:
             return {
                 path.relative_to(root).as_posix(): path
@@ -66,12 +63,15 @@ class SnowflakePackIntegrityTests(unittest.TestCase):
                 if path.is_file() and "__pycache__" not in path.parts and path.suffix not in {".pyc", ".pyo"}
             }
 
-        source_files = packaged_files(source)
-        curated_files = packaged_files(curated)
-        self.assertEqual(set(curated_files), set(source_files))
-        for relative in sorted(source_files):
-            with self.subTest(path=relative):
-                self.assertEqual(curated_files[relative].read_bytes(), source_files[relative].read_bytes())
+        for skill in ("snowflake-access-guardian", "snowflake-strong-auth-migration-pilot"):
+            source = PACK / "skills" / skill
+            curated = ROOT / "skills" / ".curated" / skill
+            source_files = packaged_files(source)
+            curated_files = packaged_files(curated)
+            self.assertEqual(set(curated_files), set(source_files), skill)
+            for relative in sorted(source_files):
+                with self.subTest(skill=skill, path=relative):
+                    self.assertEqual(curated_files[relative].read_bytes(), source_files[relative].read_bytes())
 
     def test_retired_database_is_absent(self) -> None:
         self.assertFalse(STALE_DATABASE.exists())
@@ -154,6 +154,14 @@ class SnowflakePackIntegrityTests(unittest.TestCase):
         )
         self.assertIn(
             "skills/snowflake-access-guardian/references/current-evidence-contract.md",
+            packed_files,
+        )
+        self.assertIn(
+            "skills/snowflake-strong-auth-migration-pilot/scripts/analyze_auth_evidence.py",
+            packed_files,
+        )
+        self.assertIn(
+            "skills/snowflake-strong-auth-migration-pilot/references/current-evidence-contract.md",
             packed_files,
         )
         sync_generator = load_sync_generator()

@@ -44,7 +44,11 @@ BUNDLES: dict[str, tuple[str, ...]] = {
     "snowflake-failover-readiness-drill": ("replication.sql",),
     "snowflake-pipeline-guardian": ("pipeline.sql",),
     "snowflake-query-forensics": ("query.sql",),
-    "snowflake-strong-auth-migration-pilot": ("auth.sql",),
+    "snowflake-strong-auth-migration-pilot": (
+        "auth.sql",
+        "auth-current.sql",
+        "auth-login-history.sql",
+    ),
 }
 SKILL_TOKEN = re.compile(r"^snowflake-[a-z0-9]+(?:-[a-z0-9]+)*$")
 SQL_TOKEN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*\.sql$")
