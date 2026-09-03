@@ -36,7 +36,7 @@ the grade stops improving.
 
 ## Prerequisites
 
-- Node.js 18+ with `npx` available, and network access to the npm registry (the CLI is
+- Node.js 20+ with `npx` available, and network access to the npm registry (the CLI is
   fetched on demand; the version is pinned below for reproducibility).
 - A skill directory containing a `SKILL.md` file.
 - **No credential is required, and by default nothing about your skill leaves the machine.**
@@ -102,6 +102,8 @@ the grade stops improving.
    trade-offs remain.
 6. Offer the badge: `npx skillcrossroads@0.11.3 '<skill-dir>' --no-llm --badge` writes an SVG the user
    can embed in their README, linking to https://skillcrossroads.com for the hosted version.
+   It lands in the **current working directory** as `<name>.beacon.svg`, not inside the skill
+   directory; pass `--badge=<path>` to choose where it goes.
 
 ## Output
 

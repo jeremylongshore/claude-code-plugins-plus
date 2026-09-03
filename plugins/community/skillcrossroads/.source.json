@@ -1,0 +1,27 @@
+{
+  "synced_from": {
+    "repo": "sgharlow/skillcrossroads",
+    "path": "plugin",
+    "branch": "main"
+  },
+  "last_sync": "2026-09-03T18:28:47.063Z",
+  "author": {
+    "name": "Steve Harlow",
+    "github": "sgharlow",
+    "email": "sgharlow@users.noreply.github.com"
+  },
+  "license": "MIT",
+  "files_synced": 10,
+  "files": [
+    ".claude-plugin/plugin.json",
+    "LICENSE",
+    "README.md",
+    "docs/PRD.md",
+    "skills/audit-skill/SKILL.md",
+    "skills/audit-skill/evals/audit-and-fix-low-grade-skill.md",
+    "skills/audit-skill/evals/audit-clean-skill.md",
+    "skills/audit-skill/evals/npx-unavailable.md",
+    "skills/audit-skill/references/flags-quick-reference.md",
+    "skills/audit-skill/references/rubric-categories.md"
+  ]
+}

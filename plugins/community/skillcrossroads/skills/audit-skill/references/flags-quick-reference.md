@@ -15,7 +15,7 @@ The column that matters is what leaves the machine, not whether a key is require
 | --- | --- | --- |
 | `--no-llm` | Force the fully local path: all six rubric categories scored deterministically. **This skill passes it on every command below.** | **No — never.** |
 | `--markdown` (`--md`) | Emit the Markdown scorecard — the default mode this skill uses for reporting. | No, as this skill invokes it (`--no-llm`). Without `--no-llm` and with a key set, yes: per-check excerpts of 1,500-2,500 characters. |
-| `--badge[=<file>]` | Write an SVG grade badge into the skill directory (default `<name>.beacon.svg`) for embedding in a README. | No, as this skill invokes it (`--no-llm`). |
+| `--badge[=<file>]` | Write an SVG grade badge for embedding in a README. Writes to the **current working directory** as `<name>.beacon.svg`, not into the skill directory - pass `--badge=<path>` to place it explicitly. | No, as this skill invokes it (`--no-llm`). |
 | `--min-grade=<G>` | Exit non-zero below grade G — useful as a CI gate (for example `--min-grade=B`). | No, as this skill invokes it (`--no-llm`). |
 | `--suggest[=N]` | Propose current → proposed fixes for the top N findings (default 3). Proposals only — **never auto-applies**; review each before editing. | **Yes — up to 24,000 characters of the entry file**, to `api.anthropic.com`, billed to your own `ANTHROPIC_API_KEY`. Requires explicit user consent (SKILL.md step 4). |
 
