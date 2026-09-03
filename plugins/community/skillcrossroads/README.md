@@ -17,7 +17,8 @@ then offers an embeddable badge.
   [check reference](https://skillcrossroads.com/docs/checks)
 
 Upstream source: [github.com/sgharlow/skillcrossroads](https://github.com/sgharlow/skillcrossroads)
-(the `skill/` directory is the canonical copy of this skill).
+(this `plugin/` directory is the canonical copy, mirrored into the marketplace by
+`sources.yaml` - edit it here, never in the mirror).
 
 ## Package naming
 

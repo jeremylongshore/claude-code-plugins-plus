@@ -155,4 +155,5 @@ acknowledged by the user as intentional), and the before → after grades are re
 - [skillcrossroads on npm](https://www.npmjs.com/package/skillcrossroads) — the CLI this skill runs (pinned to 0.11.3).
 - [skillcrossroads.com](https://skillcrossroads.com) — hosted scans, badges, and per-check fix documentation.
 - [Check reference](https://skillcrossroads.com/docs/checks) — what every rubric check measures and how to fix it.
-- [Source repository](https://github.com/sgharlow/skillcrossroads) — the `skill/` directory is the canonical copy of this skill.
+- [Source repository](https://github.com/sgharlow/skillcrossroads) — `plugin/` there is the
+  canonical copy; the marketplace entry is a mirror of it, so fixes land upstream first.
