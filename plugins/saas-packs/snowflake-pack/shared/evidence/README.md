@@ -38,6 +38,11 @@ context fields. Raw usernames and event IDs never leave Snowflake. The auth
 analyzer requires all three exact schema-2 receipts plus an out-of-band whole-
 bundle digest; SHOW flags and LOGIN_HISTORY observations never prove canary
 causality, effective policy, old-path denial, recovery, or account-wide absence.
+The authorization fingerprint hashes organization name plus account name rather
+than the reusable legacy account locator. `REPORTED_CLIENT_TYPE` is never
+collected because it is unauthenticated telemetry. Snowflake-managed
+`SNOWFLAKE_SERVICE` rows are excluded from both user surfaces; operator-owned
+`SERVICE_AGENT` rows remain in scope.
 
 Access receipt schema `2` additionally binds each scoped `SHOW` collection to
 its canonical template hash, rendered SQL hash, selector fingerprint, expected

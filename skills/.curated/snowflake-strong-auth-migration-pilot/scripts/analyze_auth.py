@@ -293,14 +293,14 @@ def analyze(doc: dict) -> dict:
                     methods=unknown,
                 )
             )
-        if user_type not in {"PERSON", "SERVICE", "LEGACY_SERVICE"}:
+        if user_type not in {"PERSON", "SERVICE", "LEGACY_SERVICE", "SERVICE_AGENT"}:
             findings.append(
                 finding(
                     f"unknown-user-type-{index}",
                     "medium",
                     "unknown-user-type",
                     name,
-                    "Classify this principal as PERSON, SERVICE, or LEGACY_SERVICE before choosing a migration target.",
+                    "Classify this principal as PERSON, SERVICE, LEGACY_SERVICE, or SERVICE_AGENT before choosing a migration target.",
                 )
             )
         if user_type == "PERSON":
@@ -314,7 +314,7 @@ def analyze(doc: dict) -> dict:
                         "Interactive principal has password authentication without an observed SSO/OAuth path; verify IdP coverage before changing anything.",
                     )
                 )
-        elif user_type in {"SERVICE", "LEGACY_SERVICE"}:
+        elif user_type in {"SERVICE", "LEGACY_SERVICE", "SERVICE_AGENT"}:
             if "PASSWORD" in methods or "BASIC" in methods:
                 findings.append(
                     finding(
@@ -328,7 +328,7 @@ def analyze(doc: dict) -> dict:
         bound = [
             row for row in workloads if upper(row.get("identity") or row.get("user") or row.get("service_user")) == name
         ]
-        if user_type in {"SERVICE", "LEGACY_SERVICE"} and not bound:
+        if user_type in {"SERVICE", "LEGACY_SERVICE", "SERVICE_AGENT"} and not bound:
             findings.append(
                 finding(
                     f"unbound-service-{index}",
@@ -610,7 +610,9 @@ def analyze(doc: dict) -> dict:
         "input_sha256": hashlib.sha256(payload).hexdigest(),
         "summary": {
             "persons": sum(upper(row.get("type") or row.get("user_type")) == "PERSON" for row in users),
-            "services": sum(upper(row.get("type") or row.get("user_type")) == "SERVICE" for row in users),
+            "services": sum(
+                upper(row.get("type") or row.get("user_type")) in {"SERVICE", "SERVICE_AGENT"} for row in users
+            ),
             "legacy_services": sum(upper(row.get("type") or row.get("user_type")) == "LEGACY_SERVICE" for row in users),
             "workloads": len(workloads),
             "integrations": len(integrations),

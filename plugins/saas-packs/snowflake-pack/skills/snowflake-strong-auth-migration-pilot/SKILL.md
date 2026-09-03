@@ -24,8 +24,8 @@ tags: [saas, snowflake, security, authentication, wif, oauth, mcp]
 Convert an uncertain Snowflake identity estate into an owner-backed,
 least-privilege authentication pilot. The useful unit is a named workload and
 its runtime—not a blanket account-wide password deadline. The pilot classifies
-PERSON, SERVICE, and LEGACY_SERVICE principals, maps each bound workload to a
-supported target, and checks that managed MCP/OAuth primary-role scopes,
+PERSON, SERVICE, LEGACY_SERVICE, and SERVICE_AGENT principals, maps each bound
+workload to a supported target, and checks that managed MCP/OAuth primary-role scopes,
 client behavior, and secondary-role controls cannot silently broaden access.
 
 ## Prerequisites
@@ -38,7 +38,8 @@ client behavior, and secondary-role controls cannot silently broaden access.
 - Named identity/workload owner, security approver, executor, recovery identity,
   and approved canary/change window. The inventory must include a separately
   tested break-glass identity and a canary receipt with positive and negative
-  outcomes.
+  outcomes. Keep those operational receipts outside this posture bundle; the
+  analyzer intentionally rejects and never echoes embedded canary or recovery payloads.
 - Python 3.10+ for the bundled stdlib analyzer. No Snowflake driver or network
   access is required.
 
@@ -95,10 +96,12 @@ and verify account, edition, connector, client behavior, and feature availabilit
    execution context. A cap hit, collector error, stale receipt, context mismatch,
    privilege-filtered SHOW row, or user-hash drift blocks scoped completeness.
 2. Build one schema-2 bundle containing those receipts, the exact expected
-   hashed account/user/role authorization context, an explicit digest
+   hashed organization-plus-account/user/role authorization context, an explicit digest
    coverage denominator, owner-backed users/workloads, and one approved bounded
-   enforcement window per workload. Include method names and booleans only;
-   omit credential values. The reference defines the exact envelope.
+   enforcement window per workload. Operator type and current authentication
+   method declarations must match receipted posture. Include method names and
+   booleans only; omit credential values and all canary/break-glass payloads.
+   The reference defines the exact envelope.
 3. At the controlled local boundary, compute and separately record the final
    canonical bundle digest:
 
@@ -156,7 +159,7 @@ Return a JSON report plus a human-readable packet containing:
 - per-surface trust, freshness, exact-template, cap, and context assessments;
 - current/historical pseudonymous user reconciliation and drift;
 - latency-settled LOGIN_HISTORY observations, explicitly separated from proof;
-- counts and findings for PERSON/SERVICE/LEGACY_SERVICE;
+- counts and findings for PERSON/SERVICE/LEGACY_SERVICE/SERVICE_AGENT;
 - workload-to-identity-to-auth target mapping and rationale;
 - managed MCP/OAuth integration state, advertised scopes, client/default-role
   behavior, scope-setting location/object, allowed/blocked roles, secondary-role

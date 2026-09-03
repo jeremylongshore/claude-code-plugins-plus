@@ -98,7 +98,6 @@ class AuthEvidenceTests(unittest.TestCase):
             "first_authentication_factor": "WORKLOAD_IDENTITY_FEDERATION",
             "second_authentication_factor": None,
             "is_success": True,
-            "reported_client_type_observation": "SNOWFLAKE_CLI",
             "error_code": None,
         }
 
@@ -157,7 +156,7 @@ class AuthEvidenceTests(unittest.TestCase):
                     "name": "ETL_SVC",
                     "user_name_sha256": USER_HASH,
                     "type": "SERVICE",
-                    "auth_methods": ["PASSWORD"],
+                    "auth_methods": ["PASSWORD", "WIF"],
                     "owner": "data-platform",
                 }
             ],
@@ -287,6 +286,38 @@ class AuthEvidenceTests(unittest.TestCase):
                 rehash(receipt)
                 self.assertTrue(self.analyze_trusted(data)["completeness_claim_blocked"])
 
+    def test_documented_application_instance_role_type_is_supported(self) -> None:
+        data = self.valid_bundle()
+        data["metadata"]["authorization_context"]["primary_role_type"] = "APPLICATION_INSTANCE"
+        for collection in data["collections"].values():
+            receipt = collection["receipt"]
+            receipt["datasets"]["execution_context"][0]["primary_role_type"] = "APPLICATION_INSTANCE"
+            rehash(receipt)
+        self.assertTrue(self.analyze_trusted(data)["evidence_scope_complete"])
+
+    def test_stale_observation_and_long_collection_interval_are_rejected(self) -> None:
+        for mutation in ("stale observation", "long interval"):
+            with self.subTest(mutation=mutation):
+                data = self.valid_bundle()
+                receipt = data["collections"]["current"]["receipt"]
+                if mutation == "stale observation":
+                    receipt["collection_started_at"] = iso(self.evaluated - timedelta(hours=2, minutes=1))
+                    receipt["datasets"]["execution_context"][0]["observed_at"] = iso(
+                        self.evaluated - timedelta(hours=2)
+                    )
+                else:
+                    receipt["collection_started_at"] = iso(self.evaluated - timedelta(hours=2))
+                rehash(receipt)
+                report = self.analyze_trusted(data)
+                self.assertTrue(report["completeness_claim_blocked"])
+                self.assertIn("max_age_seconds", " ".join(report["receipt_assessments"][0]["issues"]))
+                expected = (
+                    "execution_context.observed_at exceeds"
+                    if mutation == "stale observation"
+                    else "collection interval exceeds"
+                )
+                self.assertIn(expected, " ".join(report["receipt_assessments"][0]["issues"]))
+
     def test_privilege_filtered_show_rows_block_completeness(self) -> None:
         data = self.valid_bundle()
         receipt = data["collections"]["current"]["receipt"]
@@ -295,6 +326,33 @@ class AuthEvidenceTests(unittest.TestCase):
         report = self.analyze_trusted(data)
         self.assertTrue(report["completeness_claim_blocked"])
         self.assertIn("privilege-filtered", " ".join(report["receipt_assessments"][0]["issues"]))
+
+    def test_unknown_posture_and_operator_classification_drift_are_rejected(self) -> None:
+        data = self.valid_bundle()
+        for key, dataset in (("current", "current_users"), ("historical", "historical_users")):
+            receipt = data["collections"][key]["receipt"]
+            receipt["datasets"][dataset][0]["has_password"] = None
+            rehash(receipt)
+        self.assertTrue(self.analyze_trusted(data)["completeness_claim_blocked"])
+
+        data = self.valid_bundle()
+        data["users"][0]["type"] = "PERSON"
+        report = self.analyze_trusted(data)
+        self.assertTrue(report["completeness_claim_blocked"])
+        self.assertIn("type does not match", " ".join(report["evidence_issues"]))
+
+    def test_operator_auth_methods_and_workload_current_auth_bind_to_posture(self) -> None:
+        data = self.valid_bundle()
+        data["users"][0]["auth_methods"] = ["PASSWORD"]
+        report = self.analyze_trusted(data)
+        self.assertTrue(report["completeness_claim_blocked"])
+        self.assertIn("WIF posture", " ".join(report["evidence_issues"]))
+
+        data = self.valid_bundle()
+        data["workloads"][0]["current_auth"] = "KEY_PAIR"
+        report = self.analyze_trusted(data)
+        self.assertTrue(report["completeness_claim_blocked"])
+        self.assertIn("current_auth", " ".join(report["evidence_issues"]))
 
     def test_raw_identity_field_is_rejected_after_receipt_rehash(self) -> None:
         data = self.valid_bundle()
@@ -340,6 +398,14 @@ class AuthEvidenceTests(unittest.TestCase):
         self.assertTrue(report["completeness_claim_blocked"])
         self.assertNotIn("hunter2", str(report))
 
+    def test_canary_and_break_glass_payloads_are_not_accepted_or_echoed(self) -> None:
+        for field in ("canary", "break_glass"):
+            with self.subTest(field=field):
+                data = self.valid_bundle()
+                data[field] = {"verified": True, "login_details": "alice@example.com from 203.0.113.9"}
+                with self.assertRaises(ANALYZER.AuthEvidenceError):
+                    self.analyze_trusted(data)
+
     def test_cli_error_output_sanitizes_credential_shaped_paths(self) -> None:
         stderr = io.StringIO()
         missing = HERE / "password=hunter2.json"
@@ -349,14 +415,12 @@ class AuthEvidenceTests(unittest.TestCase):
         self.assertNotIn("hunter2", stderr.getvalue())
         self.assertIn("REDACTED", stderr.getvalue())
 
-    def test_free_form_login_observations_are_rejected(self) -> None:
-        for unsafe in ("alice@example.com", "203.0.113.9", "SNOWFLAKE_CLI / alice@example.com"):
-            with self.subTest(unsafe=unsafe):
-                data = self.valid_bundle()
-                receipt = data["collections"]["login_history"]["receipt"]
-                receipt["datasets"]["login_history"][0]["reported_client_type_observation"] = unsafe
-                rehash(receipt)
-                self.assertTrue(self.analyze_trusted(data)["completeness_claim_blocked"])
+    def test_client_telemetry_is_not_part_of_the_receipt_schema(self) -> None:
+        data = self.valid_bundle()
+        receipt = data["collections"]["login_history"]["receipt"]
+        receipt["datasets"]["login_history"][0]["reported_client_type_observation"] = "ALICE"
+        rehash(receipt)
+        self.assertTrue(self.analyze_trusted(data)["completeness_claim_blocked"])
 
     def test_reviewed_sql_hash_tamper_is_rejected(self) -> None:
         data = self.valid_bundle()
@@ -396,6 +460,28 @@ class AuthEvidenceTests(unittest.TestCase):
         self.assertEqual(report["current_historical_reconciliation"]["field_drift"][0]["field"], "created_on")
         self.assertTrue(report["completeness_claim_blocked"])
 
+    def test_login_before_reconciled_principal_creation_is_not_attributed(self) -> None:
+        data = self.valid_bundle()
+        created_on = self.event_time + timedelta(minutes=15)
+        for key, dataset in (("current", "current_users"), ("historical", "historical_users")):
+            receipt = data["collections"][key]["receipt"]
+            receipt["datasets"][dataset][0]["created_on"] = iso(created_on)
+            rehash(receipt)
+        report = self.analyze_trusted(data)
+        self.assertTrue(report["completeness_claim_blocked"])
+        self.assertIn("predates", " ".join(report["evidence_issues"]))
+
+    def test_service_agent_is_treated_as_an_operator_owned_service(self) -> None:
+        data = self.valid_bundle()
+        for key, dataset in (("current", "current_users"), ("historical", "historical_users")):
+            receipt = data["collections"][key]["receipt"]
+            receipt["datasets"][dataset][0]["type"] = "SERVICE_AGENT"
+            rehash(receipt)
+        data["users"][0]["type"] = "SERVICE_AGENT"
+        report = self.analyze_trusted(data)
+        self.assertTrue(report["evidence_scope_complete"])
+        self.assertEqual(report["migration_plan"]["summary"]["services"], 1)
+
     def test_unsettled_login_event_is_rejected_as_history_proof(self) -> None:
         data = self.valid_bundle()
         receipt = data["collections"]["login_history"]["receipt"]
@@ -432,6 +518,7 @@ class AuthEvidenceTests(unittest.TestCase):
 
     def test_current_wif_flag_does_not_certify_declared_target_capability(self) -> None:
         data = self.valid_bundle()
+        data["users"][0]["auth_methods"] = ["PASSWORD"]
         for key, dataset in (("current", "current_users"), ("historical", "historical_users")):
             receipt = data["collections"][key]["receipt"]
             receipt["datasets"][dataset][0]["has_workload_identity"] = False
@@ -472,7 +559,7 @@ class AuthEvidenceTests(unittest.TestCase):
 
     def test_enforcement_window_latency_boundary_is_explicit(self) -> None:
         data = self.valid_bundle()
-        cutoff = self.completed - timedelta(seconds=7200)
+        cutoff = self.observed - timedelta(seconds=7200)
         data["enforcement_windows"][0]["end"] = iso(cutoff + timedelta(seconds=1))
         report = self.analyze_trusted(data)
         self.assertFalse(report["enforcement_window_assessment"]["windows"][0]["account_usage_settled"])

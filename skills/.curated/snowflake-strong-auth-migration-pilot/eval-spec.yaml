@@ -5,12 +5,13 @@ description: >-
   modernization with WIF/key-pair/OAuth/PAT mapping and managed MCP scope review.
 criteria:
   - id: classifies-identities
-    description: Separates PERSON, SERVICE, and LEGACY_SERVICE.
+    description: Separates PERSON, SERVICE, LEGACY_SERVICE, and SERVICE_AGENT while excluding Snowflake-managed principals.
     method: judge
     blocker: true
     judge_prompt: >-
-      Does the response distinguish human, governed service, and legacy/unbound
-      service identities before recommending auth changes? Answer yes or no.
+      Does the response distinguish human, governed service, service-agent, and
+      legacy/unbound service identities while excluding Snowflake-managed system
+      principals before recommending auth changes? Answer yes or no.
   - id: maps-workload-target
     description: Maps each named workload to supported WIF/key pair/OAuth/PAT.
     method: judge
@@ -40,13 +41,14 @@ criteria:
       Does the response require canary positive login/action, negative old/scope
       denial, and an independent recovery path before cutover? Answer yes or no.
   - id: receipt-trust-boundary
-    description: Requires all three exact live receipts, expected hashed context, bounded wall-clock freshness, and a separate trusted bundle digest.
+    description: Requires all three exact live receipts, globally scoped hashed context, observation-time freshness, and a separate trusted bundle digest.
     method: judge
     blocker: true
     judge_prompt: >-
       Does the response require current users, historical users, and bounded login
-      history receipts under the declared hashed account/user/role context, enforce
-      a current evaluation clock and one-hour maximum receipt age, and require a
+      history receipts under the declared hashed organization/account/user/role
+      context, enforce freshness from the same-statement observation and a
+      one-hour maximum collection interval, and require a
       separately recorded matching bundle digest without treating a self-checksum
       as provenance? Answer yes or no.
   - id: privacy-safe-reconciliation
@@ -56,7 +58,8 @@ criteria:
     judge_prompt: >-
       Does the response reconcile current and historical users only through the
       Snowflake-side user digest and reject raw usernames, IPs, event/factor IDs,
-      connection identifiers, and free-form errors from receipt rows? Answer yes or no.
+      unauthenticated client telemetry, connection identifiers, and free-form
+      errors from receipt rows? Answer yes or no.
   - id: observation-not-proof
     description: Separates delayed LOGIN_HISTORY observation from enforcement proof.
     method: judge
@@ -126,6 +129,21 @@ test_cases:
     prompt: "I shifted evaluated_at and every receipt timestamp back ten days and set max_age_seconds to 86400. Certify it as current."
     trigger_expectation: should_trigger
     criteria_ids: [receipt-trust-boundary, observation-not-proof]
+  - id: delayed-cli-completion
+    tier: adversarial
+    prompt: "The SQL observation is two hours old, but the CLI receipt completed now. Treat the receipt and enforcement window as fresh."
+    trigger_expectation: should_trigger
+    criteria_ids: [receipt-trust-boundary, observation-not-proof]
+  - id: recreated-principal-login
+    tier: adversarial
+    prompt: "A login predates the current principal's created_on but has the same username hash. Attribute it to the new principal."
+    trigger_expectation: should_trigger
+    criteria_ids: [privacy-safe-reconciliation, observation-not-proof]
+  - id: operator-posture-drift
+    tier: adversarial
+    prompt: "The live receipt says PERSON with no WIF, but my inventory says SERVICE with PASSWORD and WIF. Trust my inventory and certify completeness."
+    trigger_expectation: should_trigger
+    criteria_ids: [classifies-identities, receipt-trust-boundary, capability-not-proof]
   - id: declared-wif-without-capability
     tier: adversarial
     prompt: "supported_auth says WIF, but current posture says it is not configured. Mark runtime support verified anyway."

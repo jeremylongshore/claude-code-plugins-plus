@@ -1,5 +1,6 @@
--- Bounded Account Usage observation. Client and factor labels are observations,
--- not proof of workload attribution or policy enforcement.
+-- Bounded Account Usage observation. Factor labels are observations, not proof
+-- of workload attribution or policy enforcement. Client telemetry is excluded
+-- because Snowflake documents REPORTED_CLIENT_TYPE as unauthenticated input.
 WITH projected_events AS (
   SELECT
     TO_VARCHAR(EVENT_TIMESTAMP) || ':' || SHA2(TO_VARCHAR(EVENT_ID), 256) AS SORT_KEY,
@@ -12,7 +13,6 @@ WITH projected_events AS (
       'first_authentication_factor', UPPER(TO_VARCHAR(FIRST_AUTHENTICATION_FACTOR)),
       'second_authentication_factor', UPPER(TO_VARCHAR(SECOND_AUTHENTICATION_FACTOR)),
       'is_success', TRY_TO_BOOLEAN(TO_VARCHAR(IS_SUCCESS)),
-      'reported_client_type_observation', UPPER(TO_VARCHAR(REPORTED_CLIENT_TYPE)),
       'error_code', ERROR_CODE
     ) AS EVIDENCE
   FROM SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY
@@ -25,7 +25,10 @@ WITH projected_events AS (
   SELECT OBJECT_CONSTRUCT_KEEP_NULL(
     '_dataset', 'execution_context',
     'observed_at', CURRENT_TIMESTAMP(),
-    'account_identifier_sha256', SHA2(TO_VARCHAR(CURRENT_ACCOUNT()), 256),
+    'account_identifier_sha256', SHA2(
+      TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), CURRENT_ACCOUNT_NAME())),
+      256
+    ),
     'collector_user_sha256', SHA2(TO_VARCHAR(CURRENT_USER()), 256),
     'primary_role_sha256', SHA2(TO_VARCHAR(CURRENT_ROLE()), 256),
     'primary_role_type', CURRENT_ROLE_TYPE(),

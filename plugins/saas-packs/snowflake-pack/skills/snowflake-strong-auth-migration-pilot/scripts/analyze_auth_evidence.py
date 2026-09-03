@@ -65,7 +65,7 @@ CONTEXT_FIELDS = {
     "secondary_roles_sha256",
 }
 AUTHORIZATION_CONTEXT_FIELDS = CONTEXT_FIELDS - {"observed_at"}
-SUPPORTED_ROLE_TYPES = {"APPLICATION_ROLE", "DATABASE_ROLE", "INSTANCE_ROLE", "ROLE"}
+SUPPORTED_ROLE_TYPES = {"APPLICATION_INSTANCE", "ROLE"}
 BUNDLE_REQUIRED_FIELDS = {
     "schema_version",
     "metadata",
@@ -75,7 +75,7 @@ BUNDLE_REQUIRED_FIELDS = {
     "integrations",
     "enforcement_windows",
 }
-BUNDLE_OPTIONAL_FIELDS = {"break_glass", "canary"}
+BUNDLE_OPTIONAL_FIELDS: set[str] = set()
 METADATA_FIELDS = {
     "evaluated_at",
     "max_age_seconds",
@@ -132,7 +132,6 @@ LOGIN_FIELDS = {
     "first_authentication_factor",
     "second_authentication_factor",
     "is_success",
-    "reported_client_type_observation",
     "error_code",
 }
 POSTURE_FIELDS = (
@@ -267,15 +266,15 @@ def _user_issues(dataset: str, values: Any) -> list[str]:
             issues.append(f"{path}.user_name_sha256 is duplicated")
         else:
             seen.add(digest)
-        if row.get("created_on") is not None:
-            try:
-                parse_time(row.get("created_on"), f"{path}.created_on")
-            except AuthEvidenceError as exc:
-                issues.append(str(exc))
-        if row.get("type") is not None and str(row.get("type")).upper() not in {
+        try:
+            parse_time(row.get("created_on"), f"{path}.created_on")
+        except AuthEvidenceError as exc:
+            issues.append(str(exc))
+        if str(row.get("type") or "").upper() not in {
             "PERSON",
             "SERVICE",
             "LEGACY_SERVICE",
+            "SERVICE_AGENT",
         }:
             issues.append(f"{path}.type is not a supported Snowflake user type")
         for field in (
@@ -286,8 +285,8 @@ def _user_issues(dataset: str, values: Any) -> list[str]:
             "has_pat",
             "has_workload_identity",
         ):
-            if row.get(field) is not None and type(row.get(field)) is not bool:
-                issues.append(f"{path}.{field} must be boolean or null")
+            if type(row.get(field)) is not bool:
+                issues.append(f"{path}.{field} must be boolean")
         if dataset == "current_users" and type(row.get("metadata_visible")) is not bool:
             issues.append(f"{path}.metadata_visible must be boolean")
         elif dataset == "current_users" and row.get("metadata_visible") is not True:
@@ -326,7 +325,6 @@ def _login_issues(values: Any, observed_at: datetime | None) -> list[str]:
         for field in (
             "first_authentication_factor",
             "second_authentication_factor",
-            "reported_client_type_observation",
         ):
             if not _safe_observation(row.get(field)):
                 issues.append(f"{path}.{field} is not a bounded observation label")
@@ -394,6 +392,8 @@ def validate_receipt(
             issues.append("receipt.collected_at is in the future")
         if (evaluation_time - completed).total_seconds() > max_age_seconds:
             issues.append("receipt exceeds metadata.max_age_seconds")
+        if (completed - started).total_seconds() > max_age_seconds:
+            issues.append("receipt collection interval exceeds metadata.max_age_seconds")
     except AuthEvidenceError as exc:
         issues.append(str(exc))
     if receipt.get("sql_sha256") != expected_hash:
@@ -454,6 +454,8 @@ def validate_receipt(
         if context_observed is not None and started is not None and completed is not None:
             if not started <= context_observed <= completed:
                 issues.append("execution_context.observed_at is outside the collection interval")
+            elif (evaluation_time - context_observed).total_seconds() > max_age_seconds:
+                issues.append("execution_context.observed_at exceeds metadata.max_age_seconds")
     if surface == "auth-current":
         issues.extend(_user_issues("current_users", datasets.get("current_users")))
     elif surface == "auth":
@@ -527,9 +529,19 @@ def _reconcile_users(current: list[dict[str, Any]], historical: list[dict[str, A
     }
 
 
-def _operator_scope(data: dict[str, Any], coverage: list[str]) -> tuple[list[str], dict[str, str]]:
+def _operator_scope(
+    data: dict[str, Any], coverage: list[str], current_users: list[dict[str, Any]]
+) -> tuple[list[str], dict[str, str]]:
     issues: list[str] = []
     name_to_hash: dict[str, str] = {}
+    methods_by_hash: dict[str, set[str]] = {}
+    current_by_hash = _user_map(current_users)
+    method_fields = {
+        "KEY_PAIR": "has_rsa_public_key",
+        "MFA": "has_mfa",
+        "PAT": "has_pat",
+        "WIF": "has_workload_identity",
+    }
     users = data.get("users", [])
     workloads = data.get("workloads", [])
     if not isinstance(users, list) or any(not isinstance(row, dict) for row in users):
@@ -547,6 +559,26 @@ def _operator_scope(data: dict[str, Any], coverage: list[str]) -> tuple[list[str
         name_to_hash[name] = digest
         if not str(row.get("owner", "")).strip():
             issues.append(f"users[{index}] has no owner")
+        current = current_by_hash.get(str(digest), {})
+        declared_type = str(row.get("type") or "").strip().upper()
+        if declared_type != current.get("type"):
+            issues.append(f"users[{index}].type does not match receipted current posture")
+        try:
+            methods = set(LEGACY.list_upper(row.get("auth_methods"), f"users[{index}].auth_methods"))
+        except ValueError as exc:
+            issues.append(str(exc))
+            methods = set()
+        if not methods or not methods <= LEGACY.METHODS:
+            issues.append(f"users[{index}].auth_methods is empty or contains unsupported methods")
+        password_methods = methods & {"PASSWORD", "BASIC"}
+        if bool(password_methods) is not (current.get("has_password") is True):
+            issues.append(f"users[{index}].auth_methods does not match receipted password posture")
+        for method, field in method_fields.items():
+            if (method in methods) is not (current.get(field) is True):
+                issues.append(f"users[{index}].auth_methods does not match receipted {method} posture")
+        if methods & {"OAUTH", "SAML"}:
+            issues.append(f"users[{index}].auth_methods includes methods not provable from user posture receipts")
+        methods_by_hash[str(digest)] = methods
     for index, row in enumerate(workloads):
         name = str(row.get("name", "")).strip()
         identity = str(row.get("identity") or row.get("user") or row.get("service_user") or "").strip().upper()
@@ -555,9 +587,32 @@ def _operator_scope(data: dict[str, Any], coverage: list[str]) -> tuple[list[str
             issues.append(f"workloads[{index}] is not one-to-one bound to a declared identity digest")
         if not str(row.get("owner", "")).strip():
             issues.append(f"workloads[{index}] has no owner")
+        current_auth = str(row.get("current_auth") or "").strip().upper()
+        if current_auth not in methods_by_hash.get(str(digest), set()):
+            issues.append(f"workloads[{index}].current_auth does not match receipted operator auth methods")
     if sorted(name_to_hash.values()) != coverage:
         issues.append("declared operator users do not exactly match metadata.coverage.user_name_sha256")
     return sorted(set(issues)), name_to_hash
+
+
+def _login_identity_issues(login_rows: list[dict[str, Any]], current_users: list[dict[str, Any]]) -> list[str]:
+    issues: list[str] = []
+    current_by_hash = _user_map(current_users)
+    for index, row in enumerate(login_rows):
+        digest = row.get("user_name_sha256")
+        current = current_by_hash.get(str(digest))
+        if current is None:
+            continue
+        try:
+            event_time = parse_time(row.get("event_timestamp"), f"datasets.login_history[{index}].event_timestamp")
+            created_on = parse_time(current.get("created_on"), f"current_users[{digest}].created_on")
+            if event_time < created_on:
+                issues.append(
+                    f"datasets.login_history[{index}] predates the reconciled current principal creation time"
+                )
+        except AuthEvidenceError as exc:
+            issues.append(str(exc))
+    return sorted(set(issues))
 
 
 def _window_assessment(
@@ -753,7 +808,8 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
     current_hashes = sorted(row["user_name_sha256"] for row in current_users)
     if current_hashes != coverage:
         collection_issues.append("trusted current users do not exactly match declared digest coverage")
-    operator_issues, name_to_hash = _operator_scope(data, coverage)
+    operator_issues, name_to_hash = _operator_scope(data, coverage, current_users)
+    collection_issues.extend(_login_identity_issues(login_rows, current_users))
     try:
         LEGACY.reject_credentials(
             {
@@ -761,21 +817,17 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
                 "workloads": data.get("workloads", []),
                 "integrations": data.get("integrations", []),
                 "enforcement_windows": data.get("enforcement_windows", []),
-                "break_glass": data.get("break_glass", {}),
-                "canary": data.get("canary", {}),
             }
         )
     except ValueError as exc:
         raise AuthEvidenceError(str(exc)) from exc
-    login_completed = next(
-        (
-            parse_time(item["collection_completed_at"], "login collection completion")
-            for item in assessments
-            if item["collection"] == "login_history" and item.get("collection_completed_at")
-        ),
-        None,
+    login_context_rows = trusted_datasets["login_history"].get("execution_context", [])
+    login_observed = (
+        parse_time(login_context_rows[0].get("observed_at"), "login execution_context.observed_at")
+        if len(login_context_rows) == 1
+        else None
     )
-    settled_through = login_completed - timedelta(seconds=LOGIN_HISTORY_LATENCY_SECONDS) if login_completed else None
+    settled_through = login_observed - timedelta(seconds=LOGIN_HISTORY_LATENCY_SECONDS) if login_observed else None
     windows = _window_assessment(data, evaluation_time, settled_through, name_to_hash)
     receipt_complete = all(item["complete"] for item in assessments)
     evidence_scope_complete = (
@@ -788,7 +840,7 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
     login_by_user: dict[str, dict[str, int]] = {}
     for row in login_rows:
         digest = row.get("user_name_sha256")
-        if not isinstance(digest, str):
+        if not isinstance(digest, str) or digest not in coverage:
             continue
         counts = login_by_user.setdefault(digest, {"successful": 0, "failed": 0, "unknown": 0})
         if row.get("is_success") is True:
@@ -825,8 +877,8 @@ def analyze_bundle(data: dict[str, Any], *, trusted_input_sha256: str | None = N
         "users": data.get("users", []),
         "workloads": data.get("workloads", []),
         "integrations": data.get("integrations", []),
-        "break_glass": data.get("break_glass", {}),
-        "canary": data.get("canary", {}),
+        "break_glass": {},
+        "canary": {},
     }
     plan = LEGACY.analyze(planner_input)
     target_capability = _target_capability_assessment(data, name_to_hash, current_users)

@@ -15,9 +15,13 @@ The analyzer requires three independent live collector receipts:
 | `login_history` | `auth-login-history` | `SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY` | `login_history` | Settled portion of the trailing seven-day authentication horizon |
 
 Each receipt also contains exactly one same-statement `execution_context` row.
-The account, collector user, primary role, and secondary-role representation are
-SHA-256 pseudonyms. The analyzer requires equivalent authorization context across
+The organization-plus-account identifier, collector user, primary role, and
+secondary-role representation are SHA-256 pseudonyms. The analyzer requires equivalent authorization context across
 all three invocations but does not claim they used one physical session.
+The account pseudonym hashes `CURRENT_ORGANIZATION_NAME()` plus
+`CURRENT_ACCOUNT_NAME()`; the reusable legacy locator is not the binding key.
+`primary_role_type` accepts only Snowflake's documented `ROLE` and
+`APPLICATION_INSTANCE` values.
 
 The reviewed `LOGIN_HISTORY` SQL deliberately excludes the newest two hours, so
 its effective settled interval is the older portion of the trailing seven-day
@@ -37,6 +41,11 @@ client version, login details, free-form error messages, credential comments,
 PAT names, WIF issuer/subject/audience data, public-key fingerprints, secrets,
 tokens, passwords, or private keys. Unknown fields fail closed rather than being
 silently copied into the report.
+
+`REPORTED_CLIENT_TYPE` is excluded entirely because Snowflake documents it as
+unauthenticated telemetry. Snowflake-managed `SNOWFLAKE_SERVICE` principals are
+also excluded consistently from both user denominators. Operator-owned
+`SERVICE_AGENT` principals remain in scope and are treated as service identities.
 
 ## Bundle envelope
 
@@ -73,7 +82,7 @@ must match the current receipt and the operator user mapping exactly.
       "name": "ETL_SVC",
       "user_name_sha256": "<same-64-lowercase-hex>",
       "type": "SERVICE",
-      "auth_methods": ["PASSWORD"],
+      "auth_methods": ["PASSWORD", "WIF"],
       "owner": "data-platform"
     }
   ],
@@ -108,10 +117,18 @@ must match the current receipt and the operator user mapping exactly.
 Use stable internal workload and change references; do not put ticket prose or
 secrets in receipt rows. Raw names in the separate owner inventory are local
 operator inputs and are never inferred from pseudonyms or emitted as collector evidence.
+Operator `type`, `auth_methods`, and workload `current_auth` values must reconcile
+to current receipted posture. Methods that user posture cannot prove, such as
+OAuth or SAML, do not support scoped completeness in this bundle.
 The top-level bundle, metadata object, receipt wrapper, receipt, datasets, and
 projected rows are exact schemas: unknown fields fail closed. A connection profile
 is only a local profile name containing letters, digits, dot, underscore, or
 hyphen; it is never a connection string or credential field.
+
+Canary and break-glass evidence is deliberately not part of this schema. Keep
+those operational receipts in the separately controlled approval workflow;
+embedding either object is rejected so arbitrary telemetry cannot be echoed or
+mistaken for independently verified proof.
 
 ## Trust and freshness
 
@@ -131,14 +148,18 @@ receipts fresh. Every receipt must be live, recent, internally ordered, below it
 and bound to the exact bundled SQL, canonical nonclaims, expected authorization
 context, and expected source/dataset fields. Offline,
 stale, future-dated, errored, capped, privilege-filtered, or context-mismatched
-receipts are quarantined.
+receipts are quarantined. Freshness is measured from each same-statement
+`execution_context.observed_at`, not from later CLI completion, and the entire
+collection interval must fit inside the declared maximum age.
 
 ## Reconciliation and claims
 
 The current and historical rows join only on `user_name_sha256`. The analyzer
 also compares normalized `created_on` to detect same-name principal recreation,
 then compares `disabled`, `type`, and the password, RSA, MFA, PAT, and workload-identity
-posture flags. `NULL` means unknown, never false. Current-only, historical-only,
+posture flags. A login observation older than the reconciled `created_on` is not
+attributed to the current principal. `NULL` means unknown and blocks current-posture
+completeness rather than being coerced to false. Current-only, historical-only,
 duplicate, malformed, or field-drift rows require review; delayed history never
 overrides the current SHOW observation.
 
@@ -167,5 +188,7 @@ Snowflake references:
 - [SHOW USERS](https://docs.snowflake.com/en/sql-reference/sql/show-users)
 - [USERS Account Usage view](https://docs.snowflake.com/en/sql-reference/account-usage/users)
 - [LOGIN_HISTORY Account Usage view](https://docs.snowflake.com/en/sql-reference/account-usage/login_history)
+- [Account identifiers](https://docs.snowflake.com/en/user-guide/admin-account-identifier)
+- [CURRENT_ROLE_TYPE](https://docs.snowflake.com/en/sql-reference/functions/current_role_type)
 - [Authentication policies](https://docs.snowflake.com/en/user-guide/authentication-policies)
 - [Strong-authentication rollout](https://docs.snowflake.com/en/user-guide/security-mfa-rollout)

@@ -17,13 +17,17 @@ WITH projected_users AS (
     ) AS EVIDENCE
   FROM SNOWFLAKE.ACCOUNT_USAGE.USERS
   WHERE DELETED_ON IS NULL
+    AND COALESCE(UPPER(TYPE), '') <> 'SNOWFLAKE_SERVICE'
   ORDER BY NAME
   LIMIT 10000
 ), execution_context AS (
   SELECT OBJECT_CONSTRUCT_KEEP_NULL(
     '_dataset', 'execution_context',
     'observed_at', CURRENT_TIMESTAMP(),
-    'account_identifier_sha256', SHA2(TO_VARCHAR(CURRENT_ACCOUNT()), 256),
+    'account_identifier_sha256', SHA2(
+      TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), CURRENT_ACCOUNT_NAME())),
+      256
+    ),
     'collector_user_sha256', SHA2(TO_VARCHAR(CURRENT_USER()), 256),
     'primary_role_sha256', SHA2(TO_VARCHAR(CURRENT_ROLE()), 256),
     'primary_role_type', CURRENT_ROLE_TYPE(),
