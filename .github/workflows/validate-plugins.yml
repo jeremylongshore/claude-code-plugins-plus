@@ -814,6 +814,10 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Verify Snowflake collector bundle integrity
+        if: matrix.test-type == 'python-tests'
+        run: python3 plugins/saas-packs/snowflake-pack/shared/evidence/sync_bundled_collectors.py --check
+
       - name: Install Python test dependencies
         if: matrix.test-type == 'python-tests'
         run: |

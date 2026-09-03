@@ -16,6 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PACK = ROOT / "plugins" / "saas-packs" / "snowflake-pack"
 GENERATOR = ROOT / "plugins" / "saas-packs" / "scripts" / "generate-skill-db.py"
+SYNC_GENERATOR = PACK / "shared" / "evidence" / "sync_bundled_collectors.py"
 STALE_DATABASE = ROOT / "plugins" / "saas-packs" / "skill-databases" / "snowflake"
 
 
@@ -23,6 +24,15 @@ def load_generator():
     spec = importlib.util.spec_from_file_location("generate_skill_db", GENERATOR)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"cannot load generator from {GENERATOR}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_sync_generator():
+    spec = importlib.util.spec_from_file_location("sync_bundled_collectors", SYNC_GENERATOR)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"cannot load collector generator from {SYNC_GENERATOR}")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -120,7 +130,40 @@ class SnowflakePackIntegrityTests(unittest.TestCase):
         self.assertIn("000-docs/000-INDEX.md", packed_files)
         self.assertIn("LICENSE", packed_files)
         self.assertIn("shared/evidence/collect_snowflake_evidence.py", packed_files)
-        self.assertIn("shared/evidence/sql/replication.sql", packed_files)
+        sync_generator = load_sync_generator()
+        expected_canonical_sql = {
+            f"shared/evidence/sql/{filename}" for filenames in sync_generator.BUNDLES.values() for filename in filenames
+        }
+        actual_canonical_sql = {
+            path for path in packed_files if path.startswith("shared/evidence/sql/") and path.endswith(".sql")
+        }
+        self.assertEqual(actual_canonical_sql, expected_canonical_sql)
+        expected_collectors = {
+            f"skills/{skill}/scripts/collect_snowflake_evidence.py" for skill in sync_generator.BUNDLES
+        }
+        actual_collectors = {path for path in packed_files if path.endswith("/scripts/collect_snowflake_evidence.py")}
+        self.assertEqual(actual_collectors, expected_collectors)
+        expected_bundle_sql = {
+            f"skills/{skill}/scripts/sql/{filename}"
+            for skill, filenames in sync_generator.BUNDLES.items()
+            for filename in filenames
+        }
+        actual_bundle_sql = {
+            path
+            for path in packed_files
+            if path.startswith(tuple(f"skills/{skill}/scripts/sql/" for skill in sync_generator.BUNDLES))
+            and path.endswith(".sql")
+        }
+        self.assertEqual(actual_bundle_sql, expected_bundle_sql)
+        for skill, filenames in sync_generator.BUNDLES.items():
+            for filename in filenames:
+                self.assertIn(f"skills/{skill}/scripts/sql/{filename}", packed_files)
+        self.assertFalse(
+            any(
+                ".rollback." in path or re.search(r"/\.(?:collect_snowflake_evidence\.py|[^/]+\.sql)\.", path)
+                for path in packed_files
+            )
+        )
 
 
 if __name__ == "__main__":

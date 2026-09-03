@@ -89,3 +89,29 @@ Every output includes the collection timestamp, SQL SHA-256, source views,
 datasets, row count, sanitized errors, and explicit non-claims. These fields support
 content-integrity checks; they do not authenticate the collector. The domain skill
 still decides whether the evidence is trusted, complete, and fresh enough for its job.
+
+## Bundle integrity
+
+`collect_snowflake_evidence.py` and the SQL files in `shared/evidence/` are the
+canonical sources. Each registered skill bundles physical copies so it remains
+self-contained when installed without the rest of the pack. From the pack root,
+check all eight projections without changing the tree:
+
+```bash
+python3 shared/evidence/sync_bundled_collectors.py --check
+```
+
+After reviewing a canonical collector or SQL change, regenerate the registered
+copies explicitly:
+
+```bash
+python3 shared/evidence/sync_bundled_collectors.py --write
+```
+
+Regeneration refuses missing skill structure, unregistered shared-collector
+copies, orphan templates, symlinks, and unexpected destination files. It writes
+only registered collector and SQL files in a pre-staged transaction, rolls the
+complete projection set back if a replacement fails, preserves canonical
+modes, and verifies SHA-256 parity afterward. Receipt
+`sql_sha256` values bind execution to the same canonical template content; they
+are integrity metadata, not proof of origin.
