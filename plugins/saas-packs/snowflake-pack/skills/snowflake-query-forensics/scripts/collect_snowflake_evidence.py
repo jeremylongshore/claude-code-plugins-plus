@@ -89,7 +89,11 @@ SUBSURFACES = {
     "cost-adaptive": ("cost-adaptive.sql", ["SNOWFLAKE.ACCOUNT_USAGE.QUERY_METERING_HISTORY"], None),
     "cost-ai-functions": ("cost-ai-functions.sql", ["SNOWFLAKE.ACCOUNT_USAGE.CORTEX_AI_FUNCTIONS_USAGE_HISTORY"], None),
     "cost-budgets": ("cost-budgets.sql", ["SHOW SNOWFLAKE.CORE.BUDGET"], None),
-    "cost-internal-transfer": ("cost-internal-transfer.sql", ["SNOWFLAKE.ACCOUNT_USAGE.INTERNAL_DATA_TRANSFER_HISTORY"], None),
+    "cost-internal-transfer": (
+        "cost-internal-transfer.sql",
+        ["SNOWFLAKE.ACCOUNT_USAGE.INTERNAL_DATA_TRANSFER_HISTORY"],
+        None,
+    ),
     "cost-resource-monitors": ("cost-resource-monitors.sql", ["SHOW RESOURCE MONITORS"], None),
     "cost-storage": ("cost-storage.sql", ["SNOWFLAKE.ACCOUNT_USAGE.STORAGE_USAGE"], None),
     "cost-transfer": ("cost-transfer.sql", ["SNOWFLAKE.ACCOUNT_USAGE.DATA_TRANSFER_HISTORY"], None),
@@ -139,9 +143,7 @@ COST_WINDOW_SURFACES = {
     "cost-transfer",
 }
 INTRINSIC_ROW_LIMITS = {"cost-resource-monitors": 10000}
-UTC_TIMESTAMP_RE = re.compile(
-    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$"
-)
+UTC_TIMESTAMP_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$")
 RECEIPT_EXPECTED_DATASETS = {
     "access": ("grants_to_roles", "grants_to_users", "roles"),
     "access-database-role-current": ("execution_context", "rows"),
@@ -1710,9 +1712,7 @@ def build_receipt(
         else None
     )
     receipt = {
-        "schema_version": "2"
-        if surface == "query" or surface.startswith(("access", "auth", "cost"))
-        else "1",
+        "schema_version": "2" if surface == "query" or surface.startswith(("access", "auth", "cost")) else "1",
         "surface": surface,
         "status": "error" if error else "collected",
         "collected_at": effective_collected_at,
@@ -1738,7 +1738,9 @@ def build_receipt(
     if surface.startswith("cost"):
         receipt["cap_scope"] = "per_dataset" if cap_datasets else "single_dataset_or_result"
         receipt["result_sha256"] = f"sha256:{hashlib.sha256(canonical_json(datasets)).hexdigest()}"
-        receipt["connection_profile_sha256"] = f"sha256:{hashlib.sha256(canonical_json([account_scope, connection])).hexdigest()}"
+        receipt["connection_profile_sha256"] = (
+            f"sha256:{hashlib.sha256(canonical_json([account_scope, connection])).hexdigest()}"
+        )
         receipt["snowflake_query_id"] = None
         receipt["snowflake_query_id_status"] = "not_exposed_by_snow_cli_json_ext"
     else:
