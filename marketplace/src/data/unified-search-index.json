@@ -13341,7 +13341,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "3.0.0",
+      "version": "3.1.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -72149,7 +72149,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.0.0",
+      "version": "3.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72169,7 +72169,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.0.0",
+      "version": "3.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72188,7 +72188,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.0.0",
+      "version": "3.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72208,7 +72208,7 @@
         "Bash(terraform:plan*)"
       ],
       "compatibleWith": [],
-      "version": "3.0.0",
+      "version": "3.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72227,7 +72227,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.0.0",
+      "version": "3.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72246,7 +72246,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.0.0",
+      "version": "3.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72266,7 +72266,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.0.0",
+      "version": "3.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72285,7 +72285,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.0.0",
+      "version": "3.1.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
