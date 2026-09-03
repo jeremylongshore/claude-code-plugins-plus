@@ -1,18 +1,7 @@
 ---
 name: replit-known-pitfalls
-description: 'Avoid the top Replit anti-patterns: ephemeral filesystem, public secrets,
-  port binding, Nix gotchas, and database limits.
-
-  Use when reviewing Replit code, onboarding developers,
-
-  or auditing existing Replit apps for common mistakes.
-
-  Trigger with phrases like "replit mistakes", "replit anti-patterns",
-
-  "replit pitfalls", "replit what not to do", "replit code review".
-
-  '
-allowed-tools: Read, Grep
+description: 'Audit a Replit App for persistence, Secrets, publishing, port, authentication, and deployment mistakes. Use when reviewing Replit code or diagnosing a Preview-to-production mismatch. Trigger with phrases like "replit mistakes", "replit anti-patterns", "replit pitfalls", or "replit code review".'
+allowed-tools: Read, Grep, Bash(grep:*)
 version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -27,286 +16,121 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Real gotchas when building on Replit. Each pitfall includes what goes wrong, why, and the correct pattern. Based on common failures in Replit's ephemeral container model, Nix-based environment, and cloud hosting platform.
+Review a Replit App against current platform boundaries without changing deployment state. The audit distinguishes the editable Preview environment from the published app and treats model-generated code, production configuration, and public endpoints as separate trust boundaries.
+
+## Prerequisites
+
+- Read-only access to the project and its `.replit`, dependency manifests, server entry point, and authentication middleware.
+- The intended deployment type and access policy: Public, Password protected, Workspace only, or Invite only.
+- The expected production data stores, required Secret names, and public hostname. Do not request Secret values.
+- Approval before changing Publishing settings, production data, DNS, or access controls.
+
+## Instructions
+
+1. Use `Read` to identify the run/build path, listening host and port, persistence layer, auth middleware, and health endpoint.
+2. Use `Grep` or the count-only audit below to locate candidates. Treat matches as review leads, not proof of a vulnerability.
+3. Compare Preview and published-app configuration explicitly. A successful Preview does not prove production Secrets, callbacks, data, or access settings are correct.
+4. Classify each finding as confirmed, not applicable, or needs owner verification. Include file paths and remediation; never include credential values or raw customer data.
+5. Stop before mutating a live app. Hand the owner a bounded change and a verification plan.
 
 ## Pitfall Reference
 
-### 1. Writing to Local Filesystem for Persistence
+### Treating the published filesystem as durable
 
-**What happens:** Data is lost when the container restarts, deploys, or sleeps.
+Published-app files reset when a new version is published. Store relational data in Replit Database and files or binary objects in App Storage. Do not claim that a successful local write proves durability.
 
-```python
-# BAD — files disappear on container restart
-with open("user_data.json", "w") as f:
-    json.dump(data, f)
+### Assuming development Secrets are production-ready
 
-# GOOD — use Replit's persistent storage
-from replit import db
-db["user_data"] = data
+Do not rely on automatic Secret carry-over. In Publishing, verify every required deployment Secret and environment variable by name, and add, link, or override it as the live pane requires; never display values. Never print the environment, paste Secret values into an issue, or expose them through a health route.
 
-# For files, use Object Storage
-from replit.object_storage import Client
-storage = Client()
-storage.upload_from_text("user_data.json", json.dumps(data))
-```
+### Publishing a broken Preview
 
-**Rule:** Anything written to the filesystem is ephemeral. Use PostgreSQL, KV Database, or Object Storage for data that must survive restarts.
+Publishing packages the current version; it does not repair a failing run command, dependency, or port. Make the main user journey pass in Preview first, then test it again at the stable published URL.
 
----
+### Binding a server only to loopback
 
-### 2. Hardcoding Secrets in Source Code
+Published web servers must listen on `0.0.0.0`. If `.replit` contains explicit `[[ports]]`, ensure the intended `localPort` maps to `externalPort = 80`; explicit mappings disable automatic port detection.
 
-**What happens:** Secrets are visible to anyone who views your Repl (public by default on free plans). Replit's Secret Scanner catches some cases but not all.
+### Trusting legacy identity headers
 
-```python
-# BAD — exposed in public Repl
-API_KEY = "sk-live-abc123"
-DATABASE_URL = "hard-coded connection string"
+Do not invent authentication from raw `X-Replit-User-*` headers. Choose Replit Auth or Clerk Auth through the supported integration, verify the provider session in server middleware, and authorize access to each tenant-owned record. Use two accounts to test isolation.
 
-# GOOD — use Replit Secrets (lock icon in sidebar)
-import os
-API_KEY = os.environ["API_KEY"]
-DATABASE_URL = os.environ["DATABASE_URL"]
-```
+### Defeating Autoscale with keep-alive traffic
 
----
+Do not add synthetic pings to force an Autoscale app to stay warm. Choose Autoscale for variable traffic, Reserved VM for continuously available compute, Static only for client-only assets, and Scheduled for timetable-driven work. Record the cost and availability tradeoff.
 
-### 3. Binding to localhost Instead of 0.0.0.0
+### Publishing a backend as Static
 
-**What happens:** App starts but Webview is blank. Replit's proxy can't reach the app.
+Static deployments do not run API routes, server-side auth callbacks, database clients, or background processes. Select Autoscale or Reserved VM when the app requires a server.
 
-```typescript
-// BAD — unreachable from Webview and deployments
-app.listen(3000, '127.0.0.1');
-app.listen(3000, 'localhost');
+### Logging raw exceptions or provider responses
 
-// GOOD — accessible to Replit's proxy
-app.listen(3000, '0.0.0.0');
+Exception messages, request bodies, URLs, and headers can contain credentials or customer data. Log an event name, request identifier, error class, and allowlisted operational fields. Keep detailed evidence in an access-controlled incident system after review.
 
-// BEST — use PORT env var
-const PORT = parseInt(process.env.PORT || '3000');
-app.listen(PORT, '0.0.0.0');
-```
+### Hard-coding time-sensitive limits
 
----
+Plans, quotas, machine sizes, and prices change. Link the current usage or pricing page and capture the observed value and date in the deployment decision instead of embedding an unverified number in code.
 
-### 4. Ignoring Nix System Dependencies
+## Examples
 
-**What happens:** Python packages with C extensions (Pillow, psycopg2, cryptography) fail to build with cryptic errors.
-
-```nix
-# BAD — missing system libraries
-{ pkgs }: {
-  deps = [ pkgs.python311 ];
-}
-
-# GOOD — include system libraries for native packages
-{ pkgs }: {
-  deps = [
-    pkgs.python311
-    pkgs.python311Packages.pip
-    pkgs.zlib          # Required for Pillow
-    pkgs.libjpeg       # Required for Pillow
-    pkgs.libffi        # Required for cffi/cryptography
-    pkgs.openssl       # Required for cryptography
-    pkgs.postgresql    # Required for psycopg2
-  ];
-}
-```
-
-**After editing `replit.nix`:** Exit and re-enter the Shell tab to reload.
-
----
-
-### 5. Using Replit KV Database for Large Data
-
-**What happens:** Writes fail silently or throw errors after hitting the 50 MiB limit.
-
-```python
-# BAD — storing large blobs in KV (50 MiB limit, 5K keys)
-db["images"] = base64_encoded_images  # Hits limit quickly
-db["full_dataset"] = huge_json        # 5 MiB per value max
-
-# GOOD — use KV for metadata, PostgreSQL/Storage for data
-db["image_count"] = 42
-db["last_upload"] = "2025-01-15"
-
-# Large data in Object Storage
-storage.upload_from_text("data/full_dataset.json", json.dumps(data))
-
-# Structured data in PostgreSQL
-pool.query("INSERT INTO images (url, metadata) VALUES ($1, $2)", [url, meta])
-```
-
-**KV Limits:** 50 MiB total, 5,000 keys, 1 KB per key, 5 MiB per value.
-
----
-
-### 6. Expecting Auth Headers in Development
-
-**What happens:** `X-Replit-User-Id` is always undefined in Workspace Webview.
-
-```typescript
-// BAD — breaks during development
-app.get('/api/me', (req, res) => {
-  const userId = req.headers['x-replit-user-id'] as string;
-  // userId is ALWAYS undefined in Workspace Webview
-  res.json({ userId }); // { userId: undefined }
-});
-
-// GOOD — provide dev fallback
-app.get('/api/me', (req, res) => {
-  let userId = req.headers['x-replit-user-id'] as string;
-
-  if (!userId && process.env.NODE_ENV !== 'production') {
-    userId = 'dev-user-123'; // Mock user for development
-  }
-
-  if (!userId) return res.status(401).json({ error: 'Login required' });
-  res.json({ userId });
-});
-```
-
-**Auth only works on:** deployed `.replit.app` URLs, `.replit.dev` preview URLs, and custom domains.
-
----
-
-### 7. Using "Always On" Instead of Deployments
-
-**What happens:** Legacy "Always On" feature is more expensive and less reliable than modern Deployments.
-
-```markdown
-BAD (legacy):
-  Settings > Always On > Enable
-  - Keeps Repl running but uses more resources
-  - No build step, no rollbacks, no scaling
-
-GOOD (modern):
-  Deploy button > Autoscale or Reserved VM
-  - Built-in rollbacks
-  - Separate dev/prod databases
-  - Auto-scaling (Autoscale)
-  - Build step for optimization
-  - Custom domains with auto-SSL
-```
-
----
-
-### 8. Forgetting to Close Database Connections
-
-**What happens:** Connection pool exhaustion. New requests fail with timeout errors.
-
-```python
-# BAD — creates a new connection per request
-@app.route('/api/data')
-def get_data():
-    import psycopg2
-    conn = psycopg2.connect(os.environ["DATABASE_URL"])
-    # ... never closed!
-
-# GOOD — use a connection pool
-from psycopg2.pool import SimpleConnectionPool
-pool = SimpleConnectionPool(1, 10, os.environ["DATABASE_URL"])
-
-@app.route('/api/data')
-def get_data():
-    conn = pool.getconn()
-    try:
-        # ... use connection
-        pass
-    finally:
-        pool.putconn(conn)
-```
-
-```python
-# Also: close KV database on shutdown
-from replit import db
-import atexit
-
-atexit.register(db.close)  # Clean termination
-```
-
----
-
-### 9. Not Handling SIGTERM
-
-**What happens:** Container stops mid-request. In-progress work is lost.
-
-```typescript
-// BAD — abrupt shutdown
-// (no signal handler — process killed immediately)
-
-// GOOD — graceful shutdown
-process.on('SIGTERM', async () => {
-  console.log('SIGTERM received, shutting down...');
-  server.close();           // Stop accepting new requests
-  await pool.end();         // Close database connections
-  await saveState();        // Persist in-memory state
-  process.exit(0);
-});
-```
-
----
-
-### 10. Mixing npm and System Packages
-
-**What happens:** Confusion between Nix system packages and npm/pip language packages.
-
-```markdown
-Nix (replit.nix) = system packages:
-  - Node.js runtime, Python runtime
-  - System libraries (zlib, openssl, libjpeg)
-  - CLI tools (postgresql client, git)
-
-npm/pip = language packages:
-  - express, flask, react
-  - @replit/database, @replit/object-storage
-  - pg, psycopg2
-
-Both are needed:
-  1. replit.nix: pkgs.nodejs-20_x (provides Node.js)
-  2. Shell: npm install express (provides Express)
-
-Common mistake:
-  Expecting "npm install" to provide system libraries
-  → Need pkgs.openssl in replit.nix for crypto packages
-```
-
-## Quick Audit Script
+Run this count-only source audit from the project root. It reports counts, never matching lines or file contents.
 
 ```bash
-#!/bin/bash
-echo "=== Replit Pitfall Audit ==="
+set -euo pipefail
 
-# Check for hardcoded secrets
-echo -n "Secrets in code: "
-grep -rn "sk[-_]\(live\|test\)" --include="*.py" --include="*.ts" --include="*.js" . 2>/dev/null | grep -v node_modules | wc -l
+if candidate_secret_files="$(grep -rIlE \
+  --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.cache \
+  --include='*.js' --include='*.jsx' --include='*.ts' --include='*.tsx' --include='*.py' \
+  '(api[_-]?key|token|secret)[[:space:]]*[:=]' . 2>/dev/null)"; then
+  :
+else
+  grep_status=$?
+  [[ "$grep_status" -eq 1 ]] || { printf 'Source audit failed\n' >&2; exit 1; }
+  candidate_secret_files=""
+fi
 
-# Check port binding
-echo -n "Localhost binding: "
-grep -rn "localhost\|127\.0\.0\.1" --include="*.py" --include="*.ts" --include="*.js" . 2>/dev/null | grep -v node_modules | grep -c "listen\|bind"
+if loopback_bind_files="$(grep -rIlE \
+  --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.cache \
+  --include='*.js' --include='*.ts' --include='*.py' \
+  '(listen|bind).*127\.0\.0\.1|(listen|bind).*localhost' . 2>/dev/null)"; then
+  :
+else
+  grep_status=$?
+  [[ "$grep_status" -eq 1 ]] || { printf 'Source audit failed\n' >&2; exit 1; }
+  loopback_bind_files=""
+fi
 
-# Check filesystem writes
-echo -n "Filesystem writes: "
-grep -rn "writeFileSync\|open.*['\"]w['\"]" --include="*.py" --include="*.ts" --include="*.js" . 2>/dev/null | grep -v node_modules | grep -v ".replit\|replit.nix" | wc -l
-
-# Check for replit.nix
-echo -n "replit.nix: "
-[ -f replit.nix ] && echo "exists" || echo "MISSING"
-
-# Check for SIGTERM handler
-echo -n "SIGTERM handler: "
-grep -rn "SIGTERM" --include="*.py" --include="*.ts" --include="*.js" . 2>/dev/null | grep -v node_modules | wc -l
+printf 'candidate_secret_assignments=%s\n' "$(printf '%s\n' "$candidate_secret_files" | grep -c . || true)"
+printf 'loopback_bind_candidates=%s\n' "$(printf '%s\n' "$loopback_bind_files" | grep -c . || true)"
 ```
+
+A production-readiness finding should look like this:
+
+```text
+Finding: server listens on 127.0.0.1 in src/server.ts
+Impact: published app cannot receive routed traffic
+Evidence: configuration path and line number only
+Remediation: listen on 0.0.0.0 and verify the mapped/public port
+Verification: Preview passes, then the published URL returns the expected status
+```
+
+## Output
+
+Return a review table with finding, evidence location, impact, remediation, verification, owner, and disposition. Add a short list of assumptions that still require confirmation. Redact Secret values, session material, raw request bodies, customer content, and unrestricted logs.
+
+## Error Handling
+
+- If the project, deployment type, or production hostname is unavailable, mark the relevant checks `needs owner verification`; do not guess.
+- If the audit finds a possible Secret, report only its file path and variable name, stop copying content, and recommend rotation if exposure is confirmed.
+- If current Replit documentation conflicts with a saved template, prefer the current official page and flag the template as stale.
+- If remediation would change billing, availability, access, DNS, or production data, stop for explicit approval.
 
 ## Resources
 
-- [Replit Docs](https://docs.replit.com)
-- [Nix on Replit](https://docs.replit.com/programming-ide/nix-on-replit)
-- [Replit Database](https://docs.replit.com/cloud-services/storage-and-databases/replit-database)
-- Replit Deployments
-- [Secure Vibe Coding](https://blog.replit.com/16-ways-to-vibe-code-securely)
-
-## Next Steps
-
-For production readiness, see `replit-prod-checklist`.
+- [Troubleshoot publishing](https://docs.replit.com/build/troubleshooting)
+- [Publishing overview](https://docs.replit.com/features/publishing/overview)
+- [Deployment types](https://docs.replit.com/features/publishing/deployment-types)
+- [Secrets](https://docs.replit.com/core-concepts/project-editor/app-setup/secrets)
+- [Storage and Databases](https://docs.replit.com/learn/projects-and-artifacts/storage-and-databases)
+- [Auth](https://docs.replit.com/learn/projects-and-artifacts/auth)
+- [Security checklist](https://docs.replit.com/learn/security-checklist)

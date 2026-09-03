@@ -1,17 +1,6 @@
 ---
 name: replit-reference-architecture
-description: 'Implement Replit reference architecture with best-practice project layout,
-  data layer, and deployment.
-
-  Use when designing new Replit apps, reviewing project structure,
-
-  or establishing architecture standards for production Replit applications.
-
-  Trigger with phrases like "replit architecture", "replit best practices",
-
-  "replit project structure", "how to organize replit", "replit production layout".
-
-  '
+description: 'Design a production Replit App with explicit Preview/published boundaries, supported authentication, durable storage, safe configuration, health checks, and a workload-appropriate deployment type. Use when starting or reviewing a customer-facing Replit architecture. Trigger with phrases like "replit architecture", "replit production layout", or "replit best practices".'
 allowed-tools: Read, Grep
 version: 1.13.0
 license: MIT
@@ -27,245 +16,168 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Production architecture for applications on Replit. Covers project structure, configuration files, data layer (PostgreSQL + KV + Object Storage), authentication, deployment strategy, and the platform constraints that shape architectural decisions.
+Design a Replit App around five boundaries: editable project versus published release, public edge versus server, authenticated user versus tenant data, ephemeral runtime versus durable storage, and development configuration versus production Secrets. Keep provider-specific details behind small adapters and confirm time-sensitive platform controls in current official documentation.
 
-## Architecture Diagram
+## Prerequisites
 
+- A short workload profile: request-driven, continuously available, static, or scheduled.
+- The app's public/private access policy, supported regions, cost owner, and availability target.
+- A data classification and retention decision for relational records, files, logs, and backups.
+- A chosen auth path: Replit Auth for Replit-account users or Clerk Auth for a branded tenant.
+- Approval boundaries for publishing, production data changes, DNS, and access-control changes.
+
+## Architecture
+
+```text
+Browser
+  -> Replit published edge and access policy
+    -> application server (Autoscale or Reserved VM)
+      -> verified auth session -> tenant authorization
+      -> Replit Database for structured records
+      -> App Storage for files and binary objects
+      -> allowlisted operational telemetry
+
+Project Editor + Preview
+  -> tests and release preparation
+  -> explicit Publish/Republish action
+  -> separate production configuration and verification
 ```
-                    ┌──────────────────────────┐
-                    │    Client (Browser)       │
-                    └──────────┬───────────────┘
-                               │ HTTPS
-                    ┌──────────▼───────────────┐
-                    │  Replit Proxy (TLS, Auth) │
-                    │  Injects X-Replit-User-*  │
-                    └──────────┬───────────────┘
-                               │
-┌──────────────────────────────▼──────────────────────────────┐
-│                 Replit Deployment                            │
-│                                                              │
-│  ┌─────────────┐  ┌──────────────┐  ┌───────────────────┐  │
-│  │ .replit      │  │ replit.nix   │  │ Secrets (AES-256) │  │
-│  │ (run/build)  │  │ (Nix deps)   │  │ (env vars)        │  │
-│  └─────────────┘  └──────────────┘  └───────────────────┘  │
-│                                                              │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │              Express / Flask Server                   │   │
-│  │  Routes │ Auth Middleware │ Error Handler │ Health    │   │
-│  └────────┬───────────────────────────────────┬─────────┘   │
-│           │                                   │              │
-│  ┌────────▼──────────┐  ┌───────────────────▼────────────┐ │
-│  │  PostgreSQL       │  │  Replit KV Database            │ │
-│  │  (DATABASE_URL)   │  │  (REPLIT_DB_URL)               │ │
-│  │  Dev + Prod DBs   │  │  50 MiB, 5K keys              │ │
-│  └───────────────────┘  └────────────────────────────────┘ │
-│                                                              │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │  Object Storage (App Storage)                           ││
-│  │  File uploads, backups, large data                      ││
-│  │  @replit/object-storage SDK                             ││
-│  └─────────────────────────────────────────────────────────┘│
-│                                                              │
-│  Deployment: Autoscale │ Reserved VM │ Static               │
-└──────────────────────────────────────────────────────────────┘
-```
+
+Static deployments stop at the published edge and client assets. They must not contain server-only credentials, database clients, auth callbacks, or background processes.
 
 ## Instructions
 
-### Step 1: Project Structure
+### Step 1 — Define the release boundary
 
-```
-my-replit-app/
-├── .replit                    # Run + deployment configuration
-├── replit.nix                 # System-level Nix dependencies
-├── package.json               # npm dependencies + scripts
-├── tsconfig.json              # TypeScript config
-├── src/
-│   ├── index.ts               # Entry point — Express setup
-│   ├── config.ts              # Secrets validation + env config
-│   ├── routes/
-│   │   ├── api.ts             # Business logic endpoints
-│   │   ├── auth.ts            # Auth-related routes
-│   │   └── health.ts          # Health check (required for deploy)
-│   ├── services/
-│   │   ├── postgres.ts        # PostgreSQL pool singleton
-│   │   ├── kv.ts              # Replit KV Database wrapper
-│   │   └── storage.ts         # Object Storage wrapper
-│   ├── middleware/
-│   │   ├── auth.ts            # Replit Auth header extraction
-│   │   ├── rateLimit.ts       # Rate limiting
-│   │   └── errors.ts          # Global error handler
-│   └── types/
-│       └── index.ts           # Shared type definitions
-├── tests/
-│   ├── api.test.ts            # API integration tests
-│   └── services.test.ts       # Service unit tests
-└── scripts/
-    └── migrate.ts             # Database migration scripts
-```
+Treat Preview as a development environment and the published URL as production. Changes in the Project Editor do not replace the live release until an explicit Publish or Republish. Record the source revision, migration state, production configuration names, and rollback/fix-forward decision for each release.
 
-### Step 2: Configuration Files
+Use `Read` to inspect the existing architecture and configuration, and `Grep` to locate the relevant auth, storage, callback, health, and configuration-name call sites without exposing values.
+
+### Step 2 — Keep configuration minimal
+
+Use the current Project Editor and Publishing controls as authority. Keep `.replit` focused on commands and explicit ports only when automatic detection is insufficient:
 
 ```toml
-# .replit
 entrypoint = "src/index.ts"
-run = "npx tsx src/index.ts"
-
-modules = ["nodejs-20:v8-20230920-bd784b9"]
-
-[nix]
-channel = "stable-24_05"
-
-[env]
-NODE_ENV = "development"
+run = ["npm", "run", "dev"]
 
 [deployment]
-run = ["sh", "-c", "npx tsx src/index.ts"]
-build = ["sh", "-c", "npm ci --production"]
-deploymentTarget = "autoscale"
+build = ["npm", "run", "build"]
+run = ["npm", "start"]
 
-[unitTest]
-language = "nodejs"
-
-[languages.typescript]
-pattern = "**/*.ts"
+[[ports]]
+localPort = 3000
+externalPort = 80
 ```
 
-```nix
-# replit.nix
-{ pkgs }: {
-  deps = [
-    pkgs.nodejs-20_x
-    pkgs.nodePackages.typescript-language-server
-  ];
+Do not hard-code a deployment target copied from an old template. Select Autoscale, Reserved VM, Static, or Scheduled in the current Publishing flow according to the workload and document the observed control.
+
+### Step 3 — Separate configuration from Secret values
+
+Validate names without logging values:
+
+```typescript
+const REQUIRED_CONFIGURATION = ["DATABASE_URL", "SESSION_SECRET"] as const;
+
+export function assertProductionConfiguration(
+  env: NodeJS.ProcessEnv,
+): void {
+  const missing = REQUIRED_CONFIGURATION.filter((name) => !env[name]);
+  if (missing.length > 0) {
+    console.error({
+      event: "configuration_missing",
+      missingCount: missing.length,
+    });
+    throw new Error("Required production configuration is missing");
+  }
 }
 ```
 
-### Step 3: Configuration Module
+Do not rely on automatic Secret carry-over. In Publishing, verify every required deployment Secret and environment variable by name, and add, link, or override it as the live pane requires; never expose configuration values through client bundles, build logs, health responses, or debugging output.
+
+### Step 4 — Put durable data in managed stores
+
+Use Replit Database through a PostgreSQL-compatible client or ORM for structured records. Use App Storage for images, documents, exports, and other objects. Keep migrations explicit and forward/backward compatible across a rollout. Do not disable TLS certificate verification as a connection workaround.
+
+Every tenant-owned query must derive the tenant/user identifier from a verified server-side session and include it in the authorization predicate. Storage object names are not an authorization boundary.
+
+For example, scope every database query to the authenticated owner with a parameter, not a client-supplied identity:
 
 ```typescript
-// src/config.ts — centralized configuration with validation
-export const config = {
-  port: parseInt(process.env.PORT || '3000'),
-  nodeEnv: process.env.NODE_ENV || 'development',
-  isProduction: process.env.NODE_ENV === 'production',
-  repl: {
-    slug: process.env.REPL_SLUG || 'unknown',
-    owner: process.env.REPL_OWNER || 'unknown',
-    id: process.env.REPL_ID,
-  },
-  db: {
-    url: process.env.DATABASE_URL,
-    kvUrl: process.env.REPLIT_DB_URL,
-  },
-} as const;
+type VerifiedSession = { userId: string };
+type Project = { id: string; name: string; ownerId: string };
+type ProjectStore = {
+  query<Row>(statement: string, parameters: readonly unknown[]): Promise<{ rows: Row[] }>;
+};
 
-// Validate required secrets at import time
-const REQUIRED_SECRETS = ['DATABASE_URL'];
-const missing = REQUIRED_SECRETS.filter(k => !process.env[k]);
-if (missing.length > 0 && config.isProduction) {
-  console.error(`FATAL: Missing secrets: ${missing.join(', ')}`);
-  process.exit(1);
+async function listOwnedProjects(
+  session: VerifiedSession | null,
+  database: ProjectStore,
+): Promise<Project[]> {
+  if (!session) {
+    throw new Error("authentication required");
+  }
+
+  const result = await database.query<Project>(
+    "SELECT id, name, owner_id AS ownerId FROM projects WHERE owner_id = $1 ORDER BY id",
+    [session.userId],
+  );
+  return result.rows;
 }
 ```
 
-### Step 4: Data Layer Strategy
+### Step 5 — Use supported authentication
 
-| Storage | Use When | Limits |
-|---------|----------|--------|
-| **PostgreSQL** | Structured data, relations, queries | Plan-dependent |
-| **Replit KV** | Simple cache, session data, counters | 50 MiB, 5K keys |
-| **Object Storage** | Files, images, backups, large blobs | Plan-dependent |
+Choose Replit Auth or Clerk Auth through the supported integration. Verify sessions with the provider's server middleware, enforce authorization separately, and test with at least two users. For customer-facing branded products, evaluate Clerk's separate development and production environments; for Replit-account users, evaluate Replit Auth.
 
-```typescript
-// src/services/postgres.ts
-import { Pool } from 'pg';
-import { config } from '../config';
+### Step 6 — Expose minimal operational endpoints
 
-export const pool = new Pool({
-  connectionString: config.db.url,
-  ssl: { rejectUnauthorized: false },
-  max: 5,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
-});
-
-// src/services/kv.ts
-import Database from '@replit/database';
-export const kv = new Database();
-
-// src/services/storage.ts
-import { Client } from '@replit/object-storage';
-export const storage = new Client();
-```
-
-### Step 5: Entry Point Pattern
+Keep public liveness cheap and non-sensitive:
 
 ```typescript
-// src/index.ts
-import express from 'express';
-import { config } from './config';
-import { pool } from './services/postgres';
-import healthRouter from './routes/health';
-import apiRouter from './routes/api';
-import { requireAuth } from './middleware/auth';
-import { errorHandler } from './middleware/errors';
-
-const app = express();
-app.use(express.json({ limit: '1mb' }));
-
-// Public routes
-app.use(healthRouter);
-
-// Protected routes
-app.use('/api', requireAuth, apiRouter);
-
-// Global error handler (must be last)
-app.use(errorHandler);
-
-// Start server — bind to 0.0.0.0 (required for Replit)
-app.listen(config.port, '0.0.0.0', () => {
-  console.log(`[${config.repl.slug}] Running on port ${config.port}`);
-  // Pre-connect database
-  pool.query('SELECT 1').catch(err => {
-    console.error('Database connection failed:', err.message);
-  });
-});
-
-// Graceful shutdown
-process.on('SIGTERM', async () => {
-  console.log('SIGTERM received, shutting down...');
-  await pool.end();
-  process.exit(0);
+app.get("/healthz", (_request, response) => {
+  response.status(200).json({ status: "ok" });
 });
 ```
 
-## Platform Constraints
+Send dependency health and diagnostic detail to authenticated monitoring, not the public response. Bind the server to `0.0.0.0` and ensure the configured local port matches any explicit `[[ports]]` mapping.
 
-| Constraint | Impact | Mitigation |
-|-----------|--------|------------|
-| Ephemeral filesystem | Files lost on restart | Use DB or Object Storage |
-| Cold starts (Autoscale) | 5-30s first request | Reserved VM or lazy loading |
-| Memory limits | OOM kills | Stream data, limit pool size |
-| Public Repls | Source visible | Never hardcode secrets |
-| Container restarts | State loss | External state (DB/Storage) |
+### Step 7 — Choose compute from the workload
+
+| Workload | Candidate | Confirm before release |
+|---|---|---|
+| Variable request traffic | Autoscale | cold-start tolerance, maximum machines, cost |
+| Continuous server or background connection | Reserved VM | capacity, availability, monthly cost |
+| Client-only files | Static | no server routes, Secrets, or database access |
+| Timetable-driven job | Scheduled | idempotency, overlap, retry and alert policy |
+
+Avoid artificial keep-alive traffic. If latency requires continuously available compute, make that an explicit availability and billing decision.
+
+## Examples
+
+A customer-facing application might use Autoscale, Clerk Auth, Replit Database, and App Storage. Its release proof includes two-user tenant isolation, a reversible migration, a fast public `/healthz` response, and verification at the published URL.
+
+An internal Replit-account tool might use Replit Auth and Workspace-only access. Authorization still belongs in server code; workspace access alone does not replace row-level ownership checks.
+
+## Output
+
+Produce an architecture decision record containing the workload, deployment candidate, trust boundaries, auth provider, data-store mapping, configuration names, public endpoints, monitoring signals, cost owner, release verification, and recovery path. Mark time-sensitive UI, plan, region, and quota facts as observed rather than universal.
 
 ## Error Handling
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cold start slow | Heavy imports at startup | Lazy-load non-critical modules |
-| DB connection refused | PostgreSQL not provisioned | Create database in Database pane |
-| Secrets undefined | Not in Secrets tab | Add via sidebar lock icon |
-| Filesystem writes lost | Ephemeral container | Use Object Storage or PostgreSQL |
+- If auth or storage ownership is unclear, stop the design at that boundary and request a decision.
+- If a template conflicts with current Replit documentation, remove the stale assumption and cite the current page.
+- If a health route would disclose dependency names, versions, paths, or Secret presence, replace it with coarse status and move details behind access control.
+- If a deployment choice changes cost or availability, present the tradeoff and wait for owner approval.
+- If a migration cannot safely coexist with the prior application version, require a maintenance or phased rollout plan before publishing.
 
 ## Resources
 
-- [Replit App Configuration](https://docs.replit.com/replit-app/configuration)
-- [PostgreSQL on Replit](https://docs.replit.com/cloud-services/storage-and-databases/postgresql-on-replit)
-- [Object Storage](https://docs.replit.com/cloud-services/storage-and-databases/object-storage/overview)
-- Replit Deployments
-
-## Next Steps
-
-For deployment, see `replit-deploy-integration`. For multi-environment, see `replit-multi-env-setup`.
+- [Publishing overview](https://docs.replit.com/features/publishing/overview)
+- [Deployment types](https://docs.replit.com/features/publishing/deployment-types)
+- [App configuration](https://docs.replit.com/features/project-setup/configuration)
+- [Troubleshoot publishing](https://docs.replit.com/build/troubleshooting)
+- [Storage and Databases](https://docs.replit.com/learn/projects-and-artifacts/storage-and-databases)
+- [Auth](https://docs.replit.com/learn/projects-and-artifacts/auth)
+- [Secrets](https://docs.replit.com/core-concepts/project-editor/app-setup/secrets)
+- [Publishing costs](https://docs.replit.com/billing/deployment-pricing)
