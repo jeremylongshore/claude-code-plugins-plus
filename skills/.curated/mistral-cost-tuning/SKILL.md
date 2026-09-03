@@ -13,7 +13,7 @@ description: 'Optimize Mistral AI costs through model selection, token managemen
 
   '
 allowed-tools: Read, Grep
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
