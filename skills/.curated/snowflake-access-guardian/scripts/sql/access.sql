@@ -8,6 +8,8 @@ SELECT OBJECT_CONSTRUCT_KEEP_NULL(
   'grantee_name', GRANTEE_NAME,
   'grant_option', GRANT_OPTION,
   'granted_by', GRANTED_BY,
+  'granted_to', GRANTED_TO,
+  'granted_by_role_type', GRANTED_BY_ROLE_TYPE,
   'deleted_on', DELETED_ON
 ) AS EVIDENCE
 FROM SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_ROLES
@@ -22,5 +24,20 @@ SELECT OBJECT_CONSTRUCT_KEEP_NULL(
   'deleted_on', DELETED_ON
 ) AS EVIDENCE
 FROM SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_USERS
+WHERE DELETED_ON IS NULL
+UNION ALL
+SELECT OBJECT_CONSTRUCT_KEEP_NULL(
+  '_dataset', 'roles',
+  'role_id', ROLE_ID,
+  'created_on', CREATED_ON,
+  'name', NAME,
+  'owner', OWNER,
+  'role_type', ROLE_TYPE,
+  'role_database_name', ROLE_DATABASE_NAME,
+  'owner_role_type', OWNER_ROLE_TYPE,
+  'is_from_organization_user_group', IS_FROM_ORGANIZATION_USER_GROUP,
+  'deleted_on', DELETED_ON
+) AS EVIDENCE
+FROM SNOWFLAKE.ACCOUNT_USAGE.ROLES
 WHERE DELETED_ON IS NULL
 LIMIT 10000;

@@ -306,7 +306,8 @@ def analyze(doc: dict, principal: str = "", object_name: str = "", privilege: st
                 )
             )
 
-    by_scope: dict[tuple[str, str, str], list[dict]] = defaultdict(list)
+    database_future: dict[tuple[str, str], list[dict]] = defaultdict(list)
+    schema_future: dict[tuple[str, str], list[dict]] = defaultdict(list)
     for index, grant in enumerate(future):
         scope = _norm(grant.get("scope") or grant.get("container"))
         scope_type = _upper(grant.get("scope_type"))
@@ -315,9 +316,11 @@ def analyze(doc: dict, principal: str = "", object_name: str = "", privilege: st
         priv = _upper(grant.get("privilege"))
         if not scope or not grantee:
             continue
-        by_scope[(grantee, obj_type, priv)].append(
-            {**grant, "_index": index, "_scope": scope, "_scope_type": scope_type}
-        )
+        normalized_future = {**grant, "_index": index, "_scope": scope, "_scope_type": scope_type}
+        if scope_type in {"DATABASE", "DATABASES"}:
+            database_future[(scope.upper(), obj_type)].append(normalized_future)
+        elif scope_type in {"SCHEMA", "SCHEMAS"}:
+            schema_future[(scope.upper(), obj_type)].append(normalized_future)
         if priv == "OWNERSHIP":
             findings.append(
                 _finding(
@@ -330,36 +333,35 @@ def analyze(doc: dict, principal: str = "", object_name: str = "", privilege: st
                     object_type=obj_type,
                 )
             )
-    for key, entries in by_scope.items():
-        db_scopes = [row for row in entries if row["_scope_type"] in {"DATABASE", "DATABASES"}]
-        schema_scopes = [row for row in entries if row["_scope_type"] in {"SCHEMA", "SCHEMAS"}]
-        if db_scopes and schema_scopes:
+    future_precedence: list[dict] = []
+    for (schema_scope, object_type), schema_entries in sorted(schema_future.items()):
+        database_scope = schema_scope.split(".", 1)[0]
+        database_entries = database_future.get((database_scope, object_type), [])
+        if database_entries:
+            finding_id = re.sub(r"[^A-Z0-9_-]+", "-", f"{schema_scope}-{object_type}", flags=re.IGNORECASE)
             findings.append(
                 _finding(
-                    f"future-conflict-{key[0]}-{key[1]}-{key[2]}",
+                    f"future-conflict-{finding_id}",
                     "medium",
                     "future-grant-conflict",
-                    key[0],
-                    "Database- and schema-level future grants target the same grantee/object type/privilege. Schema-level precedence can make the effective policy differ from the database-level intent; reconcile explicitly.",
-                    privilege=key[2],
-                    object_type=key[1],
+                    schema_scope,
+                    "Schema-level future grants suppress database-level future grants for this schema and object type, even when grantees or privileges differ; reconcile the effective definitions explicitly.",
+                    object_type=object_type,
                 )
             )
-
-    future_precedence: list[dict] = []
-    for key, entries in sorted(by_scope.items()):
-        db_scopes = [row for row in entries if row["_scope_type"] in {"DATABASE", "DATABASES"}]
-        schema_scopes = [row for row in entries if row["_scope_type"] in {"SCHEMA", "SCHEMAS"}]
-        if db_scopes and schema_scopes:
             future_precedence.append(
                 {
-                    "grantee": key[0],
-                    "object_type": key[1],
-                    "privilege": key[2],
-                    "database_scopes": sorted(row["_scope"] for row in db_scopes),
-                    "schema_scopes": sorted(row["_scope"] for row in schema_scopes),
+                    "database": database_scope,
+                    "schema": schema_scope,
+                    "object_type": object_type,
+                    "shadowed_database_definitions": sorted(
+                        {(row.get("grantee", ""), row.get("privilege", "")) for row in database_entries}
+                    ),
+                    "effective_schema_definitions": sorted(
+                        {(row.get("grantee", ""), row.get("privilege", "")) for row in schema_entries}
+                    ),
                     "effective_precedence": "SCHEMA",
-                    "rule": "When database- and schema-level future grants overlap for the same grantee/object type, schema-level intent takes precedence; verify each schema explicitly.",
+                    "rule": "Any schema-level future grant for an object type suppresses all database-level definitions for that object type in the schema, regardless of grantee or privilege.",
                 }
             )
 
@@ -429,12 +431,14 @@ def analyze(doc: dict, principal: str = "", object_name: str = "", privilege: st
                             "via": "PUBLIC grant",
                         }
                     )
-        for grant in grants:
-            # Direct user grants are effective independently of secondary-role
-            # activation; secondary-role mode controls roles, not grants to USER.
-            if _upper(grant.get("grantee")) == user:
-                key = f"{_norm(grant.get('object') or grant.get('object_name'))}|{_upper(grant.get('privilege'))}"
-                effective_paths[key].append({"path": f"{user} (direct grant)", "via_secondary_role": False})
+        if mode == "ALL":
+            for grant in grants:
+                # Snowflake user-based access control is activated only by
+                # USE SECONDARY ROLES ALL. NONE or an explicit role list does
+                # not activate privileges granted directly to the user.
+                if _upper(grant.get("grantee")) == user:
+                    key = f"{_norm(grant.get('object') or grant.get('object_name'))}|{_upper(grant.get('privilege'))}"
+                    effective_paths[key].append({"path": f"{user} (direct grant)", "via_secondary_role": True})
 
     requested = None
     if principal or object_name or privilege:
@@ -511,7 +515,11 @@ def analyze(doc: dict, principal: str = "", object_name: str = "", privilege: st
     expected_primary = _upper(requested_user.get("primary_role") or requested_user.get("default_role"))
     expected_mode = _upper(requested_user.get("secondary_roles_mode") or "NONE")
     if expected_mode == "ALL":
-        expected_secondary = sorted(role for role in user_roles.get(_upper(principal), []) if role != expected_primary)
+        expected_secondary = sorted(
+            _upper(role)
+            for role in _strings(requested_user.get("secondary_roles"), "users[].secondary_roles")
+            if _upper(role)
+        )
     elif expected_mode == "EXPLICIT":
         expected_secondary = sorted(
             _upper(role)
@@ -537,7 +545,8 @@ def analyze(doc: dict, principal: str = "", object_name: str = "", privilege: st
         and requested_user
     )
     proof_start = window_start
-    proof_end = collected_at
+    proof_end_candidates = [item for item in (window_end, collected_at) if item is not None]
+    proof_end = min(proof_end_candidates) if proof_end_candidates else None
 
     def proof_status(receipts: list[dict], expected: str, path: str) -> str:
         if not request_is_bound:

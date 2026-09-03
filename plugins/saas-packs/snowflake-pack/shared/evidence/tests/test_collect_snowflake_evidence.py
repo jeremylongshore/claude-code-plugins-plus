@@ -780,15 +780,9 @@ class CollectorTests(unittest.TestCase):
                 self.assertEqual(receipt["row_count"], 0)
                 for fragment in forbidden:
                     self.assertNotIn(fragment, rendered)
-                self.assertTrue(
-                    any(
-                        marker in rendered
-                        for marker in (
-                            "[REDACTED_AUTHORIZATION]",
-                            "[REDACTED_CREDENTIAL]",
-                            "[REDACTED_SQL]",
-                        )
-                    )
+                self.assertEqual(
+                    receipt["errors"][0]["message"],
+                    "Snowflake CLI collection failed; inspect local CLI diagnostics outside the receipt",
                 )
 
     def test_written_error_receipts_remove_every_adversarial_value(self) -> None:
@@ -1014,6 +1008,192 @@ class CollectorTests(unittest.TestCase):
             )
             self.assertEqual(receipt["freshness"]["source_max_age_seconds"], 2700)
             self.assertFalse((root / ".receipt.json.tmp").exists())
+
+    def test_access_selectors_are_exactly_scoped_and_privacy_safe(self) -> None:
+        cases = (
+            ("access-role-current", {"role": "DATA_READER"}, "DATA_READER"),
+            ("access-role-parents", {"role": "DATA_READER"}, "DATA_READER"),
+            ("access-user-current", {"user": "SERVICE_USER"}, "SERVICE_USER"),
+            (
+                "access-database-role-current",
+                {"database_role": "ANALYTICS.READER"},
+                "ANALYTICS.READER",
+            ),
+            ("access-future-database", {"database": "ANALYTICS"}, "ANALYTICS"),
+            ("access-future-schema", {"schema": "ANALYTICS.CURATED"}, "ANALYTICS.CURATED"),
+        )
+        for surface, kwargs, raw_selector in cases:
+            with self.subTest(surface=surface):
+                path, template, rendered, sources, selector = MODULE.render_surface(surface, **kwargs)
+                self.assertNotEqual(template, rendered)
+                self.assertIn(raw_selector, rendered)
+                receipt = MODULE.build_receipt(
+                    surface,
+                    "readonly",
+                    rendered,
+                    sources,
+                    raw=[],
+                    template_sql=template,
+                    template_path=path,
+                    selector=selector,
+                    collected_at="2026-09-03T12:00:00Z",
+                )
+                self.assertEqual(receipt["schema_version"], "2")
+                self.assertEqual(receipt["sql_sha256"], receipt["template_sha256"])
+                self.assertNotEqual(receipt["template_sha256"], receipt["rendered_sql_sha256"])
+                self.assertRegex(receipt["selector_fingerprint"], r"^sha256:[0-9a-f]{64}$")
+                self.assertEqual(receipt["source_metadata"]["selector"], {next(iter(kwargs)): True})
+                self.assertNotIn(raw_selector, json.dumps(receipt["source_metadata"]))
+
+    def test_access_selectors_reject_fragments_quotes_and_wrong_scope(self) -> None:
+        invalid = (
+            ("access-role-current", {"role": "R; DROP ROLE R"}),
+            ("access-role-current", {"role": '"CaseSensitive"'}),
+            ("access-user-current", {"user": "USER NAME"}),
+            ("access-future-database", {"database": "DB.SCHEMA"}),
+            ("access-future-schema", {"schema": "DB"}),
+            ("access-future-schema", {"schema": "DB.SCHEMA.EXTRA"}),
+            ("access-database-role-current", {"database_role": "DB"}),
+            ("access-database-role-current", {"database_role": "DB.ROLE\nSHOW USERS"}),
+            ("access-session", {"role": "R"}),
+        )
+        for surface, kwargs in invalid:
+            with self.subTest(surface=surface, kwargs=kwargs), self.assertRaises(MODULE.CollectionError):
+                MODULE.render_surface(surface, **kwargs)
+        with self.assertRaises(MODULE.CollectionError):
+            MODULE.render_surface("access-role-current")
+        with self.assertRaises(MODULE.CollectionError):
+            MODULE.render_surface("access-role-current", role="R", user="U")
+
+    def test_dynamic_access_sql_is_always_removed_from_temp_storage(self) -> None:
+        captured_paths: list[Path] = []
+
+        def runner(command, **kwargs):
+            path = Path(command[command.index("--filename") + 1])
+            captured_paths.append(path)
+            self.assertTrue(path.exists())
+            return subprocess.CompletedProcess(command, 0, stdout="[]", stderr="")
+
+        receipt, code = MODULE.execute_surface(
+            "access-role-current",
+            "readonly",
+            role="DATA_READER",
+            runner=runner,
+        )
+        self.assertEqual(code, 0)
+        self.assertEqual(receipt["surface"], "access-role-current")
+        self.assertTrue(captured_paths)
+        self.assertTrue(all(not path.exists() for path in captured_paths))
+
+        for failure in ("timeout", "bad-json", "oserror"):
+            captured_paths.clear()
+
+            def failing_runner(command, **kwargs):
+                path = Path(command[command.index("--filename") + 1])
+                captured_paths.append(path)
+                if failure == "timeout":
+                    raise subprocess.TimeoutExpired(command, 120)
+                if failure == "oserror":
+                    raise OSError("synthetic runner failure")
+                return subprocess.CompletedProcess(command, 0, stdout="not-json", stderr="")
+
+            with self.subTest(failure=failure):
+                if failure == "timeout":
+                    _, failure_code = MODULE.execute_surface(
+                        "access-role-current", "readonly", role="DATA_READER", runner=failing_runner
+                    )
+                    self.assertEqual(failure_code, 5)
+                else:
+                    with self.assertRaises((MODULE.CollectionError, OSError)):
+                        MODULE.execute_surface(
+                            "access-role-current", "readonly", role="DATA_READER", runner=failing_runner
+                        )
+                self.assertTrue(captured_paths)
+                self.assertTrue(all(not path.exists() for path in captured_paths))
+
+    def test_dynamic_selector_is_not_echoed_from_cli_errors(self) -> None:
+        def runner(command, **kwargs):
+            return subprocess.CompletedProcess(
+                command,
+                7,
+                stdout="",
+                stderr="SQL: SHOW GRANTS TO ROLE CUSTOMER_SECRET_ROLE LIMIT 10000",
+            )
+
+        receipt, code = MODULE.execute_surface(
+            "access-role-current",
+            "readonly",
+            role="customer_secret_role",
+            runner=runner,
+        )
+        rendered = json.dumps(receipt)
+        self.assertEqual(code, 7)
+        self.assertNotIn("CUSTOMER_SECRET_ROLE", rendered)
+        self.assertNotIn("customer_secret_role", rendered)
+        self.assertIn("inspect local CLI diagnostics", rendered)
+
+    def test_current_show_templates_bind_context_in_the_same_pipe_statement(self) -> None:
+        selectors = {
+            "access-role-current": {"role": "ANALYST"},
+            "access-role-parents": {"role": "ANALYST"},
+            "access-user-current": {"user": "ALICE"},
+            "access-database-role-current": {"database_role": "ANALYTICS.READER"},
+            "access-future-database": {"database": "ANALYTICS"},
+            "access-future-schema": {"schema": "ANALYTICS.CURATED"},
+        }
+        for surface, selector in selectors.items():
+            with self.subTest(surface=surface):
+                _, _, rendered, _, _ = MODULE.render_surface(surface, **selector)
+                self.assertIn("->>", rendered)
+                self.assertIn("CURRENT_SESSION()", rendered)
+                self.assertIn("'_dataset', 'execution_context'", rendered)
+                self.assertIn("FROM $1 AS src", rendered)
+                self.assertNotIn('$1."', rendered)
+
+    def test_access_offline_normalization_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "saved.json"
+            output = root / "receipt.json"
+            source.write_text("[]", encoding="utf-8")
+            completed = subprocess.run(
+                [
+                    "python3",
+                    str(SCRIPT),
+                    "--surface",
+                    "access-role-current",
+                    "--role",
+                    "ANALYST",
+                    "--input-json",
+                    str(source),
+                    "--output",
+                    str(output),
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(completed.returncode, 2)
+            self.assertIn("offline normalization is diagnostic-only", completed.stderr)
+            self.assertFalse(output.exists())
+
+    def test_access_receipt_counts_and_truncation_are_derived(self) -> None:
+        path, template, rendered, sources, selector = MODULE.render_surface("access-role-current", role="DATA_READER")
+        receipt = MODULE.build_receipt(
+            "access-role-current",
+            "readonly",
+            rendered,
+            sources,
+            raw=[{"privilege": "SELECT"}, {"privilege": "USAGE"}],
+            template_sql=template,
+            template_path=path,
+            selector=selector,
+            collected_at="2026-09-03T12:00:00Z",
+        )
+        self.assertEqual(receipt["row_count"], 2)
+        self.assertEqual(receipt["dataset_row_counts"], {"execution_context": 0, "rows": 2})
+        self.assertEqual(receipt["row_limit"], 10000)
+        self.assertFalse(receipt["truncation_possible"])
 
 
 if __name__ == "__main__":

@@ -29,6 +29,12 @@ observation window and no later than collection. A receipt from another account,
 principal, object, privilege, or role context is `NOT_PROVEN`, even if its status
 is `PASS` or `DENIED`.
 
+Collector receipts add deterministic integrity metadata, but their embedded
+`receipt_sha256` is only a self-checksum. Record the final schema `2.0` bundle's
+canonical SHA-256 at the controlled local collection boundary and store it apart
+from the transported bundle. The analyzer requires that exact digest for scoped
+completeness. A digest recomputed from an already untrusted copy proves nothing.
+
 ## Change and rollback packet
 
 For every proposed change include the exact principal, privilege, object, current

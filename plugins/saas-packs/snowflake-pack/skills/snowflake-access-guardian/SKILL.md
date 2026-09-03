@@ -30,8 +30,8 @@ access semantics, secondary-role assumptions, and future-grant precedence.
 
 ## Prerequisites
 
-- Read-only, sanitized exports from `SHOW ROLES`, `SHOW GRANTS`, and relevant
-  `SHOW FUTURE GRANTS` queries.
+- Receipted, sanitized outputs from the bundled historical, session, role,
+  user, database-role, and relevant database/schema future-grant collectors.
 - A named principal/object/privilege question, account/role identity, UTC
   collection timestamp, observation window, and explicit freshness bound. Live
   Snowflake checks remain the operator's responsibility.
@@ -55,8 +55,11 @@ approved local change packet; never to apply Snowflake mutations.
   executes `GRANT`, `REVOKE`, `GRANT OWNERSHIP`, `ALTER USER`, or policy changes.
 - Accept sanitized metadata only. Do not provide passwords, tokens, private keys,
   raw connection strings, or access-history payloads containing sensitive data.
-- Do not infer denial from a missing historical row. Account Usage can lag and
-  does not replace current `SHOW GRANTS`, policy, share, and session-context checks.
+- Do not infer denial from a missing historical row. Account Usage can lag by
+  up to 120 minutes and has documented object/shared-role omissions.
+- Never broaden to `ACCOUNTADMIN` or automatically grant `MANAGE GRANTS` to get
+  a more complete snapshot. `MANAGE GRANTS` can administer grants and is not a
+  read-only privilege, even when this collector executes only `SHOW` statements.
 - Do not infer that a role is unused from one telemetry source. Name the review
   period, object coverage, and evidence gaps.
 - Treat ownership as control-plane authority and future `OWNERSHIP` as a separate
@@ -68,46 +71,77 @@ approved local change packet; never to apply Snowflake mutations.
    period, and whether the question is about a primary-role or secondary-role
    session. Read [authorization-model.md](references/authorization-model.md) for
    path and evidence rules.
-2. Collect the narrowest read-only `SHOW ROLES`, `SHOW GRANTS`, and `SHOW FUTURE
-   GRANTS` exports needed. Read [audit-queries.md](references/audit-queries.md)
-   for the sanitized input shape. Record the role that ran each query.
-   For Account Usage-backed metadata, use the pack's shared collector and
-   preserve its source views, SQL hash, row count, collection timestamp, and
-   non-claims:
+2. Collect the delayed account-wide baseline with a role holding Snowflake's
+   `SNOWFLAKE.SECURITY_VIEWER` database role. Preserve the receipt unchanged:
 
    ```bash
    python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
      --surface access --connection <existing-readonly-profile> \
-     --output ./snowflake-access-live-evidence.json
+     --output ./snowflake-access-historical.json
    ```
 
-   Reconcile that historical receipt with current `SHOW` output; collector
-   permission failures remain evidence gaps and are never solved by escalating
-   to `ACCOUNTADMIN`. If `truncation_possible` is true, partition the grant
-   inventory before making any absence or completeness claim.
-3. Run the deterministic analyzer:
+3. Collect current evidence only for the declared review scope. Capture the
+   session context without changing roles, then collect grants **to** and grants **of**
+   each account role, target-user roles, involved database roles, and paired
+   database/schema future grants:
 
    ```bash
-   python3 "${CLAUDE_SKILL_DIR}/scripts/analyze_access.py" \
-     --input ./snowflake-access-inventory.json \
-     --principal ALICE \
-     --object ANALYTICS.CURATED.ORDERS \
-     --privilege SELECT \
+   python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
+     --surface access-session --connection <profile> --output ./session.json
+   python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
+     --surface access-role-current --role DATA_READER \
+     --connection <profile> --output ./role-current.json
+   python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
+     --surface access-role-parents --role DATA_READER \
+     --connection <profile> --output ./role-parents.json
+   python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
+     --surface access-future-database --database ANALYTICS \
+     --connection <profile> --output ./future-database.json
+   python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
+     --surface access-future-schema --schema ANALYTICS.CURATED \
+     --connection <profile> --output ./future-schema.json
+   ```
+
+   Selectors accept only supported one-part or two-part unquoted identifiers;
+   quoted/multipart identifiers need a separately reviewed collection path.
+   Each scoped `SHOW` uses one Snowflake pipe statement that emits both the
+   allowlisted rows and its execution context. Invocations may use different
+   physical sessions; the analyzer requires equivalent account, user, primary
+   role, role type, and secondary-role state. Saved/offline access JSON is not
+   accepted as current evidence.
+   Read [current-evidence-contract.md](references/current-evidence-contract.md)
+   for every surface and the schema `2.0` bundle. Permission errors, missing
+   declared selectors, a missing current `PUBLIC` role receipt, cap hits, or an
+   unpaired schema receipt remain blockers.
+4. At the controlled local collection boundary, assemble the bundle and record its
+   canonical digest separately. Analyze the exact same bundle with that digest:
+
+   ```bash
+   python3 "${CLAUDE_SKILL_DIR}/scripts/analyze_access_evidence.py" \
+     --input ./snowflake-access-bundle.json --print-input-sha256
+   python3 "${CLAUDE_SKILL_DIR}/scripts/analyze_access_evidence.py" \
+     --input ./snowflake-access-bundle.json \
+     --trusted-input-sha256 sha256:<separately-recorded-digest> \
      --out ./snowflake-access-report.json
    ```
 
-   The script owns graph traversal and finding classification. Do not replace
-   its path output with an eyeballed role diagram.
-4. For each finding, distinguish **observed**, **not proven**, and **needs live
+   The receipt analyzer validates templates, selectors, sources, row counts,
+   caps, Snowflake observation timestamps, request-derived coverage, equivalent
+   authorization contexts, and the bundle digest before invoking the graph
+   analyzer. The matching digest is an operator assertion of byte identity, not
+   authentication; computing it from an untrusted copy creates no trust.
+   `analyze_access.py` remains a diagnostic path for legacy sanitized
+   inventories, but it cannot establish receipted completeness.
+5. For each finding, distinguish **observed**, **not proven**, and **needs live
    verification**. Resolve managed-access, ownership, and future-grant findings
    with [managed-access-and-future-grants.md](references/managed-access-and-future-grants.md).
    The report must retain direct-user paths and every ownership path separately;
    ownership is control-plane authority, not routine access.
-5. Produce a dry-run change packet: current path, intended path, exact proposed
+6. Produce a dry-run change packet: current path, intended path, exact proposed
    principal/privilege/object edge, approver, executor, precondition, reversal,
    and residual risk. Proposed SQL may be described as a review artifact, but it
    is not executed by this skill.
-6. Require positive and negative verification before an authorized operator
+7. Require positive and negative verification before an authorized operator
    applies anything. Use [verification-and-rollback.md](references/verification-and-rollback.md)
    for receipt fields and rollback boundary. When database- and schema-level
    future grants overlap, report effective schema precedence and test a
@@ -119,10 +153,13 @@ approved local change packet; never to apply Snowflake mutations.
   context? If no path is in the sanitized inventory, say `NOT_PROVEN`, not denied.
 - Is access direct to a user, through `PUBLIC`, through an orphaned grantee, or
   through a role chain that should be reviewed?
+- If access is direct to a user, was user-based access actually active through
+  `USE SECONDARY ROLES ALL`? `NONE` or an explicit role list does not activate it.
 - Is the object owned by a role whose control is broader than routine access?
 - Is the schema managed access, and is the grantor evidence sufficient?
-- Do database- and schema-level future grants overlap for the same grantee/object
-  type, or does a future `OWNERSHIP` grant need explicit approval?
+- Does any schema-level future grant suppress database-level definitions for the
+  same object type in that schema—even for different grantees or privileges—or
+  does a future `OWNERSHIP` grant need explicit approval?
 - Which live checks remain necessary: container `USAGE`, policies, shares,
   `SHOW GRANTS`, current secondary-role mode, and a real allowed/denied operation?
 - Is the evidence fresh for this decision, and do timestamped positive and
@@ -135,10 +172,14 @@ Return a JSON report plus a human-readable change packet containing:
 - deterministic input SHA-256 and inventory scope;
 - object-privilege paths and `OBJECT_PRIVILEGE_PATH_PROVEN`/`NOT_PROVEN` status;
   this never certifies complete access without separate container/policy checks;
+- separate `object_privilege_path_supported` and `positive_access_claim_supported`
+  booleans; the latter also requires a matching positive behavior receipt;
 - sorted findings with severity, evidence, and remediation decision;
 - managed-access and secondary-role boundaries;
 - evidence scope/freshness, direct-user and ownership paths, and explicit
   database-versus-schema future-grant precedence;
+- per-receipt contract status, trusted-bundle status, declared-selector coverage,
+  and current-versus-historical drift classifications;
 - proposed change/reversal descriptions with no executed mutations; and
 - positive and negative verification receipts with `PROVEN`/`NOT_PROVEN` status.
 
@@ -149,6 +190,10 @@ Return a JSON report plus a human-readable change packet containing:
 | Credential-bearing field appears | Stop; remove it and rerun with metadata only. |
 | Role or user is absent from inventory | Mark path `NOT_PROVEN`; do not create or delete a principal. |
 | Account Usage disagrees with `SHOW GRANTS` | Treat live/current evidence as a separate reconciliation; record lag and scope. |
+| Current `SHOW` visibility is incomplete | Record the collector role and block absence claims; never grant `MANAGE GRANTS` automatically. |
+| Receipt lacks a separate matching bundle digest | Report `UNTRUSTED`, suppress graph claims, and block completeness. |
+| Any receipt lacks same-statement context or a fresh server observation | Suppress graph claims and recollect live. |
+| Database future receipt lacks the target schema receipt | Block precedence and completeness claims. |
 | Managed schema lacks grantor/owner evidence | Stop remediation proposal until `MANAGE GRANTS` and ownership are verified. |
 | Future grants overlap | Reconcile schema precedence and test a disposable object before approval. |
 | Ownership or PUBLIC access is involved | Require named security/data owner approval and an independent rollback path. |
@@ -157,9 +202,10 @@ Return a JSON report plus a human-readable change packet containing:
 
 ### Trace one path
 
-Run the analyzer with `--principal ALICE --object ANALYTICS.CURATED.ORDERS
---privilege SELECT`. A result such as `ALICE -> ANALYST -> DATA_READER` is an
-observed path; a missing path is `NOT_PROVEN`, not proof of denial.
+Put `ALICE`, `ANALYTICS.CURATED.ORDERS`, and `SELECT` in the schema `2.0`
+bundle's `request`, then run `analyze_access_evidence.py`. A result such as
+`ALICE -> ANALYST -> DATA_READER` is a positively supported path; a missing path
+never unblocks an absence or denial claim.
 
 ### Review a cleanup request
 
@@ -177,4 +223,5 @@ Snowflake primary sources; load only those relevant to the current finding.
 - [Authorization model](references/authorization-model.md)
 - [Managed access and future grants](references/managed-access-and-future-grants.md)
 - [Read-only audit queries](references/audit-queries.md)
+- [Current evidence and receipt contract](references/current-evidence-contract.md)
 - [Verification and rollback](references/verification-and-rollback.md)

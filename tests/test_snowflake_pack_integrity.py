@@ -55,6 +55,24 @@ def npm_pack_files(pack: Path) -> set[str]:
 
 
 class SnowflakePackIntegrityTests(unittest.TestCase):
+    def test_curated_access_guardian_matches_packaged_source(self) -> None:
+        source = PACK / "skills" / "snowflake-access-guardian"
+        curated = ROOT / "skills" / ".curated" / "snowflake-access-guardian"
+
+        def packaged_files(root: Path) -> dict[str, Path]:
+            return {
+                path.relative_to(root).as_posix(): path
+                for path in root.rglob("*")
+                if path.is_file() and "__pycache__" not in path.parts and path.suffix not in {".pyc", ".pyo"}
+            }
+
+        source_files = packaged_files(source)
+        curated_files = packaged_files(curated)
+        self.assertEqual(set(curated_files), set(source_files))
+        for relative in sorted(source_files):
+            with self.subTest(path=relative):
+                self.assertEqual(curated_files[relative].read_bytes(), source_files[relative].read_bytes())
+
     def test_retired_database_is_absent(self) -> None:
         self.assertFalse(STALE_DATABASE.exists())
 
@@ -130,6 +148,14 @@ class SnowflakePackIntegrityTests(unittest.TestCase):
         self.assertIn("000-docs/000-INDEX.md", packed_files)
         self.assertIn("LICENSE", packed_files)
         self.assertIn("shared/evidence/collect_snowflake_evidence.py", packed_files)
+        self.assertIn(
+            "skills/snowflake-access-guardian/scripts/analyze_access_evidence.py",
+            packed_files,
+        )
+        self.assertIn(
+            "skills/snowflake-access-guardian/references/current-evidence-contract.md",
+            packed_files,
+        )
         sync_generator = load_sync_generator()
         expected_canonical_sql = {
             f"shared/evidence/sql/{filename}" for filenames in sync_generator.BUNDLES.values() for filename in filenames

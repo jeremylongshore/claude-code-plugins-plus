@@ -28,7 +28,16 @@ SKILLS_DIR = Path("skills")
 # the shared account-evidence collector. Skills with a different collector
 # contract are deliberately outside this registry.
 BUNDLES: dict[str, tuple[str, ...]] = {
-    "snowflake-access-guardian": ("access.sql",),
+    "snowflake-access-guardian": (
+        "access.sql",
+        "access-database-role-current.sql",
+        "access-future-database.sql",
+        "access-future-schema.sql",
+        "access-role-current.sql",
+        "access-role-parents.sql",
+        "access-session.sql",
+        "access-user-current.sql",
+    ),
     "snowflake-cost-leak-hunter": ("cost.sql",),
     "snowflake-data-quality-sentinel": ("data-quality.sql",),
     "snowflake-deploy-medic": ("query.sql",),

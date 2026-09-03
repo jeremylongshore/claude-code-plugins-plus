@@ -31467,13 +31467,23 @@
         "eval-spec.yaml",
         "references/audit-queries.md",
         "references/authorization-model.md",
+        "references/current-evidence-contract.md",
         "references/managed-access-and-future-grants.md",
         "references/verification-and-rollback.md",
         "scripts/analyze_access.py",
+        "scripts/analyze_access_evidence.py",
         "scripts/collect_snowflake_evidence.py",
+        "scripts/sql/access-database-role-current.sql",
+        "scripts/sql/access-future-database.sql",
+        "scripts/sql/access-future-schema.sql",
+        "scripts/sql/access-role-current.sql",
+        "scripts/sql/access-role-parents.sql",
+        "scripts/sql/access-session.sql",
+        "scripts/sql/access-user-current.sql",
         "scripts/sql/access.sql",
         "tests/fixtures/access.json",
-        "tests/test_access_analyzer.py"
+        "tests/test_access_analyzer.py",
+        "tests/test_access_evidence.py"
       ]
     },
     {

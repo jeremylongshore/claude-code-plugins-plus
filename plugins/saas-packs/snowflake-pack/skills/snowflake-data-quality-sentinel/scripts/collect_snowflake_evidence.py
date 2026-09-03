@@ -6,9 +6,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -17,7 +19,14 @@ from typing import Any, Callable
 HERE = Path(__file__).resolve().parent
 SQL_DIR = HERE / "sql"
 SURFACES = {
-    "access": ("access.sql", ["SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_ROLES", "SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_USERS"]),
+    "access": (
+        "access.sql",
+        [
+            "SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_ROLES",
+            "SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_USERS",
+            "SNOWFLAKE.ACCOUNT_USAGE.ROLES",
+        ],
+    ),
     "auth": ("auth.sql", ["SNOWFLAKE.ACCOUNT_USAGE.USERS"]),
     "cost": (
         "cost.sql",
@@ -52,6 +61,27 @@ SURFACES = {
     ),
     "replication": ("replication.sql", ["SNOWFLAKE.ACCOUNT_USAGE.REPLICATION_GROUP_REFRESH_HISTORY"]),
 }
+SUBSURFACES = {
+    "access-database-role-current": (
+        "access-database-role-current.sql",
+        ["SHOW GRANTS TO DATABASE ROLE"],
+        "database_role",
+    ),
+    "access-future-database": (
+        "access-future-database.sql",
+        ["SHOW FUTURE GRANTS IN DATABASE"],
+        "database",
+    ),
+    "access-future-schema": (
+        "access-future-schema.sql",
+        ["SHOW FUTURE GRANTS IN SCHEMA"],
+        "schema",
+    ),
+    "access-role-current": ("access-role-current.sql", ["SHOW GRANTS TO ROLE"], "role"),
+    "access-role-parents": ("access-role-parents.sql", ["SHOW GRANTS OF ROLE"], "role"),
+    "access-session": ("access-session.sql", ["Snowflake current-session context functions"], None),
+    "access-user-current": ("access-user-current.sql", ["SHOW GRANTS TO USER"], "user"),
+}
 FORBIDDEN_SQL = {
     "ALTER",
     "CALL",
@@ -75,6 +105,25 @@ FORBIDDEN_SQL = {
 }
 SAFE_START = {"DESCRIBE", "SELECT", "SHOW", "WITH"}
 PROFILE_RE = re.compile(r"^[A-Za-z0-9_.-]{1,128}$")
+IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_$]{0,254}$")
+QUALIFIED_IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_$]{0,254}\.[A-Za-z_][A-Za-z0-9_$]{0,254}$")
+SELECTOR_MARKERS = {
+    "database": "__DATABASE_IDENTIFIER__",
+    "database_role": "__DATABASE_ROLE_IDENTIFIER__",
+    "role": "__ROLE_IDENTIFIER__",
+    "schema": "__SCHEMA_IDENTIFIER__",
+    "user": "__USER_IDENTIFIER__",
+}
+ACCESS_EXPECTED_DATASETS = {
+    "access": ("grants_to_roles", "grants_to_users", "roles"),
+    "access-database-role-current": ("execution_context", "rows"),
+    "access-future-database": ("execution_context", "rows"),
+    "access-future-schema": ("execution_context", "rows"),
+    "access-role-current": ("execution_context", "rows"),
+    "access-role-parents": ("execution_context", "rows"),
+    "access-session": ("session_context",),
+    "access-user-current": ("execution_context", "rows"),
+}
 SENSITIVE_KEYS = {
     "accesstoken",
     "apikey",
@@ -1333,6 +1382,22 @@ def sanitize_output_tree(value: Any) -> Any:
         return "[REDACTED_CREDENTIAL]"
 
 
+def redact_selector_values(value: Any, selector: dict[str, str] | None) -> Any:
+    """Remove customer identifiers from arbitrary CLI error structures."""
+    if not selector:
+        return value
+    raw_values = sorted(set(selector.values()), key=len, reverse=True)
+    if isinstance(value, dict):
+        return {key: redact_selector_values(child, selector) for key, child in value.items()}
+    if isinstance(value, list):
+        return [redact_selector_values(child, selector) for child in value]
+    if isinstance(value, str):
+        for raw in raw_values:
+            value = re.sub(re.escape(raw), "[REDACTED_SELECTOR]", value, flags=re.IGNORECASE)
+        return value
+    return value
+
+
 def reject_secret_fields(value: Any, path: str = "result", depth: int = 0, budget: list[int] | None = None) -> None:
     if budget is None:
         budget = [MAX_SANITIZE_TREE_NODES]
@@ -1387,11 +1452,17 @@ def validate_read_only_sql(sql: str) -> None:
             raise CollectionError("every SQL statement must start with SELECT, WITH, SHOW, or DESCRIBE")
 
 
-def load_surface(surface: str) -> tuple[Path, str, list[str]]:
-    try:
+def _surface_spec(surface: str) -> tuple[str, list[str], str | None]:
+    if surface in SURFACES:
         filename, sources = SURFACES[surface]
-    except KeyError as exc:
-        raise CollectionError(f"unsupported surface: {surface}") from exc
+        return filename, sources, None
+    if surface in SUBSURFACES:
+        return SUBSURFACES[surface]
+    raise CollectionError(f"unsupported surface: {surface}")
+
+
+def load_surface(surface: str) -> tuple[Path, str, list[str]]:
+    filename, sources, _ = _surface_spec(surface)
     path = SQL_DIR / filename
     if not path.is_file():
         raise CollectionError(f"surface is not bundled in this installed skill: {surface}")
@@ -1400,6 +1471,56 @@ def load_surface(surface: str) -> tuple[Path, str, list[str]]:
         raise CollectionError(f"NUL byte in SQL file: {path}")
     validate_read_only_sql(sql)
     return path, sql, sources
+
+
+def render_surface(
+    surface: str,
+    *,
+    database: str | None = None,
+    database_role: str | None = None,
+    role: str | None = None,
+    schema: str | None = None,
+    user: str | None = None,
+) -> tuple[Path, str, str, list[str], dict[str, str]]:
+    """Render a reviewed SQL template with a strictly validated selector."""
+
+    path, template_sql, sources = load_surface(surface)
+    _, _, selector_name = _surface_spec(surface)
+    supplied = {
+        name: value
+        for name, value in {
+            "database": database,
+            "database_role": database_role,
+            "role": role,
+            "schema": schema,
+            "user": user,
+        }.items()
+        if value is not None
+    }
+    selector: dict[str, str] = {}
+    if selector_name is None:
+        if supplied:
+            raise CollectionError(f"surface {surface} does not accept a selector")
+    else:
+        if set(supplied) != {selector_name}:
+            raise CollectionError(f"surface {surface} requires only the {selector_name} selector")
+        value = supplied[selector_name]
+        pattern = QUALIFIED_IDENTIFIER_RE if selector_name in {"database_role", "schema"} else IDENTIFIER_RE
+        if not pattern.fullmatch(value):
+            qualification = "two-part" if pattern is QUALIFIED_IDENTIFIER_RE else "one-part"
+            raise CollectionError(
+                f"{selector_name} must be one validated {qualification} unquoted Snowflake identifier, not SQL or a fragment"
+            )
+        selector[selector_name] = value
+
+    rendered_sql = template_sql
+    for name, marker in SELECTOR_MARKERS.items():
+        if name in selector:
+            rendered_sql = rendered_sql.replace(marker, selector[name])
+        elif marker in rendered_sql:
+            raise CollectionError(f"surface {surface} requires selector: {name}")
+    validate_read_only_sql(rendered_sql)
+    return path, template_sql, rendered_sql, sources, selector
 
 
 def normalize_cli_json(raw: Any) -> tuple[dict[str, list[dict[str, Any]]], int]:
@@ -1442,32 +1563,59 @@ def build_receipt(
     collected_at: str | None = None,
     source_max_age_seconds: int | None = None,
     error: dict[str, Any] | None = None,
+    template_sql: str | None = None,
+    template_path: Path | None = None,
+    selector: dict[str, str] | None = None,
+    collection_mode: str = "offline-normalized",
+    collection_started_at: str | None = None,
+    collection_completed_at: str | None = None,
 ) -> dict[str, Any]:
     datasets: dict[str, list[dict[str, Any]]] = {}
     row_count = 0
     if raw is not None:
         datasets, row_count = normalize_cli_json(raw)
+    expected_datasets = list(ACCESS_EXPECTED_DATASETS.get(surface, ()))
+    for dataset in expected_datasets:
+        datasets.setdefault(dataset, [])
+    datasets = dict(sorted(datasets.items()))
     limits = re.findall(r"\bLIMIT\s+(\d+)\b", sql, flags=re.IGNORECASE)
     row_limit = int(limits[-1]) if limits else None
-    truncation_possible = row_limit is not None and row_count >= row_limit
+    capped_row_count = (
+        len(datasets.get("rows", [])) if surface in SUBSURFACES and surface != "access-session" else row_count
+    )
+    truncation_possible = row_limit is not None and capped_row_count >= row_limit
     if surface == "query" and (
         not isinstance(source_max_age_seconds, int)
         or isinstance(source_max_age_seconds, bool)
         or source_max_age_seconds <= 0
     ):
         raise CollectionError("query collection requires a positive source_max_age_seconds")
-    sanitized_error = sanitize_output_tree(error) if error else None
+    sanitized_error = sanitize_output_tree(redact_selector_values(error, selector)) if error else None
+    canonical_template = template_sql if template_sql is not None else sql
+    template_hash = f"sha256:{hashlib.sha256(canonical_template.encode('utf-8')).hexdigest()}"
+    rendered_hash = f"sha256:{hashlib.sha256(sql.encode('utf-8')).hexdigest()}"
+    selector_fingerprint = f"sha256:{hashlib.sha256(canonical_json(selector)).hexdigest()}" if selector else None
     receipt = {
-        "schema_version": "2" if surface == "query" else "1",
+        "schema_version": "2" if surface == "query" or surface.startswith("access") else "1",
         "surface": surface,
         "status": "error" if error else "collected",
         "collected_at": collected_at or utc_now(),
         "connection_profile": connection,
-        "sql_sha256": f"sha256:{hashlib.sha256(sql.encode('utf-8')).hexdigest()}",
+        "sql_sha256": template_hash,
+        "template_sha256": template_hash,
+        "rendered_sql_sha256": rendered_hash,
+        "selector_fingerprint": selector_fingerprint,
+        "source_metadata": {
+            "template": template_path.name if template_path is not None else None,
+            "source_views": list(sources),
+            "selector": {name: True for name in (selector or {})},
+        },
         "source_views": sources,
         "row_count": row_count,
         "row_limit": row_limit,
         "truncation_possible": truncation_possible,
+        "dataset_row_counts": {name: len(rows) for name, rows in datasets.items()},
+        "expected_datasets": expected_datasets,
         "datasets": datasets,
         "errors": [sanitized_error] if sanitized_error else [],
         "non_claims": [
@@ -1479,6 +1627,10 @@ def build_receipt(
             "The embedded receipt SHA-256 is a self-checksum, not proof of origin or authenticity.",
         ],
     }
+    if surface.startswith("access"):
+        receipt["collection_mode"] = collection_mode
+        receipt["collection_started_at"] = collection_started_at or collected_at or receipt["collected_at"]
+        receipt["collection_completed_at"] = collection_completed_at or collected_at or receipt["collected_at"]
     if surface == "query":
         receipt["freshness"] = {
             "dataset": "query_history",
@@ -1495,68 +1647,134 @@ def execute_surface(
     connection: str,
     *,
     source_max_age_seconds: int | None = None,
+    database: str | None = None,
+    database_role: str | None = None,
+    role: str | None = None,
+    schema: str | None = None,
+    user: str | None = None,
     runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
 ) -> tuple[dict[str, Any], int]:
     if not PROFILE_RE.fullmatch(connection):
         raise CollectionError("connection profile must use only letters, digits, dot, underscore, or hyphen")
-    path, sql, sources = load_surface(surface)
-    command = [
-        "snow",
-        "sql",
-        "--filename",
-        str(path),
-        "--connection",
-        connection,
-        "--format",
-        "JSON_EXT",
-        "--silent",
-        "--enhanced-exit-codes",
-        "--local-only",
-    ]
+    path, template_sql, sql, sources, selector = render_surface(
+        surface,
+        database=database,
+        database_role=database_role,
+        role=role,
+        schema=schema,
+        user=user,
+    )
+    temporary_path: Path | None = None
+    collection_started_at = utc_now()
     try:
-        completed = runner(command, capture_output=True, text=True, timeout=120, check=False)
-    except FileNotFoundError:
-        error = {"code": "SNOW_CLI_NOT_FOUND", "message": "Snowflake CLI executable 'snow' was not found"}
-        return build_receipt(
-            surface, connection, sql, sources, source_max_age_seconds=source_max_age_seconds, error=error
-        ), 2
-    except subprocess.TimeoutExpired:
-        error = {"code": "SNOW_CLI_TIMEOUT", "message": "Snowflake CLI collection exceeded 120 seconds"}
-        return build_receipt(
-            surface, connection, sql, sources, source_max_age_seconds=source_max_age_seconds, error=error
-        ), 5
-    if completed.returncode != 0:
-        error = {
-            "code": "SNOW_CLI_FAILED",
-            "exit_code": completed.returncode,
-            "message": sanitize_text(completed.stderr or completed.stdout or "Snowflake CLI failed"),
-        }
+        command_path = path
+        if sql != template_sql:
+            descriptor, temporary_name = tempfile.mkstemp(prefix=f"snowflake-{path.stem}-", suffix=".sql")
+            temporary_path = Path(temporary_name)
+            with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+                handle.write(sql)
+            command_path = temporary_path
+
+        command = [
+            "snow",
+            "sql",
+            "--filename",
+            str(command_path),
+            "--connection",
+            connection,
+            "--format",
+            "JSON_EXT",
+            "--silent",
+            "--enhanced-exit-codes",
+            "--local-only",
+        ]
+        try:
+            completed = runner(command, capture_output=True, text=True, timeout=120, check=False)
+        except FileNotFoundError:
+            error = {"code": "SNOW_CLI_NOT_FOUND", "message": "Snowflake CLI executable 'snow' was not found"}
+            return (
+                build_receipt(
+                    surface,
+                    connection,
+                    sql,
+                    sources,
+                    source_max_age_seconds=source_max_age_seconds,
+                    error=error,
+                    template_sql=template_sql,
+                    template_path=path,
+                    selector=selector,
+                    collection_mode="live-cli",
+                    collection_started_at=collection_started_at,
+                    collection_completed_at=utc_now(),
+                ),
+                2,
+            )
+        except subprocess.TimeoutExpired:
+            error = {"code": "SNOW_CLI_TIMEOUT", "message": "Snowflake CLI collection exceeded 120 seconds"}
+            return (
+                build_receipt(
+                    surface,
+                    connection,
+                    sql,
+                    sources,
+                    source_max_age_seconds=source_max_age_seconds,
+                    error=error,
+                    template_sql=template_sql,
+                    template_path=path,
+                    selector=selector,
+                    collection_mode="live-cli",
+                    collection_started_at=collection_started_at,
+                    collection_completed_at=utc_now(),
+                ),
+                5,
+            )
+        if completed.returncode != 0:
+            error = {
+                "code": "SNOW_CLI_FAILED",
+                "exit_code": completed.returncode,
+                "message": "Snowflake CLI collection failed; inspect local CLI diagnostics outside the receipt",
+            }
+            return (
+                build_receipt(
+                    surface,
+                    connection,
+                    sql,
+                    sources,
+                    source_max_age_seconds=source_max_age_seconds,
+                    error=error,
+                    template_sql=template_sql,
+                    template_path=path,
+                    selector=selector,
+                    collection_mode="live-cli",
+                    collection_started_at=collection_started_at,
+                    collection_completed_at=utc_now(),
+                ),
+                completed.returncode,
+            )
+        try:
+            raw = json.loads(completed.stdout)
+        except json.JSONDecodeError as exc:
+            raise CollectionError("Snowflake CLI did not return valid JSON_EXT output") from exc
         return (
             build_receipt(
                 surface,
                 connection,
                 sql,
                 sources,
+                raw=raw,
                 source_max_age_seconds=source_max_age_seconds,
-                error=error,
+                template_sql=template_sql,
+                template_path=path,
+                selector=selector,
+                collection_mode="live-cli",
+                collection_started_at=collection_started_at,
+                collection_completed_at=utc_now(),
             ),
-            completed.returncode,
+            0,
         )
-    try:
-        raw = json.loads(completed.stdout)
-    except json.JSONDecodeError as exc:
-        raise CollectionError("Snowflake CLI did not return valid JSON_EXT output") from exc
-    return (
-        build_receipt(
-            surface,
-            connection,
-            sql,
-            sources,
-            raw=raw,
-            source_max_age_seconds=source_max_age_seconds,
-        ),
-        0,
-    )
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
 
 
 def write_receipt(receipt: dict[str, Any], output: Path | None) -> None:
@@ -1572,7 +1790,9 @@ def write_receipt(receipt: dict[str, Any], output: Path | None) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    bundled_surfaces = sorted(surface for surface, (filename, _) in SURFACES.items() if (SQL_DIR / filename).is_file())
+    bundled_surfaces = sorted(
+        surface for surface in {**SURFACES, **SUBSURFACES} if (SQL_DIR / _surface_spec(surface)[0]).is_file()
+    )
     parser.add_argument("--surface", choices=bundled_surfaces, required=True)
     parser.add_argument("--connection", help="Existing Snowflake CLI profile name")
     parser.add_argument("--output", type=Path, help="JSON receipt path; stdout when omitted")
@@ -1582,15 +1802,37 @@ def main(argv: list[str] | None = None) -> int:
         type=int,
         help="Positive incident freshness bound; required for the query surface",
     )
+    parser.add_argument(
+        "--database",
+        help="One unquoted database identifier for access-future-database",
+    )
+    parser.add_argument(
+        "--database-role",
+        help="Two-part unquoted database-role identifier for access-database-role-current",
+    )
+    parser.add_argument("--role", help="One unquoted account-role identifier for role sub-surfaces")
+    parser.add_argument("--schema", help="Two-part unquoted schema identifier for access-future-schema")
+    parser.add_argument("--user", help="One unquoted user identifier for access-user-current")
     parser.add_argument("--validate-only", action="store_true", help="Validate the reviewed SQL and exit")
     args = parser.parse_args(argv)
     try:
-        _, sql, sources = load_surface(args.surface)
+        path, template_sql, sql, sources, selector = render_surface(
+            args.surface,
+            database=args.database,
+            database_role=args.database_role,
+            role=args.role,
+            schema=args.schema,
+            user=args.user,
+        )
         if args.validate_only:
             return 0
         if args.surface == "query" and (args.source_max_age_seconds is None or args.source_max_age_seconds <= 0):
             raise CollectionError("--source-max-age-seconds must be positive for the query surface")
         if args.input_json:
+            if args.surface.startswith("access"):
+                raise CollectionError(
+                    "offline normalization is diagnostic-only and is not accepted for access evidence; collect live so Snowflake execution context is bound to the result"
+                )
             raw = json.loads(args.input_json.read_text(encoding="utf-8"))
             receipt = build_receipt(
                 args.surface,
@@ -1599,6 +1841,9 @@ def main(argv: list[str] | None = None) -> int:
                 sources,
                 raw=raw,
                 source_max_age_seconds=args.source_max_age_seconds,
+                template_sql=template_sql,
+                template_path=path,
+                selector=selector,
             )
             code = 0
         else:
@@ -1608,6 +1853,11 @@ def main(argv: list[str] | None = None) -> int:
                 args.surface,
                 args.connection,
                 source_max_age_seconds=args.source_max_age_seconds,
+                database=args.database,
+                database_role=args.database_role,
+                role=args.role,
+                schema=args.schema,
+                user=args.user,
             )
         write_receipt(receipt, args.output)
         return code
