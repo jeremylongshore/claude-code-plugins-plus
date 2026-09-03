@@ -13341,7 +13341,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "3.5.0",
+      "version": "3.6.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -72150,7 +72150,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.5.0",
+      "version": "3.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72170,7 +72170,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.5.0",
+      "version": "3.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72189,7 +72189,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.5.0",
+      "version": "3.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72209,7 +72209,7 @@
         "Bash(terraform:plan*)"
       ],
       "compatibleWith": [],
-      "version": "3.5.0",
+      "version": "3.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72228,7 +72228,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.5.0",
+      "version": "3.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72240,19 +72240,19 @@
       "id": "snowflake-pipeline-guardian",
       "slug": "snowflake-pipeline-guardian",
       "name": "snowflake-pipeline-guardian",
-      "description": "Diagnose production Snowflake pipelines spanning tasks, task graphs, streams, dynamic tables, and Snowpipe. Use when a pipeline is stale, skipped, suspended, lagging, duplicating rows, failing after a schema/object change, or missing file notifications. The skill builds a read-only evidence graph, walks every supplied dependency branch, and returns an ordered recovery plan with post-fix invariants. It never resumes, refreshes, recreates, replays, deploys, or mutates Snowflake automatically. Trigger with \"stream is stale\", \"task graph suspended\", \"dynamic table lag\", \"dynamic refresh failed\", \"Snowpipe not loading\", \"SYSTEM$PIPE_STATUS\", \"duplicate loads\", or \"schema drift\".",
+      "description": "Analyze Snowflake pipelines spanning tasks, streams, dynamic tables, and Snowpipe from bounded read-only evidence. Use when a pipeline is stale, skipped, suspended, lagging, duplicating rows, or missing notifications; trigger with \"stream stale\", \"task suspended\", \"dynamic table lag\", or \"Snowpipe not loading\". The skill returns evidence gaps, bounded hypotheses, and an ordered recovery plan; it never mutates Snowflake.",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.5.0",
+      "version": "3.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
-      "searchText": "snowflake-pipeline-guardian diagnose production snowflake pipelines spanning tasks, task graphs, streams, dynamic tables, and snowpipe. use when a pipeline is stale, skipped, suspended, lagging, duplicating rows, failing after a schema/object change, or missing file notifications. the skill builds a read-only evidence graph, walks every supplied dependency branch, and returns an ordered recovery plan with post-fix invariants. it never resumes, refreshes, recreates, replays, deploys, or mutates snowflake automatically. trigger with \"stream is stale\", \"task graph suspended\", \"dynamic table lag\", \"dynamic refresh failed\", \"snowpipe not loading\", \"system$pipe_status\", \"duplicate loads\", or \"schema drift\". saas-packs read bash(python3:*) "
+      "searchText": "snowflake-pipeline-guardian analyze snowflake pipelines spanning tasks, streams, dynamic tables, and snowpipe from bounded read-only evidence. use when a pipeline is stale, skipped, suspended, lagging, duplicating rows, or missing notifications; trigger with \"stream stale\", \"task suspended\", \"dynamic table lag\", or \"snowpipe not loading\". the skill returns evidence gaps, bounded hypotheses, and an ordered recovery plan; it never mutates snowflake. saas-packs read bash(python3:*) "
     },
     {
       "type": "skill",
@@ -72267,7 +72267,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.5.0",
+      "version": "3.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72286,7 +72286,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.5.0",
+      "version": "3.6.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"

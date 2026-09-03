@@ -1,115 +1,120 @@
 # Snowflake pipeline evidence map
 
-Use this reference when collecting the snapshot consumed by
-`scripts/analyze_pipeline_state.py`. The commands below are read-only. Replace
-identifiers with fully qualified names and keep the time window explicit. A
-missing row is an unknown, not a healthy result.
+Use only the six reviewed templates bundled with this skill. Each template is a
+single read-only statement with a same-statement execution-context row. Do not
+replace an explicit projection with a wildcard, paste raw command output into a bundle, or
+add names, SQL text, free-text errors, paths, endpoints, integrations, owners, or
+roles.
 
-## Tasks and task graphs
+## Surface map
 
-Snowflake creates tasks suspended. Query both object state and run history before
-concluding that a task is broken. A child can be skipped because a predecessor did
-not complete, and a graph can become suspended after consecutive failures.
+| Surface | Reviewed source | Output scope | Fixed bound |
+| --- | --- | --- | --- |
+| `pipeline` | Account Usage `TASK_HISTORY`, `DYNAMIC_TABLE_REFRESH_HISTORY`, `COPY_HISTORY` | Explicit half-open UTC history | Window at most 7 days; 5,000 rows per history dataset |
+| `pipeline-task-current` | `SHOW TASKS IN ACCOUNT` | Current role-visible tasks | 10,000 tasks |
+| `pipeline-stream-current` | `SHOW STREAMS IN ACCOUNT` | Current role-visible streams | 10,000 streams |
+| `pipeline-dynamic-table-current` | `SHOW DYNAMIC TABLES IN ACCOUNT` | Current role-visible dynamic tables | 10,000 dynamic tables |
+| `pipeline-pipe-current` | `SHOW PIPES IN ACCOUNT` | Current role-visible pipes | 10,000 pipes |
+| `pipeline-pipe-status` | `SYSTEM$PIPE_STATUS` for one validated pipe selector | One privacy-projected status row | Exactly one row per selected pipe |
 
-```sql
-SHOW TASKS IN ACCOUNT;
+The first five surface types occur exactly once. Repeat `pipeline-pipe-status`
+exactly once for every `object_key_sha256` returned by `current_pipes`. If the
+current pipe inventory is empty, supply no status receipt. Any missing, duplicate,
+or orphan status receipt blocks completeness.
 
-SELECT name, state, scheduled_time, query_id, error_code, error_message,
-       completed_time
-FROM TABLE(INFORMATION_SCHEMA.TASK_HISTORY(
-  SCHEDULED_TIME_RANGE_START => DATEADD('hour', -24, CURRENT_TIMESTAMP())
-))
-ORDER BY scheduled_time DESC;
+## History window and settlement
 
-SELECT *
-FROM TABLE(INFORMATION_SCHEMA.TASK_DEPENDENTS(
-  TASK_NAME => 'DB.SCHEMA.ROOT_TASK', RECURSIVE => TRUE
-));
-```
+Collect `pipeline` with canonical UTC `--window-start` and exclusive
+`--window-end` selectors. The collector rejects missing, reversed, non-UTC, or
+longer-than-seven-day windows. It records `window_semantics: HALF_OPEN_UTC` and
+the selector fingerprint plus the non-sensitive window values needed to
+recompute the rendered-query digest. Raw identity selectors are never retained.
 
-Capture `state`, `error_code`, `error_message`, `query_id`, and predecessor
-relationships. Do not infer a retry is safe from a transient-looking message;
-first determine whether the task body is idempotent and whether a previous run
-committed partial work.
+Account Usage is delayed. The reviewed query and analyzer use conservative
+cutoffs:
 
-Primary documentation: [Troubleshooting tasks](https://docs.snowflake.com/en/user-guide/tasks-ts)
-and [task graphs](https://docs.snowflake.com/en/user-guide/tasks-graphs).
+- task history: observation time minus 45 minutes;
+- dynamic-table refresh history: observation time minus 3 hours;
+- copy history: observation time minus 48 hours.
 
-## Streams
+Each dataset reads `[window_start, min(window_end, cutoff))` using task
+`COMPLETED_TIME`, non-executing refresh `REFRESH_END_TIME`, or copy
+`LAST_LOAD_TIME`. Execution context records the resulting
+`*_settled_through_utc`. A requested interval beyond that value remains
+unsettled. A schedule/start timestamp cannot pull a recently completed or
+executing event into settled evidence. A missing row in the unsettled tail
+cannot prove no run, refresh, copy, error, or duplicate occurred.
 
-Inspect the stream definition and staleness indicators. A stream becomes stale
-when its offset falls outside the source's retained change history. A stale stream
-cannot be made current by a blind retry; plan a replacement and a bounded,
-idempotent backfill after confirming the source retention boundary.
+The 5,000-row history cap applies independently to each history dataset. A
+dataset at its cap is incomplete even if the other datasets are small. Narrow or
+partition the requested window; never infer absence from a capped result.
 
-```sql
-SHOW STREAMS IN SCHEMA DB.SCHEMA;
-DESCRIBE STREAM DB.SCHEMA.ORDERS_STREAM;
-```
+## Current inventories
 
-Record `stale`, `stale_after`, source object, append-only mode, and the last
-successful consumer run. If the source was replaced with `CREATE OR REPLACE`,
-the source identity and change history may no longer match the stream. Treat that
-as a separate object-identity/schema event, not ordinary lag.
+The four `SHOW` surfaces project only account-scoped pseudonymous object/source
+keys and reviewed states, timestamps, booleans, counts, and enums. They omit raw
+names and sensitive metadata exposed by the underlying commands. Each current
+inventory is role-visible, not inherently account-complete. A result of exactly
+10,000 objects is capped and unusable for completeness. An empty result means
+only that the bound role saw no rows at that observation.
 
-Primary documentation: [Streams introduction](https://docs.snowflake.com/en/user-guide/streams-intro)
-and [stream staleness](https://docs.snowflake.com/en/user-guide/streams-manage#label-streams-stale).
+For streams, projected `stale: true` means **may be stale**, not confirmed
+staleness; `stale_after` can also be inaccurate in documented cases. Preserve
+the boundary and require authorized verification. Do not invoke
+`SYSTEM$STREAM_HAS_DATA`: Snowflake documents that calling it can prevent an
+empty stream from becoming stale, so it is not observationally neutral.
 
-## Dynamic tables
+For dynamic tables, the current projection omits raw `target_lag` text. Use the
+numeric `target_lag_sec` from settled refresh history as a freshness goal, not
+a guaranteed refresh interval. Compare scheduling/data timestamps with settled
+refresh history; neither surface alone establishes health or cause.
 
-Use `SHOW DYNAMIC TABLES` for scheduling state, target lag, current lag, refresh
-mode, and refresh-mode reason. Use refresh history and graph history for the
-dependency chain. Graph order narrows investigation but does not prove causality.
-Information Schema functions retain a shorter window than Account
-Usage views, so record which source and window were used.
+## Pipe status
 
-```sql
-SHOW DYNAMIC TABLES LIKE 'DT_ORDERS' IN SCHEMA DB.SCHEMA;
+The pipe-status template accepts one validated three-part unquoted identifier as
+a local CLI selector. A successful receipt exposes only selector
+presence/fingerprint and the same account-scoped `object_key_sha256` used by the
+pipe inventory. Its `rendered_sql_sha256` covers a receipt-only rendering where
+the raw selector is replaced by that scoped hash; the analyzer recomputes it. If
+collection fails before the scoped hash exists, the error receipt records the
+reviewed template digest and a null selector fingerprint. Raw
+`SYSTEM$PIPE_STATUS` JSON never leaves Snowflake.
 
-SELECT name, state, state_message, refresh_trigger, refresh_action,
-       data_timestamp, refresh_start_time, refresh_end_time, query_id
-FROM TABLE(INFORMATION_SCHEMA.DYNAMIC_TABLE_REFRESH_HISTORY(
-  NAME => 'DB.SCHEMA.DT_ORDERS', ERROR_ONLY => FALSE
-))
-ORDER BY refresh_start_time DESC;
+The projection includes bounded state, counts, and timestamps needed to
+distinguish queueing, notification, load, and failover observations. It excludes
+file paths, file names, channel names, integration endpoints, `error`, `fault`,
+and other free text. `execution_state` must be in Snowflake's documented finite
+domain; unknown values invalidate the receipt and are never echoed. Even a fully
+covered pipe inventory does not prove cloud delivery, target idempotence, or
+absence of a recent copy while COPY_HISTORY is unsettled.
 
-SELECT *
-FROM TABLE(INFORMATION_SCHEMA.DYNAMIC_TABLE_GRAPH_HISTORY())
-WHERE qualified_name = 'DB.SCHEMA.DT_ORDERS';
-```
+For copy history, `Partially loaded`, `Load failed`, and `Load skipped` remain
+distinct findings. `ERROR_COUNT` is evaluated; a partial load is never normalized
+to success. Snowpipe rows correlate through `pipe_identifier_sha256`. Bulk
+`COPY INTO` rows have no pipe identity and remain separate copy-load nodes.
 
-`TARGET_LAG` is a freshness goal, not a guaranteed interval. A table whose
-refresh duration exceeds its target cannot meet that goal by configuration alone;
-separate a lag breach from an upstream failure. If incremental refresh reports
-missing change tracking or time-travel history, preserve the DDL and identify the
-required full reinitialization before proposing any change.
+## Context and trust
 
-Primary documentation: [dynamic table monitoring](https://docs.snowflake.com/en/user-guide/dynamic-tables-tasks-monitor),
-[refresh troubleshooting](https://docs.snowflake.com/en/user-guide/dynamic-tables/troubleshooting),
-and [target lag](https://docs.snowflake.com/en/user-guide/dynamic-tables-target-lag).
+Every receipt must contain exactly one `execution_context` with lowercase
+SHA-256 values for organization, account, collector user, primary role, and
+secondary roles; a primary-role type of `ROLE` or `APPLICATION_INSTANCE`; UTC
+timezone; and an observation inside its collection interval. All receipt contexts must match and their
+observations must span no more than 15 minutes.
 
-## Snowpipe
+The analyzer checks the reviewed template binding, recorded rendered-SQL digest,
+normalized result, receipt digest,
+dataset names/counts, caps, collection mode, freshness, and context. These checks
+establish self-consistency only. A separately recorded digest of the complete
+canonical bundle is required for trusted-input status, and even that digest is
+an operator assertion of byte identity rather than proof of Snowflake origin.
 
-`SYSTEM$PIPE_STATUS` is the first evidence source for event-driven loading. Keep
-the raw JSON: timestamps such as the last received message and last forwarded
-message distinguish a cloud-notification/path gap from a COPY or file-format
-failure. Then correlate to `COPY_HISTORY` and the configured stage/prefix.
+Primary documentation:
 
-```sql
-SELECT SYSTEM$PIPE_STATUS('DB.SCHEMA.ORDERS_PIPE');
-
-SELECT file_name, last_load_time, status, row_count, first_error_message
-FROM TABLE(INFORMATION_SCHEMA.COPY_HISTORY(
-  TABLE_NAME => 'DB.SCHEMA.ORDERS',
-  START_TIME => DATEADD('hour', -24, CURRENT_TIMESTAMP())
-))
-ORDER BY last_load_time DESC;
-```
-
-Do not replay a file until its load identity and target key are known. Snowpipe
-may report the same file as already loaded, while downstream tasks can still
-duplicate rows if the transformation is not idempotent.
-
-Primary documentation: [Troubleshooting Snowpipe](https://docs.snowflake.com/en/user-guide/data-load-snowpipe-ts),
-[SYSTEM$PIPE_STATUS](https://docs.snowflake.com/en/sql-reference/functions/system_pipe_status),
-and [COPY_HISTORY](https://docs.snowflake.com/en/sql-reference/functions/copy_history).
+- [TASK_HISTORY Account Usage view](https://docs.snowflake.com/en/sql-reference/account-usage/task_history)
+- [DYNAMIC_TABLE_REFRESH_HISTORY Account Usage view](https://docs.snowflake.com/en/sql-reference/account-usage/dynamic_table_refresh_history)
+- [COPY_HISTORY Account Usage view](https://docs.snowflake.com/en/sql-reference/account-usage/copy_history)
+- [SHOW TASKS](https://docs.snowflake.com/en/sql-reference/sql/show-tasks)
+- [SHOW STREAMS](https://docs.snowflake.com/en/sql-reference/sql/show-streams)
+- [SHOW DYNAMIC TABLES](https://docs.snowflake.com/en/sql-reference/sql/show-dynamic-tables)
+- [SHOW PIPES](https://docs.snowflake.com/en/sql-reference/sql/show-pipes)
+- [SYSTEM$PIPE_STATUS](https://docs.snowflake.com/en/sql-reference/functions/system_pipe_status)
