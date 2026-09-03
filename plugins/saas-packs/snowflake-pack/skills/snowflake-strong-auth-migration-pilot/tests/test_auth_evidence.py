@@ -363,18 +363,39 @@ class AuthEvidenceTests(unittest.TestCase):
         self.assertIn("current_auth", " ".join(report["evidence_issues"]))
 
     def test_documented_service_nulls_are_known_non_applicable(self) -> None:
+        for user_type in ("SERVICE", "SERVICE_AGENT"):
+            with self.subTest(user_type=user_type):
+                data = self.valid_bundle()
+                current_receipt = data["collections"]["current"]["receipt"]
+                current_row = current_receipt["datasets"]["current_users"][0]
+                current_row["type"] = user_type
+                current_row["has_password"] = False
+                current_row["has_mfa"] = False
+                rehash(current_receipt)
+
+                historical_receipt = data["collections"]["historical"]["receipt"]
+                historical_row = historical_receipt["datasets"]["historical_users"][0]
+                historical_row["type"] = user_type
+                historical_row["has_password"] = None
+                historical_row["has_mfa"] = None
+                rehash(historical_receipt)
+
+                data["users"][0]["type"] = user_type
+                data["users"][0]["auth_methods"] = ["WIF"]
+                data["workloads"][0]["current_auth"] = "WIF"
+                report = self.analyze_trusted(data)
+                self.assertTrue(report["evidence_scope_complete"])
+                self.assertEqual(report["current_historical_reconciliation"]["field_drift"], [])
+
+    def test_mfa_enrollment_is_not_a_primary_auth_method(self) -> None:
         data = self.valid_bundle()
         for key, dataset in (("current", "current_users"), ("historical", "historical_users")):
             receipt = data["collections"][key]["receipt"]
-            row = receipt["datasets"][dataset][0]
-            row["type"] = "SERVICE"
-            row["has_password"] = None
-            row["has_mfa"] = None
+            receipt["datasets"][dataset][0]["has_mfa"] = True
             rehash(receipt)
-        data["users"][0]["type"] = "SERVICE"
-        data["users"][0]["auth_methods"] = ["WIF"]
-        data["workloads"][0]["current_auth"] = "WIF"
-        self.assertTrue(self.analyze_trusted(data)["evidence_scope_complete"])
+        report = self.analyze_trusted(data)
+        self.assertTrue(report["evidence_scope_complete"])
+        self.assertNotIn("MFA posture", " ".join(report["evidence_issues"]))
 
     def test_snowflake_managed_principals_stay_in_cap_accounting_but_out_of_operator_scope(self) -> None:
         managed_hash = hashlib.sha256(b"SYSTEM_MANAGED").hexdigest()

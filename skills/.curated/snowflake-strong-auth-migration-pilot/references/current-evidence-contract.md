@@ -50,6 +50,11 @@ Operator-owned `SERVICE_AGENT` principals remain in scope and are treated as
 service identities. A source `TYPE=NULL` is normalized to Snowflake's documented
 `PERSON` meaning.
 
+For operator-owned `SERVICE` and `SERVICE_AGENT` principals, Snowflake may expose
+the same non-applicable password or MFA field as `FALSE` in `SHOW USERS` and
+`NULL` in Account Usage. Reconciliation normalizes both to the same negative
+observation; neither form is treated as positive posture evidence.
+
 ## Bundle envelope
 
 Combine the three unchanged collector receipts with an operator-owned workload

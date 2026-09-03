@@ -519,6 +519,8 @@ def _reconcile_users(current: list[dict[str, Any]], historical: list[dict[str, A
     historical_only = sorted(set(historical_map) - set(current_map))
     drift: list[dict[str, str]] = []
     for digest in sorted(set(current_map) & set(historical_map)):
+        current_type = current_map[digest].get("type")
+        historical_type = historical_map[digest].get("type")
         for field in ("created_on", *POSTURE_FIELDS):
             current_value = current_map[digest].get(field)
             historical_value = historical_map[digest].get(field)
@@ -533,6 +535,16 @@ def _reconcile_users(current: list[dict[str, Any]], historical: list[dict[str, A
                     if historical_value is not None
                     else None
                 )
+            elif (
+                field in {"has_password", "has_mfa"}
+                and current_type == historical_type
+                and current_type in {"SERVICE", "SERVICE_AGENT"}
+            ):
+                # Snowflake can expose a non-applicable service field as FALSE in
+                # SHOW USERS and NULL in Account Usage. Both mean "not present";
+                # neither is a positive posture claim.
+                current_value = current_value is True
+                historical_value = historical_value is True
             if current_value != historical_value:
                 drift.append({"user_name_sha256": digest, "field": field})
     status = (

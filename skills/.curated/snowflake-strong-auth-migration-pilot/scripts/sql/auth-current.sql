@@ -5,6 +5,24 @@ SHOW USERS LIMIT 10000
 WITH show_rows AS (
   SELECT OBJECT_CONSTRUCT_KEEP_NULL(*) AS SHOW_ROW
   FROM $1
+), normalized_show_rows AS (
+  SELECT
+    SHOW_ROW,
+    COALESCE(
+      UPPER(IFF(
+        COALESCE(IS_NULL_VALUE(GET_IGNORE_CASE(SHOW_ROW, 'type')), TRUE),
+        NULL,
+        TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'type'))
+      )),
+      'PERSON'
+    ) AS USER_TYPE,
+    IFF(
+      COALESCE(NOT IS_NULL_VALUE(GET_IGNORE_CASE(SHOW_ROW, 'created_on')), FALSE)
+      AND COALESCE(NOT IS_NULL_VALUE(GET_IGNORE_CASE(SHOW_ROW, 'disabled')), FALSE),
+      TRUE,
+      FALSE
+    ) AS METADATA_VISIBLE
+  FROM show_rows
 ), projected_users AS (
   SELECT
     SHA2(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'name')), 256) AS SORT_KEY,
@@ -13,9 +31,9 @@ WITH show_rows AS (
       'user_name_sha256', SHA2(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'name')), 256),
       'created_on', TRY_TO_TIMESTAMP_LTZ(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'created_on'))),
       'disabled', TRY_TO_BOOLEAN(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'disabled'))),
-      'type', COALESCE(UPPER(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'type'))), 'PERSON'),
+      'type', USER_TYPE,
       'principal_scope', IFF(
-        UPPER(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'type'))) = 'SNOWFLAKE_SERVICE',
+        USER_TYPE = 'SNOWFLAKE_SERVICE',
         'SNOWFLAKE_MANAGED_EXCLUDED',
         'OPERATOR_OWNED'
       ),
@@ -27,14 +45,9 @@ WITH show_rows AS (
         TRY_TO_BOOLEAN(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'has_workload_identity'))),
         TRY_TO_BOOLEAN(TO_VARCHAR(GET_IGNORE_CASE(SHOW_ROW, 'has_federated_workload_authentication')))
       ),
-      'metadata_visible', IFF(
-        GET_IGNORE_CASE(SHOW_ROW, 'created_on') IS NOT NULL
-        AND GET_IGNORE_CASE(SHOW_ROW, 'disabled') IS NOT NULL,
-        TRUE,
-        FALSE
-      )
+      'metadata_visible', METADATA_VISIBLE
     ) AS EVIDENCE
-  FROM show_rows
+  FROM normalized_show_rows
 ), execution_context AS (
   SELECT OBJECT_CONSTRUCT_KEEP_NULL(
     '_dataset', 'execution_context',
