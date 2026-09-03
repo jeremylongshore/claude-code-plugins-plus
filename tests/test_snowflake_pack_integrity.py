@@ -63,7 +63,11 @@ class SnowflakePackIntegrityTests(unittest.TestCase):
                 if path.is_file() and "__pycache__" not in path.parts and path.suffix not in {".pyc", ".pyo"}
             }
 
-        for skill in ("snowflake-access-guardian", "snowflake-strong-auth-migration-pilot"):
+        for skill in (
+            "snowflake-access-guardian",
+            "snowflake-cost-leak-hunter",
+            "snowflake-strong-auth-migration-pilot",
+        ):
             source = PACK / "skills" / skill
             curated = ROOT / "skills" / ".curated" / skill
             source_files = packaged_files(source)

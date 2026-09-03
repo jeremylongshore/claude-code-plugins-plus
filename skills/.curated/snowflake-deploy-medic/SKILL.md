@@ -15,7 +15,7 @@ description: |
   needs a current plan, migration-integrity, toolchain, or rollback gate.
 allowed-tools: Read, Bash(python3:*), Bash(terraform:plan*)
 argument-hint: "[redacted-deploy-evidence.json]"
-version: 3.4.0
+version: 3.5.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection

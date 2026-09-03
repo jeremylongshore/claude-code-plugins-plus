@@ -680,10 +680,15 @@ class CollectorTests(unittest.TestCase):
             self.assertIs(datasets["users"][0][key], expected)
 
     def test_relevant_sql_surfaces_are_deterministically_ordered(self) -> None:
-        for surface in ("cost", "query", "pipeline"):
+        expected_order = {
+            "cost": "ORDER BY SORT_GROUP, SORT_KEY",
+            "query": "ORDER BY dataset, sort_key",
+            "pipeline": "ORDER BY dataset, sort_key",
+        }
+        for surface, order_clause in expected_order.items():
             with self.subTest(surface=surface):
                 _, sql, _ = MODULE.load_surface(surface)
-                self.assertIn("ORDER BY dataset, sort_key", sql)
+                self.assertIn(order_clause, sql)
 
     def test_receipt_exposes_limit_and_possible_truncation(self) -> None:
         path, sql, sources = MODULE.load_surface("query")
@@ -771,7 +776,13 @@ class CollectorTests(unittest.TestCase):
             def runner(command, **kwargs):
                 return subprocess.CompletedProcess(command, 5, stdout="", stderr=message)
 
-            receipt, code = MODULE.execute_surface("cost", "readonly", runner=runner)
+            receipt, code = MODULE.execute_surface(
+                "cost",
+                "readonly",
+                window_start="2026-08-01T00:00:00Z",
+                window_end="2026-08-02T00:00:00Z",
+                runner=runner,
+            )
             rendered_errors = json.dumps(receipt["errors"])
 
             with self.subTest(message=message):
@@ -784,6 +795,23 @@ class CollectorTests(unittest.TestCase):
                     receipt["errors"][0]["message"],
                     "Snowflake CLI collection failed; inspect local CLI diagnostics outside the receipt",
                 )
+
+    def test_live_cost_receipt_timestamp_is_inside_its_collection_interval(self) -> None:
+        def runner(command, **kwargs):
+            return subprocess.CompletedProcess(command, 0, stdout="[]", stderr="")
+
+        receipt, code = MODULE.execute_surface(
+            "cost",
+            "readonly",
+            window_start="2026-08-01T00:00:00Z",
+            window_end="2026-08-02T00:00:00Z",
+            runner=runner,
+        )
+        self.assertEqual(code, 0)
+        self.assertEqual(receipt["collected_at"], receipt["collection_completed_at"])
+        self.assertLessEqual(receipt["collection_started_at"], receipt["collected_at"])
+        self.assertNotIn("connection_profile", receipt)
+        self.assertRegex(receipt["connection_profile_sha256"], r"^sha256:[0-9a-f]{64}$")
 
     def test_written_error_receipts_remove_every_adversarial_value(self) -> None:
         _, sql, sources = MODULE.load_surface("cost")
@@ -840,7 +868,7 @@ class CollectorTests(unittest.TestCase):
                         "python3",
                         str(SCRIPT),
                         "--surface",
-                        "cost",
+                        "pipeline",
                         "--input-json",
                         str(source),
                         "--output",
@@ -879,7 +907,7 @@ class CollectorTests(unittest.TestCase):
                     "python3",
                     str(SCRIPT),
                     "--surface",
-                    "cost",
+                    "pipeline",
                     "--input-json",
                     str(safe_source),
                     "--output",
@@ -1133,6 +1161,147 @@ class CollectorTests(unittest.TestCase):
         self.assertNotIn("customer_secret_role", rendered)
         self.assertIn("inspect local CLI diagnostics", rendered)
 
+    def test_cost_windows_are_required_bounded_and_literal(self) -> None:
+        start = "2026-08-01T00:00:00Z"
+        end = "2026-08-02T00:00:00Z"
+        for surface in sorted(MODULE.COST_WINDOW_SURFACES):
+            with self.subTest(surface=surface):
+                path, template, rendered, sources, selector = MODULE.render_surface(
+                    surface, window_start=start, window_end=end
+                )
+                self.assertTrue(path.is_file())
+                self.assertTrue(sources)
+                self.assertNotEqual(rendered, template)
+                self.assertEqual(selector, {"window_start": start, "window_end": end})
+                self.assertNotIn("__WINDOW_START_UTC__", rendered)
+                self.assertNotIn("__WINDOW_END_UTC__", rendered)
+                with self.assertRaises(MODULE.CollectionError):
+                    MODULE.render_surface(surface)
+                with self.assertRaises(MODULE.CollectionError):
+                    MODULE.render_surface(
+                        surface,
+                        window_start="2026-08-01T00:00:00Z'); DROP DATABASE PROD; --",
+                        window_end=end,
+                    )
+                with self.assertRaises(MODULE.CollectionError):
+                    MODULE.render_surface(
+                        surface,
+                        window_start="2026-08-01T00:00:00Z",
+                        window_end="2026-08-09T00:00:01Z",
+                    )
+
+    def test_cost_offline_normalization_is_rejected_for_every_surface(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "saved.json"
+            source.write_text("[]", encoding="utf-8")
+            cost_surfaces = ["cost", *(surface for surface in MODULE.SUBSURFACES if surface.startswith("cost-"))]
+            for surface in sorted(cost_surfaces):
+                output = root / f"{surface}.json"
+                command = [
+                    "python3",
+                    str(SCRIPT),
+                    "--surface",
+                    surface,
+                    "--input-json",
+                    str(source),
+                    "--output",
+                    str(output),
+                ]
+                if surface in MODULE.COST_WINDOW_SURFACES:
+                    command.extend(
+                        [
+                            "--window-start",
+                            "2026-08-01T00:00:00Z",
+                            "--window-end",
+                            "2026-08-02T00:00:00Z",
+                        ]
+                    )
+                completed = subprocess.run(command, capture_output=True, text=True, check=False)
+                with self.subTest(surface=surface):
+                    self.assertEqual(completed.returncode, 2)
+                    self.assertIn("offline normalization is diagnostic-only", completed.stderr)
+                    self.assertFalse(output.exists())
+
+    def test_cost_receipt_binds_exact_datasets_context_and_per_dataset_caps(self) -> None:
+        path, template, rendered, sources, selector = MODULE.render_surface(
+            "cost",
+            window_start="2026-08-01T00:00:00Z",
+            window_end="2026-08-02T00:00:00Z",
+        )
+        raw = [
+            {"EVIDENCE": {"_dataset": "execution_context", "observed_at": "2026-09-03T12:00:00Z"}},
+            *({"EVIDENCE": {"_dataset": dataset, "row": 1}} for dataset in MODULE.CAP_DATASETS_BY_SURFACE["cost"]),
+        ]
+        receipt = MODULE.build_receipt(
+            "cost",
+            "readonly",
+            rendered,
+            sources,
+            raw=raw,
+            template_sql=template,
+            template_path=path,
+            selector=selector,
+            collection_mode="live-cli",
+            collected_at="2026-09-03T12:00:00Z",
+        )
+        self.assertEqual(receipt["schema_version"], "2")
+        self.assertEqual(receipt["collection_mode"], "live-cli")
+        self.assertEqual(receipt["expected_datasets"], list(MODULE.RECEIPT_EXPECTED_DATASETS["cost"]))
+        self.assertEqual(set(receipt["datasets"]), set(MODULE.RECEIPT_EXPECTED_DATASETS["cost"]))
+        self.assertEqual(receipt["dataset_row_counts"]["execution_context"], 1)
+        self.assertEqual(receipt["row_limit"], 5000)
+        self.assertEqual(receipt["cap_scope"], "per_dataset")
+        self.assertFalse(receipt["truncation_possible"])
+        self.assertRegex(receipt["selector_fingerprint"], r"^sha256:[0-9a-f]{64}$")
+        self.assertRegex(receipt["result_sha256"], r"^sha256:[0-9a-f]{64}$")
+        self.assertIsNone(receipt["snowflake_query_id"])
+        self.assertEqual(
+            receipt["snowflake_query_id_status"],
+            "not_exposed_by_snow_cli_json_ext",
+        )
+
+    def test_cost_sql_aggregates_multi_entity_metering_and_scopes_query_hashes(self) -> None:
+        _, template, _, _, _ = MODULE.render_surface(
+            "cost",
+            window_start="2026-08-01T00:00:00Z",
+            window_end="2026-08-02T00:00:00Z",
+        )
+        self.assertIn("'credits_used', SUM(CREDITS_USED)", template)
+        self.assertEqual(
+            [line.strip() for line in template.splitlines() if line.lstrip().startswith("GROUP BY ")],
+            ["GROUP BY SERVICE_TYPE, START_TIME, END_TIME"],
+        )
+        self.assertIn("CURRENT_ACCOUNT_NAME(), qa.QUERY_HASH", template)
+        self.assertIn("CURRENT_ACCOUNT_NAME(), qa.QUERY_PARAMETERIZED_HASH", template)
+
+        _, adaptive, _, _, _ = MODULE.render_surface(
+            "cost-adaptive",
+            window_start="2026-08-01T00:00:00Z",
+            window_end="2026-08-02T00:00:00Z",
+        )
+        self.assertIn(
+            "'query_hash', IFF(QUERY_HASH IS NULL, NULL, "
+            "SHA2(TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), "
+            "CURRENT_ACCOUNT_NAME(), QUERY_HASH)), 256))",
+            adaptive,
+        )
+        self.assertIn(
+            "'query_parameterized_hash', IFF(QUERY_PARAMETERIZED_HASH IS NULL, NULL, "
+            "SHA2(TO_JSON(ARRAY_CONSTRUCT(CURRENT_ORGANIZATION_NAME(), "
+            "CURRENT_ACCOUNT_NAME(), QUERY_PARAMETERIZED_HASH)), 256))",
+            adaptive,
+        )
+
+    def test_cost_templates_never_use_globally_linkable_direct_identity_hashes(self) -> None:
+        for path in sorted((HERE.parent / "sql").glob("cost*.sql")):
+            sql = path.read_text(encoding="utf-8")
+            with self.subTest(template=path.name):
+                self.assertNotIn("SHA2(TO_VARCHAR", sql)
+                if "_sha256'" in sql:
+                    self.assertIn("CURRENT_ORGANIZATION_NAME()", sql)
+                    self.assertIn("CURRENT_ACCOUNT_NAME()", sql)
+
     def test_current_show_templates_bind_context_in_the_same_pipe_statement(self) -> None:
         selectors = {
             "access-role-current": {"role": "ANALYST"},
@@ -1256,6 +1425,8 @@ class CollectorTests(unittest.TestCase):
                 self.assertFalse(receipt["truncation_possible"])
                 self.assertEqual(receipt["collection_mode"], "live-cli")
                 self.assertEqual(receipt["non_claims"], list(MODULE.RECEIPT_NON_CLAIMS))
+                self.assertNotIn("cap_scope", receipt)
+                self.assertNotIn("result_sha256", receipt)
 
     def test_access_offline_normalization_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

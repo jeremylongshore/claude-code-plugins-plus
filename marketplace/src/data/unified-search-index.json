@@ -13341,7 +13341,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "3.4.0",
+      "version": "3.5.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -72150,7 +72150,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.4.0",
+      "version": "3.5.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72162,7 +72162,7 @@
       "id": "snowflake-cost-leak-hunter",
       "slug": "snowflake-cost-leak-hunter",
       "name": "snowflake-cost-leak-hunter",
-      "description": "Audit Snowflake warehouse and query-attribution evidence to locate idle compute, unallocated or untagged usage, query-acceleration spend, and serverless visibility gaps without guessing prices or savings. Use when a Snowflake bill increased, a team needs chargeback/showback evidence, warehouse credits appear unexplained, or an operator asks which usage merits investigation. Trigger with \"Snowflake bill increased\", \"find idle Snowflake credits\", \"Snowflake cost attribution\", or \"untagged Snowflake spend\". Do not use to change warehouse size, suspend compute, create resource monitors, or claim invoice reconciliation.",
+      "description": "Audit and analyze Snowflake warehouse, serverless, Adaptive, storage, transfer, and AI cost evidence with a typed ledger that prevents double counting and exposes freshness, attribution, control, and invoice boundaries. Use when a Snowflake bill increased, a team needs chargeback/showback evidence, credits appear unexplained, or an operator asks which usage merits investigation. Trigger with \"Snowflake bill increased\", \"find idle Snowflake credits\", \"Snowflake cost attribution\", or \"untagged Snowflake spend\". Do not use to mutate cost controls or claim savings.",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -72170,12 +72170,12 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.4.0",
+      "version": "3.5.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
-      "searchText": "snowflake-cost-leak-hunter audit snowflake warehouse and query-attribution evidence to locate idle compute, unallocated or untagged usage, query-acceleration spend, and serverless visibility gaps without guessing prices or savings. use when a snowflake bill increased, a team needs chargeback/showback evidence, warehouse credits appear unexplained, or an operator asks which usage merits investigation. trigger with \"snowflake bill increased\", \"find idle snowflake credits\", \"snowflake cost attribution\", or \"untagged snowflake spend\". do not use to change warehouse size, suspend compute, create resource monitors, or claim invoice reconciliation. saas-packs read write bash(python3:*) "
+      "searchText": "snowflake-cost-leak-hunter audit and analyze snowflake warehouse, serverless, adaptive, storage, transfer, and ai cost evidence with a typed ledger that prevents double counting and exposes freshness, attribution, control, and invoice boundaries. use when a snowflake bill increased, a team needs chargeback/showback evidence, credits appear unexplained, or an operator asks which usage merits investigation. trigger with \"snowflake bill increased\", \"find idle snowflake credits\", \"snowflake cost attribution\", or \"untagged snowflake spend\". do not use to mutate cost controls or claim savings. saas-packs read write bash(python3:*) "
     },
     {
       "type": "skill",
@@ -72189,7 +72189,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.4.0",
+      "version": "3.5.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72209,7 +72209,7 @@
         "Bash(terraform:plan*)"
       ],
       "compatibleWith": [],
-      "version": "3.4.0",
+      "version": "3.5.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72228,7 +72228,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.4.0",
+      "version": "3.5.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72247,7 +72247,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.4.0",
+      "version": "3.5.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72267,7 +72267,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.4.0",
+      "version": "3.5.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72286,7 +72286,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.4.0",
+      "version": "3.5.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"

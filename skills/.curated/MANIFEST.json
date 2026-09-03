@@ -31500,15 +31500,25 @@
         "eval-spec.yaml",
         "references/attribution-and-staleness.md",
         "references/controls-boundaries.md",
+        "references/cost-ledger-and-surfaces.md",
         "references/output-contract.md",
         "references/pareto-and-right-sizing.md",
         "references/warehouse-and-idle-evidence.md",
         "scripts/analyze_cost_evidence.py",
         "scripts/collect_snowflake_evidence.py",
+        "scripts/sql/cost-adaptive.sql",
+        "scripts/sql/cost-ai-functions.sql",
+        "scripts/sql/cost-budgets.sql",
+        "scripts/sql/cost-internal-transfer.sql",
+        "scripts/sql/cost-resource-monitors.sql",
+        "scripts/sql/cost-storage.sql",
+        "scripts/sql/cost-transfer.sql",
         "scripts/sql/cost.sql",
         "tests/fixtures/cost_evidence.json",
         "tests/fixtures/cost_evidence_partial.json",
-        "tests/test_analyze_cost_evidence.py"
+        "tests/fixtures/cost_evidence_v2.json",
+        "tests/test_analyze_cost_evidence.py",
+        "tests/test_cost_evidence_adversarial.py"
       ]
     },
     {

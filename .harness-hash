@@ -12,7 +12,7 @@ c981c39992716a9c8dfd678952ff45a237574e4192f26a3ccbd603471b3c9d5d  plugins/saas-p
 7312747954bc4618385908f57a7dd08f7b11fa27ca762cb840e00f8fa800161d  plugins/saas-packs/hubspot-pack/skills/hubspot-warehouse-sync/eval-spec.yaml
 d543f74906821a7fa80ba90dc80d3b6ff7fbdc81078ab0a9d75e45e965b3a5d3  plugins/saas-packs/sentry-pack/skills/sentry-data-handling/eval-spec.yaml
 bcf6cd151df5eabc437ea58a67057fa5e3d24bf8bbcd7b969339f5824bfa00b7  plugins/saas-packs/snowflake-pack/skills/snowflake-access-guardian/eval-spec.yaml
-74cdd5d9031b68797380e5dff591878b5251d2bfc319a8537f538fa7c06ccb4d  plugins/saas-packs/snowflake-pack/skills/snowflake-cost-leak-hunter/eval-spec.yaml
+99e59d269093eeac93932332ceb407ba5d4bcd6b4f32eae060fa0ab07e306756  plugins/saas-packs/snowflake-pack/skills/snowflake-cost-leak-hunter/eval-spec.yaml
 4255c5736680811f922612f32d6cfdd476d6d8181a594e82275d6d046d05ed9e  plugins/saas-packs/snowflake-pack/skills/snowflake-data-quality-sentinel/eval-spec.yaml
 2a6df0a994feff8b7cf58f09edd57153a658fb97e3cd376d885457eef1d76c58  plugins/saas-packs/snowflake-pack/skills/snowflake-deploy-medic/eval-spec.yaml
 467d93fab234171e723cfd40a184e8ecde8bdb43f78ab9444578b89e35a2291b  plugins/saas-packs/snowflake-pack/skills/snowflake-failover-readiness-drill/eval-spec.yaml
@@ -34,7 +34,7 @@ c981c39992716a9c8dfd678952ff45a237574e4192f26a3ccbd603471b3c9d5d  skills/.curate
 d543f74906821a7fa80ba90dc80d3b6ff7fbdc81078ab0a9d75e45e965b3a5d3  skills/.curated/sentry-data-handling/eval-spec.yaml
 81eabecbc8b79a87d105d061bd0f3380e6d74648e412fa46f20885a1abf46160  skills/.curated/skill-creator/eval-spec.yaml
 bcf6cd151df5eabc437ea58a67057fa5e3d24bf8bbcd7b969339f5824bfa00b7  skills/.curated/snowflake-access-guardian/eval-spec.yaml
-74cdd5d9031b68797380e5dff591878b5251d2bfc319a8537f538fa7c06ccb4d  skills/.curated/snowflake-cost-leak-hunter/eval-spec.yaml
+99e59d269093eeac93932332ceb407ba5d4bcd6b4f32eae060fa0ab07e306756  skills/.curated/snowflake-cost-leak-hunter/eval-spec.yaml
 4255c5736680811f922612f32d6cfdd476d6d8181a594e82275d6d046d05ed9e  skills/.curated/snowflake-data-quality-sentinel/eval-spec.yaml
 2a6df0a994feff8b7cf58f09edd57153a658fb97e3cd376d885457eef1d76c58  skills/.curated/snowflake-deploy-medic/eval-spec.yaml
 467d93fab234171e723cfd40a184e8ecde8bdb43f78ab9444578b89e35a2291b  skills/.curated/snowflake-failover-readiness-drill/eval-spec.yaml
