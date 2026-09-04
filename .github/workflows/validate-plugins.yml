@@ -127,6 +127,12 @@ jobs:
       - name: Verify the generated legacy disposition ledger
         run: pnpm run validate:disposition-ledger
 
+      # Bead claude-juoz.3.11: repeated family names establish a review
+      # denominator only. Regenerate-and-compare prevents local/untracked files
+      # or stale catalog counts from changing the pack-by-pack queue silently.
+      - name: Verify the SaaS tutorial-lattice denominator
+        run: pnpm run validate:saas-lattice
+
       - name: Keep quarantined external mirrors off publishable grade surfaces
         run: pnpm run validate:mirror-quarantine
 
