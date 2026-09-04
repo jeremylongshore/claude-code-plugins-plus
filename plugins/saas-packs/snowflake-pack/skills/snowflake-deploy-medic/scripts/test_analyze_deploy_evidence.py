@@ -1038,7 +1038,18 @@ class DeployAnalyzerTests(unittest.TestCase):
 
     def test_source_has_no_network_process_or_write_capability(self) -> None:
         tree = ast.parse(MODULE_PATH.read_text(encoding="utf-8"))
-        forbidden = {"subprocess", "socket", "requests", "urllib", "httpx", "snowflake", "terraform"}
+        allowed_imports = {
+            "__future__",
+            "argparse",
+            "collections",
+            "datetime",
+            "hashlib",
+            "json",
+            "pathlib",
+            "re",
+            "sys",
+            "typing",
+        }
         imported, calls = set(), set()
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
@@ -1047,7 +1058,7 @@ class DeployAnalyzerTests(unittest.TestCase):
                 imported.add(node.module.split(".")[0])
             elif isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
                 calls.add(node.func.attr)
-        self.assertFalse(imported & forbidden)
+        self.assertLessEqual(imported, allowed_imports)
         self.assertFalse(calls & {"write", "write_text", "write_bytes", "unlink", "rename", "system", "run", "Popen"})
 
 
