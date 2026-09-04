@@ -8,6 +8,7 @@ import os
 import re
 import shutil
 import subprocess
+import tarfile
 import tempfile
 import unittest
 from pathlib import Path
@@ -38,7 +39,7 @@ def load_sync_generator():
     return module
 
 
-def npm_pack_files(pack: Path) -> set[str]:
+def npm_pack_entries(pack: Path) -> dict[str, dict]:
     completed = subprocess.run(
         ["npm", "pack", "--dry-run", "--json"],
         cwd=pack,
@@ -51,7 +52,11 @@ def npm_pack_files(pack: Path) -> set[str]:
         package = payload[0]
     else:
         package = next(iter(payload.values()))
-    return {entry["path"] for entry in package["files"]}
+    return {entry["path"]: entry for entry in package["files"]}
+
+
+def npm_pack_files(pack: Path) -> set[str]:
+    return set(npm_pack_entries(pack))
 
 
 class SnowflakePackIntegrityTests(unittest.TestCase):
@@ -132,7 +137,8 @@ class SnowflakePackIntegrityTests(unittest.TestCase):
             (cache_directory / "probe.cpython-312.pyc").write_bytes(b"not-bytecode")
             (cache_directory.parent / "probe.pyo").write_bytes(b"not-bytecode")
 
-            packed_files = npm_pack_files(copied_pack)
+            packed_entries = npm_pack_entries(copied_pack)
+            packed_files = set(packed_entries)
 
         cache_files = {path for path in packed_files if "__pycache__" in path or Path(path).suffix in {".pyc", ".pyo"}}
         self.assertEqual(cache_files, set())
@@ -151,6 +157,16 @@ class SnowflakePackIntegrityTests(unittest.TestCase):
         self.assertIn("000-docs/000-INDEX.md", packed_files)
         self.assertIn("LICENSE", packed_files)
         self.assertIn("shared/evidence/collect_snowflake_evidence.py", packed_files)
+        self.assertIn("shared/snowflake_operator.py", packed_files)
+        self.assertEqual(packed_entries["shared/snowflake_operator.py"]["mode"], 0o755)
+        operator_targets = {
+            "skills/snowflake-pipeline-guardian/scripts/analyze_pipeline_state.py",
+            "skills/snowflake-query-forensics/scripts/analyze_query_evidence.py",
+            "skills/snowflake-deploy-medic/scripts/analyze_deploy_evidence.py",
+            "skills/snowflake-access-guardian/scripts/analyze_access_evidence.py",
+            "skills/snowflake-failover-readiness-drill/scripts/analyze_failover_readiness.py",
+        }
+        self.assertTrue(operator_targets.issubset(packed_files))
         self.assertIn(
             "skills/snowflake-access-guardian/scripts/analyze_access_evidence.py",
             packed_files,
@@ -217,6 +233,64 @@ class SnowflakePackIntegrityTests(unittest.TestCase):
                 for path in packed_files
             )
         )
+
+    def test_packed_operator_is_executable_and_standalone(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            packed = subprocess.run(
+                ["npm", "pack", "--json", "--pack-destination", str(root)],
+                cwd=PACK,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            payload = json.loads(packed.stdout)
+            package = payload[0] if isinstance(payload, list) else next(iter(payload.values()))
+            archive = root / package["filename"]
+            extract_root = root / "extracted"
+            extract_root.mkdir()
+            with tarfile.open(archive, "r:gz") as bundle:
+                member = bundle.getmember("package/shared/snowflake_operator.py")
+                self.assertEqual(member.mode, 0o755)
+                operator_targets = {
+                    "package/skills/snowflake-pipeline-guardian/scripts/analyze_pipeline_state.py",
+                    "package/skills/snowflake-query-forensics/scripts/analyze_query_evidence.py",
+                    "package/skills/snowflake-deploy-medic/scripts/analyze_deploy_evidence.py",
+                    "package/skills/snowflake-access-guardian/scripts/analyze_access_evidence.py",
+                    "package/skills/snowflake-failover-readiness-drill/scripts/analyze_failover_readiness.py",
+                }
+                for target in operator_targets:
+                    self.assertFalse(bundle.getmember(target).issym())
+                bundle.extractall(extract_root, filter="data")
+
+            operator = extract_root / "package" / "shared" / "snowflake_operator.py"
+            self.assertEqual(operator.stat().st_mode & 0o777, 0o755)
+            completed = subprocess.run(
+                [str(operator), "list"],
+                cwd=root,
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertIn("query-id-forensics", completed.stdout)
+            self.assertEqual(completed.stderr, "")
+
+            pipeline_fixture = (
+                extract_root / "package/skills/snowflake-pipeline-guardian/scripts/fixtures/stale-chain.json"
+            )
+            analysis = subprocess.run(
+                [str(operator), "pipeline-triage", f"--input={pipeline_fixture}"],
+                cwd=root,
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            self.assertEqual(analysis.returncode, 0, analysis.stderr)
+            self.assertEqual(json.loads(analysis.stdout)["schema_version"], "2")
+            self.assertEqual(analysis.stderr, "")
 
 
 if __name__ == "__main__":
