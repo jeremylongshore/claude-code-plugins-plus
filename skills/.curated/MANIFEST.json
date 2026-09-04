@@ -31585,6 +31585,9 @@
         "references/source-notes.md",
         "scripts/analyze_failover_readiness.py",
         "scripts/collect_snowflake_evidence.py",
+        "scripts/sql/replication-current.sql",
+        "scripts/sql/replication-dangling.sql",
+        "scripts/sql/replication-progress.sql",
         "scripts/sql/replication.sql",
         "scripts/test_analyze_failover_readiness.py"
       ]

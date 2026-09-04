@@ -60,7 +60,11 @@ SURFACES = {
             "SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_LOAD_HISTORY",
         ],
     ),
-    "replication": ("replication.sql", ["SNOWFLAKE.ACCOUNT_USAGE.REPLICATION_GROUP_REFRESH_HISTORY"]),
+    "replication": ("replication.sql", ["INFORMATION_SCHEMA.REPLICATION_GROUP_REFRESH_HISTORY_ALL"]),
+    "replication-progress": (
+        "replication-progress.sql",
+        ["INFORMATION_SCHEMA.REPLICATION_GROUP_REFRESH_PROGRESS_ALL"],
+    ),
 }
 SUBSURFACES = {
     "access-database-role-current": (
@@ -122,6 +126,12 @@ SUBSURFACES = {
     ),
     "pipeline-stream-current": ("pipeline-stream-current.sql", ["SHOW STREAMS IN ACCOUNT"], None),
     "pipeline-task-current": ("pipeline-task-current.sql", ["SHOW TASKS IN ACCOUNT"], None),
+    "replication-current": ("replication-current.sql", ["SHOW FAILOVER GROUPS"], None),
+    "replication-dangling": (
+        "replication-dangling.sql",
+        ["INFORMATION_SCHEMA.REPLICATION_GROUP_DANGLING_REFERENCES"],
+        "replication_group",
+    ),
 }
 FORBIDDEN_SQL = {
     "ALTER",
@@ -160,6 +170,7 @@ SELECTOR_MARKERS = {
     "pipe": "__PIPE_IDENTIFIER__",
     "data_quality_object": "__DATA_QUALITY_OBJECT_IDENTIFIER__",
     "data_quality_domain": "__DATA_QUALITY_DOMAIN__",
+    "replication_group": "__REPLICATION_GROUP_IDENTIFIER__",
 }
 WINDOW_SELECTOR_MARKERS = {
     "window_start": "__WINDOW_START_UTC__",
@@ -183,7 +194,10 @@ COST_WINDOW_SURFACES = {
 }
 PIPELINE_WINDOW_SURFACES = {"pipeline"}
 DATA_QUALITY_WINDOW_SURFACES = {"data-quality"}
-WINDOW_SURFACES = COST_WINDOW_SURFACES | PIPELINE_WINDOW_SURFACES | DATA_QUALITY_WINDOW_SURFACES
+REPLICATION_WINDOW_SURFACES = {"replication", "replication-progress"}
+WINDOW_SURFACES = (
+    COST_WINDOW_SURFACES | PIPELINE_WINDOW_SURFACES | DATA_QUALITY_WINDOW_SURFACES | REPLICATION_WINDOW_SURFACES
+)
 INTRINSIC_ROW_LIMITS = {
     "cost-resource-monitors": 10000,
     "pipeline-dynamic-table-current": 10000,
@@ -229,6 +243,10 @@ RECEIPT_EXPECTED_DATASETS = {
     "pipeline-pipe-status": ("execution_context", "pipe_status"),
     "pipeline-stream-current": ("current_streams", "execution_context"),
     "pipeline-task-current": ("current_tasks", "execution_context"),
+    "replication": ("execution_context", "replication_refresh_history"),
+    "replication-current": ("current_groups", "execution_context"),
+    "replication-dangling": ("dangling_references", "execution_context"),
+    "replication-progress": ("execution_context", "replication_progress"),
 }
 CAP_DATASET_BY_SURFACE = {
     "auth": "historical_users",
@@ -244,6 +262,8 @@ CAP_DATASET_BY_SURFACE = {
     "pipeline-pipe-current": "current_pipes",
     "pipeline-stream-current": "current_streams",
     "pipeline-task-current": "current_tasks",
+    "replication-current": "current_groups",
+    "replication-dangling": "dangling_references",
 }
 CAP_DATASETS_BY_SURFACE = {
     "cost": ("warehouse_metering", "query_attribution", "warehouse_load", "serverless_usage"),
@@ -252,6 +272,10 @@ CAP_DATASETS_BY_SURFACE = {
     "data-quality-expectations-current": ("current_expectations",),
     "data-quality-notification-current": ("notification_associations",),
     "pipeline": ("task_history", "dynamic_table_refresh_history", "copy_history"),
+    "replication": ("replication_refresh_history",),
+    "replication-current": ("current_groups",),
+    "replication-dangling": ("dangling_references",),
+    "replication-progress": ("replication_progress",),
 }
 RECEIPT_NON_CLAIMS = (
     "No Snowflake mutation was executed by the reviewed collector SQL.",
@@ -1581,6 +1605,10 @@ def validate_read_only_sql(sql: str) -> None:
     blocked = sorted(words & FORBIDDEN_SQL)
     if blocked:
         raise CollectionError(f"SQL contains forbidden mutation/session tokens: {', '.join(blocked)}")
+    system_functions = set(re.findall(r"\bSYSTEM\s*\$\s*([A-Z][A-Z0-9_]*)", cleaned.upper()))
+    unsupported_system_functions = sorted(system_functions - {"PIPE_STATUS"})
+    if unsupported_system_functions:
+        raise CollectionError("SQL contains an unreviewed SYSTEM$ function: " + ", ".join(unsupported_system_functions))
     statements = [part.strip() for part in cleaned.split(";") if part.strip()]
     if not statements:
         raise CollectionError("SQL file is empty")
@@ -1622,6 +1650,7 @@ def render_surface(
     pipe: str | None = None,
     data_quality_object: str | None = None,
     data_quality_domain: str | None = None,
+    replication_group: str | None = None,
     window_start: str | None = None,
     window_end: str | None = None,
 ) -> tuple[Path, str, str, list[str], dict[str, str]]:
@@ -1640,6 +1669,7 @@ def render_surface(
             "pipe": pipe,
             "data_quality_object": data_quality_object,
             "data_quality_domain": data_quality_domain,
+            "replication_group": replication_group,
         }.items()
         if value is not None
     }
@@ -1685,7 +1715,7 @@ def render_surface(
             raise CollectionError(
                 f"{selector_name} must be one validated {qualification} unquoted Snowflake identifier, not SQL or a fragment"
             )
-        selector[selector_name] = value
+        selector[selector_name] = value.upper() if selector_name == "replication_group" else value
 
     if surface in WINDOW_SURFACES:
         if window_start is None or window_end is None:
@@ -1709,6 +1739,8 @@ def render_surface(
                 if surface in PIPELINE_WINDOW_SURFACES
                 else "data-quality"
                 if surface in DATA_QUALITY_WINDOW_SURFACES
+                else "replication"
+                if surface in REPLICATION_WINDOW_SURFACES
                 else "cost"
             )
             raise CollectionError(f"{domain} collection windows cannot exceed seven days; partition longer audits")
@@ -1840,6 +1872,12 @@ def build_receipt(
                     "selected_object_key_sha256": object_key,
                     "selected_object_domain": object_domain,
                 }
+    if surface == "replication-dangling" and not error:
+        dangling_context = datasets.get("execution_context", [])
+        if len(dangling_context) == 1:
+            group_key = dangling_context[0].get("selected_group_key_sha256")
+            if isinstance(group_key, str) and re.fullmatch(r"[0-9a-f]{64}", group_key):
+                selector_binding = {"selected_group_key_sha256": group_key}
     receipt_rendered_sql = sql
     fingerprint_value: dict[str, str] | None = selector_binding or selector
     if surface == "pipeline-pipe-status":
@@ -1878,6 +1916,16 @@ def build_receipt(
             # template proof so the raw object selector is not dictionary-testable.
             receipt_rendered_sql = canonical_template
             fingerprint_value = None
+    if surface == "replication-dangling":
+        if selector_binding is not None:
+            receipt_rendered_sql = canonical_template.replace(
+                "__REPLICATION_GROUP_IDENTIFIER__",
+                f"__REPLICATION_GROUP_KEY_SHA256_{selector_binding['selected_group_key_sha256']}__",
+            )
+            fingerprint_value = selector_binding
+        else:
+            receipt_rendered_sql = canonical_template
+            fingerprint_value = None
     rendered_hash = f"sha256:{hashlib.sha256(receipt_rendered_sql.encode('utf-8')).hexdigest()}"
     selector_fingerprint = (
         f"sha256:{hashlib.sha256(canonical_json(fingerprint_value)).hexdigest()}" if fingerprint_value else None
@@ -1890,7 +1938,8 @@ def build_receipt(
     )
     receipt = {
         "schema_version": "2"
-        if surface == "query" or surface.startswith(("access", "auth", "cost", "data-quality", "pipeline"))
+        if surface == "query"
+        or surface.startswith(("access", "auth", "cost", "data-quality", "pipeline", "replication"))
         else "1",
         "surface": surface,
         "status": "error" if error else "collected",
@@ -1918,13 +1967,18 @@ def build_receipt(
         receipt["source_metadata"]["selector_values"] = dict(selector)
     if surface == "data-quality" and selector:
         receipt["source_metadata"]["selector_values"] = dict(selector)
+    if surface in REPLICATION_WINDOW_SURFACES and selector:
+        receipt["source_metadata"]["selector_values"] = dict(selector)
     if surface == "pipeline-pipe-status" and selector_binding:
         receipt["source_metadata"]["selector_binding"] = selector_binding
         receipt["source_metadata"]["rendered_sql_contract"] = "privacy-bound-selector-v1"
     if surface in DATA_QUALITY_SELECTOR_SURFACES and selector_binding:
         receipt["source_metadata"]["selector_binding"] = selector_binding
         receipt["source_metadata"]["rendered_sql_contract"] = "privacy-bound-selector-v1"
-    if surface.startswith(("cost", "data-quality", "pipeline")):
+    if surface == "replication-dangling" and selector_binding:
+        receipt["source_metadata"]["selector_binding"] = selector_binding
+        receipt["source_metadata"]["rendered_sql_contract"] = "privacy-bound-selector-v1"
+    if surface.startswith(("cost", "data-quality", "pipeline", "replication")):
         receipt["cap_scope"] = "per_dataset" if cap_datasets else "single_dataset_or_result"
         receipt["result_sha256"] = f"sha256:{hashlib.sha256(canonical_json(datasets)).hexdigest()}"
         receipt["connection_profile_sha256"] = (
@@ -1934,7 +1988,7 @@ def build_receipt(
         receipt["snowflake_query_id_status"] = "not_exposed_by_snow_cli_json_ext"
     else:
         receipt["connection_profile"] = connection
-    if surface.startswith(("access", "auth", "cost", "data-quality", "pipeline")):
+    if surface.startswith(("access", "auth", "cost", "data-quality", "pipeline", "replication")):
         receipt["collection_mode"] = collection_mode
         receipt["collection_started_at"] = effective_started_at
         receipt["collection_completed_at"] = effective_completed_at
@@ -1962,6 +2016,7 @@ def execute_surface(
     pipe: str | None = None,
     data_quality_object: str | None = None,
     data_quality_domain: str | None = None,
+    replication_group: str | None = None,
     window_start: str | None = None,
     window_end: str | None = None,
     runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
@@ -1978,6 +2033,7 @@ def execute_surface(
         pipe=pipe,
         data_quality_object=data_quality_object,
         data_quality_domain=data_quality_domain,
+        replication_group=replication_group,
         window_start=window_start,
         window_end=window_end,
     )
@@ -2140,6 +2196,10 @@ def main(argv: list[str] | None = None) -> int:
         choices=("TABLE", "VIEW"),
         help="Object domain for selector-scoped data-quality current surfaces",
     )
+    parser.add_argument(
+        "--replication-group",
+        help="One unquoted local replication/failover-group identifier for selector-scoped evidence",
+    )
     parser.add_argument("--window-start", help="Canonical UTC lower bound for bounded history surfaces")
     parser.add_argument("--window-end", help="Canonical UTC exclusive upper bound for bounded history surfaces")
     parser.add_argument("--validate-only", action="store_true", help="Validate the reviewed SQL and exit")
@@ -2155,6 +2215,7 @@ def main(argv: list[str] | None = None) -> int:
             pipe=args.pipe,
             data_quality_object=args.data_quality_object,
             data_quality_domain=args.data_quality_domain,
+            replication_group=args.replication_group,
             window_start=args.window_start,
             window_end=args.window_end,
         )
@@ -2163,9 +2224,9 @@ def main(argv: list[str] | None = None) -> int:
         if args.surface == "query" and (args.source_max_age_seconds is None or args.source_max_age_seconds <= 0):
             raise CollectionError("--source-max-age-seconds must be positive for the query surface")
         if args.input_json:
-            if args.surface.startswith(("access", "auth", "cost", "data-quality", "pipeline")):
+            if args.surface.startswith(("access", "auth", "cost", "data-quality", "pipeline", "replication")):
                 raise CollectionError(
-                    "offline normalization is diagnostic-only and is not accepted for access, authentication, cost, data-quality, or pipeline evidence; collect live so Snowflake execution context is bound to the result"
+                    "offline normalization is diagnostic-only and is not accepted for governed evidence; collect live so Snowflake execution context is bound to the result"
                 )
             raw = json.loads(args.input_json.read_text(encoding="utf-8"))
             receipt = build_receipt(
@@ -2195,6 +2256,7 @@ def main(argv: list[str] | None = None) -> int:
                 pipe=args.pipe,
                 data_quality_object=args.data_quality_object,
                 data_quality_domain=args.data_quality_domain,
+                replication_group=args.replication_group,
                 window_start=args.window_start,
                 window_end=args.window_end,
             )

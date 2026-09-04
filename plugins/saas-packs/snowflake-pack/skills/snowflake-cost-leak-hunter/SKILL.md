@@ -12,7 +12,7 @@ allowed-tools: Read, Write, Bash(python3:*)
 argument-hint: "[evidence-json-or-output-directory]"
 model: inherit
 effort: high
-version: 3.7.0
+version: 3.8.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

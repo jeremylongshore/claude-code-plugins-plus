@@ -869,7 +869,9 @@ class CollectorTests(unittest.TestCase):
                         "python3",
                         str(SCRIPT),
                         "--surface",
-                        "replication",
+                        "query",
+                        "--source-max-age-seconds",
+                        "900",
                         "--input-json",
                         str(source),
                         "--output",
@@ -908,7 +910,9 @@ class CollectorTests(unittest.TestCase):
                     "python3",
                     str(SCRIPT),
                     "--surface",
-                    "replication",
+                    "query",
+                    "--source-max-age-seconds",
+                    "900",
                     "--input-json",
                     str(safe_source),
                     "--output",
@@ -2113,6 +2117,108 @@ class CollectorTests(unittest.TestCase):
         self.assertEqual(receipt["dataset_row_counts"], {"execution_context": 0, "rows": 2})
         self.assertEqual(receipt["row_limit"], 10000)
         self.assertFalse(receipt["truncation_possible"])
+
+    def test_replication_surfaces_are_schema_2_live_only_and_bounded(self) -> None:
+        start, end = "2026-09-03T00:00:00Z", "2026-09-04T00:00:00Z"
+        cases = {
+            "replication": {"window_start": start, "window_end": end},
+            "replication-current": {},
+            "replication-progress": {"window_start": start, "window_end": end},
+            "replication-dangling": {"replication_group": "DR_GROUP"},
+        }
+        for surface, kwargs in cases.items():
+            path, template, rendered, sources, selector = MODULE.render_surface(surface, **kwargs)
+            data_name = next(name for name in MODULE.RECEIPT_EXPECTED_DATASETS[surface] if name != "execution_context")
+            context = {"observed_at": end}
+            if surface == "replication-dangling":
+                context["selected_group_key_sha256"] = "a" * 64
+            receipt = MODULE.build_receipt(
+                surface,
+                "readonly",
+                rendered,
+                sources,
+                raw=[
+                    {"EVIDENCE": {"_dataset": "execution_context", **context}},
+                    {"EVIDENCE": {"_dataset": data_name, "group_key_sha256": "b" * 64}},
+                ],
+                template_sql=template,
+                template_path=path,
+                selector=selector,
+                collected_at=end,
+                collection_mode="live-cli",
+            )
+            with self.subTest(surface=surface):
+                self.assertEqual(receipt["schema_version"], "2")
+                self.assertEqual(receipt["collection_mode"], "live-cli")
+                self.assertEqual(receipt["cap_scope"], "per_dataset")
+                self.assertEqual(receipt["row_limit"], 5000)
+                self.assertNotIn("connection_profile", receipt)
+                self.assertRegex(receipt["connection_profile_sha256"], r"^sha256:[0-9a-f]{64}$")
+
+    def test_replication_selector_and_window_validation_fail_closed(self) -> None:
+        with self.assertRaisesRegex(MODULE.CollectionError, "requires both window_start and window_end"):
+            MODULE.render_surface("replication")
+        with self.assertRaisesRegex(MODULE.CollectionError, "cannot exceed seven days"):
+            MODULE.render_surface(
+                "replication-progress",
+                window_start="2026-08-01T00:00:00Z",
+                window_end="2026-08-09T00:00:00Z",
+            )
+        for value in ("DR GROUP", "DR'; ALTER FAILOVER GROUP X PRIMARY;--", '"Quoted"', "A.B"):
+            with self.subTest(value=value), self.assertRaises(MODULE.CollectionError):
+                MODULE.render_surface("replication-dangling", replication_group=value)
+        _, template, rendered, _, selector = MODULE.render_surface("replication-dangling", replication_group="DR_GROUP")
+        self.assertNotEqual(template, rendered)
+        self.assertEqual(selector, {"replication_group": "DR_GROUP"})
+        _, _, lower_rendered, _, lower_selector = MODULE.render_surface(
+            "replication-dangling", replication_group="dr_group"
+        )
+        self.assertEqual(lower_selector, {"replication_group": "DR_GROUP"})
+        self.assertEqual(lower_rendered, rendered)
+        for surface in ("replication", "replication-progress"):
+            _, _, windowed, _, _ = MODULE.render_surface(
+                surface, window_start="2026-09-03T00:00:00Z", window_end="2026-09-04T00:00:00Z"
+            )
+            self.assertIn("START_TIME >= TO_TIMESTAMP_TZ('2026-09-03T00:00:00Z')", windowed)
+            self.assertIn("START_TIME < TO_TIMESTAMP_TZ('2026-09-04T00:00:00Z')", windowed)
+        _, _, current_sql, _, _ = MODULE.render_surface("replication-current")
+        self.assertIn('UPPER("account_name") = UPPER(CURRENT_ACCOUNT_NAME())', current_sql)
+
+    def test_replication_offline_normalization_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "saved.json"
+            source.write_text("[]", encoding="utf-8")
+            cases = {
+                "replication": ["--window-start", "2026-09-03T00:00:00Z", "--window-end", "2026-09-04T00:00:00Z"],
+                "replication-current": [],
+                "replication-progress": [
+                    "--window-start",
+                    "2026-09-03T00:00:00Z",
+                    "--window-end",
+                    "2026-09-04T00:00:00Z",
+                ],
+                "replication-dangling": ["--replication-group", "DR_GROUP"],
+            }
+            for surface, extra in cases.items():
+                completed = subprocess.run(
+                    ["python3", str(SCRIPT), "--surface", surface, "--input-json", str(source), *extra],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                with self.subTest(surface=surface):
+                    self.assertEqual(completed.returncode, 2)
+                    self.assertIn("offline normalization is diagnostic-only", completed.stderr)
+
+    def test_system_replication_control_functions_are_rejected(self) -> None:
+        for sql in (
+            "SELECT SYSTEM$SCHEDULE_ASYNC_REPLICATION_GROUP_REFRESH('DR')",
+            "SELECT SYSTEM$CANCEL_QUERY('abc')",
+            "SELECT SYSTEM$ABORT_SESSION('abc')",
+        ):
+            with self.subTest(sql=sql), self.assertRaisesRegex(MODULE.CollectionError, "unreviewed SYSTEM"):
+                MODULE.validate_read_only_sql(sql)
+        MODULE.validate_read_only_sql("SELECT SYSTEM$PIPE_STATUS('DB.SCHEMA.PIPE')")
 
 
 if __name__ == "__main__":

@@ -55,7 +55,12 @@ BUNDLES: dict[str, tuple[str, ...]] = {
         "data-quality-notification-current.sql",
     ),
     "snowflake-deploy-medic": ("query.sql",),
-    "snowflake-failover-readiness-drill": ("replication.sql",),
+    "snowflake-failover-readiness-drill": (
+        "replication.sql",
+        "replication-current.sql",
+        "replication-progress.sql",
+        "replication-dangling.sql",
+    ),
     "snowflake-pipeline-guardian": (
         "pipeline.sql",
         "pipeline-dynamic-table-current.sql",
@@ -312,6 +317,10 @@ def _validate_read_only_sql(sql: str, safe_start: set[str], forbidden_sql: set[s
     forbidden = sorted(set(tokens).intersection(forbidden_sql))
     if forbidden:
         raise ValueError(f"reviewed SQL contains forbidden statement tokens: {forbidden}")
+    system_functions = {match.upper() for match in re.findall(r"\bSYSTEM\s*\$\s*([A-Z][A-Z0-9_]*)", cleaned.upper())}
+    unsupported = sorted(system_functions - {"PIPE_STATUS"})
+    if unsupported:
+        raise ValueError(f"reviewed SQL contains unreviewed SYSTEM$ functions: {unsupported}")
 
 
 def _source_issues(root: Path) -> list[str]:
