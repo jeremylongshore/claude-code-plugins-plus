@@ -13341,7 +13341,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "3.6.0",
+      "version": "3.7.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -72150,7 +72150,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.6.0",
+      "version": "3.7.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72170,7 +72170,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.6.0",
+      "version": "3.7.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72182,19 +72182,19 @@
       "id": "snowflake-data-quality-sentinel",
       "slug": "snowflake-data-quality-sentinel",
       "name": "snowflake-data-quality-sentinel",
-      "description": "Assess Snowflake data metric function coverage and current quality evidence without reading customer rows. Use when expectations or anomaly monitoring may be violated, stale, suspended, incomplete, mis-scoped, or unavailable, or when an operator needs separate data-quality and monitoring verdicts. Trigger with \"Snowflake data quality\", \"DMF expectation\", \"expectation violation\", \"anomaly training\", \"data quality monitoring gap\", or \"stale DMF result\".",
+      "description": "Assess trusted Snowflake data metric function coverage and expectation evidence without reading customer rows. Use when evaluations, definitions, schedules, notifications, anomaly state, or monitoring coverage may be incomplete or unhealthy. Trigger with \"Snowflake data quality\", \"DMF expectation\", \"definition drift\", \"missing evaluation\", or \"notification gap\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.6.0",
+      "version": "3.7.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
-      "searchText": "snowflake-data-quality-sentinel assess snowflake data metric function coverage and current quality evidence without reading customer rows. use when expectations or anomaly monitoring may be violated, stale, suspended, incomplete, mis-scoped, or unavailable, or when an operator needs separate data-quality and monitoring verdicts. trigger with \"snowflake data quality\", \"dmf expectation\", \"expectation violation\", \"anomaly training\", \"data quality monitoring gap\", or \"stale dmf result\". saas-packs read bash(python3:*) "
+      "searchText": "snowflake-data-quality-sentinel assess trusted snowflake data metric function coverage and expectation evidence without reading customer rows. use when evaluations, definitions, schedules, notifications, anomaly state, or monitoring coverage may be incomplete or unhealthy. trigger with \"snowflake data quality\", \"dmf expectation\", \"definition drift\", \"missing evaluation\", or \"notification gap\". saas-packs read bash(python3:*) "
     },
     {
       "type": "skill",
@@ -72209,7 +72209,7 @@
         "Bash(terraform:plan*)"
       ],
       "compatibleWith": [],
-      "version": "3.6.0",
+      "version": "3.7.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72228,7 +72228,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.6.0",
+      "version": "3.7.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72247,7 +72247,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.6.0",
+      "version": "3.7.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72267,7 +72267,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.6.0",
+      "version": "3.7.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72286,7 +72286,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.6.0",
+      "version": "3.7.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
