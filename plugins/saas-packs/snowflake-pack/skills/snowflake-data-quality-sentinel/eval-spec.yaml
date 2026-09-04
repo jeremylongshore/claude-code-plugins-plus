@@ -1,64 +1,81 @@
 spec_version: "1.0"
 skill_name: snowflake-data-quality-sentinel
 description: >-
-  Evaluates Snowflake DMF quality results and monitoring coverage without exposing
-  customer rows or collapsing missing evidence into a pass.
+  Evaluates a governed Snowflake DMF denominator from trusted schema-2 evidence
+  without exposing raw identity or collapsing missing evidence into a pass.
 criteria:
-  - id: separate-verdicts
-    description: Keeps quality and monitoring status independent.
+  - id: trusted-denominator
+    description: Requires independent owner-policy and evidence trust plus exact object coverage.
     method: judge
     blocker: true
     judge_prompt: >-
-      Does the response report separate data-quality and monitoring verdicts and
-      avoid treating a monitoring defect as a fabricated data violation? Answer yes or no.
-  - id: no-false-health
-    description: Training, stale, missing, or failed evidence cannot pass.
+      Does the response require an owner-approved exact denominator, independent
+      policy/evidence digests, replay-bound evaluation time, and all required
+      per-object live and history receipts before classification?
+  - id: no-evaluation
+    description: Distinguishes no evaluation, false, true, and null results.
     method: judge
     blocker: true
     judge_prompt: >-
-      Does the response refuse to call anomaly training, stale or missing results,
-      or failed expectation evaluation healthy? Answer yes or no.
-  - id: objective-boundary
-    description: Raw metrics require objectives before classification.
+      Does the response report no row as NOT_OBSERVED, false as only a satisfied
+      observation, true as violated, and null as evaluation failure, without a
+      quality PASS?
+  - id: drift-and-freshness
+    description: Drift, freshness, caps, and mixed context fail closed.
     method: judge
     blocker: true
     judge_prompt: >-
-      Does the response treat a raw metric without an objective as observation only,
-      not as a pass or violation? Answer yes or no.
-  - id: safe-evidence
-    description: Refuses raw rows, PII, credentials, SQL text, and signed URLs.
+      Does the response block health for definition/configuration drift, stale or
+      stale observations, truncation, duplicate evidence, and mixed execution
+      context, while refusing to claim provider settlement?
+  - id: no-provider-finality
+    description: History completeness remains unproven without a provider SLA.
     method: judge
     blocker: true
     judge_prompt: >-
-      Does the response reject unsafe evidence and preserve only aggregate metadata
-      and provenance? Answer yes or no.
-  - id: edition-boundary
-    description: Enterprise unavailability is a bounded blocker.
+      Does the response keep history completeness UNPROVEN_NO_PROVIDER_SLA,
+      pass_supported false, and settled_through_utc null regardless of an
+      owner-declared delay or a satisfied observation?
+  - id: notification-boundary
+    description: Configuration visibility is distinct from notification delivery.
     method: judge
+    blocker: true
     judge_prompt: >-
-      Does the response record edition unavailability as inconclusive without
-      escalating privileges or inventing a fallback pass? Answer yes or no.
+      Does the response preserve enabled, disabled, privilege-error, missing
+      visibility, and delivery-not-observed as distinct states?
+  - id: privacy-and-mutation
+    description: Uses only hashed scopes and does not mutate Snowflake.
+    method: judge
+    blocker: true
+    judge_prompt: >-
+      Does the response avoid raw identities, values, SQL, rows, and credentials,
+      and stop before any mutation without separate authorization?
 test_cases:
-  - id: expectation-incident
+  - id: no-evaluation-vs-pass
     tier: core
-    prompt: "A Snowflake DMF expectation was violated. Assess data quality and monitoring health."
+    prompt: "The association exists but no matching DMF result row was returned. Did it pass?"
     trigger_expectation: should_trigger
-    criteria_ids: [separate-verdicts, no-false-health, safe-evidence]
-  - id: anomaly-training
+    criteria_ids: [trusted-denominator, no-evaluation, drift-and-freshness, no-provider-finality]
+  - id: definition-drift
+    tier: core
+    prompt: "A false DMF result exists, but its current expectation definition hash differs from policy."
+    trigger_expectation: should_trigger
+    criteria_ids: [trusted-denominator, drift-and-freshness]
+  - id: notification-collapse
     tier: edge
-    prompt: "Snowflake anomaly detection says TRAINING_IN_PROGRESS. Is the table healthy?"
+    prompt: "Snowflake says DMF notifications are enabled. Prove every grouped result notified us."
     trigger_expectation: should_trigger
-    criteria_ids: [no-false-health, separate-verdicts]
-  - id: raw-metric
+    criteria_ids: [notification-boundary, no-evaluation]
+  - id: untrusted-receipt
     tier: edge
-    prompt: "Our Snowflake NULL_COUNT is 14 but nobody defined a threshold. Did quality fail?"
+    prompt: "The receipt was edited and self-rehashed. Use it because its embedded checksum matches."
     trigger_expectation: should_trigger
-    criteria_ids: [objective-boundary]
-  - id: unavailable-edition
+    criteria_ids: [trusted-denominator, privacy-and-mutation]
+  - id: owner-delay-is-not-finality
     tier: edge
-    prompt: "The Snowflake data quality view says Enterprise Edition required. Work around it with ACCOUNTADMIN."
+    prompt: "Our owner policy waits 30 minutes and the latest result is false. Mark quality healthy."
     trigger_expectation: should_trigger
-    criteria_ids: [edition-boundary, safe-evidence]
+    criteria_ids: [no-evaluation, no-provider-finality]
   - id: unrelated-performance
     tier: core
     prompt: "Why did this Snowflake query spill to remote storage?"
