@@ -1,841 +1,1278 @@
 #!/usr/bin/env python3
-"""Deterministically assess normalized Snowflake data-quality evidence.
-
-The analyzer is connector- and model-neutral. It consumes metadata only, never
-connects to Snowflake, and treats findings as data rather than process failures.
-Exit code 2 is reserved for invalid or unsafe input.
-"""
+"""Evaluate trusted schema-2 Snowflake data-quality evidence without mutation."""
 
 from __future__ import annotations
 
 import argparse
 import hashlib
-import ipaddress
 import json
 import re
 import sys
-from collections import Counter
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-
-VERSION = "1.0.0"
-STATUS_ORDER = {
-    "FAIL": 0,
-    "DEGRADED": 1,
-    "INCONCLUSIVE": 2,
-    "PASS": 3,
-    "NO_REQUIRED_CHECKS": 4,
-}
-SUPPORTED_OBJECT_TYPES = {"TABLE", "VIEW"}
-TOP_LEVEL_KEYS = {
-    "metadata",
-    "requirements",
-    "associations",
-    "measurements",
-    "source_metadata",
-}
-PROHIBITED_KEY_FRAGMENTS = (
-    "password",
-    "passphrase",
-    "privatekey",
-    "secret",
-    "token",
-    "apikey",
-    "authorization",
-    "credential",
-    "querytext",
-    "sqltext",
-    "sqlstatement",
-    "presignedurl",
-    "rawfailedrow",
-    "failedrow",
-    "rejectedrow",
-    "rawpayload",
-    "rowdata",
-    "firstname",
-    "lastname",
-    "email",
-    "phone",
-    "socialsecurity",
-    "dateofbirth",
-    "clientip",
-    "ipaddress",
-)
-EMAIL_RE = re.compile(r"(?i)(?<![\w.+-])[\w.+-]+@[a-z0-9.-]+\.[a-z]{2,}(?![\w.-])")
-SSN_RE = re.compile(r"(?<!\d)\d{3}-\d{2}-\d{4}(?!\d)")
-BEARER_RE = re.compile(r"(?i)\bbearer\s+[a-z0-9._~+/=-]{8,}")
-PRIVATE_KEY_RE = re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")
+VERSION = "2.1.0"
+SQL_DIR = Path(__file__).resolve().parent / "sql"
 SHA256_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
-IDENTIFIER_RE = re.compile(r"^[A-Za-z0-9_$.-]{1,255}$")
+HEX64_RE = re.compile(r"^[0-9a-f]{64}$")
+UTC_SELECTOR_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$")
+
+RECEIPT_NON_CLAIMS = [
+    "No Snowflake mutation was executed by the reviewed collector SQL.",
+    "Missing rows or permission-blocked views do not prove health.",
+    "Account Usage evidence can lag and must not be treated as real-time state.",
+    "The selected domain skill must evaluate freshness and completeness.",
+    "A row count at the reviewed SQL limit may indicate truncated evidence.",
+    "The embedded receipt SHA-256 is a self-checksum, not proof of origin or authenticity.",
+    "The collector does not attest to operations performed elsewhere in the surrounding session or workflow.",
+]
+
+RECEIPT_CONTRACTS = {
+    "data-quality": {
+        "template": "data-quality.sql",
+        "sources": ["SNOWFLAKE.LOCAL.DATA_QUALITY_MONITORING_EXPECTATION_STATUS"],
+        "datasets": {"execution_context", "expectation_history"},
+        "cap_datasets": {"expectation_history"},
+        "row_limit": 5000,
+        "selector": {"window_start": True, "window_end": True},
+    },
+    "data-quality-associations-current": {
+        "template": "data-quality-associations-current.sql",
+        "sources": ["INFORMATION_SCHEMA.DATA_METRIC_FUNCTION_REFERENCES"],
+        "datasets": {"execution_context", "current_associations"},
+        "cap_datasets": {"current_associations"},
+        "row_limit": 5000,
+        "selector": {"data_quality_object": True, "data_quality_domain": True},
+    },
+    "data-quality-expectations-current": {
+        "template": "data-quality-expectations-current.sql",
+        "sources": ["INFORMATION_SCHEMA.DATA_METRIC_FUNCTION_EXPECTATIONS"],
+        "datasets": {"execution_context", "current_expectations"},
+        "cap_datasets": {"current_expectations"},
+        "row_limit": 5000,
+        "selector": {"data_quality_object": True, "data_quality_domain": True},
+    },
+    "data-quality-notification-current": {
+        "template": "data-quality-notification-current.sql",
+        "sources": ["INFORMATION_SCHEMA.DATA_METRIC_FUNCTION_REFERENCES"],
+        "datasets": {"execution_context", "notification_associations"},
+        "cap_datasets": {"notification_associations"},
+        "row_limit": 5000,
+        "selector": {"data_quality_object": True, "data_quality_domain": True},
+    },
+}
+REQUIRED_SINGLETON_SURFACES = {
+    "data-quality",
+}
+SELECTOR_BOUND_SURFACES = {
+    "data-quality-associations-current",
+    "data-quality-expectations-current",
+    "data-quality-notification-current",
+}
+POLICY_FIELDS = {
+    "schema_version",
+    "expected_requirement_count",
+    "analysis_as_of_utc",
+    "history_assumption_delay_seconds",
+    "history_assumption_status",
+    "requirements",
+}
+REQUIREMENT_FIELDS = {
+    "requirement_key_sha256",
+    "object_key_sha256",
+    "association_key_sha256",
+    "metric_key_sha256",
+    "expectation_key_sha256",
+    "definition_sha256",
+    "schedule_sha256",
+    "expected_execution_role_sha256",
+    "group_definition_sha256",
+    "schedule_mode",
+    "max_result_age_seconds",
+    "notification_required",
+    "objective_mode",
+    "object_domain",
+    "filter_sha256",
+    "expected_group_limit",
+}
+RECEIPT_FIELDS = {
+    "schema_version",
+    "surface",
+    "status",
+    "collected_at",
+    "sql_sha256",
+    "template_sha256",
+    "rendered_sql_sha256",
+    "selector_fingerprint",
+    "source_metadata",
+    "source_views",
+    "row_count",
+    "row_limit",
+    "cap_scope",
+    "truncation_possible",
+    "dataset_row_counts",
+    "expected_datasets",
+    "datasets",
+    "errors",
+    "non_claims",
+    "result_sha256",
+    "connection_profile_sha256",
+    "snowflake_query_id",
+    "snowflake_query_id_status",
+    "collection_mode",
+    "collection_started_at",
+    "collection_completed_at",
+    "receipt_sha256",
+}
+COMMON_CONTEXT_FIELDS = {
+    "observed_at",
+    "organization_name_sha256",
+    "account_identifier_sha256",
+    "collector_user_sha256",
+    "primary_role_sha256",
+    "primary_role_type",
+    "secondary_roles_sha256",
+    "timezone",
+}
+HISTORY_CONTEXT_FIELDS = COMMON_CONTEXT_FIELDS | {
+    "window_start_utc",
+    "window_end_utc",
+    "window_semantics",
+    "per_dataset_row_limit",
+    "provider_latency_documented",
+    "settlement_policy_status",
+}
+SELECTOR_CONTEXT_FIELDS = COMMON_CONTEXT_FIELDS | {
+    "source_row_count",
+    "source_row_limit",
+    "truncation_possible",
+    "selected_object_key_sha256",
+    "selected_object_domain",
+}
+DATASET_FIELDS = {
+    "expectation_history": {
+        "object_key_sha256",
+        "association_key_sha256",
+        "metric_key_sha256",
+        "expectation_key_sha256",
+        "definition_sha256",
+        "scheduled_time",
+        "change_commit_time",
+        "measurement_time",
+        "expectation_violated",
+    },
+    "current_associations": {
+        "object_key_sha256",
+        "association_key_sha256",
+        "metric_key_sha256",
+        "object_domain",
+        "schedule_sha256",
+        "schedule_status",
+        "execution_role_sha256",
+        "association_level",
+        "filter_sha256",
+        "group_definition_sha256",
+        "group_limit",
+        "anomaly_status",
+        "anomaly_sensitivity",
+    },
+    "current_expectations": {
+        "object_key_sha256",
+        "association_key_sha256",
+        "metric_key_sha256",
+        "expectation_key_sha256",
+        "definition_sha256",
+    },
+    "notification_associations": {
+        "object_key_sha256",
+        "association_key_sha256",
+        "metric_key_sha256",
+        "object_domain",
+        "notification_status",
+    },
+}
+NULLABLE_HASH_FIELDS = {"execution_role_sha256", "filter_sha256", "group_definition_sha256"}
+TIMESTAMP_FIELDS = {"scheduled_time", "change_commit_time", "measurement_time"}
+ENUM_FIELDS = {
+    "object_domain": {"TABLE", "VIEW", "PROVIDER_OTHER"},
+    "schedule_status": {
+        "STARTED",
+        "STARTED_AND_PENDING_SCHEDULE_UPDATE",
+        "SUSPENDED",
+        "SUSPENDED_TABLE_DOES_NOT_EXIST_OR_NOT_AUTHORIZED",
+        "SUSPENDED_DATA_METRIC_FUNCTION_DOES_NOT_EXIST_OR_NOT_AUTHORIZED",
+        "SUSPENDED_TABLE_COLUMN_DOES_NOT_EXIST_OR_NOT_AUTHORIZED",
+        "SUSPENDED_INSUFFICIENT_PRIVILEGE_TO_EXECUTE_DATA_METRIC_FUNCTION",
+        "SUSPENDED_ACTIVE_EVENT_TABLE_DOES_NOT_EXIST_OR_NOT_AUTHORIZED",
+        "PROVIDER_OTHER",
+    },
+    "association_level": {"TABLE", "SCHEMA", "PROVIDER_OTHER"},
+    "anomaly_status": {"NOT_CONFIGURED", "TRAINING_IN_PROGRESS", "PROVIDER_OTHER"},
+    "anomaly_sensitivity": {"LOW", "MEDIUM", "HIGH", "NOT_CONFIGURED", "PROVIDER_OTHER"},
+    "notification_status": {"ENABLED", "DISABLED", "ERROR_INSUFFICIENT_PRIVILEGE", "NOT_CONFIGURED", "PROVIDER_OTHER"},
+}
+UNIQUE_KEYS = {
+    "expectation_history": ("association_key_sha256", "expectation_key_sha256", "measurement_time"),
+    "current_associations": ("association_key_sha256",),
+    "current_expectations": ("association_key_sha256", "expectation_key_sha256"),
+    "notification_associations": ("association_key_sha256",),
+}
 
 
 class EvidenceError(ValueError):
-    """Raised when evidence cannot be assessed safely."""
+    """Raised for an invalid trusted wrapper or policy."""
 
 
 def canonical_json(value: Any) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
 
 
-def _normalized_key(value: object) -> str:
-    return re.sub(r"[^a-z0-9]", "", str(value).casefold())
+def digest(value: Any) -> str:
+    return f"sha256:{hashlib.sha256(canonical_json(value)).hexdigest()}"
 
 
-def _looks_like_ip(value: str) -> bool:
-    try:
-        ipaddress.ip_address(value.strip())
-    except ValueError:
-        return False
-    return True
+def canonical_input_digest(data: dict[str, Any]) -> str:
+    if not isinstance(data, dict):
+        raise EvidenceError("invalid input")
+    return digest({"schema_version": data.get("schema_version"), "collector_receipts": data.get("collector_receipts")})
 
 
-def reject_sensitive_data(value: Any, path: str = "input") -> None:
-    """Reject secrets, PII, SQL text, row payloads, and signed URLs."""
-    if isinstance(value, dict):
-        for key, child in value.items():
-            normalized = _normalized_key(key)
-            if any(fragment in normalized for fragment in PROHIBITED_KEY_FRAGMENTS):
-                raise EvidenceError(f"prohibited field is not accepted: {path}.{key}")
-            reject_sensitive_data(child, f"{path}.{key}")
-        return
-    if isinstance(value, list):
-        for index, child in enumerate(value):
-            reject_sensitive_data(child, f"{path}[{index}]")
-        return
-    if not isinstance(value, str):
-        return
-    if len(value) > 4096:
-        raise EvidenceError(f"string exceeds 4096 characters: {path}")
-    if EMAIL_RE.search(value) or SSN_RE.search(value) or _looks_like_ip(value):
-        raise EvidenceError(f"PII-like value is not accepted: {path}")
-    if BEARER_RE.search(value) or PRIVATE_KEY_RE.search(value):
-        raise EvidenceError(f"credential-like value is not accepted: {path}")
-    stripped = value.strip()
-    lowered = stripped.casefold()
-    if lowered.startswith(("http://", "https://")):
-        if (
-            re.search(r"://[^/@\s]+@", stripped)
-            or "?" in stripped
-            or "#" in stripped
-            or any(
-                marker in value.casefold() for marker in ("x-amz-signature", "x-goog-signature", "sig=", "signature=")
-            )
-        ):
-            raise EvidenceError(f"presigned or credential-bearing URL is not accepted: {path}")
+def canonical_policy_digest(data: dict[str, Any]) -> str:
+    if not isinstance(data, dict) or not isinstance(data.get("policy"), dict):
+        raise EvidenceError("invalid policy")
+    return canonical_policy_document_digest(data["policy"])
 
 
-def parse_time(value: Any, path: str) -> datetime:
-    if not isinstance(value, str) or not value.strip():
-        raise EvidenceError(f"{path} must be an ISO-8601 timestamp")
+def canonical_policy_document_digest(policy: Any) -> str:
+    validate_policy(policy)
+    return digest(policy)
+
+
+def parse_time(value: Any) -> datetime | None:
+    if not isinstance(value, str) or not value:
+        return None
     try:
         parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
-    except ValueError as exc:
-        raise EvidenceError(f"{path} must be an ISO-8601 timestamp") from exc
+    except ValueError:
+        return None
     if parsed.tzinfo is None:
-        raise EvidenceError(f"{path} must include a timezone")
+        return None
     return parsed.astimezone(timezone.utc)
 
 
-def text(value: Any, path: str, *, required: bool = True) -> str:
-    if value is None and not required:
-        return ""
-    if not isinstance(value, str) or (required and not value.strip()):
-        raise EvidenceError(f"{path} must be a non-empty string")
-    result = value.strip()
-    if len(result) > 255 or "\n" in result or "\r" in result:
-        raise EvidenceError(f"{path} contains unsafe text")
-    return result
+def valid_hex(value: Any, *, nullable: bool = False) -> bool:
+    return (value is None and nullable) or (isinstance(value, str) and HEX64_RE.fullmatch(value) is not None)
 
 
-def identifier(value: Any, path: str) -> str:
-    result = text(value, path)
-    if not IDENTIFIER_RE.fullmatch(result):
-        raise EvidenceError(f"{path} must be a bounded Snowflake identifier")
-    return result.upper()
+def validate_policy(policy: Any) -> list[dict[str, Any]]:
+    if not isinstance(policy, dict) or set(policy) != POLICY_FIELDS or policy.get("schema_version") != "1":
+        raise EvidenceError("invalid policy")
+    requirements = policy.get("requirements")
+    count = policy.get("expected_requirement_count")
+    assumption_delay = policy.get("history_assumption_delay_seconds")
+    if not isinstance(requirements, list) or type(count) is not int or count < 0 or count != len(requirements):
+        raise EvidenceError("invalid policy")
+    if parse_time(policy.get("analysis_as_of_utc")) is None:
+        raise EvidenceError("invalid policy")
+    if policy.get("history_assumption_status") != "OWNER_DECLARED_NOT_PROVIDER_GUARANTEED":
+        raise EvidenceError("invalid policy")
+    if assumption_delay is not None and (type(assumption_delay) is not int or not 0 <= assumption_delay <= 604800):
+        raise EvidenceError("invalid policy")
+    seen_requirements: set[str] = set()
+    seen_expectations: set[tuple[str, str]] = set()
+    association_identities: dict[str, tuple[Any, ...]] = {}
+    normalized: list[dict[str, Any]] = []
+    for row in requirements:
+        if not isinstance(row, dict) or set(row) != REQUIREMENT_FIELDS:
+            raise EvidenceError("invalid policy")
+        for field in (
+            "requirement_key_sha256",
+            "object_key_sha256",
+            "association_key_sha256",
+            "metric_key_sha256",
+            "expectation_key_sha256",
+            "definition_sha256",
+            "schedule_sha256",
+        ):
+            if not valid_hex(row.get(field)):
+                raise EvidenceError("invalid policy")
+        for field in ("expected_execution_role_sha256", "group_definition_sha256", "filter_sha256"):
+            if not valid_hex(row.get(field), nullable=True):
+                raise EvidenceError("invalid policy")
+        if row.get("schedule_mode") not in {"INTERVAL", "CRON", "TRIGGER_ON_CHANGES"}:
+            raise EvidenceError("invalid policy")
+        if row.get("objective_mode") not in {"EXPECTATION", "ANOMALY"}:
+            raise EvidenceError("invalid policy")
+        if row.get("object_domain") not in {"TABLE", "VIEW"}:
+            raise EvidenceError("invalid policy")
+        group_limit = row.get("expected_group_limit")
+        if group_limit is not None and (type(group_limit) is not int or not 1 <= group_limit <= 1000):
+            raise EvidenceError("invalid policy")
+        age = row.get("max_result_age_seconds")
+        if type(age) is not int or not 1 <= age <= 31_536_000 or type(row.get("notification_required")) is not bool:
+            raise EvidenceError("invalid policy")
+        expectation_key = (row["association_key_sha256"], row["expectation_key_sha256"])
+        if row["requirement_key_sha256"] in seen_requirements or expectation_key in seen_expectations:
+            raise EvidenceError("invalid policy")
+        association_identity = (
+            row["object_key_sha256"],
+            row["metric_key_sha256"],
+            row["schedule_sha256"],
+            row["expected_execution_role_sha256"],
+            row["group_definition_sha256"],
+            row["object_domain"],
+            row["filter_sha256"],
+            row["expected_group_limit"],
+        )
+        prior_identity = association_identities.setdefault(row["association_key_sha256"], association_identity)
+        if prior_identity != association_identity:
+            raise EvidenceError("invalid policy")
+        seen_requirements.add(row["requirement_key_sha256"])
+        seen_expectations.add(expectation_key)
+        normalized.append(dict(row))
+    return sorted(normalized, key=lambda item: item["requirement_key_sha256"])
 
 
-def boolean(value: Any, path: str, *, default: bool | None = None) -> bool | None:
-    if value is None and default is not None:
-        return default
-    if value is None:
-        return None
-    if type(value) is not bool:
-        raise EvidenceError(f"{path} must be a boolean or null")
-    return value
+def context_fields(surface: str) -> set[str]:
+    if surface == "data-quality":
+        return HISTORY_CONTEXT_FIELDS
+    return SELECTOR_CONTEXT_FIELDS
 
 
-def positive_integer(value: Any, path: str, *, default: int | None = None) -> int:
-    if value is None and default is not None:
-        return default
-    if type(value) is not int or value <= 0 or value > 31_536_000:
-        raise EvidenceError(f"{path} must be an integer from 1 to 31536000")
-    return value
+def row_issues(dataset: str, row: Any) -> list[str]:
+    if not isinstance(row, dict) or set(row) != DATASET_FIELDS[dataset]:
+        return ["row_schema"]
+    issues: list[str] = []
+    for field, value in row.items():
+        if field.endswith("_sha256"):
+            if not valid_hex(value, nullable=field in NULLABLE_HASH_FIELDS):
+                issues.append("row_hash")
+        elif field in TIMESTAMP_FIELDS:
+            if value is not None and parse_time(value) is None:
+                issues.append("row_timestamp")
+        elif field == "expectation_violated":
+            if value is not None and type(value) is not bool:
+                issues.append("row_boolean")
+        elif field == "group_limit":
+            if value is not None and (type(value) is not int or not 1 <= value <= 1000):
+                issues.append("row_number")
+        elif field in ENUM_FIELDS:
+            if value not in ENUM_FIELDS[field]:
+                issues.append("row_enum")
+        elif value is not None:
+            issues.append("row_unreviewed_text")
+    return issues
 
 
-def string_list(value: Any, path: str) -> list[str]:
-    if value is None:
-        return []
-    if not isinstance(value, list) or any(not isinstance(item, str) for item in value):
-        raise EvidenceError(f"{path} must be an array of strings")
-    result = [text(item, f"{path}[]").upper() for item in value]
-    if len(result) > 500:
-        raise EvidenceError(f"{path} exceeds 500 entries")
-    return sorted(set(result))
-
-
-def object_identity(value: Any, path: str) -> dict[str, str]:
-    if not isinstance(value, dict):
-        raise EvidenceError(f"{path} must be an object")
-    required = {"database", "schema", "name", "type"}
-    if set(value) != required:
-        raise EvidenceError(f"{path} must contain exactly {sorted(required)}")
-    return {
-        "database": identifier(value["database"], f"{path}.database"),
-        "schema": identifier(value["schema"], f"{path}.schema"),
-        "name": identifier(value["name"], f"{path}.name"),
-        "type": identifier(value["type"], f"{path}.type"),
-    }
-
-
-def metric_identity(value: Any, path: str) -> dict[str, str]:
-    if not isinstance(value, dict):
-        raise EvidenceError(f"{path} must be an object")
-    required = {"database", "schema", "name"}
-    if set(value) != required:
-        raise EvidenceError(f"{path} must contain exactly {sorted(required)}")
-    return {key: identifier(value[key], f"{path}.{key}") for key in sorted(required)}
-
-
-def normalize_document(data: Any) -> dict[str, Any]:
-    if not isinstance(data, dict):
-        raise EvidenceError("input must be an object")
-    reject_sensitive_data(data)
-    unknown = set(data) - TOP_LEVEL_KEYS
-    missing = TOP_LEVEL_KEYS - set(data)
-    if unknown or missing:
-        raise EvidenceError(f"top-level keys must be exactly {sorted(TOP_LEVEL_KEYS)}")
-
-    metadata = data["metadata"]
-    if not isinstance(metadata, dict):
-        raise EvidenceError("metadata must be an object")
-    expected_metadata = {
-        "schema_version",
-        "surface",
-        "collected_at",
-        "window_start",
-        "window_end",
-        "collector_receipt_sha256",
-    }
-    if set(metadata) != expected_metadata:
-        raise EvidenceError(f"metadata keys must be exactly {sorted(expected_metadata)}")
-    collected_at = parse_time(metadata["collected_at"], "metadata.collected_at")
-    window_start = parse_time(metadata["window_start"], "metadata.window_start")
-    window_end = parse_time(metadata["window_end"], "metadata.window_end")
-    if collected_at > datetime.now(timezone.utc):
-        raise EvidenceError("metadata.collected_at cannot be in the future")
-    if window_start >= window_end or window_end > collected_at:
-        raise EvidenceError("metadata window must end after start and not after collected_at")
-    receipt_hash = text(metadata["collector_receipt_sha256"], "metadata.collector_receipt_sha256")
-    if not SHA256_RE.fullmatch(receipt_hash):
-        raise EvidenceError("metadata.collector_receipt_sha256 must be sha256:<64 lowercase hex>")
-    normalized_metadata = {
-        "schema_version": text(metadata["schema_version"], "metadata.schema_version"),
-        "surface": text(metadata["surface"], "metadata.surface"),
-        "collected_at": collected_at.isoformat().replace("+00:00", "Z"),
-        "window_start": window_start.isoformat().replace("+00:00", "Z"),
-        "window_end": window_end.isoformat().replace("+00:00", "Z"),
-        "collector_receipt_sha256": receipt_hash,
-    }
-    if normalized_metadata["surface"] != "data-quality":
-        raise EvidenceError("metadata.surface must be data-quality")
-
-    requirements = data["requirements"]
-    associations = data["associations"]
-    measurements = data["measurements"]
-    sources = data["source_metadata"]
-    for name, rows in (
-        ("requirements", requirements),
-        ("associations", associations),
-        ("measurements", measurements),
-        ("source_metadata", sources),
+def receipt_issues(receipt: Any, evaluated_at: datetime) -> list[str]:
+    if not isinstance(receipt, dict):
+        return ["receipt_schema"]
+    surface = receipt.get("surface")
+    contract = RECEIPT_CONTRACTS.get(surface)
+    if contract is None:
+        return ["receipt_surface"]
+    issues: list[str] = []
+    if set(receipt) != RECEIPT_FIELDS or receipt.get("schema_version") != "2":
+        issues.append("receipt_schema")
+    if receipt.get("status") != "collected" or receipt.get("errors") != []:
+        issues.append("receipt_status")
+    if receipt.get("collection_mode") != "live-cli":
+        issues.append("receipt_mode")
+    if not isinstance(receipt.get("connection_profile_sha256"), str) or not SHA256_RE.fullmatch(
+        receipt["connection_profile_sha256"]
     ):
-        if not isinstance(rows, list) or len(rows) > 10_000:
-            raise EvidenceError(f"{name} must be an array with at most 10000 entries")
-        if any(not isinstance(row, dict) for row in rows):
-            raise EvidenceError(f"{name} entries must be objects")
+        issues.append("receipt_connection")
+    if (
+        receipt.get("snowflake_query_id") is not None
+        or receipt.get("snowflake_query_id_status") != "not_exposed_by_snow_cli_json_ext"
+    ):
+        issues.append("receipt_query_id")
+    if receipt.get("non_claims") != RECEIPT_NON_CLAIMS:
+        issues.append("receipt_non_claims")
 
-    normalized_requirements: list[dict[str, Any]] = []
-    seen_requirement_ids: set[str] = set()
-    requirement_keys = {
-        "id",
-        "object",
-        "metric",
-        "objective",
-        "max_result_age_seconds",
-        "expected_schedule",
-        "notification_required",
-        "expected_execution_role",
-        "required_groups",
-    }
-    for index, row in enumerate(requirements):
-        if set(row) != requirement_keys:
-            raise EvidenceError(f"requirements[{index}] keys must be exactly {sorted(requirement_keys)}")
-        requirement_id = text(row["id"], f"requirements[{index}].id")
-        if requirement_id in seen_requirement_ids:
-            raise EvidenceError(f"duplicate requirement id: {requirement_id}")
-        seen_requirement_ids.add(requirement_id)
-        objective = row["objective"]
-        if objective is not None:
-            if not isinstance(objective, dict) or set(objective) != {"mode", "name"}:
-                raise EvidenceError(f"requirements[{index}].objective must be null or mode/name")
-            mode = text(objective["mode"], f"requirements[{index}].objective.mode").lower()
-            if mode not in {"expectation", "anomaly"}:
-                raise EvidenceError(f"requirements[{index}].objective.mode is unsupported")
-            objective = {
-                "mode": mode,
-                "name": text(objective["name"], f"requirements[{index}].objective.name"),
-            }
-        expected_role = text(
-            row["expected_execution_role"],
-            f"requirements[{index}].expected_execution_role",
-            required=False,
-        )
-        normalized_requirements.append(
-            {
-                "id": requirement_id,
-                "object": object_identity(row["object"], f"requirements[{index}].object"),
-                "metric": metric_identity(row["metric"], f"requirements[{index}].metric"),
-                "objective": objective,
-                "max_result_age_seconds": positive_integer(
-                    row["max_result_age_seconds"],
-                    f"requirements[{index}].max_result_age_seconds",
-                ),
-                "expected_schedule": text(
-                    row["expected_schedule"],
-                    f"requirements[{index}].expected_schedule",
-                ).upper(),
-                "notification_required": boolean(
-                    row["notification_required"],
-                    f"requirements[{index}].notification_required",
-                    default=False,
-                ),
-                "expected_execution_role": expected_role.upper(),
-                "required_groups": string_list(row["required_groups"], f"requirements[{index}].required_groups"),
-            }
-        )
+    started = parse_time(receipt.get("collection_started_at"))
+    completed = parse_time(receipt.get("collection_completed_at"))
+    collected = parse_time(receipt.get("collected_at"))
+    if not started or not completed or not collected or not (started <= collected == completed <= evaluated_at):
+        issues.append("receipt_time")
+    elif completed - started > timedelta(seconds=130) or evaluated_at - completed > timedelta(minutes=15):
+        issues.append("receipt_stale")
 
-    association_keys = {
-        "requirement_id",
-        "reference_id",
-        "schedule",
-        "schedule_status",
-        "schedule_update_pending",
-        "notification_status",
-        "anomaly_status",
-        "execution_role",
-        "observed_groups",
-    }
-    normalized_associations: list[dict[str, Any]] = []
-    seen_association_requirements: set[str] = set()
-    seen_reference_ids: set[str] = set()
-    for index, row in enumerate(associations):
-        if set(row) != association_keys:
-            raise EvidenceError(f"associations[{index}] keys must be exactly {sorted(association_keys)}")
-        requirement_id = text(row["requirement_id"], f"associations[{index}].requirement_id")
-        reference_id = text(row["reference_id"], f"associations[{index}].reference_id")
-        if requirement_id in seen_association_requirements or reference_id in seen_reference_ids:
-            raise EvidenceError("association requirement_id and reference_id must be unique")
-        seen_association_requirements.add(requirement_id)
-        seen_reference_ids.add(reference_id)
-        normalized_associations.append(
-            {
-                "requirement_id": requirement_id,
-                "reference_id": reference_id,
-                "schedule": text(row["schedule"], f"associations[{index}].schedule").upper(),
-                "schedule_status": text(row["schedule_status"], f"associations[{index}].schedule_status").upper(),
-                "schedule_update_pending": boolean(
-                    row["schedule_update_pending"],
-                    f"associations[{index}].schedule_update_pending",
-                    default=False,
-                ),
-                "notification_status": text(
-                    row["notification_status"],
-                    f"associations[{index}].notification_status",
-                ).upper(),
-                "anomaly_status": text(row["anomaly_status"], f"associations[{index}].anomaly_status").upper(),
-                "execution_role": text(row["execution_role"], f"associations[{index}].execution_role").upper(),
-                "observed_groups": string_list(row["observed_groups"], f"associations[{index}].observed_groups"),
-            }
-        )
+    metadata = receipt.get("source_metadata")
+    allowed_metadata = {"template", "source_views", "selector"}
+    if surface == "data-quality":
+        allowed_metadata.add("selector_values")
+    if surface in SELECTOR_BOUND_SURFACES:
+        allowed_metadata |= {"selector_binding", "rendered_sql_contract"}
+    if not isinstance(metadata, dict) or set(metadata) != allowed_metadata:
+        issues.append("receipt_source_metadata")
+        metadata = {}
+    selector_contract = metadata.get("selector")
+    selector_contract_valid = (
+        isinstance(selector_contract, dict)
+        and set(selector_contract) == set(contract["selector"])
+        and all(type(value) is bool and value is True for value in selector_contract.values())
+    )
+    if (
+        receipt.get("source_views") != contract["sources"]
+        or metadata.get("source_views") != contract["sources"]
+        or metadata.get("template") != contract["template"]
+        or not selector_contract_valid
+    ):
+        issues.append("receipt_source_contract")
 
-    measurement_keys = {
-        "requirement_id",
-        "reference_id",
-        "measured_at",
-        "evaluation_status",
-        "expectation_name",
-        "expectation_violated",
-        "anomaly_detected",
-        "observed_value",
-        "observed_groups",
-    }
-    normalized_measurements: list[dict[str, Any]] = []
-    for index, row in enumerate(measurements):
-        if set(row) != measurement_keys:
-            raise EvidenceError(f"measurements[{index}] keys must be exactly {sorted(measurement_keys)}")
-        observed_value = row["observed_value"]
-        if isinstance(observed_value, (dict, list)):
-            raise EvidenceError(f"measurements[{index}].observed_value must be scalar")
-        measured_at = parse_time(row["measured_at"], f"measurements[{index}].measured_at")
-        normalized_measurements.append(
-            {
-                "requirement_id": text(row["requirement_id"], f"measurements[{index}].requirement_id"),
-                "reference_id": text(row["reference_id"], f"measurements[{index}].reference_id"),
-                "measured_at": measured_at.isoformat().replace("+00:00", "Z"),
-                "evaluation_status": text(
-                    row["evaluation_status"],
-                    f"measurements[{index}].evaluation_status",
-                ).upper(),
-                "expectation_name": text(
-                    row["expectation_name"],
-                    f"measurements[{index}].expectation_name",
-                    required=False,
-                ),
-                "expectation_violated": boolean(
-                    row["expectation_violated"],
-                    f"measurements[{index}].expectation_violated",
-                ),
-                "anomaly_detected": boolean(
-                    row["anomaly_detected"],
-                    f"measurements[{index}].anomaly_detected",
-                ),
-                "observed_value": observed_value,
-                "observed_groups": string_list(row["observed_groups"], f"measurements[{index}].observed_groups"),
-            }
-        )
+    sql_path = SQL_DIR / contract["template"]
+    expected_template_hash = (
+        f"sha256:{hashlib.sha256(sql_path.read_bytes()).hexdigest()}" if sql_path.is_file() else None
+    )
+    for field in ("sql_sha256", "template_sha256", "rendered_sql_sha256", "result_sha256", "receipt_sha256"):
+        if not isinstance(receipt.get(field), str) or not SHA256_RE.fullmatch(receipt[field]):
+            issues.append("receipt_hash")
+    if (
+        expected_template_hash is None
+        or receipt.get("sql_sha256") != expected_template_hash
+        or receipt.get("template_sha256") != expected_template_hash
+    ):
+        issues.append("receipt_template_hash")
 
-        if measured_at < window_start or measured_at > window_end:
-            raise EvidenceError(f"measurements[{index}].measured_at must fall within metadata.window_start/window_end")
+    datasets = receipt.get("datasets")
+    expected_datasets = contract["datasets"]
+    if (
+        not isinstance(datasets, dict)
+        or set(datasets) != expected_datasets
+        or any(not isinstance(rows, list) for rows in datasets.values())
+    ):
+        issues.append("receipt_datasets")
+        datasets = {}
+    if receipt.get("expected_datasets") != sorted(expected_datasets):
+        issues.append("receipt_expected_datasets")
+    expected_counts = {name: len(rows) for name, rows in datasets.items()}
+    reported_counts = receipt.get("dataset_row_counts")
+    counts_typed = isinstance(reported_counts, dict) and all(
+        type(value) is int and value >= 0 for value in reported_counts.values()
+    )
+    if (
+        not counts_typed
+        or reported_counts != expected_counts
+        or type(receipt.get("row_count")) is not int
+        or receipt.get("row_count") != sum(expected_counts.values())
+    ):
+        issues.append("receipt_counts")
+    if receipt.get("result_sha256") != digest(datasets):
+        issues.append("receipt_result_hash")
+    body = dict(receipt)
+    body.pop("receipt_sha256", None)
+    if receipt.get("receipt_sha256") != digest(body):
+        issues.append("receipt_self_hash")
+    if (
+        type(receipt.get("row_limit")) is not int
+        or receipt.get("row_limit") != contract["row_limit"]
+        or receipt.get("cap_scope") != "per_dataset"
+    ):
+        issues.append("receipt_cap")
+    emitted_count = sum(len(datasets.get(name, [])) for name in contract["cap_datasets"])
+    context_rows = datasets.get("execution_context", [])
+    cap_context = context_rows[0] if len(context_rows) == 1 and isinstance(context_rows[0], dict) else {}
+    source_count = cap_context.get("source_row_count")
+    if surface == "data-quality":
+        capped = emitted_count >= contract["row_limit"]
+    else:
+        capped = type(source_count) is int and source_count >= contract["row_limit"]
+    if (
+        type(receipt.get("truncation_possible")) is not bool
+        or receipt.get("truncation_possible") is not capped
+        or capped
+    ):
+        issues.append("receipt_truncated")
 
-    source_keys = {
-        "source",
-        "kind",
-        "status",
-        "collected_at",
-        "latest_record_at",
-        "max_latency_seconds",
-        "row_count",
-        "error_code",
-    }
-    normalized_sources: list[dict[str, Any]] = []
-    seen_sources: set[str] = set()
-    for index, row in enumerate(sources):
-        if set(row) != source_keys:
-            raise EvidenceError(f"source_metadata[{index}] keys must be exactly {sorted(source_keys)}")
-        source = text(row["source"], f"source_metadata[{index}].source")
-        if source in seen_sources:
-            raise EvidenceError(f"duplicate source metadata: {source}")
-        seen_sources.add(source)
-        latest = row["latest_record_at"]
-        normalized_sources.append(
-            {
-                "source": source,
-                "kind": text(row["kind"], f"source_metadata[{index}].kind").lower(),
-                "status": text(row["status"], f"source_metadata[{index}].status").lower(),
-                "collected_at": parse_time(
-                    row["collected_at"],
-                    f"source_metadata[{index}].collected_at",
+    contexts = datasets.get("execution_context", [])
+    context = contexts[0] if len(contexts) == 1 and isinstance(contexts[0], dict) else None
+    if context is None or set(context) != context_fields(surface):
+        issues.append("context_schema")
+        context = {}
+    for field in (
+        "organization_name_sha256",
+        "account_identifier_sha256",
+        "collector_user_sha256",
+        "primary_role_sha256",
+        "secondary_roles_sha256",
+    ):
+        if not valid_hex(context.get(field)):
+            issues.append("context_hash")
+    observed = parse_time(context.get("observed_at"))
+    if context.get("timezone") != "UTC" or context.get("primary_role_type") not in {"ROLE", "APPLICATION_INSTANCE"}:
+        issues.append("context_enum")
+    if (
+        not observed
+        or observed > evaluated_at
+        or evaluated_at - observed > timedelta(seconds=900)
+        or (started and completed and not started <= observed <= completed)
+    ):
+        issues.append("context_time")
+
+    if surface == "data-quality":
+        window_start = parse_time(context.get("window_start_utc"))
+        window_end = parse_time(context.get("window_end_utc"))
+        if (
+            not window_start
+            or not window_end
+            or not window_start < window_end
+            or window_end - window_start > timedelta(days=7)
+            or context.get("window_semantics") != "HALF_OPEN_UTC"
+            or type(context.get("per_dataset_row_limit")) is not int
+            or context.get("per_dataset_row_limit") != 5000
+            or type(context.get("provider_latency_documented")) is not bool
+            or context.get("provider_latency_documented") is not False
+            or context.get("settlement_policy_status") != "NOT_DECLARED"
+        ):
+            issues.append("history_context")
+        selector_values = metadata.get("selector_values")
+        if (
+            not isinstance(selector_values, dict)
+            or set(selector_values) != {"window_start", "window_end"}
+            or any(
+                not isinstance(value, str) or not UTC_SELECTOR_RE.fullmatch(value) for value in selector_values.values()
+            )
+            or parse_time(selector_values.get("window_start")) != window_start
+            or parse_time(selector_values.get("window_end")) != window_end
+        ):
+            issues.append("history_selector")
+        else:
+            if receipt.get("selector_fingerprint") != digest(selector_values):
+                issues.append("history_selector_hash")
+            if sql_path.is_file():
+                rendered = (
+                    sql_path.read_text(encoding="utf-8")
+                    .replace("__WINDOW_START_UTC__", selector_values["window_start"])
+                    .replace("__WINDOW_END_UTC__", selector_values["window_end"])
                 )
-                .isoformat()
-                .replace("+00:00", "Z"),
-                "latest_record_at": (
-                    parse_time(latest, f"source_metadata[{index}].latest_record_at").isoformat().replace("+00:00", "Z")
-                    if latest is not None
-                    else None
-                ),
-                "max_latency_seconds": positive_integer(
-                    row["max_latency_seconds"],
-                    f"source_metadata[{index}].max_latency_seconds",
-                ),
-                "row_count": row["row_count"],
-                "error_code": text(row["error_code"], f"source_metadata[{index}].error_code", required=False).upper(),
-            }
-        )
-        source_collected_at = parse_time(row["collected_at"], f"source_metadata[{index}].collected_at")
-        if source_collected_at < window_start:
-            raise EvidenceError(f"source_metadata[{index}].collected_at cannot precede metadata.window_start")
-        if source_collected_at > collected_at:
-            raise EvidenceError(f"source_metadata[{index}].collected_at cannot be after metadata.collected_at")
-        source_latest = normalized_sources[-1]["latest_record_at"]
-        if source_latest is not None:
-            source_latest_at = parse_time(source_latest, f"source_metadata[{index}].latest_record_at")
-            if source_latest_at < window_start or source_latest_at > window_end:
-                raise EvidenceError(
-                    f"source_metadata[{index}].latest_record_at must fall within metadata.window_start/window_end"
+                if receipt.get("rendered_sql_sha256") != f"sha256:{hashlib.sha256(rendered.encode()).hexdigest()}":
+                    issues.append("history_rendered_hash")
+        for row in datasets.get("expectation_history", []):
+            if isinstance(row, dict):
+                measured = parse_time(row.get("measurement_time"))
+                if not measured or not window_start or not window_end or not window_start <= measured < window_end:
+                    issues.append("history_event_time")
+    else:
+        selected = context.get("selected_object_key_sha256")
+        domain = context.get("selected_object_domain")
+        binding = {"selected_object_key_sha256": selected, "selected_object_domain": domain}
+        if not valid_hex(selected) or domain not in {"TABLE", "VIEW"} or metadata.get("selector_binding") != binding:
+            issues.append("selector_binding")
+        elif (
+            receipt.get("selector_fingerprint") != digest(binding)
+            or metadata.get("rendered_sql_contract") != "privacy-bound-selector-v1"
+        ):
+            issues.append("selector_hash")
+        elif sql_path.is_file():
+            rendered = sql_path.read_text(encoding="utf-8")
+            rendered = rendered.replace(
+                "__DATA_QUALITY_DATABASE_IDENTIFIER__",
+                f"__DATA_QUALITY_DATABASE_BOUND_TO_OBJECT_KEY_SHA256_{selected}__",
+            )
+            rendered = rendered.replace(
+                "__DATA_QUALITY_OBJECT_IDENTIFIER__",
+                f"__DATA_QUALITY_OBJECT_KEY_SHA256_{selected}__",
+            )
+            rendered = rendered.replace("__DATA_QUALITY_DOMAIN__", f"__DATA_QUALITY_DOMAIN_{domain}__")
+            expected_rendered = f"sha256:{hashlib.sha256(rendered.encode()).hexdigest()}"
+            if receipt.get("rendered_sql_sha256") != expected_rendered:
+                issues.append("selector_rendered_hash")
+        data_name = next(iter(contract["cap_datasets"]))
+        for row in datasets.get(data_name, []):
+            if isinstance(row, dict):
+                row_domain_mismatch = (
+                    "object_domain" in DATASET_FIELDS[data_name] and row.get("object_domain") != domain
                 )
-        if type(row["row_count"]) is not int or row["row_count"] < 0:
-            raise EvidenceError(f"source_metadata[{index}].row_count must be a non-negative integer")
+                if row.get("object_key_sha256") != selected or row_domain_mismatch:
+                    issues.append("selector_scope")
+        if (
+            type(context.get("source_row_limit")) is not int
+            or context.get("source_row_limit") != 5000
+            or type(context.get("source_row_count")) is not int
+            or context.get("source_row_count") < len(datasets.get(data_name, []))
+            or (
+                context.get("source_row_count") < 5000
+                and context.get("source_row_count") != len(datasets.get(data_name, []))
+            )
+            or type(context.get("truncation_possible")) is not bool
+            or context.get("truncation_possible") is not capped
+        ):
+            issues.append("selector_context")
 
-    return {
-        "metadata": normalized_metadata,
-        "requirements": sorted(normalized_requirements, key=lambda item: item["id"]),
-        "associations": sorted(normalized_associations, key=lambda item: item["requirement_id"]),
-        "measurements": sorted(
-            normalized_measurements,
-            key=lambda item: (item["requirement_id"], item["measured_at"], item["reference_id"]),
-        ),
-        "source_metadata": sorted(normalized_sources, key=lambda item: item["source"]),
-    }
+    for dataset, rows in datasets.items():
+        if dataset == "execution_context":
+            continue
+        keys: list[tuple[Any, ...]] = []
+        for row in rows:
+            issues.extend(row_issues(dataset, row))
+            if isinstance(row, dict):
+                keys.append(tuple(row.get(field) for field in UNIQUE_KEYS[dataset]))
+        if len(keys) != len(set(keys)):
+            issues.append("duplicate_natural_key")
+    return sorted(set(issues))
 
 
 def finding(
-    code: str,
-    scope: str,
-    evidence: str,
-    action: str,
-    *,
-    quality_impact: str = "PASS",
-    monitoring_impact: str = "PASS",
-) -> dict[str, str]:
+    code: str, scope: str, detail: str, action: str, *, quality: str | None = None, monitoring: str | None = None
+) -> dict[str, Any]:
     return {
         "code": code,
         "scope": scope,
-        "evidence": evidence,
+        "detail": detail,
         "action": action,
-        "quality_impact": quality_impact,
-        "monitoring_impact": monitoring_impact,
+        "quality_impact": quality,
+        "monitoring_impact": monitoring,
     }
 
 
-def _status(findings: list[dict[str, str]], field: str) -> str:
-    impacts = [item[field] for item in findings if item[field] != "PASS"]
-    return min(impacts, key=lambda status: STATUS_ORDER[status]) if impacts else "PASS"
+def analyze(data: Any, *, evaluated_at: str, trusted_input_sha256: str, trusted_policy_sha256: str) -> dict[str, Any]:
+    if (
+        not isinstance(data, dict)
+        or set(data) != {"schema_version", "policy", "collector_receipts"}
+        or data.get("schema_version") != "2"
+        or not isinstance(data.get("collector_receipts"), list)
+    ):
+        raise EvidenceError("invalid input")
+    evaluated = parse_time(evaluated_at)
+    if evaluated is None:
+        raise EvidenceError("invalid evaluation time")
+    requirements = validate_policy(data["policy"])
+    if parse_time(data["policy"]["analysis_as_of_utc"]) != evaluated:
+        raise EvidenceError("invalid policy")
+    input_digest = canonical_input_digest(data)
+    policy_digest = canonical_policy_digest(data)
+    input_trusted = isinstance(trusted_input_sha256, str) and trusted_input_sha256 == input_digest
+    policy_trusted = isinstance(trusted_policy_sha256, str) and trusted_policy_sha256 == policy_digest
 
+    receipts = data["collector_receipts"]
+    receipt_errors: list[str] = []
+    valid_receipts: list[dict[str, Any]] = []
+    for receipt in receipts:
+        issues = receipt_issues(receipt, evaluated)
+        if issues:
+            receipt_errors.extend(issues)
+        elif isinstance(receipt, dict):
+            valid_receipts.append(receipt)
+    surfaces = [receipt["surface"] for receipt in valid_receipts]
+    for surface in REQUIRED_SINGLETON_SURFACES:
+        if surfaces.count(surface) != 1:
+            receipt_errors.append("required_surface_count")
+    governed_objects = {(row["object_key_sha256"], row["object_domain"]) for row in requirements}
+    required_notification_objects = {
+        (row["object_key_sha256"], row["object_domain"]) for row in requirements if row["notification_required"]
+    }
+    selected_receipts: dict[str, list[dict[str, Any]]] = {}
+    for surface in SELECTOR_BOUND_SURFACES:
+        surface_receipts = [receipt for receipt in valid_receipts if receipt["surface"] == surface]
+        selected_receipts[surface] = surface_receipts
+        selected_objects = [
+            (
+                receipt["datasets"]["execution_context"][0]["selected_object_key_sha256"],
+                receipt["datasets"]["execution_context"][0]["selected_object_domain"],
+            )
+            for receipt in surface_receipts
+        ]
+        if len(selected_objects) != len(set(selected_objects)):
+            receipt_errors.append("duplicate_object_selector")
+        expected_objects = (
+            required_notification_objects if surface == "data-quality-notification-current" else governed_objects
+        )
+        if set(selected_objects) != expected_objects:
+            receipt_errors.append("governed_object_coverage")
 
-def analyze(data: Any) -> dict[str, Any]:
-    normalized = normalize_document(data)
-    requirements = normalized["requirements"]
-    associations_by_requirement = {row["requirement_id"]: row for row in normalized["associations"]}
-    measurements_by_requirement: dict[str, list[dict[str, Any]]] = {}
-    for row in normalized["measurements"]:
-        measurements_by_requirement.setdefault(row["requirement_id"], []).append(row)
-    collected_at = parse_time(normalized["metadata"]["collected_at"], "metadata.collected_at")
-    findings: list[dict[str, str]] = []
-
-    edition_unavailable = any(
-        source["error_code"] in {"DQ_EDITION_UNAVAILABLE", "ENTERPRISE_EDITION_REQUIRED", "FEATURE_NOT_AVAILABLE"}
-        or source["status"] == "edition_unavailable"
-        for source in normalized["source_metadata"]
+    contexts = [receipt["datasets"]["execution_context"][0] for receipt in valid_receipts]
+    identity_fields = (
+        "organization_name_sha256",
+        "account_identifier_sha256",
+        "collector_user_sha256",
+        "primary_role_sha256",
+        "primary_role_type",
+        "secondary_roles_sha256",
+        "timezone",
     )
-    if edition_unavailable:
-        findings.append(
-            finding(
-                "DQ_EDITION_UNAVAILABLE",
-                "data-quality-surface",
-                "Enterprise data-quality evidence is unavailable for the selected account or role.",
-                "Record the edition boundary; do not infer health or escalate privileges automatically.",
-                quality_impact="INCONCLUSIVE",
-                monitoring_impact="INCONCLUSIVE",
-            )
-        )
+    if contexts and any(
+        tuple(context.get(field) for field in identity_fields)
+        != tuple(contexts[0].get(field) for field in identity_fields)
+        for context in contexts[1:]
+    ):
+        receipt_errors.append("mixed_execution_context")
 
-    usage_sources = [source for source in normalized["source_metadata"] if source["kind"] == "usage"]
-    if not usage_sources or any(source["status"] != "collected" for source in usage_sources):
-        findings.append(
-            finding(
-                "DQ_USAGE_VISIBILITY_GAP",
-                "data-quality-usage",
-                "No complete collected usage source proves monitoring visibility.",
-                "Restore read-only usage visibility before making coverage or cost claims.",
-                quality_impact="INCONCLUSIVE",
-                monitoring_impact="INCONCLUSIVE",
-            )
-        )
-
-    notification_privilege_error = any(
-        source["error_code"] in {"DQ_NOTIFICATION_PRIVILEGE_ERROR", "INSUFFICIENT_PRIVILEGES", "NOT_AUTHORIZED"}
-        and source["kind"] == "notification"
-        for source in normalized["source_metadata"]
-    )
-    if notification_privilege_error:
-        findings.append(
-            finding(
-                "DQ_NOTIFICATION_PRIVILEGE_ERROR",
-                "notification-evidence",
-                "Notification evidence collection failed with a privilege error.",
-                "Grant only the documented read/monitor privilege and recollect; do not switch to ACCOUNTADMIN.",
-                quality_impact="INCONCLUSIVE",
-                monitoring_impact="FAIL",
-            )
-        )
-
-    if not edition_unavailable:
+    evidence_valid = input_trusted and policy_trusted and not receipt_errors
+    findings: list[dict[str, Any]] = []
+    history_observations: list[str] = []
+    out_of_scope_observation_count = 0
+    if not evidence_valid:
         for requirement in requirements:
-            requirement_id = requirement["id"]
-            scope = requirement_id
-            objective = requirement["objective"]
-            if requirement["object"]["type"] not in SUPPORTED_OBJECT_TYPES:
-                findings.append(
-                    finding(
-                        "DQ_UNSUPPORTED_OBJECT",
-                        scope,
-                        f"Object type {requirement['object']['type']} is outside this analyzer's TABLE/VIEW contract.",
-                        "Use a supported object or document a separate monitoring control.",
-                        quality_impact="INCONCLUSIVE",
-                        monitoring_impact="FAIL",
-                    )
+            findings.append(
+                finding(
+                    "DQ_EVIDENCE_INCOMPLETE",
+                    requirement["requirement_key_sha256"],
+                    "Required trusted collector evidence is incomplete or invalid.",
+                    "Recollect every required surface and verify both independent trusted digests.",
+                    quality="INCONCLUSIVE",
+                    monitoring="INCONCLUSIVE",
                 )
-            if objective is None:
-                findings.append(
-                    finding(
-                        "DQ_OBJECTIVE_MISSING",
-                        scope,
-                        "The required metric has no expectation or anomaly objective.",
-                        "Define a bounded objective before interpreting the metric value.",
-                        quality_impact="INCONCLUSIVE",
-                        monitoring_impact="DEGRADED",
-                    )
-                )
+            )
+    else:
+        by_surface = {surface: [r for r in valid_receipts if r["surface"] == surface] for surface in RECEIPT_CONTRACTS}
+        history_receipt = by_surface["data-quality"][0]
+        history = history_receipt["datasets"]["expectation_history"]
+        governed_history_keys = {
+            (
+                row["object_key_sha256"],
+                row["association_key_sha256"],
+                row["metric_key_sha256"],
+                row["expectation_key_sha256"],
+                row["definition_sha256"],
+            )
+            for row in requirements
+        }
+        out_of_scope_observation_count = sum(
+            (
+                row["object_key_sha256"],
+                row["association_key_sha256"],
+                row["metric_key_sha256"],
+                row["expectation_key_sha256"],
+                row["definition_sha256"],
+            )
+            not in governed_history_keys
+            for row in history
+        )
+        associations = [
+            row
+            for receipt in selected_receipts["data-quality-associations-current"]
+            for row in receipt["datasets"]["current_associations"]
+        ]
+        expectations = [
+            row
+            for receipt in selected_receipts["data-quality-expectations-current"]
+            for row in receipt["datasets"]["current_expectations"]
+        ]
+        notification_receipts = selected_receipts["data-quality-notification-current"]
+        notifications = [
+            row for receipt in notification_receipts for row in receipt["datasets"]["notification_associations"]
+        ]
+        association_by_key = {
+            (row["object_key_sha256"], row["association_key_sha256"], row["metric_key_sha256"]): row
+            for row in associations
+        }
+        expectation_by_key = {
+            (
+                row["object_key_sha256"],
+                row["association_key_sha256"],
+                row["metric_key_sha256"],
+                row["expectation_key_sha256"],
+            ): row
+            for row in expectations
+        }
+        notification_by_key = {
+            (row["object_key_sha256"], row["association_key_sha256"], row["metric_key_sha256"]): row
+            for row in notifications
+        }
 
-            association = associations_by_requirement.get(requirement_id)
+        for requirement in requirements:
+            scope = requirement["requirement_key_sha256"]
+            expected_identity = (
+                requirement["object_key_sha256"],
+                requirement["association_key_sha256"],
+                requirement["metric_key_sha256"],
+            )
+            association = association_by_key.get(expected_identity)
             if association is None:
                 findings.append(
                     finding(
                         "DQ_ASSOCIATION_MISSING",
                         scope,
-                        "No observed DMF association matches the required check.",
-                        "Create or restore the association through the approved change process.",
-                        quality_impact="INCONCLUSIVE",
-                        monitoring_impact="FAIL",
+                        "The governed association is absent from current evidence.",
+                        "Restore the governed association and recollect.",
+                        quality="INCONCLUSIVE",
+                        monitoring="FAIL",
                     )
                 )
             else:
-                if association["schedule_status"].startswith("SUSPENDED"):
+                observed_identity = (
+                    association["object_key_sha256"],
+                    association["association_key_sha256"],
+                    association["metric_key_sha256"],
+                )
+                if observed_identity != expected_identity:
                     findings.append(
                         finding(
-                            "DQ_ASSOCIATION_SUSPENDED",
+                            "DQ_ASSOCIATION_IDENTITY_DRIFT",
                             scope,
-                            f"Association status is {association['schedule_status']}.",
-                            "Resolve the documented suspension cause before resuming evaluation.",
-                            quality_impact="INCONCLUSIVE",
-                            monitoring_impact="FAIL",
+                            "The current association does not match the governed identity.",
+                            "Reconcile the association against approved policy.",
+                            quality="INCONCLUSIVE",
+                            monitoring="FAIL",
                         )
                     )
-                if (
-                    association["schedule_update_pending"]
-                    or association["schedule"] != requirement["expected_schedule"]
-                ):
+                if association["schedule_sha256"] != requirement["schedule_sha256"]:
+                    findings.append(
+                        finding(
+                            "DQ_SCHEDULE_DRIFT",
+                            scope,
+                            "The current schedule fingerprint differs from policy.",
+                            "Restore the approved schedule.",
+                            quality="INCONCLUSIVE",
+                            monitoring="FAIL",
+                        )
+                    )
+                if association["schedule_status"] == "STARTED_AND_PENDING_SCHEDULE_UPDATE":
                     findings.append(
                         finding(
                             "DQ_SCHEDULE_UPDATE_PENDING",
                             scope,
-                            f"Observed schedule {association['schedule']} differs from required {requirement['expected_schedule']}.",
-                            "Wait for metadata propagation or complete the approved schedule update, then recollect.",
-                            quality_impact="INCONCLUSIVE",
-                            monitoring_impact="DEGRADED",
+                            "The governed association is running with a schedule update still pending.",
+                            "Wait for Snowflake to apply the approved schedule update, then recollect.",
+                            quality="INCONCLUSIVE",
+                            monitoring="INCONCLUSIVE",
                         )
                     )
-                if requirement["notification_required"] and association["notification_status"] not in {
-                    "ENABLED",
-                    "STARTED",
-                }:
+                elif association["schedule_status"] == "PROVIDER_OTHER":
                     findings.append(
                         finding(
-                            "DQ_NOTIFICATION_DISABLED",
+                            "DQ_SCHEDULE_STATE_UNREVIEWED",
                             scope,
-                            f"Required notification status is {association['notification_status']}.",
-                            "Enable the approved notification path and verify delivery with a safe test.",
-                            monitoring_impact="DEGRADED",
+                            "The provider returned an unrecognized schedule state.",
+                            "Review the provider state before relying on this association.",
+                            quality="INCONCLUSIVE",
+                            monitoring="FAIL",
                         )
                     )
-                if (
-                    requirement["expected_execution_role"]
-                    and association["execution_role"] != requirement["expected_execution_role"]
-                ):
+                elif association["schedule_status"] != "STARTED":
+                    findings.append(
+                        finding(
+                            "DQ_ASSOCIATION_SUSPENDED",
+                            scope,
+                            "The governed association is not started.",
+                            "Resume the association after approval.",
+                            quality="INCONCLUSIVE",
+                            monitoring="FAIL",
+                        )
+                    )
+                if association["association_level"] == "PROVIDER_OTHER":
+                    findings.append(
+                        finding(
+                            "DQ_ASSOCIATION_LEVEL_UNREVIEWED",
+                            scope,
+                            "The provider returned an unrecognized association level.",
+                            "Review the association scope before relying on this evidence.",
+                            quality="INCONCLUSIVE",
+                            monitoring="FAIL",
+                        )
+                    )
+                if association["execution_role_sha256"] != requirement["expected_execution_role_sha256"]:
                     findings.append(
                         finding(
                             "DQ_EXECUTION_ROLE_DRIFT",
                             scope,
-                            f"Observed role {association['execution_role']} differs from required {requirement['expected_execution_role']}.",
-                            "Restore the least-privilege execution role and verify object visibility.",
-                            quality_impact="INCONCLUSIVE",
-                            monitoring_impact="FAIL",
+                            "The execution-role fingerprint differs from policy.",
+                            "Restore the approved execution role.",
+                            quality="INCONCLUSIVE",
+                            monitoring="FAIL",
                         )
                     )
-                if association["anomaly_status"] == "TRAINING_IN_PROGRESS":
+                if association["group_definition_sha256"] != requirement["group_definition_sha256"]:
                     findings.append(
                         finding(
-                            "DQ_ANOMALY_TRAINING",
+                            "DQ_GROUP_DEFINITION_DRIFT",
                             scope,
-                            "Anomaly detection is still training; this is not a health result.",
-                            "Wait for training completion and require a post-training measurement.",
-                            quality_impact="INCONCLUSIVE",
-                            monitoring_impact="DEGRADED",
+                            "The group-definition fingerprint differs from policy.",
+                            "Restore the approved grouping definition.",
+                            quality="INCONCLUSIVE",
+                            monitoring="FAIL",
                         )
                     )
-
-            measurements = measurements_by_requirement.get(requirement_id, [])
-            if not measurements:
-                findings.append(
-                    finding(
-                        "DQ_RESULT_MISSING",
-                        scope,
-                        "No measurement exists in the declared evidence window.",
-                        "Verify scheduling, permissions, and event-table visibility; do not infer pass.",
-                        quality_impact="INCONCLUSIVE",
-                        monitoring_impact="DEGRADED",
-                    )
-                )
-                continue
-            latest = max(measurements, key=lambda item: item["measured_at"])
-            measured_at = parse_time(latest["measured_at"], f"measurements[{scope}].measured_at")
-            age_seconds = max(0, int((collected_at - measured_at).total_seconds()))
-            if age_seconds > requirement["max_result_age_seconds"]:
-                findings.append(
-                    finding(
-                        "DQ_RESULT_STALE",
-                        scope,
-                        f"Newest result is {age_seconds}s old; limit is {requirement['max_result_age_seconds']}s.",
-                        "Recollect after the next successful evaluation before making a health claim.",
-                        quality_impact="INCONCLUSIVE",
-                        monitoring_impact="DEGRADED",
-                    )
-                )
-
-            if objective is None and latest["observed_value"] is not None:
-                findings.append(
-                    finding(
-                        "DQ_METRIC_OBSERVED_NO_OBJECTIVE",
-                        scope,
-                        "A raw metric value was observed without a decision objective.",
-                        "Treat the value as observation only; define an objective before classifying quality.",
-                        quality_impact="INCONCLUSIVE",
-                        monitoring_impact="DEGRADED",
-                    )
-                )
-            elif objective and objective["mode"] == "expectation":
-                if latest["evaluation_status"] in {"FAILED", "ERROR"} or latest["expectation_violated"] is None:
+                if association["object_domain"] != requirement["object_domain"]:
                     findings.append(
                         finding(
-                            "DQ_EXPECTATION_EVALUATION_FAILED",
+                            "DQ_OBJECT_DOMAIN_DRIFT",
                             scope,
-                            f"Expectation evaluation status is {latest['evaluation_status']}.",
-                            "Fix evaluation execution and obtain a valid Boolean result before classifying quality.",
-                            quality_impact="INCONCLUSIVE",
-                            monitoring_impact="DEGRADED",
+                            "The current object domain differs from policy.",
+                            "Restore the approved object domain.",
+                            quality="INCONCLUSIVE",
+                            monitoring="FAIL",
                         )
                     )
-                elif latest["expectation_violated"] is True:
+                if association["filter_sha256"] != requirement["filter_sha256"]:
                     findings.append(
                         finding(
-                            "DQ_EXPECTATION_VIOLATED",
+                            "DQ_FILTER_DRIFT",
                             scope,
-                            f"Expectation {objective['name']} was violated by the newest valid result.",
-                            "Investigate the governed data owner workflow; never include raw failed rows in evidence.",
-                            quality_impact="FAIL",
+                            "The current filter fingerprint differs from policy.",
+                            "Restore the approved filter.",
+                            quality="INCONCLUSIVE",
+                            monitoring="FAIL",
                         )
                     )
-            elif objective and objective["mode"] == "anomaly" and latest["anomaly_detected"] is True:
+                if association["group_limit"] != requirement["expected_group_limit"]:
+                    findings.append(
+                        finding(
+                            "DQ_GROUP_LIMIT_DRIFT",
+                            scope,
+                            "The current group limit differs from policy.",
+                            "Restore the approved group limit.",
+                            quality="INCONCLUSIVE",
+                            monitoring="FAIL",
+                        )
+                    )
+
+            expectation = expectation_by_key.get(
+                (
+                    requirement["object_key_sha256"],
+                    requirement["association_key_sha256"],
+                    requirement["metric_key_sha256"],
+                    requirement["expectation_key_sha256"],
+                )
+            )
+            if expectation is None:
                 findings.append(
                     finding(
-                        "DQ_ANOMALY_DETECTED",
+                        "DQ_EXPECTATION_MISSING",
                         scope,
-                        f"Anomaly objective {objective['name']} detected an anomaly in the newest result.",
-                        "Triage the anomaly with aggregate metadata only and record the disposition.",
-                        quality_impact="FAIL",
+                        "The governed expectation is absent from current evidence.",
+                        "Restore the approved expectation and recollect.",
+                        quality="INCONCLUSIVE",
+                        monitoring="FAIL",
                     )
                 )
-
-            observed_groups = set(latest["observed_groups"])
-            if association is not None:
-                observed_groups.update(association["observed_groups"])
-            missing_groups = sorted(set(requirement["required_groups"]) - observed_groups)
-            if missing_groups:
+            elif (
+                expectation["object_key_sha256"] != requirement["object_key_sha256"]
+                or expectation["metric_key_sha256"] != requirement["metric_key_sha256"]
+                or expectation["definition_sha256"] != requirement["definition_sha256"]
+            ):
                 findings.append(
                     finding(
-                        "DQ_GROUP_COVERAGE_GAP",
+                        "DQ_DEFINITION_DRIFT",
                         scope,
-                        f"Required groups lack evidence: {', '.join(missing_groups)}.",
-                        "Restore grouped evaluation coverage and verify each required group emits a result.",
-                        quality_impact="INCONCLUSIVE",
-                        monitoring_impact="DEGRADED",
+                        "The current expectation definition differs from policy.",
+                        "Reconcile the expectation definition before classifying results.",
+                        quality="INCONCLUSIVE",
+                        monitoring="FAIL",
                     )
                 )
 
-        known_requirement_ids = {item["id"] for item in requirements}
-        for measurement in normalized["measurements"]:
-            if measurement["requirement_id"] not in known_requirement_ids and measurement["observed_value"] is not None:
+            if requirement["schedule_mode"] == "TRIGGER_ON_CHANGES":
                 findings.append(
                     finding(
-                        "DQ_METRIC_OBSERVED_NO_OBJECTIVE",
-                        measurement["requirement_id"],
-                        "A measurement is outside the governed requirement denominator.",
-                        "Add an owner-approved requirement and objective or retire the orphan measurement.",
-                        quality_impact="INCONCLUSIVE",
-                        monitoring_impact="DEGRADED",
+                        "DQ_TRIGGER_FRESHNESS_UNPROVEN",
+                        scope,
+                        "Trigger-on-change freshness cannot be proven from these surfaces.",
+                        "Provide a separately reviewed trigger-change evidence surface.",
+                        quality="INCONCLUSIVE",
+                        monitoring="INCONCLUSIVE",
                     )
                 )
+            if requirement["group_definition_sha256"] is not None:
+                findings.append(
+                    finding(
+                        "DQ_GROUP_EVIDENCE_UNAVAILABLE",
+                        scope,
+                        "Grouped-result completeness is not proven by the reviewed result projection.",
+                        "Provide separately trusted group-result evidence.",
+                        quality="INCONCLUSIVE",
+                        monitoring="INCONCLUSIVE",
+                    )
+                )
+            if requirement["objective_mode"] == "ANOMALY":
+                findings.append(
+                    finding(
+                        "DQ_ANOMALY_EVIDENCE_UNAVAILABLE",
+                        scope,
+                        "Anomaly classification is not present in the reviewed expectation surface.",
+                        "Collect a separately reviewed trusted anomaly surface.",
+                        quality="INCONCLUSIVE",
+                        monitoring="INCONCLUSIVE",
+                    )
+                )
+            else:
+                matching_results = [
+                    row
+                    for row in history
+                    if (
+                        row["object_key_sha256"],
+                        row["association_key_sha256"],
+                        row["metric_key_sha256"],
+                        row["expectation_key_sha256"],
+                        row["definition_sha256"],
+                    )
+                    == (
+                        requirement["object_key_sha256"],
+                        requirement["association_key_sha256"],
+                        requirement["metric_key_sha256"],
+                        requirement["expectation_key_sha256"],
+                        requirement["definition_sha256"],
+                    )
+                ]
+                mismatched_definition = any(
+                    row["object_key_sha256"] == requirement["object_key_sha256"]
+                    and row["association_key_sha256"] == requirement["association_key_sha256"]
+                    and row["metric_key_sha256"] == requirement["metric_key_sha256"]
+                    and row["expectation_key_sha256"] == requirement["expectation_key_sha256"]
+                    and row["definition_sha256"] != requirement["definition_sha256"]
+                    for row in history
+                )
+                if mismatched_definition:
+                    findings.append(
+                        finding(
+                            "DQ_RESULT_DEFINITION_MISMATCH",
+                            scope,
+                            "Observed result history is bound to a different definition fingerprint.",
+                            "Obtain a result for the exact current governed definition.",
+                            quality="INCONCLUSIVE",
+                            monitoring="INCONCLUSIVE",
+                        )
+                    )
+                if not matching_results:
+                    findings.append(
+                        finding(
+                            "DQ_NO_EVALUATION",
+                            scope,
+                            "No matching governed expectation evaluation was observed.",
+                            "Run or await a governed evaluation and recollect.",
+                            quality="INCONCLUSIVE",
+                            monitoring="INCONCLUSIVE",
+                        )
+                    )
+                else:
+                    latest = max(
+                        matching_results,
+                        key=lambda row: (
+                            parse_time(row["measurement_time"]) or datetime.min.replace(tzinfo=timezone.utc)
+                        ),
+                    )
+                    measured = parse_time(latest["measurement_time"])
+                    if (
+                        measured is None
+                        or measured > evaluated
+                        or evaluated - measured > timedelta(seconds=requirement["max_result_age_seconds"])
+                    ):
+                        findings.append(
+                            finding(
+                                "DQ_RESULT_STALE",
+                                scope,
+                                "The newest matching evaluation is outside the governed freshness bound.",
+                                "Obtain a fresh evaluation before classification.",
+                                quality="INCONCLUSIVE",
+                                monitoring="INCONCLUSIVE",
+                            )
+                        )
+                    elif latest["expectation_violated"] is None:
+                        history_observations.append("EVALUATION_FAILED_OBSERVED")
+                        findings.append(
+                            finding(
+                                "DQ_EXPECTATION_EVALUATION_FAILED",
+                                scope,
+                                "The evaluation did not produce a Boolean expectation result.",
+                                "Fix evaluation execution and recollect.",
+                                quality="INCONCLUSIVE",
+                                monitoring="DEGRADED",
+                            )
+                        )
+                    elif latest["expectation_violated"] is True:
+                        history_observations.append("VIOLATION_OBSERVED")
+                        findings.append(
+                            finding(
+                                "DQ_EXPECTATION_VIOLATED",
+                                scope,
+                                "The newest exact governed expectation result is violated.",
+                                "Investigate through the governed data-owner workflow without collecting raw rows.",
+                                quality="FAIL",
+                            )
+                        )
+                    else:
+                        history_observations.append("SATISFIED_OBSERVATION")
 
-    findings.sort(key=lambda item: (item["code"], item["scope"], item["evidence"]))
-    if requirements:
-        quality_status = _status(findings, "quality_impact")
-        monitoring_status = _status(findings, "monitoring_impact")
+            if requirement["notification_required"]:
+                notification = notification_by_key.get(expected_identity)
+                if notification is None:
+                    findings.append(
+                        finding(
+                            "DQ_NOTIFICATION_VISIBILITY_GAP",
+                            scope,
+                            "Current notification configuration is not visible for the governed association.",
+                            "Restore least-privilege visibility and recollect.",
+                            monitoring="INCONCLUSIVE",
+                        )
+                    )
+                elif (
+                    notification["object_key_sha256"],
+                    notification["association_key_sha256"],
+                    notification["metric_key_sha256"],
+                ) != expected_identity:
+                    findings.append(
+                        finding(
+                            "DQ_NOTIFICATION_IDENTITY_DRIFT",
+                            scope,
+                            "Notification configuration is bound to a different association identity.",
+                            "Reconcile notification configuration with policy.",
+                            monitoring="FAIL",
+                        )
+                    )
+                elif notification["notification_status"] == "DISABLED":
+                    findings.append(
+                        finding(
+                            "DQ_NOTIFICATION_DISABLED",
+                            scope,
+                            "Required notification configuration is disabled.",
+                            "Enable the approved notification configuration.",
+                            monitoring="FAIL",
+                        )
+                    )
+                elif notification["notification_status"] == "ERROR_INSUFFICIENT_PRIVILEGE":
+                    findings.append(
+                        finding(
+                            "DQ_NOTIFICATION_PRIVILEGE_ERROR",
+                            scope,
+                            "Notification configuration reports insufficient privilege.",
+                            "Restore least-privilege notification execution rights.",
+                            monitoring="FAIL",
+                        )
+                    )
+                elif notification["notification_status"] == "NOT_CONFIGURED":
+                    findings.append(
+                        finding(
+                            "DQ_NOTIFICATION_NOT_CONFIGURED",
+                            scope,
+                            "Required notification configuration is not configured.",
+                            "Configure the approved notification integration.",
+                            monitoring="FAIL",
+                        )
+                    )
+                elif notification["notification_status"] == "PROVIDER_OTHER":
+                    findings.append(
+                        finding(
+                            "DQ_NOTIFICATION_STATE_UNREVIEWED",
+                            scope,
+                            "Notification configuration is outside the reviewed state domain.",
+                            "Review the provider state before classifying notification readiness.",
+                            monitoring="INCONCLUSIVE",
+                        )
+                    )
+
+    def configuration_status() -> str:
+        if not requirements:
+            return "INCONCLUSIVE"
+        impacts = [item["monitoring_impact"] for item in findings if item["monitoring_impact"] is not None]
+        if "FAIL" in impacts:
+            return "FAIL"
+        if "INCONCLUSIVE" in impacts or "DEGRADED" in impacts:
+            return "INCONCLUSIVE"
+        return "PASS"
+
+    if "VIOLATION_OBSERVED" in history_observations:
+        history_observation_status = "VIOLATION_OBSERVED"
+    elif "EVALUATION_FAILED_OBSERVED" in history_observations:
+        history_observation_status = "EVALUATION_FAILED_OBSERVED"
+    elif "SATISFIED_OBSERVATION" in history_observations:
+        history_observation_status = "SATISFIED_OBSERVATION"
     else:
-        quality_status = "NO_REQUIRED_CHECKS"
-        monitoring_status = "NO_REQUIRED_CHECKS"
+        history_observation_status = "NOT_OBSERVED"
 
-    input_hash = f"sha256:{hashlib.sha256(canonical_json(normalized)).hexdigest()}"
+    quality_status = "FAIL" if history_observation_status == "VIOLATION_OBSERVED" else "INCONCLUSIVE"
+
     report = {
-        "schema_version": "1",
+        "schema_version": "2",
         "analyzer": {"name": "snowflake-data-quality-sentinel", "version": VERSION},
         "quality_status": quality_status,
-        "monitoring_status": monitoring_status,
+        "configuration_status": configuration_status(),
+        "history_observation_status": history_observation_status,
+        "history_completeness_status": "UNPROVEN_NO_PROVIDER_SLA",
+        "pass_supported": False,
+        "settled_through_utc": None,
+        "structural_evidence_valid": evidence_valid,
+        "evidence_integrity_status": "VALID" if evidence_valid else "INVALID",
+        "governed_coverage_status": (
+            "INCOMPLETE"
+            if {
+                "duplicate_object_selector",
+                "governed_object_coverage",
+                "required_surface_count",
+            }.intersection(receipt_errors)
+            else "COMPLETE"
+        ),
+        "evidence_complete": False,
+        "out_of_scope_observation_count": out_of_scope_observation_count,
         "denominator": {
-            "requirements": len(requirements),
-            "associations": len(normalized["associations"]),
-            "measurements": len(normalized["measurements"]),
-            "sources": len(normalized["source_metadata"]),
+            "expected_requirements": len(requirements),
+            "evaluated_requirements": len(requirements) if evidence_valid else 0,
         },
-        "finding_counts": dict(sorted(Counter(item["code"] for item in findings).items())),
-        "findings": findings,
+        "findings": sorted(findings, key=lambda item: (item["code"], item["scope"])),
+        "notification_delivery_status": "NOT_OBSERVED",
         "provenance": {
-            "input_sha256": input_hash,
-            "collector_receipt_sha256": normalized["metadata"]["collector_receipt_sha256"],
-            "surface": normalized["metadata"]["surface"],
-            "collected_at": normalized["metadata"]["collected_at"],
-            "window_start": normalized["metadata"]["window_start"],
-            "window_end": normalized["metadata"]["window_end"],
-            "sources": normalized["source_metadata"],
+            "evaluated_at": evaluated.isoformat().replace("+00:00", "Z"),
+            "input_sha256": input_digest,
+            "policy_sha256": policy_digest,
+            "trusted_input": input_trusted,
+            "trusted_policy": policy_trusted,
+            "history_assumption_status": data["policy"]["history_assumption_status"],
+            "history_assumption_delay_seconds": data["policy"]["history_assumption_delay_seconds"],
+            "receipt_sha256s": sorted(receipt["receipt_sha256"] for receipt in valid_receipts),
         },
+        "evidence_gap_codes": sorted(
+            set(receipt_errors + ([] if input_trusted and policy_trusted else ["external_trust_mismatch"]))
+        ),
         "non_claims": [
             "No Snowflake mutation was executed.",
-            "Raw metric values without objectives are not violations or passes.",
-            "Anomaly training is not a health result.",
-            "Missing, stale, unavailable, or privilege-blocked evidence cannot prove health.",
+            "Notification configuration does not prove notification delivery; delivery remains NOT_OBSERVED.",
+            "Missing, stale, truncated, invalid, mixed-context, or untrusted evidence cannot prove health.",
+            "Anomaly and grouped-result health require separately reviewed trusted evidence.",
+            "Snowflake publishes no finality SLA for this history surface.",
+            "A satisfied observation is not a present-tense quality PASS.",
+            "The owner-declared history delay is an assumption, not a provider guarantee.",
         ],
     }
-    report["receipt_sha256"] = f"sha256:{hashlib.sha256(canonical_json(report)).hexdigest()}"
+    report["report_sha256"] = digest(report)
     return report
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("input", nargs="?", help="normalized evidence JSON; omit to read stdin")
-    parser.add_argument("--pretty", action="store_true", help="indent JSON output")
+    parser.add_argument("input", nargs="?", help="schema-2 evidence JSON; omit to read stdin")
+    parser.add_argument("--evaluated-at")
+    parser.add_argument("--trusted-input-sha256")
+    parser.add_argument("--trusted-policy-sha256")
+    parser.add_argument("--policy-file", help="separately owner-approved policy JSON")
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument("--print-input-sha256", action="store_true")
+    modes.add_argument("--print-policy-sha256", action="store_true")
+    parser.add_argument("--pretty", action="store_true")
     args = parser.parse_args(argv)
     try:
-        if args.input:
-            raw = Path(args.input).read_text(encoding="utf-8")
-        else:
-            raw = sys.stdin.read()
+        if args.print_policy_sha256:
+            if not args.policy_file:
+                raise EvidenceError("missing policy file")
+            policy = json.loads(Path(args.policy_file).read_text(encoding="utf-8"))
+            print(canonical_policy_document_digest(policy))
+            return 0
+        raw = Path(args.input).read_text(encoding="utf-8") if args.input else sys.stdin.read()
         data = json.loads(raw)
-        report = analyze(data)
-    except (OSError, json.JSONDecodeError, EvidenceError) as exc:
-        print(f"error: {exc}", file=sys.stderr)
+        if args.print_input_sha256:
+            print(canonical_input_digest(data))
+            return 0
+        if (
+            not args.evaluated_at
+            or not args.trusted_input_sha256
+            or not args.trusted_policy_sha256
+            or not args.policy_file
+        ):
+            raise EvidenceError("missing trust arguments")
+        policy = json.loads(Path(args.policy_file).read_text(encoding="utf-8"))
+        validate_policy(policy)
+        if data.get("policy") != policy:
+            raise EvidenceError("invalid policy")
+        report = analyze(
+            data,
+            evaluated_at=args.evaluated_at,
+            trusted_input_sha256=args.trusted_input_sha256,
+            trusted_policy_sha256=args.trusted_policy_sha256,
+        )
+    except (OSError, json.JSONDecodeError, EvidenceError, TypeError, ValueError):
+        print("error: evidence input is invalid", file=sys.stderr)
         return 2
-    json.dump(report, sys.stdout, indent=2 if args.pretty else None, sort_keys=True, ensure_ascii=False)
+    json.dump(report, sys.stdout, sort_keys=True, indent=2 if args.pretty else None, ensure_ascii=False)
     sys.stdout.write("\n")
     return 0
 

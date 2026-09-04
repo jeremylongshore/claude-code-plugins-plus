@@ -31537,9 +31537,10 @@
         "references/source-notes.md",
         "scripts/analyze_data_quality.py",
         "scripts/collect_snowflake_evidence.py",
+        "scripts/sql/data-quality-associations-current.sql",
+        "scripts/sql/data-quality-expectations-current.sql",
+        "scripts/sql/data-quality-notification-current.sql",
         "scripts/sql/data-quality.sql",
-        "tests/fixtures/pass.json",
-        "tests/fixtures/problems.json",
         "tests/test_analyze_data_quality.py"
       ]
     },

@@ -125,6 +125,34 @@ are supplied as a separately redacted dataset to the domain analyzer; the collec
 does not guess an ID or broaden privileges. Pipeline `SYSTEM$PIPE_STATUS` is
 queried only through the named, privacy-projected `pipeline-pipe-status` surface;
 raw JSON is never retained and no pipe operation is executed.
+
+Data-quality evidence is live-only schema 2 and split across four independently
+receipted surfaces. `data-quality` requires an explicit half-open UTC window of
+at most seven days and collects only expectation outcomes and timestamps from
+`SNOWFLAKE.LOCAL.DATA_QUALITY_MONITORING_EXPECTATION_STATUS`; Snowflake publishes
+no latency SLA for that local history, so the receipt declares no settlement.
+`data-quality-associations-current` and
+`data-quality-expectations-current`, like `data-quality-notification-current`,
+require a strictly validated unquoted three-part `--data-quality-object` and
+`--data-quality-domain TABLE|VIEW`. Each queries the selected object's
+database-scoped Information Schema table function with a 5,000-row cap and an
+uncapped same-statement source count. Snowflake publishes no latency SLA for
+these live functions; each receipt is a role-filtered observation at
+`observed_at`, not a freshness or completeness guarantee. The receipt retains
+only the selected-object hash/domain and binds its rendered-SQL digest to that
+Snowflake-produced context; an error receipt retains only public template proof
+and no selector fingerprint. Raw object, metric, role, schedule, filter,
+grouping, expectation, and expression values are never emitted.
+The cross-surface metric hash is name-scoped because the local history does not
+expose the same signature representation as both live functions; the scoped
+association hash (`REF_ID`/`REFERENCE_ID`) binds the exact applied overload.
+
+The notification surface emits only finite notification state plus scoped
+object/association/metric hashes. All three selector-scoped current surfaces
+retain selected-object hash/domain in same-statement execution context even at
+zero rows. Current inventories and
+bounded history remain observations: they do not prove policy enforcement,
+notification delivery, denominator completeness, or a passing quality outcome.
 For query-forensics completeness, preserve the anchor row's `role_name` and the exact
 query-history source. The analyzer rejects role/source mismatches, applies terminal
 statuses only to their matching surface, and requires at least one bound operator row.

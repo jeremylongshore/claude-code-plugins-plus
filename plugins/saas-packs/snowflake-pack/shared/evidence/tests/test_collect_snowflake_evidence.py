@@ -1194,7 +1194,7 @@ class CollectorTests(unittest.TestCase):
     def test_pipeline_history_requires_a_bounded_half_open_utc_window(self) -> None:
         start = "2026-08-01T00:00:00Z"
         end = "2026-08-08T00:00:00Z"
-        _, template, rendered, _, selector = MODULE.render_surface(
+        path, template, rendered, sources, selector = MODULE.render_surface(
             "pipeline",
             window_start=start,
             window_end=end,
@@ -1444,6 +1444,363 @@ class CollectorTests(unittest.TestCase):
         self.assertNotEqual(receipt["selector_fingerprint"], raw_selector_hash)
         self.assertNotIn("selector_binding", receipt["source_metadata"])
         self.assertNotIn("PRIVATE_CUSTOMER_PIPE", json.dumps(receipt))
+
+    def test_data_quality_surfaces_have_exact_schema_two_contracts(self) -> None:
+        expected = {
+            "data-quality": {"execution_context", "expectation_history"},
+            "data-quality-associations-current": {"current_associations", "execution_context"},
+            "data-quality-expectations-current": {"current_expectations", "execution_context"},
+            "data-quality-notification-current": {"execution_context", "notification_associations"},
+        }
+        kwargs = {
+            "data-quality": {
+                "window_start": "2026-08-01T00:00:00Z",
+                "window_end": "2026-08-02T00:00:00Z",
+            },
+            "data-quality-associations-current": {
+                "data_quality_object": "governed.analytics.orders",
+                "data_quality_domain": "TABLE",
+            },
+            "data-quality-expectations-current": {
+                "data_quality_object": "governed.analytics.orders",
+                "data_quality_domain": "TABLE",
+            },
+            "data-quality-notification-current": {
+                "data_quality_object": "governed.analytics.orders",
+                "data_quality_domain": "TABLE",
+            },
+        }
+        for surface, datasets in expected.items():
+            with self.subTest(surface=surface):
+                path, template, rendered, sources, selector = MODULE.render_surface(surface, **kwargs.get(surface, {}))
+                MODULE.validate_read_only_sql(rendered)
+                receipt = MODULE.build_receipt(
+                    surface,
+                    "private-profile",
+                    rendered,
+                    sources,
+                    raw=[],
+                    template_sql=template,
+                    template_path=path,
+                    selector=selector,
+                    collection_mode="live-cli",
+                )
+                self.assertEqual(receipt["schema_version"], "2")
+                self.assertEqual(set(receipt["expected_datasets"]), datasets)
+                self.assertEqual(set(receipt["datasets"]), datasets)
+                self.assertEqual(receipt["cap_scope"], "per_dataset")
+                self.assertRegex(receipt["result_sha256"], r"^sha256:[0-9a-f]{64}$")
+                self.assertRegex(receipt["connection_profile_sha256"], r"^sha256:[0-9a-f]{64}$")
+                self.assertNotIn("connection_profile", receipt)
+                self.assertNotIn("private-profile", json.dumps(receipt))
+
+    def test_data_quality_history_requires_bounded_half_open_utc_window(self) -> None:
+        path, template, rendered, sources, selector = MODULE.render_surface(
+            "data-quality",
+            window_start="2026-08-01T00:00:00Z",
+            window_end="2026-08-08T00:00:00Z",
+        )
+        self.assertNotIn("__WINDOW_START_UTC__", rendered)
+        self.assertNotIn("__WINDOW_END_UTC__", rendered)
+        self.assertIn("h.MEASUREMENT_TIME >= c.window_start_utc", rendered)
+        self.assertIn("h.MEASUREMENT_TIME < c.window_end_utc", rendered)
+        self.assertIn("'window_semantics', 'HALF_OPEN_UTC'", template)
+        self.assertIn("'provider_latency_documented', FALSE", template)
+        self.assertIn("'settlement_policy_status', 'NOT_DECLARED'", template)
+        self.assertEqual(
+            selector,
+            {"window_start": "2026-08-01T00:00:00Z", "window_end": "2026-08-08T00:00:00Z"},
+        )
+        receipt = MODULE.build_receipt(
+            "data-quality",
+            "readonly",
+            rendered,
+            sources,
+            raw=[],
+            template_sql=template,
+            template_path=path,
+            selector=selector,
+            collection_mode="live-cli",
+        )
+        self.assertEqual(receipt["source_metadata"]["selector_values"], selector)
+        self.assertEqual(
+            receipt["selector_fingerprint"],
+            "sha256:" + hashlib.sha256(MODULE.canonical_json(selector)).hexdigest(),
+        )
+        with self.assertRaises(MODULE.CollectionError):
+            MODULE.render_surface(
+                "data-quality",
+                window_start="2026-08-01T00:00:00Z",
+                window_end="2026-08-08T00:00:01Z",
+            )
+
+    def test_data_quality_sql_emits_only_hashed_identity_and_definition_fields(self) -> None:
+        forbidden_output_keys = (
+            "'table_id'",
+            "'table_name'",
+            "'table_schema'",
+            "'table_database'",
+            "'metric_id'",
+            "'metric_name'",
+            "'metric_schema'",
+            "'metric_database'",
+            "'reference_id'",
+            "'expectation_id'",
+            "'expectation_name'",
+            "'expectation_expression'",
+            "'execution_role'",
+            "'schedule'",
+            "'filter'",
+            "'within_group'",
+            "'properties'",
+        )
+        for surface in (
+            "data-quality",
+            "data-quality-associations-current",
+            "data-quality-expectations-current",
+            "data-quality-notification-current",
+        ):
+            _, sql, _ = MODULE.load_surface(surface)
+            with self.subTest(surface=surface):
+                self.assertIn("SHA2(", sql)
+                self.assertIn("CONVERT_TIMEZONE('UTC', CURRENT_TIMESTAMP())", sql)
+                for context_key in (
+                    "'observed_at'",
+                    "'organization_name_sha256'",
+                    "'account_identifier_sha256'",
+                    "'collector_user_sha256'",
+                    "'primary_role_sha256'",
+                    "'primary_role_type'",
+                    "'secondary_roles_sha256'",
+                    "'timezone'",
+                ):
+                    self.assertIn(context_key, sql)
+                for key in forbidden_output_keys:
+                    self.assertNotIn(key, sql)
+        _, associations_sql, _ = MODULE.load_surface("data-quality-associations-current")
+        self.assertNotIn("DATA_QUALITY_NOTIFICATION_STATUS", associations_sql)
+        for state in (
+            "STARTED",
+            "STARTED_AND_PENDING_SCHEDULE_UPDATE",
+            "SUSPENDED",
+            "SUSPENDED_TABLE_DOES_NOT_EXIST_OR_NOT_AUTHORIZED",
+            "SUSPENDED_DATA_METRIC_FUNCTION_DOES_NOT_EXIST_OR_NOT_AUTHORIZED",
+            "SUSPENDED_TABLE_COLUMN_DOES_NOT_EXIST_OR_NOT_AUTHORIZED",
+            "SUSPENDED_INSUFFICIENT_PRIVILEGE_TO_EXECUTE_DATA_METRIC_FUNCTION",
+            "SUSPENDED_ACTIVE_EVENT_TABLE_DOES_NOT_EXIST_OR_NOT_AUTHORIZED",
+        ):
+            self.assertIn(f"'{state}'", associations_sql)
+        self.assertNotIn("visibility_lag_seconds", associations_sql)
+        self.assertNotIn("visibility_watermark_utc", associations_sql)
+        self.assertIn("BETWEEN 1 AND 1000", associations_sql)
+        self.assertIn("ELSE 0", associations_sql)
+        for surface in MODULE.DATA_QUALITY_SELECTOR_SURFACES:
+            _, current_sql, _ = MODULE.load_surface(surface)
+            with self.subTest(surface=surface):
+                self.assertIn("source_counts AS", current_sql)
+                self.assertIn("COUNT(*) AS source_row_count", current_sql)
+                self.assertIn("'source_row_limit', 5000", current_sql)
+                self.assertIn("'selected_object_key_sha256'", current_sql)
+                self.assertIn("'selected_object_domain'", current_sql)
+                self.assertNotIn("visibility_lag_seconds", current_sql)
+                self.assertNotIn("visibility_watermark_utc", current_sql)
+
+    def test_data_quality_receipts_apply_caps_per_dataset(self) -> None:
+        datasets_by_surface = {
+            "data-quality": "expectation_history",
+            "data-quality-associations-current": "current_associations",
+            "data-quality-expectations-current": "current_expectations",
+            "data-quality-notification-current": "notification_associations",
+        }
+        for surface, dataset in datasets_by_surface.items():
+            _, sql, _ = MODULE.load_surface(surface)
+            capped_sql = re.sub(r"\bLIMIT\s+5000\b", "LIMIT 2", sql, flags=re.IGNORECASE)
+            rows = [
+                {"EVIDENCE": {"_dataset": "execution_context", "observed_at": "2026-08-02T00:00:00Z"}},
+                {"EVIDENCE": {"_dataset": dataset, "object_key_sha256": "a" * 64}},
+                {"EVIDENCE": {"_dataset": dataset, "object_key_sha256": "b" * 64}},
+            ]
+            receipt = MODULE.build_receipt(surface, "readonly", capped_sql, ["source"], raw=rows)
+            with self.subTest(surface=surface):
+                self.assertEqual(receipt["cap_scope"], "per_dataset")
+                self.assertTrue(receipt["truncation_possible"])
+
+    def test_data_quality_current_selectors_are_strict_and_privacy_bound(self) -> None:
+        surfaces = (
+            "data-quality-associations-current",
+            "data-quality-expectations-current",
+            "data-quality-notification-current",
+        )
+        for surface in surfaces:
+            with self.subTest(surface=surface):
+                with self.assertRaises(MODULE.CollectionError):
+                    MODULE.render_surface(surface)
+                path, template, rendered, sources, selector = MODULE.render_surface(
+                    surface,
+                    data_quality_object="governed.analytics.private_orders",
+                    data_quality_domain="TABLE",
+                )
+                self.assertEqual(
+                    selector,
+                    {"data_quality_object": "GOVERNED.ANALYTICS.PRIVATE_ORDERS", "data_quality_domain": "TABLE"},
+                )
+                self.assertIn("GOVERNED.INFORMATION_SCHEMA.DATA_METRIC_FUNCTION_", rendered)
+                self.assertNotIn("__DATA_QUALITY_OBJECT_IDENTIFIER__", rendered)
+                object_key = "9" * 64
+                raw = [
+                    {
+                        "EVIDENCE": {
+                            "_dataset": "execution_context",
+                            "account_identifier_sha256": "a" * 64,
+                            "selected_object_key_sha256": object_key,
+                            "selected_object_domain": "TABLE",
+                        }
+                    }
+                ]
+                receipt = MODULE.build_receipt(
+                    surface,
+                    "readonly",
+                    rendered,
+                    sources,
+                    raw=raw,
+                    template_sql=template,
+                    template_path=path,
+                    selector=selector,
+                    collection_mode="live-cli",
+                )
+                binding = {"selected_object_key_sha256": object_key, "selected_object_domain": "TABLE"}
+                self.assertEqual(receipt["source_metadata"]["selector_binding"], binding)
+                self.assertEqual(receipt["source_metadata"]["rendered_sql_contract"], "privacy-bound-selector-v1")
+                self.assertEqual(
+                    receipt["selector_fingerprint"],
+                    "sha256:" + hashlib.sha256(MODULE.canonical_json(binding)).hexdigest(),
+                )
+                privacy_bound_sql = (
+                    template.replace(
+                        "__DATA_QUALITY_OBJECT_IDENTIFIER__",
+                        f"__DATA_QUALITY_OBJECT_KEY_SHA256_{object_key}__",
+                    )
+                    .replace("__DATA_QUALITY_DOMAIN__", "__DATA_QUALITY_DOMAIN_TABLE__")
+                    .replace(
+                        "__DATA_QUALITY_DATABASE_IDENTIFIER__",
+                        f"__DATA_QUALITY_DATABASE_BOUND_TO_OBJECT_KEY_SHA256_{object_key}__",
+                    )
+                )
+                self.assertEqual(
+                    receipt["rendered_sql_sha256"],
+                    "sha256:" + hashlib.sha256(privacy_bound_sql.encode("utf-8")).hexdigest(),
+                )
+                self.assertNotIn("PRIVATE_ORDERS", json.dumps(receipt))
+        for surface in surfaces:
+            for value in (
+                "GOVERNED.ANALYTICS",
+                'GOVERNED.ANALYTICS."PRIVATE_ORDERS"',
+                "GOVERNED.ANALYTICS.PRIVATE_ORDERS;DROP TABLE X",
+                "GOVERNED..PRIVATE_ORDERS",
+            ):
+                with (
+                    self.subTest(surface=surface, data_quality_object=value),
+                    self.assertRaises(MODULE.CollectionError),
+                ):
+                    MODULE.render_surface(
+                        surface,
+                        data_quality_object=value,
+                        data_quality_domain="TABLE",
+                    )
+            for domain in ("table", "MATERIALIZED VIEW", "STREAM"):
+                with (
+                    self.subTest(surface=surface, data_quality_domain=domain),
+                    self.assertRaises(MODULE.CollectionError),
+                ):
+                    MODULE.render_surface(
+                        surface,
+                        data_quality_object="GOVERNED.ANALYTICS.PRIVATE_ORDERS",
+                        data_quality_domain=domain,
+                    )
+
+    def test_data_quality_current_error_receipts_retain_template_proof_only(self) -> None:
+        for surface in MODULE.DATA_QUALITY_SELECTOR_SURFACES:
+            with self.subTest(surface=surface):
+                path, template, rendered, sources, selector = MODULE.render_surface(
+                    surface,
+                    data_quality_object="GOVERNED.ANALYTICS.PRIVATE_ORDERS",
+                    data_quality_domain="VIEW",
+                )
+                receipt = MODULE.build_receipt(
+                    surface,
+                    "readonly",
+                    rendered,
+                    sources,
+                    raw=[
+                        {
+                            "EVIDENCE": {
+                                "_dataset": "execution_context",
+                                "selected_object_key_sha256": "9" * 64,
+                                "selected_object_domain": "VIEW",
+                            }
+                        }
+                    ],
+                    error={"code": "SNOW_CLI_FAILED", "message": "collection failed"},
+                    template_sql=template,
+                    template_path=path,
+                    selector=selector,
+                    collection_mode="live-cli",
+                )
+                template_hash = "sha256:" + hashlib.sha256(template.encode("utf-8")).hexdigest()
+                self.assertEqual(receipt["rendered_sql_sha256"], template_hash)
+                self.assertIsNone(receipt["selector_fingerprint"])
+                self.assertNotIn("selector_binding", receipt["source_metadata"])
+                self.assertNotIn("PRIVATE_ORDERS", json.dumps(receipt))
+
+    def test_data_quality_offline_normalization_is_rejected_for_every_surface(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "saved.json"
+            source.write_text("[]", encoding="utf-8")
+            surfaces = {
+                "data-quality": (
+                    "--window-start",
+                    "2026-08-01T00:00:00Z",
+                    "--window-end",
+                    "2026-08-02T00:00:00Z",
+                ),
+                "data-quality-associations-current": (
+                    "--data-quality-object",
+                    "GOVERNED.ANALYTICS.ORDERS",
+                    "--data-quality-domain",
+                    "TABLE",
+                ),
+                "data-quality-expectations-current": (
+                    "--data-quality-object",
+                    "GOVERNED.ANALYTICS.ORDERS",
+                    "--data-quality-domain",
+                    "TABLE",
+                ),
+                "data-quality-notification-current": (
+                    "--data-quality-object",
+                    "GOVERNED.ANALYTICS.ORDERS",
+                    "--data-quality-domain",
+                    "TABLE",
+                ),
+            }
+            for surface, extra_args in surfaces.items():
+                completed = subprocess.run(
+                    [
+                        "python3",
+                        str(SCRIPT),
+                        "--surface",
+                        surface,
+                        "--input-json",
+                        str(source),
+                        *extra_args,
+                    ],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                with self.subTest(surface=surface):
+                    self.assertEqual(completed.returncode, 2)
+                    self.assertIn("offline normalization is diagnostic-only", completed.stderr)
 
     def test_pipeline_offline_normalization_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
