@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/oraclecloud-pack",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Claude Code skill pack for Oracle Cloud - 26 skills covering OCI infrastructure, database services, and enterprise cloud",
   "main": "README.md",
   "type": "module",
