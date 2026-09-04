@@ -17,6 +17,27 @@ analyzers do not call a model-specific API: Agent Skills-compatible harnesses ca
 load the skill directories directly, and any automation can invoke the bundled
 analyzers from Python 3.10+ without an adapter.
 
+For a harness-neutral entry point, list the production workflows and inspect the
+arguments for the one you need:
+
+```bash
+python3 shared/snowflake_operator.py list
+python3 shared/snowflake_operator.py query-id-forensics --help
+```
+
+Then analyze a redacted evidence receipt without granting Snowflake credentials or
+network access to the dispatcher:
+
+```bash
+python3 shared/snowflake_operator.py access-review \
+  --input ./access-evidence.json \
+  --output ./access-report.json
+```
+
+The dispatcher is a thin transport layer: it calls the skill's canonical Python
+analyzer, preserves its output and exit status, and contains no Snowflake decision
+logic. Evidence collection remains a separate, explicitly configured step.
+
 Then describe the problem in plain language:
 
 - “Why did our Snowflake bill jump?”
