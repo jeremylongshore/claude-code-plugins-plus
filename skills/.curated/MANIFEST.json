@@ -31556,16 +31556,15 @@
       "files": [
         "SKILL.md",
         "eval-spec.yaml",
+        "references/dbt-project-and-provider-migrations.md",
         "references/schemachange-integrity.md",
         "references/source-notes.md",
         "references/terraform-provider-2x.md",
         "references/toolchain-bcr.md",
         "references/zero-change-rollback.md",
         "scripts/analyze_deploy_evidence.py",
-        "scripts/collect_snowflake_evidence.py",
         "scripts/fixtures/clean-preview.json",
         "scripts/fixtures/unsafe-deploy.json",
-        "scripts/sql/query.sql",
         "scripts/test_analyze_deploy_evidence.py"
       ]
     },

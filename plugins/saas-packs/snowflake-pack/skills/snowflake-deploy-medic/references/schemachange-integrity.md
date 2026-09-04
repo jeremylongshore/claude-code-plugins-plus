@@ -22,6 +22,24 @@ repository commit. The analyzer reports versioned checksum drift, repeatable
 checksum changes, and duplicate version names; it never edits history or runs a
 migration.
 
+Retain the exact script filename in each private evidence row so ordering can be
+verified without emitting it in the report. Versioned names may use dots or
+underscores between canonical numeric components. Reconcile the packet to
+schemachange's natural filename order: versioned scripts first, repeatables next
+in alphanumeric description order, and always scripts last in alphanumeric
+description order. SQL, rendered SQL, CLI YAML, and their Jinja variants use the
+same ordering contract.
+Normalize one terminal `.jinja` suffix before ordering and uniqueness checks,
+matching schemachange's script identity rules; a rendered and unrendered alias
+must never count as two repository scripts.
+
+Treat repository scripts and history executions as separate denominators.
+`CHANGE_HISTORY` is append-only per execution: a repeatable can add a row after a
+checksum change and an always script adds a row on every run. Record the total
+history count/digest plus a current observed projection of the latest relevant
+row for every repository script; do not force total history count to equal script
+count.
+
 ## Safe preview and ordering
 
 Use the installed tool's current `verify`/`dry-run` behavior and pin the command
@@ -30,10 +48,10 @@ already run; determine whether the environment intentionally permits out-of-orde
 execution and review dependency ordering. Do not enable out-of-order merely to
 silence a skipped migration.
 
-For a checksum drift, stop and choose one of these documented paths: restore the
-original applied script, create a new versioned migration, or explicitly approve a
-repeatable conversion with a tested rollback/forward-fix. Do not “fix” the change
-history table by hand.
+For a checksum drift, stop: restore the original applied script or create a new
+versioned migration with a tested rollback/forward-fix. Do not convert an applied
+versioned script merely to bypass history, and do not “fix” the change-history
+table by hand.
 
 ## Upgrade-specific checksum risk
 

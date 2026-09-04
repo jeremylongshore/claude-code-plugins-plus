@@ -13,7 +13,7 @@ description: |
   "schemachange checksum", "repeatable migration", "Snowflake CLI upgrade",
   "driver BCR", or "rollback Snowflake deploy". Use when a production change
   needs a current plan, migration-integrity, toolchain, or rollback gate.
-allowed-tools: Read, Bash(python3:*), Bash(terraform:plan*)
+allowed-tools: Read
 argument-hint: "[redacted-deploy-evidence.json]"
 version: 3.8.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -34,8 +34,11 @@ database defect. This skill creates one evidence-backed gate across those seams.
 
 The deterministic classifier is
 [`scripts/analyze_deploy_evidence.py`](scripts/analyze_deploy_evidence.py). It
-accepts redacted plan/state/history/toolchain evidence and emits findings,
-zero-change status, ordered read-only checks, and post-deploy invariants. Read
+accepts a bounded schema-v2 projection plus its digest from an independent CI or
+artifact channel. It emits privacy-safe findings, a point-in-time zero-change
+status, ordered read-only checks, and post-deploy invariants. Nested receipt
+hashes detect internal inconsistency; they never substitute for trusted origin.
+Read
 [`references/terraform-provider-2x.md`](references/terraform-provider-2x.md),
 [`references/schemachange-integrity.md`](references/schemachange-integrity.md),
 and [`references/zero-change-rollback.md`](references/zero-change-rollback.md)
@@ -59,11 +62,17 @@ the versions in a local receipt are observations, not timeless recommendations.
   account release window.
 - Redact backend credentials, tokens, private keys, passphrases, passwords,
   sensitive plan values, customer data, and presigned URLs from receipts.
+- Never execute Terraform, Snowflake, schemachange, a network client, or a shell
+  from the classifier. It is a pure JSON reader and report writer.
+- Never treat a generic query-history receipt as deployment proof. It cannot
+  establish a complete plan, state, migration, BCR, or affected-object denominator.
 
 ## Prerequisites
 
 Collect a timestamped receipt from the exact account, role, backend, and CI
-commit. It should include:
+commit. Hash account, role, backend, workspace, object, address, operator, and
+owner identities before they enter the packet. Obtain the canonical packet
+SHA-256 independently from the trusted CI/artifact channel. The packet must include:
 
 1. A preflight record with operator, UTC timestamp, account/backend/workspace
    identity, state lock/backup, affected-object inventory, plan, BCR, and
@@ -76,19 +85,27 @@ commit. It should include:
 4. For existing grants/objects, the intended resource address, remote identity,
    import evidence, and post-import plan result.
 5. An itemized BCR inventory for the account release window: each ID/source,
-   affected surface, owner, and verified/mitigated/not-applicable disposition.
+   immutable source snapshot hash, externally established item count, affected
+   surface, owner, and verified/mitigated/not-applicable disposition.
 6. An affected-object inventory reconciled to plan addresses (empty and
    explicitly verified for a zero-change plan), plus a verified point-in-time
    state backup receipt with location, capture time, and SHA-256.
-7. Schemachange version, migration commit, script type/path/version, stored and
-   current checksums, change-history status, dry-run/verify output, and out-of-
-   order policy if relevant.
+7. Schemachange version, migration commit, exact script filename/type/version,
+   stored and current checksums, change-history status, dry-run/verify output,
+   and out-of-order policy if relevant. Bind a nonempty repository-script denominator, a
+   current observed projection of the relevant rows, and the append-only
+   `CHANGE_HISTORY` count/hash; repeated R/A executions make those counts differ.
 8. Snowflake CLI, connector/driver, Terraform, schemachange, and runtime versions
    plus current release-note/BCR sources reviewed.
 9. A zero-change receipt when exit code is `0` and changes are `0`, tied to the
    saved plan hash and verified affected-object count. Otherwise, a rollback or
    forward-fix test against this exact plan/migration set, including
    owner, preconditions, validation, and stop condition.
+10. A hash-bound provider migration-segment inventory and a verified denominator
+    for affected dbt Project objects, including the 2026_06 live-version BCR when
+    applicable.
+11. Exactly one account/plan-bound post-change invariant per changed plan
+    resource; process exit status is never the verification result.
 
 Missing evidence is an explicit finding. A successful command from a different
 role, account, or environment is not a deployment receipt.
@@ -103,19 +120,12 @@ the target account release window. Do not rely on a cached blog post or a generi
 “latest” label. Keep auth read-only and least-privileged; use key pair/OAuth/
 workload identity/external-browser mechanisms without exposing secrets.
 
-For live metadata, use the pack's shared bounded collector (never pass
-credentials on its command line):
-
-```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
-  --surface query --connection <existing-readonly-profile> \
-  --output ./snowflake-deploy-live-evidence.json
-```
-
-Treat the collector's `collected_at`, SQL hash, source views, row count, and
-non-claims as provenance. It does not replace Terraform state/plan, BCR, or
-backup receipts. A receipt with `truncation_possible: true` cannot prove a
-complete affected-object or dependency inventory.
+The pack's generic query collector may support diagnosis, but it is not positive
+evidence for this gate. A raw query receipt, a self-asserted hash, or a receipt
+with `truncation_possible: true` cannot prove a complete affected-object or
+dependency inventory. Build the schema-v2 projection in trusted CI from sanitized
+`terraform show -json`, backend metadata, lock-file selection, repository migration
+inventory, `CHANGE_HISTORY`, official BCR status/items, and exact tool versions.
 
 ### Step 2: Gate Terraform state and preview
 
@@ -136,6 +146,17 @@ import.
 For provider 2.x preview resources/features, read the exact current support
 boundary and release notes. A green plan does not make preview behavior stable.
 See [`references/terraform-provider-2x.md`](references/terraform-provider-2x.md).
+Record every migration-guide segment between the locked source and target provider
+versions. Each segment receipt must bind its source, versions, affected addresses,
+immutable source snapshot, state-move boundary, disposition, and canonical SHA-256.
+Segments must advance monotonically without gaps, cycles, or synthetic multi-minor
+leaps. Empty means explicitly
+verified not applicable, not “not checked.”
+
+If dbt Project objects are in scope, inventory their deployed/staged code hashes,
+current and target version model, supported runtime, behavior-change disposition,
+and rollback artifact. The pending live-version behavior changes the rollback model;
+see [`references/dbt-project-and-provider-migrations.md`](references/dbt-project-and-provider-migrations.md).
 
 ### Step 3: Gate schemachange integrity
 
@@ -157,20 +178,28 @@ tool version. Never alter history by hand. See
 
 ```bash
 python3 "${CLAUDE_SKILL_DIR}/scripts/analyze_deploy_evidence.py" \
-  --input ./snowflake-deploy-evidence.json
+  --input ./snowflake-deploy-evidence.json \
+  --as-of '<current-utc-evaluation-timestamp>' \
+  --trusted-bundle-sha256 'sha256:<digest-from-trusted-ci-or-artifact-channel>'
 ```
 
-Expected findings include:
+The explicit `--as-of` value prevents wall-clock-dependent output. A clean
+verdict is `PASS_AS_OF`, expires at that exact timestamp, and is never permission
+to apply. Expected findings include:
 
-- `GRANT_IMPORT_REQUIRED`, `TERRAFORM_STATE_UNREADABLE`,
-  `DESTRUCTIVE_PLAN_CHANGE`, `PLAN_FAILED`, `PLAN_NOT_VERIFIED`;
+- `TRUSTED_BUNDLE_DIGEST_MISSING_OR_MISMATCHED`,
+  `EVIDENCE_CONTEXT_INVALID_OR_STALE`, `PLAN_RECEIPT_UNVERIFIABLE`,
+  `PLAN_EXIT_ACTION_CONTRADICTION`, `TERRAFORM_STATE_UNREADABLE_OR_UNBOUND`;
+- `GRANT_IMPORT_REQUIRED`, `DESTRUCTIVE_PLAN_CHANGE`,
+  `AFFECTED_OBJECT_DENOMINATOR_UNVERIFIED`;
 - `VERSIONED_CHECKSUM_DRIFT`, `REPEATABLE_CHANGE_DETECTED`,
-  `VERSION_COLLISION`;
-- `PROVIDER_PRE_2`, `PROVIDER_PREVIEW_FEATURE`, `TOOLCHAIN_UNVERIFIED`,
-  `BCR_NOT_CHECKED`, `BCR_INVENTORY_MISSING`;
-- `PREFLIGHT_INCOMPLETE`, `STATE_BACKUP_MISSING`,
-  `AFFECTED_OBJECTS_UNVERIFIED`, `ZERO_CHANGE_RECEIPT_MISSING`;
-- `ROLLBACK_UNTESTED`.
+  `ALWAYS_MIGRATION_UNREVIEWED`, `MIGRATION_DENOMINATOR_UNVERIFIED`;
+- `PROVIDER_PREVIEW_FEATURE`, `PROVIDER_PREVIEW_DENOMINATOR_UNVERIFIED`,
+  `PROVIDER_MIGRATION_DENOMINATOR_UNVERIFIED`, `DEPLOY_TOOLCHAIN_UNVERIFIED`;
+- `BCR_INVENTORY_UNVERIFIED`, `DBT_PROJECT_DENOMINATOR_UNVERIFIED`,
+  `PREFLIGHT_DENOMINATOR_UNVERIFIED`, `STATE_BACKUP_RECEIPT_UNVERIFIABLE`;
+- `ROLLBACK_RECEIPT_UNVERIFIABLE`, `POST_CHANGE_INVARIANTS_UNVERIFIED`,
+  `ZERO_CHANGE_RECEIPT_UNVERIFIABLE`.
 
 The script is pure and connector-neutral. It reports findings from supplied
 evidence; it does not call Terraform, schemachange, Snowflake CLI, or Snowflake.
@@ -185,15 +214,16 @@ boundary for any later mutation.
 
 ### Step 6: Verify post-deploy invariants
 
-After a separately approved deployment, collect fresh evidence. Do not call a
-release complete from process exit status alone. The saved state/plan, grant
-addresses, migration history, toolchain/BCR receipt, and rollback/forward-fix
-validation must all reconcile.
+After a separately approved deployment, collect fresh evidence. The preflight
+classifier validates only the invariant plan; it does not claim to execute or
+verify post-deploy checks. Reconcile the saved state/plan, grant addresses,
+migration history, toolchain/BCR receipt, observed invariant results, and
+rollback/forward-fix validation in a separate operator-reviewed receipt.
 
 ## Output format
 
-- **Identity:** account, role, backend/workspace, repository commit, collection
-  timestamp, and explicit UTC observation window.
+- **Identity:** hashed account, role, backend/workspace, repository commit,
+  collection timestamp, and explicit UTC observation window.
 - **Toolchain:** exact observed versions and links/dates for current docs/BCRs.
 - **Terraform:** state parseability, detailed exit code, zero-change status,
   grant/import/ownership/replacement risks.
@@ -201,7 +231,7 @@ validation must all reconcile.
   backup receipt reconciled to the same account and saved plan.
 - **Migrations:** V/R/A classification, checksum/history comparison, collision or
   out-of-order risk, and idempotence evidence.
-- **Decision:** block, review, or ready-for-explicit-approval; explain why.
+- **Decision:** `BLOCKED` or `PASS_AS_OF`; neither authorizes apply.
 - **Rollback:** tested strategy for this exact change set and stop condition.
 - **Zero-change receipt:** saved-plan hash, verified object count, issuance time,
   and explicit `issued` status when the plan is truly zero-change.
@@ -246,3 +276,5 @@ table by hand to silence either finding.
   detailed plan semantics and change-specific rollback boundaries.
 - [`references/source-notes.md`](references/source-notes.md) — primary research
   routes; verify live pages at execution time.
+- [`references/dbt-project-and-provider-migrations.md`](references/dbt-project-and-provider-migrations.md)
+  — provider migration segments and dbt Project live-version preflight.
