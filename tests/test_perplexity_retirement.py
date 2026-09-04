@@ -76,11 +76,12 @@ class PerplexityRetirementTests(unittest.TestCase):
             (ROOT / "skills/.curated/MANIFEST.json").read_text(encoding="utf-8")
         )
 
-        expected_tag = f"run-{histogram['run_id']}"
-        self.assertEqual(latest["to_tag"], expected_tag)
+        run_id = histogram["run_id"]
+        self.assertEqual(latest["run_id"], run_id)
+        self.assertRegex(latest["to_tag"], rf"^run-{run_id}(?:\.[1-9]\d*)?$")
         self.assertEqual(latest["dolt_commit"], histogram["dolt_commit"])
-        self.assertEqual(manifest["run_id"], histogram["run_id"])
-        self.assertEqual(manifest["grade_export"]["run_id"], histogram["run_id"])
+        self.assertEqual(manifest["run_id"], run_id)
+        self.assertEqual(manifest["grade_export"]["run_id"], run_id)
 
 
 if __name__ == "__main__":

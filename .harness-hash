@@ -16,6 +16,8 @@ bcf6cd151df5eabc437ea58a67057fa5e3d24bf8bbcd7b969339f5824bfa00b7  plugins/saas-p
 40cb7643acd6e678d63bdcb5cdcc2bd8ff4372efe2e838ad0a3f992617179a05  plugins/saas-packs/snowflake-pack/skills/snowflake-data-quality-sentinel/eval-spec.yaml
 2d1f4d1d4f09a3d336a623ca2c7a7f564bad03da450be7342e4a1e739940112c  plugins/saas-packs/snowflake-pack/skills/snowflake-deploy-medic/eval-spec.yaml
 393773376112810f400fd018ae48a4a351f15c91f8a9796bc50bcb4105912df6  plugins/saas-packs/snowflake-pack/skills/snowflake-failover-readiness-drill/eval-spec.yaml
+7bdeb1c50a2a502fc4685845c8ed042338713b48c6543b683faff0ffe2611a0f  plugins/saas-packs/snowflake-pack/skills/snowflake-governance-coverage-auditor/eval-spec.yaml
+f7045fb45d69b9f97364cb6052c79fe4261bad181e8de7bd360fe2ae15d863ea  plugins/saas-packs/snowflake-pack/skills/snowflake-native-app-release-sheriff/eval-spec.yaml
 5ced1d7ca9b4fef12a60f58db31188ee6e4e9f9f6e3b1eb389b5cc2521e9ba9c  plugins/saas-packs/snowflake-pack/skills/snowflake-pipeline-guardian/eval-spec.yaml
 28663182f51bbfa739771567e951bb2fabe9d6d02680060c200df770a2a4b003  plugins/saas-packs/snowflake-pack/skills/snowflake-query-forensics/eval-spec.yaml
 21ebceeb8b3d2e243aa688df85198fc28b3fbc4c0ca009ca583868e101073535  plugins/saas-packs/snowflake-pack/skills/snowflake-strong-auth-migration-pilot/eval-spec.yaml
@@ -38,6 +40,8 @@ bcf6cd151df5eabc437ea58a67057fa5e3d24bf8bbcd7b969339f5824bfa00b7  skills/.curate
 40cb7643acd6e678d63bdcb5cdcc2bd8ff4372efe2e838ad0a3f992617179a05  skills/.curated/snowflake-data-quality-sentinel/eval-spec.yaml
 2d1f4d1d4f09a3d336a623ca2c7a7f564bad03da450be7342e4a1e739940112c  skills/.curated/snowflake-deploy-medic/eval-spec.yaml
 393773376112810f400fd018ae48a4a351f15c91f8a9796bc50bcb4105912df6  skills/.curated/snowflake-failover-readiness-drill/eval-spec.yaml
+7bdeb1c50a2a502fc4685845c8ed042338713b48c6543b683faff0ffe2611a0f  skills/.curated/snowflake-governance-coverage-auditor/eval-spec.yaml
+f7045fb45d69b9f97364cb6052c79fe4261bad181e8de7bd360fe2ae15d863ea  skills/.curated/snowflake-native-app-release-sheriff/eval-spec.yaml
 5ced1d7ca9b4fef12a60f58db31188ee6e4e9f9f6e3b1eb389b5cc2521e9ba9c  skills/.curated/snowflake-pipeline-guardian/eval-spec.yaml
 28663182f51bbfa739771567e951bb2fabe9d6d02680060c200df770a2a4b003  skills/.curated/snowflake-query-forensics/eval-spec.yaml
 21ebceeb8b3d2e243aa688df85198fc28b3fbc4c0ca009ca583868e101073535  skills/.curated/snowflake-strong-auth-migration-pilot/eval-spec.yaml

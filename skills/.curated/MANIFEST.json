@@ -6,22 +6,22 @@
   "validated": true,
   "grade_export": {
     "run_id": 30,
-    "total": 3545,
+    "total": 3547,
     "grades": {
-      "A": 1887,
+      "A": 1889,
       "B": 1087,
       "C": 409,
       "D": 157,
       "F": 5
     },
-    "grades_csv_sha256": "82bdc99fd54110aea887bba1f630e85026f7fccfb085aeab8cebda8f68816566"
+    "grades_csv_sha256": "47d8e4adf2b4a827166e9cc5887ff58ff7fd3840c786e7e98c4d4eec3052ba75"
   },
   "selection": {
     "resolver": "graded∩first-party",
-    "count": 2406,
-    "sha256": "248066c8f347b6a43bb60293e7224b73bdbe5ca423b3f0ffafaa63f7ead493f7"
+    "count": 2408,
+    "sha256": "57618fbb0b707e04770b84011c658cf05c80e5a69875e085ea0487837e122b84"
   },
-  "count": 2406,
+  "count": 2408,
   "skills": [
     {
       "curated_name": "abridge-ci-integration",
@@ -31459,7 +31459,7 @@
       "category": "saas-packs",
       "plugin": "snowflake-pack",
       "recorded_grade": "A",
-      "recorded_score": "95",
+      "recorded_score": "92",
       "fresh_grade": "A",
       "run_id": 30,
       "files": [
@@ -31527,7 +31527,7 @@
       "category": "saas-packs",
       "plugin": "snowflake-pack",
       "recorded_grade": "A",
-      "recorded_score": "96",
+      "recorded_score": "90",
       "fresh_grade": "A",
       "run_id": 30,
       "files": [
@@ -31550,7 +31550,7 @@
       "category": "saas-packs",
       "plugin": "snowflake-pack",
       "recorded_grade": "A",
-      "recorded_score": "94",
+      "recorded_score": "93",
       "fresh_grade": "A",
       "run_id": 30,
       "files": [
@@ -31574,7 +31574,7 @@
       "category": "saas-packs",
       "plugin": "snowflake-pack",
       "recorded_grade": "A",
-      "recorded_score": "95",
+      "recorded_score": "91",
       "fresh_grade": "A",
       "run_id": 30,
       "files": [
@@ -31592,12 +31592,65 @@
       ]
     },
     {
+      "curated_name": "snowflake-governance-coverage-auditor",
+      "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-governance-coverage-auditor",
+      "category": "saas-packs",
+      "plugin": "snowflake-pack",
+      "recorded_grade": "A",
+      "recorded_score": "91",
+      "fresh_grade": "A",
+      "run_id": 30,
+      "files": [
+        "SKILL.md",
+        "eval-spec.yaml",
+        "references/current-state.md",
+        "references/input-contract.md",
+        "references/privilege-and-boundaries.md",
+        "references/source-notes.md",
+        "scripts/analyze_governance.py",
+        "scripts/collect_snowflake_evidence.py",
+        "scripts/sql/governance-classification-current.sql",
+        "scripts/sql/governance-policies-current.sql",
+        "scripts/sql/governance-tags-current.sql",
+        "tests/fixtures/clean-observations.json",
+        "tests/fixtures/unsafe-observations.json",
+        "tests/test_analyze_governance.py"
+      ]
+    },
+    {
+      "curated_name": "snowflake-native-app-release-sheriff",
+      "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-native-app-release-sheriff",
+      "category": "saas-packs",
+      "plugin": "snowflake-pack",
+      "recorded_grade": "A",
+      "recorded_score": "96",
+      "fresh_grade": "A",
+      "run_id": 30,
+      "files": [
+        "SKILL.md",
+        "eval-spec.yaml",
+        "fixtures/incompatible-versions.json",
+        "fixtures/missing-scans.json",
+        "fixtures/partial-setup-failure.json",
+        "fixtures/removed-grants.json",
+        "fixtures/safe-cohorts.json",
+        "references/evidence-contract.md",
+        "references/source-notes.md",
+        "scripts/analyze_native_app_release.py",
+        "scripts/collect_snowflake_evidence.py",
+        "scripts/sql/native-app-release-directives-current.sql",
+        "scripts/sql/native-app-upgrade-cohorts-current.sql",
+        "scripts/sql/native-app-versions-current.sql",
+        "scripts/test_analyze_native_app_release.py"
+      ]
+    },
+    {
       "curated_name": "snowflake-pipeline-guardian",
       "source_path": "plugins/saas-packs/snowflake-pack/skills/snowflake-pipeline-guardian",
       "category": "saas-packs",
       "plugin": "snowflake-pack",
       "recorded_grade": "A",
-      "recorded_score": "93",
+      "recorded_score": "94",
       "fresh_grade": "A",
       "run_id": 30,
       "files": [
@@ -31654,7 +31707,7 @@
       "category": "saas-packs",
       "plugin": "snowflake-pack",
       "recorded_grade": "A",
-      "recorded_score": "95",
+      "recorded_score": "96",
       "fresh_grade": "A",
       "run_id": 30,
       "files": [

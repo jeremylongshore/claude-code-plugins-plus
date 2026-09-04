@@ -6,9 +6,9 @@
   },
   "stats": {
     "totalPlugins": 439,
-    "totalSkills": 2954,
+    "totalSkills": 2956,
     "totalDocs": 24,
-    "totalItems": 3417,
+    "totalItems": 3419,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -13326,7 +13326,7 @@
       "slug": "snowflake-pack",
       "name": "snowflake-pack",
       "displayName": "snowflake pack",
-      "description": "Eight model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, and failover",
+      "description": "Ten model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, access, governance, data quality, failover, and Native Apps",
       "category": "saas-packs",
       "keywords": [
         "snowflake",
@@ -13340,15 +13340,15 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "3.9.0",
+      "version": "3.14.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
-      "skillCount": 8,
+      "skillCount": 10,
       "verificationScore": 95,
       "verificationGrade": "A",
       "verificationBadge": "gold",
-      "searchText": "snowflake pack eight model-neutral snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, and failover saas-packs snowflake saas sdk integration"
+      "searchText": "snowflake pack ten model-neutral snowflake operator skills with read-only evidence collection for cost, performance, pipelines, access, governance, data quality, failover, and native apps saas-packs snowflake saas sdk integration"
     },
     {
       "type": "plugin",
@@ -72149,7 +72149,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.9.0",
+      "version": "3.14.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72169,7 +72169,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.9.0",
+      "version": "3.14.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72188,7 +72188,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.9.0",
+      "version": "3.14.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72206,7 +72206,7 @@
         "Read"
       ],
       "compatibleWith": [],
-      "version": "3.9.0",
+      "version": "3.14.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72225,12 +72225,50 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.9.0",
+      "version": "3.14.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
       "searchText": "snowflake-failover-readiness-drill analyze snowflake failover-group rpo/rto readiness from independently trusted, privacy-preserving live receipts without executing refresh, failover, failback, redirect, cancellation, resume, or session changes. use when an owner needs a business critical disaster-recovery preflight, replication failure diagnosis, dangling-reference check, or operator-executed drill proof. trigger with \"snowflake failover drill\", \"replication rpo\", \"failback proof\", or \"secondary refresh\". saas-packs read bash(python3:*) "
+    },
+    {
+      "type": "skill",
+      "id": "snowflake-governance-coverage-auditor",
+      "slug": "snowflake-governance-coverage-auditor",
+      "name": "snowflake-governance-coverage-auditor",
+      "description": "Audit trusted Snowflake classification, tags, masking, row access, projection, join, aggregation, and privacy-policy evidence without reading customer data. Use when governance enforcement may be missing or ambiguous. Trigger with \"Snowflake governance coverage\", \"policy precedence\", \"tag policy gaps\", \"classification failure\", or \"POLICY_CONTEXT verification\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)"
+      ],
+      "compatibleWith": [],
+      "version": "3.14.0",
+      "parentPlugin": {
+        "name": "snowflake-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "snowflake-governance-coverage-auditor audit trusted snowflake classification, tags, masking, row access, projection, join, aggregation, and privacy-policy evidence without reading customer data. use when governance enforcement may be missing or ambiguous. trigger with \"snowflake governance coverage\", \"policy precedence\", \"tag policy gaps\", \"classification failure\", or \"policy_context verification\". saas-packs read bash(python3:*) "
+    },
+    {
+      "type": "skill",
+      "id": "snowflake-native-app-release-sheriff",
+      "slug": "snowflake-native-app-release-sheriff",
+      "name": "snowflake-native-app-release-sheriff",
+      "description": "Preflight Snowflake Native App package releases from trusted, privacy-safe provider evidence without publishing, upgrading, altering, granting, or approving anything. Use when reviewing manifest/setup safety, security-scan gates, version and release-directive validation, App Spec or privilege changes, upgrade-cohort compatibility, and rollback readiness. Trigger with \"Native App release\", \"application package scan\", \"upgrade cohort\", or \"App Spec\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)"
+      ],
+      "compatibleWith": [],
+      "version": "3.14.0",
+      "parentPlugin": {
+        "name": "snowflake-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "snowflake-native-app-release-sheriff preflight snowflake native app package releases from trusted, privacy-safe provider evidence without publishing, upgrading, altering, granting, or approving anything. use when reviewing manifest/setup safety, security-scan gates, version and release-directive validation, app spec or privilege changes, upgrade-cohort compatibility, and rollback readiness. trigger with \"native app release\", \"application package scan\", \"upgrade cohort\", or \"app spec\". saas-packs read bash(python3:*) "
     },
     {
       "type": "skill",
@@ -72244,7 +72282,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.9.0",
+      "version": "3.14.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72264,7 +72302,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.9.0",
+      "version": "3.14.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
@@ -72283,7 +72321,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "3.9.0",
+      "version": "3.14.0",
       "parentPlugin": {
         "name": "snowflake-pack",
         "category": "saas-packs"
