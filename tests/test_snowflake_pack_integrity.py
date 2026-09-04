@@ -63,11 +63,10 @@ class SnowflakePackIntegrityTests(unittest.TestCase):
                 if path.is_file() and "__pycache__" not in path.parts and path.suffix not in {".pyc", ".pyo"}
             }
 
-        for skill in (
-            "snowflake-access-guardian",
-            "snowflake-cost-leak-hunter",
-            "snowflake-strong-auth-migration-pilot",
-        ):
+        skills = tuple(sorted(path.name for path in (PACK / "skills").iterdir() if path.is_dir()))
+        self.assertEqual(len(skills), 10)
+
+        for skill in skills:
             source = PACK / "skills" / skill
             curated = ROOT / "skills" / ".curated" / skill
             source_files = packaged_files(source)
@@ -166,6 +165,22 @@ class SnowflakePackIntegrityTests(unittest.TestCase):
         )
         self.assertIn(
             "skills/snowflake-strong-auth-migration-pilot/references/current-evidence-contract.md",
+            packed_files,
+        )
+        self.assertIn(
+            "skills/snowflake-governance-coverage-auditor/scripts/analyze_governance.py",
+            packed_files,
+        )
+        self.assertIn(
+            "skills/snowflake-governance-coverage-auditor/references/input-contract.md",
+            packed_files,
+        )
+        self.assertIn(
+            "skills/snowflake-native-app-release-sheriff/scripts/analyze_native_app_release.py",
+            packed_files,
+        )
+        self.assertIn(
+            "skills/snowflake-native-app-release-sheriff/references/evidence-contract.md",
             packed_files,
         )
         sync_generator = load_sync_generator()

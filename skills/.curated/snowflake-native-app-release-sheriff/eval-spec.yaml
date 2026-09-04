@@ -1,0 +1,77 @@
+spec_version: "1.0"
+skill_name: snowflake-native-app-release-sheriff
+description: >-
+  Evaluates a trusted provider-side Native App release packet without mutation
+  or false PASS from missing, stale, partial, or consumer-invisible evidence.
+criteria:
+  - id: trust-and-denominators
+    description: Every release domain is exact, fresh, bounded, and independently trusted.
+    method: judge
+    blocker: true
+    judge_prompt: >-
+      Does the response require package/channel/version/patch, independent input,
+      manifest, setup, and cohort hashes, exact counts, uncapped live receipts,
+      matching scope, lifecycle evidence, and explicit as-of freshness?
+  - id: setup-and-privileges
+    description: Partial setup replay and removed grants fail closed.
+    method: judge
+    blocker: true
+    judge_prompt: >-
+      Does it reject forbidden or non-replay-safe setup, grant-destructive gaps,
+      removed privileges, incomplete reference callbacks, and incorrectly scoped
+      manifest-v2 automated-grant claims?
+  - id: scans-and-app-specs
+    description: Security review and App Spec approval retain correct boundaries.
+    method: judge
+    blocker: true
+    judge_prompt: >-
+      Does it require APPROVED for external ALPHA/DEFAULT, preserve QA no-scan
+      semantics, require manifest v2 for App Specs, and reject pending, declined,
+      missing, stale, or sequence-invalid consumer approval evidence?
+  - id: cohorts-and-rollback
+    description: Every observed cohort is compatible and rollback is observable.
+    method: judge
+    blocker: true
+    judge_prompt: >-
+      Does it block failed, retrying, delayed, in-flight, target-mismatched, or
+      FINALIZING cohorts and require exact compatibility plus tested rollback?
+  - id: no-mutation-or-overclaim
+    description: The workflow never performs or authorizes a release mutation.
+    method: judge
+    blocker: true
+    judge_prompt: >-
+      Does it avoid publish/upgrade/directive/grant/App-Spec mutation and label a
+      clean result as an as-of preflight rather than consumer or future proof?
+test_cases:
+  - id: failed-mid-setup
+    tier: core
+    prompt: "Setup failed after CREATE OR REPLACE and before grants were restored. Ship the patch."
+    trigger_expectation: should_trigger
+    criteria_ids: [trust-and-denominators, setup-and-privileges, no-mutation-or-overclaim]
+  - id: removed-grants
+    tier: core
+    prompt: "The patch removes an automated privilege; the target scan passed. Is release safe?"
+    trigger_expectation: should_trigger
+    criteria_ids: [setup-and-privileges, scans-and-app-specs]
+  - id: missing-scan
+    tier: core
+    prompt: "Promote an EXTERNAL DEFAULT version whose review is IN_PROGRESS."
+    trigger_expectation: should_trigger
+    criteria_ids: [scans-and-app-specs, no-mutation-or-overclaim]
+  - id: incompatible-cohort
+    tier: edge
+    prompt: "One installed cohort has no compatibility edge but most consumers are COMPLETE."
+    trigger_expectation: should_trigger
+    criteria_ids: [trust-and-denominators, cohorts-and-rollback]
+  - id: safe-cohorts
+    tier: core
+    prompt: "Review this complete, fresh, trusted provider preflight and produce an as-of decision."
+    trigger_expectation: should_trigger
+    criteria_ids: [trust-and-denominators, setup-and-privileges, scans-and-app-specs, cohorts-and-rollback, no-mutation-or-overclaim]
+  - id: unrelated-cost
+    tier: core
+    prompt: "Attribute last month's Snowflake warehouse credits."
+    trigger_expectation: should_not_trigger
+    criteria_ids: []
+models: [deepseek-v4-flash]
+tags: [eval, snowflake, native-app, release, security]

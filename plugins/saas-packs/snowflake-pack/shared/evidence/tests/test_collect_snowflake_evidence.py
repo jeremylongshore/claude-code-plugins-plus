@@ -576,7 +576,15 @@ class CollectorTests(unittest.TestCase):
         canonical_sql = {path.name: path.read_bytes() for path in sorted((SCRIPT.parent / "sql").glob("*.sql"))}
         skills_dir = SCRIPT.parents[2] / "skills"
         bundled = sorted(skills_dir.glob("*/scripts/collect_snowflake_evidence.py"))
-        self.assertEqual(len(bundled), 7)
+        self.assertEqual(len(bundled), 9)
+        self.assertEqual(len(canonical_sql), 40)
+        native_app = skills_dir / "snowflake-native-app-release-sheriff" / "scripts" / SCRIPT.name
+        self.assertIn(native_app, bundled)
+        self.assertEqual(len(SYNC_MODULE.BUNDLES["snowflake-native-app-release-sheriff"]), 3)
+        self.assertIn(
+            "snowflake-governance-coverage-auditor",
+            {path.parents[1].name for path in bundled},
+        )
         self.assertFalse((skills_dir / "snowflake-deploy-medic" / "scripts" / SCRIPT.name).exists())
         for path in bundled:
             with self.subTest(skill=path.parents[1].name):
@@ -2220,6 +2228,90 @@ class CollectorTests(unittest.TestCase):
             with self.subTest(sql=sql), self.assertRaisesRegex(MODULE.CollectionError, "unreviewed SYSTEM"):
                 MODULE.validate_read_only_sql(sql)
         MODULE.validate_read_only_sql("SELECT SYSTEM$PIPE_STATUS('DB.SCHEMA.PIPE')")
+
+    def test_native_app_surfaces_require_strict_private_package_selector(self) -> None:
+        for surface in (
+            "native-app-versions-current",
+            "native-app-release-directives-current",
+            "native-app-upgrade-cohorts-current",
+        ):
+            with self.subTest(surface=surface):
+                _, template, rendered, _, selector = MODULE.render_surface(surface, application_package="app_package")
+                self.assertEqual(selector, {"application_package": "APP_PACKAGE"})
+                self.assertNotIn("__APPLICATION_PACKAGE_IDENTIFIER__", rendered)
+                self.assertIn("__APPLICATION_PACKAGE_IDENTIFIER__", template)
+            with self.assertRaises(MODULE.CollectionError):
+                MODULE.render_surface(surface, application_package="APP; DROP TABLE X")
+
+    def test_native_app_receipt_privacy_binds_package_hash(self) -> None:
+        surface = "native-app-versions-current"
+        path, template, rendered, sources, selector = MODULE.render_surface(
+            surface, application_package="PRIVATE_PACKAGE"
+        )
+        package_key = "a" * 64
+        raw = [
+            {"EVIDENCE": {"_dataset": "execution_context", "selected_package_key_sha256": package_key}},
+            {"EVIDENCE": {"_dataset": "versions", "package_key_sha256": package_key}},
+        ]
+        receipt = MODULE.build_receipt(
+            surface,
+            "observer",
+            rendered,
+            sources,
+            raw=raw,
+            template_sql=template,
+            template_path=path,
+            selector=selector,
+            collection_mode="live-cli",
+        )
+        serialized = json.dumps(receipt)
+        self.assertNotIn("PRIVATE_PACKAGE", serialized)
+        self.assertEqual(
+            receipt["source_metadata"]["selector_binding"],
+            {"selected_package_key_sha256": package_key},
+        )
+        self.assertEqual(receipt["cap_scope"], "per_dataset")
+
+    def test_native_app_error_receipt_never_fingerprints_selector(self) -> None:
+        surface = "native-app-versions-current"
+        path, template, rendered, sources, selector = MODULE.render_surface(
+            surface, application_package="PRIVATE_PACKAGE"
+        )
+        receipt = MODULE.build_receipt(
+            surface,
+            "observer",
+            rendered,
+            sources,
+            error={"message": "PRIVATE_PACKAGE failed"},
+            template_sql=template,
+            template_path=path,
+            selector=selector,
+            collection_mode="live-cli",
+        )
+        self.assertIsNone(receipt["selector_fingerprint"])
+        self.assertNotIn("PRIVATE_PACKAGE", json.dumps(receipt))
+
+    def test_native_app_offline_normalization_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "saved.json"
+            source.write_text("[]", encoding="utf-8")
+            completed = subprocess.run(
+                [
+                    "python3",
+                    str(SCRIPT),
+                    "--surface",
+                    "native-app-versions-current",
+                    "--application-package",
+                    "APP_PACKAGE",
+                    "--input-json",
+                    str(source),
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+        self.assertEqual(completed.returncode, 2)
+        self.assertIn("offline normalization is diagnostic-only", completed.stderr)
 
 
 if __name__ == "__main__":

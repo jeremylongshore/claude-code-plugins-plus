@@ -28,6 +28,25 @@ payloads. `row_limit` and `truncation_possible` in every receipt expose the revi
 cap; a receipt at the cap is partial until a narrower query or pagination proves
 completeness.
 
+Native App provider evidence uses three selector-bound current surfaces:
+`native-app-versions-current`, `native-app-release-directives-current`, and
+`native-app-upgrade-cohorts-current`. Each requires one strict unquoted
+`--application-package`, emits only Snowflake-side scoped hashes and allowlisted
+state/version fields, and binds the receipt's rendered SQL to the
+Snowflake-produced package hash. Error receipts retain template proof only.
+`APPLICATION_STATE` is a provider-side current snapshot with documented latency
+up to 10 minutes and no retention after uninstall; lifecycle completeness must
+come from separate trusted evidence. All three cap their data dataset at 5,000
+rows and a cap hit blocks release claims.
+
+Governance coverage uses three selector-bound current surfaces:
+`governance-classification-current`, `governance-tags-current`, and
+`governance-policies-current`. They bind database/object/domain selectors to
+Snowflake-produced hashes and preserve classification latency, visibility, and
+profile-state limits. `POLICY_CONTEXT` is deliberately outside this collector:
+its `EXECUTE USING` form must remain a separately trusted, sanitized simulation
+receipt and never weakens the collector's global read-only SQL guard.
+
 Pipeline evidence is live-only schema 2 and intentionally split across six
 single-statement surfaces. `pipeline` requires an explicit half-open UTC window
 of at most seven days and independently caps task, dynamic-table refresh, and

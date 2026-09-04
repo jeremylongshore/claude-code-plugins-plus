@@ -113,6 +113,21 @@ SUBSURFACES = {
         ["INFORMATION_SCHEMA.DATA_METRIC_FUNCTION_REFERENCES"],
         "data_quality_object",
     ),
+    "governance-classification-current": (
+        "governance-classification-current.sql",
+        ["SNOWFLAKE.ACCOUNT_USAGE.DATA_CLASSIFICATION_LATEST"],
+        "governance_database",
+    ),
+    "governance-policies-current": (
+        "governance-policies-current.sql",
+        ["INFORMATION_SCHEMA.POLICY_REFERENCES"],
+        "governance_object",
+    ),
+    "governance-tags-current": (
+        "governance-tags-current.sql",
+        ["INFORMATION_SCHEMA.TAG_REFERENCES", "INFORMATION_SCHEMA.TAG_REFERENCES_ALL_COLUMNS"],
+        "governance_object",
+    ),
     "pipeline-dynamic-table-current": (
         "pipeline-dynamic-table-current.sql",
         ["SHOW DYNAMIC TABLES IN ACCOUNT"],
@@ -131,6 +146,21 @@ SUBSURFACES = {
         "replication-dangling.sql",
         ["INFORMATION_SCHEMA.REPLICATION_GROUP_DANGLING_REFERENCES"],
         "replication_group",
+    ),
+    "native-app-versions-current": (
+        "native-app-versions-current.sql",
+        ["SHOW VERSIONS IN APPLICATION PACKAGE"],
+        "application_package",
+    ),
+    "native-app-release-directives-current": (
+        "native-app-release-directives-current.sql",
+        ["SHOW RELEASE DIRECTIVES IN APPLICATION PACKAGE"],
+        "application_package",
+    ),
+    "native-app-upgrade-cohorts-current": (
+        "native-app-upgrade-cohorts-current.sql",
+        ["SNOWFLAKE.DATA_SHARING_USAGE.APPLICATION_STATE"],
+        "application_package",
     ),
 }
 FORBIDDEN_SQL = {
@@ -170,7 +200,11 @@ SELECTOR_MARKERS = {
     "pipe": "__PIPE_IDENTIFIER__",
     "data_quality_object": "__DATA_QUALITY_OBJECT_IDENTIFIER__",
     "data_quality_domain": "__DATA_QUALITY_DOMAIN__",
+    "governance_database": "__GOVERNANCE_DATABASE_IDENTIFIER__",
+    "governance_object": "__GOVERNANCE_OBJECT_IDENTIFIER__",
+    "governance_domain": "__GOVERNANCE_DOMAIN__",
     "replication_group": "__REPLICATION_GROUP_IDENTIFIER__",
+    "application_package": "__APPLICATION_PACKAGE_IDENTIFIER__",
 }
 WINDOW_SELECTOR_MARKERS = {
     "window_start": "__WINDOW_START_UTC__",
@@ -184,6 +218,16 @@ DATA_QUALITY_SELECTOR_SURFACES = frozenset(
         "data-quality-notification-current",
     }
 )
+NATIVE_APP_SELECTOR_SURFACES = frozenset(
+    {
+        "native-app-versions-current",
+        "native-app-release-directives-current",
+        "native-app-upgrade-cohorts-current",
+    }
+)
+GOVERNANCE_DATABASE_MARKER = "__GOVERNANCE_OBJECT_DATABASE_IDENTIFIER__"
+GOVERNANCE_OBJECT_SELECTOR_SURFACES = frozenset({"governance-policies-current", "governance-tags-current"})
+GOVERNANCE_DATABASE_SELECTOR_SURFACES = frozenset({"governance-classification-current"})
 COST_WINDOW_SURFACES = {
     "cost",
     "cost-adaptive",
@@ -205,6 +249,9 @@ INTRINSIC_ROW_LIMITS = {
     "pipeline-pipe-status": 1,
     "pipeline-stream-current": 10000,
     "pipeline-task-current": 10000,
+    "governance-classification-current": 5000,
+    "governance-policies-current": 5000,
+    "governance-tags-current": 5000,
 }
 UTC_TIMESTAMP_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$")
 RECEIPT_EXPECTED_DATASETS = {
@@ -237,6 +284,9 @@ RECEIPT_EXPECTED_DATASETS = {
     "data-quality-associations-current": ("current_associations", "execution_context"),
     "data-quality-expectations-current": ("current_expectations", "execution_context"),
     "data-quality-notification-current": ("execution_context", "notification_associations"),
+    "governance-classification-current": ("classification_latest", "execution_context"),
+    "governance-policies-current": ("execution_context", "policy_references"),
+    "governance-tags-current": ("execution_context", "tag_references"),
     "pipeline": ("copy_history", "dynamic_table_refresh_history", "execution_context", "task_history"),
     "pipeline-dynamic-table-current": ("current_dynamic_tables", "execution_context"),
     "pipeline-pipe-current": ("current_pipes", "execution_context"),
@@ -247,6 +297,9 @@ RECEIPT_EXPECTED_DATASETS = {
     "replication-current": ("current_groups", "execution_context"),
     "replication-dangling": ("dangling_references", "execution_context"),
     "replication-progress": ("execution_context", "replication_progress"),
+    "native-app-versions-current": ("execution_context", "versions"),
+    "native-app-release-directives-current": ("execution_context", "release_directives"),
+    "native-app-upgrade-cohorts-current": ("execution_context", "upgrade_cohorts"),
 }
 CAP_DATASET_BY_SURFACE = {
     "auth": "historical_users",
@@ -262,8 +315,14 @@ CAP_DATASET_BY_SURFACE = {
     "pipeline-pipe-current": "current_pipes",
     "pipeline-stream-current": "current_streams",
     "pipeline-task-current": "current_tasks",
+    "governance-classification-current": "classification_latest",
+    "governance-policies-current": "policy_references",
+    "governance-tags-current": "tag_references",
     "replication-current": "current_groups",
     "replication-dangling": "dangling_references",
+    "native-app-versions-current": "versions",
+    "native-app-release-directives-current": "release_directives",
+    "native-app-upgrade-cohorts-current": "upgrade_cohorts",
 }
 CAP_DATASETS_BY_SURFACE = {
     "cost": ("warehouse_metering", "query_attribution", "warehouse_load", "serverless_usage"),
@@ -272,10 +331,16 @@ CAP_DATASETS_BY_SURFACE = {
     "data-quality-expectations-current": ("current_expectations",),
     "data-quality-notification-current": ("notification_associations",),
     "pipeline": ("task_history", "dynamic_table_refresh_history", "copy_history"),
+    "governance-classification-current": ("classification_latest",),
+    "governance-policies-current": ("policy_references",),
+    "governance-tags-current": ("tag_references",),
     "replication": ("replication_refresh_history",),
     "replication-current": ("current_groups",),
     "replication-dangling": ("dangling_references",),
     "replication-progress": ("replication_progress",),
+    "native-app-versions-current": ("versions",),
+    "native-app-release-directives-current": ("release_directives",),
+    "native-app-upgrade-cohorts-current": ("upgrade_cohorts",),
 }
 RECEIPT_NON_CLAIMS = (
     "No Snowflake mutation was executed by the reviewed collector SQL.",
@@ -470,6 +535,7 @@ SQL_SHOW_LEADS = {
     "REFERENTIAL",
     "REPLICATION",
     "RESOURCE",
+    "RELEASE",
     "ROLES",
     "SCHEMAS",
     "SECRETS",
@@ -486,6 +552,7 @@ SQL_SHOW_LEADS = {
     "UNIQUE",
     "USERS",
     "VARIABLES",
+    "VERSIONS",
     "VIEWS",
     "WAREHOUSES",
 }
@@ -1650,7 +1717,11 @@ def render_surface(
     pipe: str | None = None,
     data_quality_object: str | None = None,
     data_quality_domain: str | None = None,
+    governance_database: str | None = None,
+    governance_object: str | None = None,
+    governance_domain: str | None = None,
     replication_group: str | None = None,
+    application_package: str | None = None,
     window_start: str | None = None,
     window_end: str | None = None,
 ) -> tuple[Path, str, str, list[str], dict[str, str]]:
@@ -1669,7 +1740,11 @@ def render_surface(
             "pipe": pipe,
             "data_quality_object": data_quality_object,
             "data_quality_domain": data_quality_domain,
+            "governance_database": governance_database,
+            "governance_object": governance_object,
+            "governance_domain": governance_domain,
             "replication_group": replication_group,
+            "application_package": application_package,
         }.items()
         if value is not None
     }
@@ -1689,6 +1764,23 @@ def render_surface(
             {
                 "data_quality_object": supplied["data_quality_object"].upper(),
                 "data_quality_domain": supplied["data_quality_domain"],
+            }
+        )
+    elif selector_name == "governance_object":
+        if set(supplied) != {"governance_object", "governance_domain"}:
+            raise CollectionError(
+                f"surface {surface} requires only the governance_object and governance_domain selectors"
+            )
+        if not THREE_PART_IDENTIFIER_RE.fullmatch(supplied["governance_object"]):
+            raise CollectionError(
+                "governance_object must be one validated three-part unquoted Snowflake identifier, not SQL or a fragment"
+            )
+        if supplied["governance_domain"] not in {"TABLE", "VIEW"}:
+            raise CollectionError("governance_domain must be TABLE or VIEW")
+        selector.update(
+            {
+                "governance_object": supplied["governance_object"].upper(),
+                "governance_domain": supplied["governance_domain"],
             }
         )
     elif selector_name is None:
@@ -1715,7 +1807,11 @@ def render_surface(
             raise CollectionError(
                 f"{selector_name} must be one validated {qualification} unquoted Snowflake identifier, not SQL or a fragment"
             )
-        selector[selector_name] = value.upper() if selector_name == "replication_group" else value
+        selector[selector_name] = (
+            value.upper()
+            if selector_name in {"governance_database", "replication_group", "application_package"}
+            else value
+        )
 
     if surface in WINDOW_SURFACES:
         if window_start is None or window_end is None:
@@ -1753,6 +1849,11 @@ def render_surface(
         if selected_object is None:
             raise CollectionError(f"surface {surface} requires selector: data_quality_object")
         rendered_sql = rendered_sql.replace(DATA_QUALITY_DATABASE_MARKER, selected_object.split(".", 1)[0])
+    if GOVERNANCE_DATABASE_MARKER in rendered_sql:
+        selected_object = selector.get("governance_object")
+        if selected_object is None:
+            raise CollectionError(f"surface {surface} requires selector: governance_object")
+        rendered_sql = rendered_sql.replace(GOVERNANCE_DATABASE_MARKER, selected_object.split(".", 1)[0])
     for name, marker in SELECTOR_MARKERS.items():
         if name in selector:
             rendered_sql = rendered_sql.replace(marker, selector[name])
@@ -1872,12 +1973,36 @@ def build_receipt(
                     "selected_object_key_sha256": object_key,
                     "selected_object_domain": object_domain,
                 }
+    if surface in GOVERNANCE_OBJECT_SELECTOR_SURFACES and not error:
+        if len(context_rows := datasets.get("execution_context", [])) == 1:
+            object_key = context_rows[0].get("selected_object_key_sha256")
+            object_domain = context_rows[0].get("selected_object_domain")
+            if (
+                isinstance(object_key, str)
+                and re.fullmatch(r"[0-9a-f]{64}", object_key)
+                and object_domain in {"TABLE", "VIEW"}
+            ):
+                selector_binding = {
+                    "selected_object_key_sha256": object_key,
+                    "selected_object_domain": object_domain,
+                }
+    if surface in GOVERNANCE_DATABASE_SELECTOR_SURFACES and not error:
+        if len(context_rows := datasets.get("execution_context", [])) == 1:
+            database_key = context_rows[0].get("selected_database_key_sha256")
+            if isinstance(database_key, str) and re.fullmatch(r"[0-9a-f]{64}", database_key):
+                selector_binding = {"selected_database_key_sha256": database_key}
     if surface == "replication-dangling" and not error:
         dangling_context = datasets.get("execution_context", [])
         if len(dangling_context) == 1:
             group_key = dangling_context[0].get("selected_group_key_sha256")
             if isinstance(group_key, str) and re.fullmatch(r"[0-9a-f]{64}", group_key):
                 selector_binding = {"selected_group_key_sha256": group_key}
+    if surface in NATIVE_APP_SELECTOR_SURFACES and not error:
+        native_context = datasets.get("execution_context", [])
+        if len(native_context) == 1:
+            package_key = native_context[0].get("selected_package_key_sha256")
+            if isinstance(package_key, str) and re.fullmatch(r"[0-9a-f]{64}", package_key):
+                selector_binding = {"selected_package_key_sha256": package_key}
     receipt_rendered_sql = sql
     fingerprint_value: dict[str, str] | None = selector_binding or selector
     if surface == "pipeline-pipe-status":
@@ -1916,6 +2041,36 @@ def build_receipt(
             # template proof so the raw object selector is not dictionary-testable.
             receipt_rendered_sql = canonical_template
             fingerprint_value = None
+    if surface in GOVERNANCE_OBJECT_SELECTOR_SURFACES:
+        if selector_binding is not None:
+            selected = selector_binding["selected_object_key_sha256"]
+            domain = selector_binding["selected_object_domain"]
+            receipt_rendered_sql = (
+                canonical_template.replace(
+                    "__GOVERNANCE_OBJECT_IDENTIFIER__",
+                    f"__GOVERNANCE_OBJECT_KEY_SHA256_{selected}__",
+                )
+                .replace("__GOVERNANCE_DOMAIN__", f"__GOVERNANCE_DOMAIN_{domain}__")
+                .replace(
+                    GOVERNANCE_DATABASE_MARKER,
+                    f"__GOVERNANCE_DATABASE_BOUND_TO_OBJECT_KEY_SHA256_{selected}__",
+                )
+            )
+            fingerprint_value = selector_binding
+        else:
+            receipt_rendered_sql = canonical_template
+            fingerprint_value = None
+    if surface in GOVERNANCE_DATABASE_SELECTOR_SURFACES:
+        if selector_binding is not None:
+            selected = selector_binding["selected_database_key_sha256"]
+            receipt_rendered_sql = canonical_template.replace(
+                "__GOVERNANCE_DATABASE_IDENTIFIER__",
+                f"__GOVERNANCE_DATABASE_KEY_SHA256_{selected}__",
+            )
+            fingerprint_value = selector_binding
+        else:
+            receipt_rendered_sql = canonical_template
+            fingerprint_value = None
     if surface == "replication-dangling":
         if selector_binding is not None:
             receipt_rendered_sql = canonical_template.replace(
@@ -1924,6 +2079,18 @@ def build_receipt(
             )
             fingerprint_value = selector_binding
         else:
+            receipt_rendered_sql = canonical_template
+            fingerprint_value = None
+    if surface in NATIVE_APP_SELECTOR_SURFACES:
+        if selector_binding is not None:
+            receipt_rendered_sql = canonical_template.replace(
+                "__APPLICATION_PACKAGE_IDENTIFIER__",
+                f"__APPLICATION_PACKAGE_KEY_SHA256_{selector_binding['selected_package_key_sha256']}__",
+            )
+            fingerprint_value = selector_binding
+        else:
+            # An error response cannot bind a private package selector to a
+            # Snowflake-produced scoped hash. Keep public template proof only.
             receipt_rendered_sql = canonical_template
             fingerprint_value = None
     rendered_hash = f"sha256:{hashlib.sha256(receipt_rendered_sql.encode('utf-8')).hexdigest()}"
@@ -1939,7 +2106,9 @@ def build_receipt(
     receipt = {
         "schema_version": "2"
         if surface == "query"
-        or surface.startswith(("access", "auth", "cost", "data-quality", "pipeline", "replication"))
+        or surface.startswith(
+            ("access", "auth", "cost", "data-quality", "governance", "pipeline", "replication", "native-app")
+        )
         else "1",
         "surface": surface,
         "status": "error" if error else "collected",
@@ -1975,10 +2144,16 @@ def build_receipt(
     if surface in DATA_QUALITY_SELECTOR_SURFACES and selector_binding:
         receipt["source_metadata"]["selector_binding"] = selector_binding
         receipt["source_metadata"]["rendered_sql_contract"] = "privacy-bound-selector-v1"
+    if surface in GOVERNANCE_OBJECT_SELECTOR_SURFACES | GOVERNANCE_DATABASE_SELECTOR_SURFACES and selector_binding:
+        receipt["source_metadata"]["selector_binding"] = selector_binding
+        receipt["source_metadata"]["rendered_sql_contract"] = "privacy-bound-selector-v1"
     if surface == "replication-dangling" and selector_binding:
         receipt["source_metadata"]["selector_binding"] = selector_binding
         receipt["source_metadata"]["rendered_sql_contract"] = "privacy-bound-selector-v1"
-    if surface.startswith(("cost", "data-quality", "pipeline", "replication")):
+    if surface in NATIVE_APP_SELECTOR_SURFACES and selector_binding:
+        receipt["source_metadata"]["selector_binding"] = selector_binding
+        receipt["source_metadata"]["rendered_sql_contract"] = "privacy-bound-selector-v1"
+    if surface.startswith(("cost", "data-quality", "governance", "pipeline", "replication", "native-app")):
         receipt["cap_scope"] = "per_dataset" if cap_datasets else "single_dataset_or_result"
         receipt["result_sha256"] = f"sha256:{hashlib.sha256(canonical_json(datasets)).hexdigest()}"
         receipt["connection_profile_sha256"] = (
@@ -1988,7 +2163,9 @@ def build_receipt(
         receipt["snowflake_query_id_status"] = "not_exposed_by_snow_cli_json_ext"
     else:
         receipt["connection_profile"] = connection
-    if surface.startswith(("access", "auth", "cost", "data-quality", "pipeline", "replication")):
+    if surface.startswith(
+        ("access", "auth", "cost", "data-quality", "governance", "pipeline", "replication", "native-app")
+    ):
         receipt["collection_mode"] = collection_mode
         receipt["collection_started_at"] = effective_started_at
         receipt["collection_completed_at"] = effective_completed_at
@@ -2016,7 +2193,11 @@ def execute_surface(
     pipe: str | None = None,
     data_quality_object: str | None = None,
     data_quality_domain: str | None = None,
+    governance_database: str | None = None,
+    governance_object: str | None = None,
+    governance_domain: str | None = None,
     replication_group: str | None = None,
+    application_package: str | None = None,
     window_start: str | None = None,
     window_end: str | None = None,
     runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
@@ -2033,7 +2214,11 @@ def execute_surface(
         pipe=pipe,
         data_quality_object=data_quality_object,
         data_quality_domain=data_quality_domain,
+        governance_database=governance_database,
+        governance_object=governance_object,
+        governance_domain=governance_domain,
         replication_group=replication_group,
+        application_package=application_package,
         window_start=window_start,
         window_end=window_end,
     )
@@ -2197,8 +2382,25 @@ def main(argv: list[str] | None = None) -> int:
         help="Object domain for selector-scoped data-quality current surfaces",
     )
     parser.add_argument(
+        "--governance-database",
+        help="One unquoted database identifier for governance classification evidence",
+    )
+    parser.add_argument(
+        "--governance-object",
+        help="Three-part unquoted object identifier for selector-scoped governance current surfaces",
+    )
+    parser.add_argument(
+        "--governance-domain",
+        choices=("TABLE", "VIEW"),
+        help="Object domain for selector-scoped governance current surfaces",
+    )
+    parser.add_argument(
         "--replication-group",
         help="One unquoted local replication/failover-group identifier for selector-scoped evidence",
+    )
+    parser.add_argument(
+        "--application-package",
+        help="One unquoted application-package identifier for Native App provider evidence",
     )
     parser.add_argument("--window-start", help="Canonical UTC lower bound for bounded history surfaces")
     parser.add_argument("--window-end", help="Canonical UTC exclusive upper bound for bounded history surfaces")
@@ -2215,7 +2417,11 @@ def main(argv: list[str] | None = None) -> int:
             pipe=args.pipe,
             data_quality_object=args.data_quality_object,
             data_quality_domain=args.data_quality_domain,
+            governance_database=args.governance_database,
+            governance_object=args.governance_object,
+            governance_domain=args.governance_domain,
             replication_group=args.replication_group,
+            application_package=args.application_package,
             window_start=args.window_start,
             window_end=args.window_end,
         )
@@ -2224,7 +2430,9 @@ def main(argv: list[str] | None = None) -> int:
         if args.surface == "query" and (args.source_max_age_seconds is None or args.source_max_age_seconds <= 0):
             raise CollectionError("--source-max-age-seconds must be positive for the query surface")
         if args.input_json:
-            if args.surface.startswith(("access", "auth", "cost", "data-quality", "pipeline", "replication")):
+            if args.surface.startswith(
+                ("access", "auth", "cost", "data-quality", "governance", "pipeline", "replication", "native-app")
+            ):
                 raise CollectionError(
                     "offline normalization is diagnostic-only and is not accepted for governed evidence; collect live so Snowflake execution context is bound to the result"
                 )
@@ -2256,7 +2464,11 @@ def main(argv: list[str] | None = None) -> int:
                 pipe=args.pipe,
                 data_quality_object=args.data_quality_object,
                 data_quality_domain=args.data_quality_domain,
+                governance_database=args.governance_database,
+                governance_object=args.governance_object,
+                governance_domain=args.governance_domain,
                 replication_group=args.replication_group,
+                application_package=args.application_package,
                 window_start=args.window_start,
                 window_end=args.window_end,
             )

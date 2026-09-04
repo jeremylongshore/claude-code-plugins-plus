@@ -1,6 +1,6 @@
 # Snowflake Skill Pack
 
-> Eight model-neutral, evidence-driven operator skills for Snowflake cost,
+> Ten model-neutral, evidence-driven operator skills for Snowflake cost,
 > performance, pipelines, deployments, authentication, access governance, data
 > quality, and failover readiness.
 
@@ -26,12 +26,14 @@ Then describe the problem in plain language:
 - “Move our service users off passwords.”
 - “Why can this role read that table?”
 - “Are our data-quality expectations actually covering the critical tables?”
+- “Which sensitive assets are not effectively protected by governance policies?”
 - “Can this failover group meet our RPO and RTO?”
+- “Is this Native App candidate safe to promote for explicit approval?”
 
 The matching skill asks for the smallest useful evidence set, analyzes it without
 changing the account, and produces a reviewable report or change packet.
 
-## The eight skills
+## The ten skills
 
 | Skill | Use it when |
 | --- | --- |
@@ -42,7 +44,9 @@ changing the account, and produces a reviewable report or change packet.
 | `snowflake-strong-auth-migration-pilot` | Human or service workloads must move from legacy password access to WIF, PAT, OAuth, or key-pair authentication. |
 | `snowflake-access-guardian` | You need an effective privilege trace, RBAC drift review, or least-privilege change packet. |
 | `snowflake-data-quality-sentinel` | You need to distinguish violated expectations, failed evaluations, missing coverage, stale results, and monitoring gaps. |
+| `snowflake-governance-coverage-auditor` | You need denominator-based proof that sensitive assets have effective classification, tags, and required governance-policy coverage. |
 | `snowflake-failover-readiness-drill` | You need a read-only RPO/RTO preflight or verification of an operator-executed failover/failback drill. |
+| `snowflake-native-app-release-sheriff` | You need a provider-side, read-only Native App manifest, scan, cohort, compatibility, and rollback preflight. |
 
 ## Collect live evidence without an adapter
 
@@ -59,7 +63,8 @@ python3 shared/evidence/collect_snowflake_evidence.py \
 ```
 
 Supported surfaces are `cost`, `query`, `pipeline`, `access`, `auth`,
-`data-quality`, and `replication`. The collector statically rejects mutating SQL,
+`data-quality`, `replication`, selector-bound `governance-*`, and selector-bound
+`native-app-*` current evidence. The collector statically rejects mutating SQL,
 does not accept credentials, records view/timestamp/hash provenance, and treats
 permission gaps as missing evidence rather than permission to escalate.
 If a receipt sets `truncation_possible: true`, narrow or partition the requested

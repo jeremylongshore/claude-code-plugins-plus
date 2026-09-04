@@ -10,7 +10,7 @@ allowed-tools: Read, Bash(python3:*)
 argument-hint: "[schema-2-evidence.json]"
 model: inherit
 effort: high
-version: 3.9.0
+version: 3.14.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatibility: "Model-neutral; requires Python 3.10+. Optional collection requires Snowflake CLI with an existing read-only profile."

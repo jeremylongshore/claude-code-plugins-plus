@@ -24,7 +24,7 @@ CANONICAL_COLLECTOR = SHARED_EVIDENCE / "collect_snowflake_evidence.py"
 CANONICAL_SQL = SHARED_EVIDENCE / "sql"
 SKILLS_DIR = Path("skills")
 
-# This is the packaging and provenance contract for the eight skills that use
+# This is the packaging and provenance contract for the skills that use
 # the shared account-evidence collector. Skills with a different collector
 # contract are deliberately outside this registry.
 BUNDLES: dict[str, tuple[str, ...]] = {
@@ -60,6 +60,11 @@ BUNDLES: dict[str, tuple[str, ...]] = {
         "replication-progress.sql",
         "replication-dangling.sql",
     ),
+    "snowflake-governance-coverage-auditor": (
+        "governance-classification-current.sql",
+        "governance-policies-current.sql",
+        "governance-tags-current.sql",
+    ),
     "snowflake-pipeline-guardian": (
         "pipeline.sql",
         "pipeline-dynamic-table-current.sql",
@@ -73,6 +78,11 @@ BUNDLES: dict[str, tuple[str, ...]] = {
         "auth.sql",
         "auth-current.sql",
         "auth-login-history.sql",
+    ),
+    "snowflake-native-app-release-sheriff": (
+        "native-app-versions-current.sql",
+        "native-app-release-directives-current.sql",
+        "native-app-upgrade-cohorts-current.sql",
     ),
 }
 SKILL_TOKEN = re.compile(r"^snowflake-[a-z0-9]+(?:-[a-z0-9]+)*$")

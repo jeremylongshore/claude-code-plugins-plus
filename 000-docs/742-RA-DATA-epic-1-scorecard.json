@@ -22,13 +22,13 @@
       "error_files": 719,
       "error_total": 3702,
       "grade_distribution": {
-        "A": 1887,
+        "A": 1889,
         "B": 1087,
         "C": 409,
         "D": 157,
         "F": 5
       },
-      "rows": 3545
+      "rows": 3547
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3045,
-        "tracked_files": 23821
+        "raw_tracked_plugin_skill_files": 3047,
+        "tracked_files": 23885
       }
     },
     "2": {
@@ -91,14 +91,14 @@
         },
         "marketplace_terminal": {
           "error_total_all_validated_surfaces": 3939,
-          "fully_compliant_surfaces": 1145,
+          "fully_compliant_surfaces": 1147,
           "terminal_denominator": {
             "agents": 358,
             "commands": 373,
-            "files": 4869,
+            "files": 4871,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
             "plugin_manifests": 593,
-            "skills": 3545
+            "skills": 3547
           },
           "validated_plugin_manifests": 601,
           "validator_reported_mixed_denominator_percent": 23.5
@@ -112,13 +112,13 @@
           "error_files": 719,
           "error_total": 3702,
           "grade_distribution": {
-            "A": 1887,
+            "A": 1889,
             "B": 1087,
             "C": 409,
             "D": 157,
             "F": 5
           },
-          "rows": 3545
+          "rows": 3547
         }
       }
     },
@@ -131,20 +131,20 @@
       "values": {
         "average_score": 87.5,
         "grade_distribution": {
-          "A": 1887,
+          "A": 1889,
           "B": 1087,
           "C": 409,
           "D": 157,
           "F": 5
         },
         "grade_percentages": {
-          "A": 53.2,
-          "B": 30.7,
+          "A": 53.3,
+          "B": 30.6,
           "C": 11.5,
           "D": 4.4,
           "F": 0.1
         },
-        "rows": 3545
+        "rows": 3547
       }
     },
     "6": {
@@ -161,7 +161,7 @@
         "b_error_total": 568,
         "b_failing": 276,
         "certified_target": 0,
-        "skill_summary_rows": 3545
+        "skill_summary_rows": 3547
       }
     },
     "7": {
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3534,
+        "declared": 3536,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 11,
-        "rows": 3545,
+        "rows": 3547,
         "target_malformed": 0
       }
     },
@@ -286,7 +286,7 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "distinct_values": 54,
+        "distinct_values": 56,
         "invalid_or_empty": 0,
         "target_free_text_values": 0,
         "values": [
@@ -436,6 +436,10 @@
           },
           {
             "count": 1,
+            "value": "Model-agnostic; Python 3.10+; optional Snowflake CLI for live provider-side read-only collection"
+          },
+          {
+            "count": 1,
             "value": "Model-agnostic; requires explicit state/workspace paths, git, jq, Bash, and an authenticated GitHub CLI"
           },
           {
@@ -445,6 +449,10 @@
           {
             "count": 1,
             "value": "Model-agnostic; requires git, jq, and an authenticated GitHub CLI for live GitHub reads"
+          },
+          {
+            "count": 1,
+            "value": "Model-neutral; requires Python 3.10+. Optional collection requires Snowflake CLI and an existing least-privilege profile."
           },
           {
             "count": 1,
@@ -1188,7 +1196,7 @@
         "answers": [
           {
             "cohort": "curated-mirror",
-            "value": 2406
+            "value": 2408
           },
           {
             "cohort": "curriculum",
@@ -1196,15 +1204,15 @@
           },
           {
             "cohort": "first-party",
-            "value": 2701
+            "value": 2703
           },
           {
             "cohort": "graded",
-            "value": 3545
+            "value": 3547
           },
           {
             "cohort": "marketplace-visible",
-            "value": 2954
+            "value": 2956
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1919,7 +1927,7 @@
         "invalid_patterns": 0,
         "invisible_files": 23,
         "target_invisible_files": 0,
-        "tracked_files": 23821
+        "tracked_files": 23885
       }
     },
     "47": {
@@ -2010,7 +2018,7 @@
       ],
       "status": "target_met",
       "values": {
-        "dolt_commit": "g6jsoa0feircnd2sao3i34dsab8hrffl",
+        "dolt_commit": "0g093prj22qajinvqqf28cf5mcvtvhn2",
         "header_total_skills": 2967,
         "run_id": 30,
         "skill_row_delta": 0,
@@ -2029,27 +2037,27 @@
       ],
       "status": "target_met",
       "values": {
-        "compliance_rows": 3545,
-        "export_dolt_commit": "g6jsoa0feircnd2sao3i34dsab8hrffl",
+        "compliance_rows": 3547,
+        "export_dolt_commit": "0g093prj22qajinvqqf28cf5mcvtvhn2",
         "export_run_id": 30,
-        "grades_csv_rows": 3545,
-        "grades_csv_sha256": "82bdc99fd54110aea887bba1f630e85026f7fccfb085aeab8cebda8f68816566",
+        "grades_csv_rows": 3547,
+        "grades_csv_sha256": "47d8e4adf2b4a827166e9cc5887ff58ff7fd3840c786e7e98c4d4eec3052ba75",
         "histogram_grades": {
-          "A": 1887,
+          "A": 1889,
           "B": 1087,
           "C": 409,
           "D": 157,
           "F": 5
         },
-        "histogram_total": 3545,
+        "histogram_total": 3547,
         "immutable_grade_counts": {
-          "A": 1887,
+          "A": 1889,
           "B": 1087,
           "C": 409,
           "D": 157,
           "F": 5
         },
-        "inventory_dolt_commit": "g6jsoa0feircnd2sao3i34dsab8hrffl",
+        "inventory_dolt_commit": "0g093prj22qajinvqqf28cf5mcvtvhn2",
         "inventory_run_id": 30,
         "target_lag_runs": 0
       }
@@ -2152,6 +2160,8 @@
         "plugins/saas-packs/snowflake-pack/skills/snowflake-data-quality-sentinel/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-deploy-medic/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-failover-readiness-drill/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-governance-coverage-auditor/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-native-app-release-sheriff/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-pipeline-guardian/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-query-forensics/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-strong-auth-migration-pilot/eval-spec.yaml",
@@ -2174,6 +2184,8 @@
         "skills/.curated/snowflake-data-quality-sentinel/eval-spec.yaml",
         "skills/.curated/snowflake-deploy-medic/eval-spec.yaml",
         "skills/.curated/snowflake-failover-readiness-drill/eval-spec.yaml",
+        "skills/.curated/snowflake-governance-coverage-auditor/eval-spec.yaml",
+        "skills/.curated/snowflake-native-app-release-sheriff/eval-spec.yaml",
         "skills/.curated/snowflake-pipeline-guardian/eval-spec.yaml",
         "skills/.curated/snowflake-query-forensics/eval-spec.yaml",
         "skills/.curated/snowflake-strong-auth-migration-pilot/eval-spec.yaml",
@@ -2182,11 +2194,11 @@
       ],
       "status": "measured",
       "values": {
-        "adoption_percent": 0.72,
-        "curated_copies": 22,
-        "plugin_skill_rows": 3045,
-        "source_eval_specs": 22,
-        "tracked_eval_specs": 44
+        "adoption_percent": 0.79,
+        "curated_copies": 24,
+        "plugin_skill_rows": 3047,
+        "source_eval_specs": 24,
+        "tracked_eval_specs": 48
       }
     },
     "58": {
