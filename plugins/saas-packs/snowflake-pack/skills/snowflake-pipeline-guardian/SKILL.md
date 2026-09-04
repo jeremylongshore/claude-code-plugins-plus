@@ -9,7 +9,7 @@ description: |
   and an ordered recovery plan; it never mutates Snowflake.
 allowed-tools: Read, Bash(python3:*)
 argument-hint: "[pipeline-evidence-bundle.json]"
-version: 3.14.0
+version: 3.15.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection

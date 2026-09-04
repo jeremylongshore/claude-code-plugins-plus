@@ -15,7 +15,7 @@ description: |
   needs a current plan, migration-integrity, toolchain, or rollback gate.
 allowed-tools: Read
 argument-hint: "[redacted-deploy-evidence.json]"
-version: 3.14.0
+version: 3.15.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection
