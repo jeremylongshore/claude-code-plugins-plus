@@ -12,7 +12,7 @@ allowed-tools: Read, Write, Bash(python3:*)
 argument-hint: "[query-id-or-evidence-json]"
 model: inherit
 effort: high
-version: 3.15.0
+version: 3.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -9,7 +9,7 @@ description: |
   App release", "application package scan", "upgrade cohort", or "App Spec".
 allowed-tools: Read, Bash(python3:*)
 argument-hint: "[schema-2-native-app-evidence.json]"
-version: 3.15.0
+version: 3.16.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatibility: Model-agnostic; Python 3.10+; optional Snowflake CLI for live provider-side read-only collection
