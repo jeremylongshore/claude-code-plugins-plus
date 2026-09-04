@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3045,
-        "tracked_files": 23809
+        "tracked_files": 23814
       }
     },
     "2": {
@@ -91,7 +91,7 @@
         },
         "marketplace_terminal": {
           "error_total_all_validated_surfaces": 3939,
-          "fully_compliant_surfaces": 1146,
+          "fully_compliant_surfaces": 1145,
           "terminal_denominator": {
             "agents": 358,
             "commands": 373,
@@ -1919,7 +1919,7 @@
         "invalid_patterns": 0,
         "invisible_files": 23,
         "target_invisible_files": 0,
-        "tracked_files": 23809
+        "tracked_files": 23814
       }
     },
     "47": {
