@@ -31097,7 +31097,7 @@
     {
       "slug": "snowflake-failover-readiness-drill",
       "name": "snowflake-failover-readiness-drill",
-      "description": "Assess Snowflake replication and failover-group readiness without performing a refresh, promotion, redirect, cancellation, resume, failover, or failback. Use when defining RPO/RTO, preparing or reviewing a Business Critical disaster- recovery exercise, diagnosing replication history, checking cross-group object dependencies, or verifying an operator-executed failover/failback receipt. Produces a deterministic readiness verdict, evidence gaps, abort gates, and an operator runbook boundary. Trigger with \"Snowflake failover drill\", \"replication group RPO\", \"secondary refresh failed\", \"account failover\", \"failback proof\", or \"client redirect validation\".",
+      "description": "Analyze Snowflake failover-group RPO/RTO readiness from independently trusted, privacy-preserving live receipts without executing refresh, failover, failback, redirect, cancellation, resume, or session changes. Use when an owner needs a Business Critical disaster-recovery preflight, replication failure diagnosis, dangling-reference check, or operator-executed drill proof. Trigger with \"Snowflake failover drill\", \"replication RPO\", \"failback proof\", or \"secondary refresh\".",
       "version": "3.7.0",
       "category": "saas-packs",
       "parentPlugin": "snowflake-pack",
@@ -35452,7 +35452,7 @@
     }
   ],
   "count": 2954,
-  "generatedAt": "2026-09-04T00:44:50.430Z",
+  "generatedAt": "2026-09-04T03:03:26.169Z",
   "categories": [
     "ai-agency",
     "ai-ml",

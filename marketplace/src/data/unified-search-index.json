@@ -72221,7 +72221,7 @@
       "id": "snowflake-failover-readiness-drill",
       "slug": "snowflake-failover-readiness-drill",
       "name": "snowflake-failover-readiness-drill",
-      "description": "Assess Snowflake replication and failover-group readiness without performing a refresh, promotion, redirect, cancellation, resume, failover, or failback. Use when defining RPO/RTO, preparing or reviewing a Business Critical disaster- recovery exercise, diagnosing replication history, checking cross-group object dependencies, or verifying an operator-executed failover/failback receipt. Produces a deterministic readiness verdict, evidence gaps, abort gates, and an operator runbook boundary. Trigger with \"Snowflake failover drill\", \"replication group RPO\", \"secondary refresh failed\", \"account failover\", \"failback proof\", or \"client redirect validation\".",
+      "description": "Analyze Snowflake failover-group RPO/RTO readiness from independently trusted, privacy-preserving live receipts without executing refresh, failover, failback, redirect, cancellation, resume, or session changes. Use when an owner needs a Business Critical disaster-recovery preflight, replication failure diagnosis, dangling-reference check, or operator-executed drill proof. Trigger with \"Snowflake failover drill\", \"replication RPO\", \"failback proof\", or \"secondary refresh\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -72233,7 +72233,7 @@
         "name": "snowflake-pack",
         "category": "saas-packs"
       },
-      "searchText": "snowflake-failover-readiness-drill assess snowflake replication and failover-group readiness without performing a refresh, promotion, redirect, cancellation, resume, failover, or failback. use when defining rpo/rto, preparing or reviewing a business critical disaster- recovery exercise, diagnosing replication history, checking cross-group object dependencies, or verifying an operator-executed failover/failback receipt. produces a deterministic readiness verdict, evidence gaps, abort gates, and an operator runbook boundary. trigger with \"snowflake failover drill\", \"replication group rpo\", \"secondary refresh failed\", \"account failover\", \"failback proof\", or \"client redirect validation\". saas-packs read bash(python3:*) "
+      "searchText": "snowflake-failover-readiness-drill analyze snowflake failover-group rpo/rto readiness from independently trusted, privacy-preserving live receipts without executing refresh, failover, failback, redirect, cancellation, resume, or session changes. use when an owner needs a business critical disaster-recovery preflight, replication failure diagnosis, dangling-reference check, or operator-executed drill proof. trigger with \"snowflake failover drill\", \"replication rpo\", \"failback proof\", or \"secondary refresh\". saas-packs read bash(python3:*) "
     },
     {
       "type": "skill",

@@ -14,7 +14,9 @@ python3 shared/evidence/collect_snowflake_evidence.py \
 ```
 
 Baseline surfaces are `cost`, `query`, `pipeline`, `access`, `auth`,
-`auth-login-history`, `data-quality`, and `replication`. Access also has narrowly
+`auth-login-history`, `data-quality`, and `replication`. Failover evidence also
+has `replication-current`, `replication-progress`, and
+`replication-dangling`. Access has narrowly
 scoped `access-*` sub-surfaces for the current session, grants to/of a role, user
 grants, database-role grants, and paired database/schema future grants. The cost
 skill also bundles independently
@@ -153,6 +155,24 @@ retain selected-object hash/domain in same-statement execution context even at
 zero rows. Current inventories and
 bounded history remain observations: they do not prove policy enforcement,
 notification delivery, denominator completeness, or a passing quality outcome.
+
+Failover evidence is live-only schema 2. `replication-current` privacy-projects
+role-visible `SHOW FAILOVER GROUPS` rows and records the calling account context.
+`replication` and `replication-progress` require explicit half-open UTC windows of
+at most seven days against the target account's Information Schema functions;
+Snowflake documents 14-day retention but no numeric visibility-latency SLA for
+those functions. `replication-dangling` requires one validated local group
+selector and hashes the selector and every entity identifier inside Snowflake.
+The analyzer requires exact source/target scope coverage, one uncapped receipt per
+required scope, current observations no older than 15 minutes, independently
+recorded bundle/policy/operator digests, exact policy denominators, paired
+history/progress windows ending within 60 seconds of collection start and 15
+minutes of evaluation, and matching
+authorization contexts per account. Full drills require history/progress proof in
+both directions. RPO uses only the latest uniquely completed job's
+`PRIMARY_SNAPSHOT_TIMESTAMP` before each decision point. The SQL
+allowlist rejects unreviewed `SYSTEM$` functions so refresh, cancellation, and
+other control-plane actions cannot enter the collection path.
 For query-forensics completeness, preserve the anchor row's `role_name` and the exact
 query-history source. The analyzer rejects role/source mismatches, applies terminal
 statuses only to their matching surface, and requires at least one bound operator row.
