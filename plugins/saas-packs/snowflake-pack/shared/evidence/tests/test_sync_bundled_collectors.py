@@ -50,7 +50,8 @@ class CollectorBundleTests(unittest.TestCase):
 
     def test_repository_tree_passes_and_has_exact_bundle_count(self) -> None:
         self.assertEqual(MODULE.check_tree(MODULE.PACK_ROOT), [])
-        self.assertEqual(len(MODULE.BUNDLES), 8)
+        self.assertEqual(len(MODULE.BUNDLES), 7)
+        self.assertNotIn("snowflake-deploy-medic", MODULE.BUNDLES)
 
     def test_writer_reconstructs_only_registered_files_and_preserves_modes(self) -> None:
         unrelated = self.root / "skills" / "snowflake-distinct-contract"

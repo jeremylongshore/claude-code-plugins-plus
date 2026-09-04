@@ -1,21 +1,396 @@
 {
-  "terraform": {
-    "provider_source": "snowflakedb/snowflake",
-    "version": "2.20.0",
-    "state": {"parseable": true},
-    "plan": {"exit_code": 2, "changes": 3},
-    "resources": [
-      {"address": "snowflake_grant_privileges_to_account_role.reader", "type": "snowflake_grant_privileges_to_account_role", "existing": true, "action": "create"},
-      {"address": "snowflake_database.app", "type": "snowflake_database", "action": "replace"}
+  "affected_objects": [],
+  "affected_objects_expected_count": 0,
+  "affected_objects_verified": true,
+  "bcr": {
+    "bundle": "2026_06",
+    "complete": true,
+    "expected_count": 19,
+    "inventory": [
+      {
+        "affected": true,
+        "affected_refs": [
+          "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        ],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2261",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:2da4d2963e21b91f80a4e86625ee8b7574bc89836239edc996bc55afe700b0ef"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2342",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:eb25af69279970fdd91a3b6f326b9ca9582a86758a9372c559eee696c5534142"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2343",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:9439e92dc7b44212c365eabad32f239531166a8a5644483f6c0e11da3b489dda"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2352",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:dc8b122e825cf47614f24f073256e2fa4a4a5dab23b89ba1bb2475f9051dfff1"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2359",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:c063e0d46383dde88512247a87f68d678b9390e46115cd518d2d0da3846340bd"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2360",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:e87daa11ed04984d63cfb34ef172731b5357b6f48c25cac84899a42d1845fb21"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2362",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:b0ad5713775697ab1d9a464cc8062c9dbf90a72530fb2fe99e0d6f4723cc5377"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2363",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:3c69a9aff85c2091a6fa531c83f14d8cf24c14f9285e859b9977210fa8bb942f"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2364",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:c2c8f35f32210661b8274c5487924fa09a58786c5372e51236aa79337236bb73"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2368",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:3143f09fdada7debae6fa08a3e98ae493bbb88a65fafbd7bd86e6478e1a54900"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2371",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:179d8ca16b898c6f365c18128449e3108d011e782e89c620ef4a2ecd7fc2e386"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2373",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:866866d3ef54d9fb1188e0079e1a85c7254f7d9226fc8154cc52adbd246ca3a5"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2376",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:b5af5bee5aae51e5abfeb846388d6185d0a315b43a0e838d550ea67c30fc4ca3"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2377",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:231eb32ffa118740d82286d958b656e87a062dde13bc0e1435aa836a2b7212ec"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2379",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:ade725aab50c0bfe00ad0dd985ac03cbba071a5a80e4cf50d5858c1e74ca6459"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2380",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:641060d55dba1366d83c7b5bdd291ed34d2b53b18bb078d93a9165b1c80af2c2"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2381",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:87c78081d1984b0931874b55eb0edf2a19ea38cf39fba73ac2a2f0e4c4e451a7"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2382",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:21745c4395cab8122963dec8f4b4a16afe105e600ae59f83471beb2d5eb5e4d9"
+      },
+      {
+        "affected": false,
+        "affected_refs": [],
+        "disposition": "NOT_APPLICABLE",
+        "item_id": "BCR-2384",
+        "owner_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "receipt_sha256": "sha256:89753575047a531603b2b7bce9f19ae78b5e60c1cb24ae1ec8536cd7610b781c"
+      }
     ],
-    "preview_features": []
+    "inventory_sha256": "sha256:9ce9228a5488b3e4f32fee251705c92d0e4bf44851c40aa7afa2436bb552b95e",
+    "observed_at": "2026-09-03T11:50:00Z",
+    "receipt_sha256": "sha256:9edda1f2d00cc9e02c8ac2791625010b9ddbf42a6fc5c9ecf86b014d2a0dce97",
+    "source_snapshot_sha256": "sha256:70a6dafa5cac0a3a5c04b42440186574651f3fda35f246a3f98d08db99d0a6d5",
+    "source_url": "https://docs.snowflake.com/en/release-notes/bcr-bundles/2026_06_bundle",
+    "status": "DISABLED"
   },
+  "change_history_expected_count": 1,
+  "change_history_projection_sha256": "sha256:39122977f119ed92438313fb53fb3a7625fd37a1abfddea7ca7d31193c544dff",
+  "change_history_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "dbt_projects": [],
+  "dbt_projects_expected_count": 0,
+  "dbt_projects_verified": true,
+  "metadata": {
+    "account_ref": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "collected_at": "2026-09-03T12:00:00Z",
+    "repo_sha": "0123456789abcdef0123456789abcdef01234567",
+    "role_ref": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+    "window_end": "2026-09-03T11:59:30Z",
+    "window_start": "2026-09-03T11:30:00Z"
+  },
+  "migration_repository_sha256": "sha256:39122977f119ed92438313fb53fb3a7625fd37a1abfddea7ca7d31193c544dff",
   "migrations": [
-    {"path": "V1.0.0__init.sql", "type": "V", "version": "1.0.0", "checksum": "new", "applied_checksum": "old"},
-    {"path": "R__views.sql", "type": "R", "checksum": "new-r", "applied_checksum": "old-r"},
-    {"path": "V1.0.0__copy.sql", "type": "V", "version": "1.0.0", "checksum": "copy", "applied_checksum": ""}
+    {
+      "always_run_reviewed": false,
+      "applied_checksum_sha256": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "checksum_sha256": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "dry_run_verified": true,
+      "idempotence_verified": true,
+      "installed_at": "2026-09-03T11:30:00Z",
+      "migration_ref": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "out_of_order": false,
+      "pending": false,
+      "receipt_sha256": "sha256:9e63237d7b7730d98820dcb664fa58c6cedc404f996892667012f55cc45c9af5",
+      "rendered_sql_redacted": true,
+      "script_name": "V1.0.0__baseline.sql",
+      "script_type": "V",
+      "status": "SUCCESS",
+      "version": "1.0.0"
+    }
   ],
-  "tools": {"snowflake_cli": {"version": "3.0.0"}},
-  "bcr": {"checked": false},
-  "rollback": {"tested": false, "strategy": "snapshot exists"}
+  "migrations_expected_count": 1,
+  "migrations_observed_at": "2026-09-03T11:58:00Z",
+  "migrations_verified": true,
+  "post_change_invariants": [],
+  "post_change_invariants_expected_count": 0,
+  "post_change_invariants_verified": true,
+  "preflight": {
+    "checked_at": "2026-09-03T11:59:00Z",
+    "checks": [
+      {
+        "name": "affected-objects",
+        "status": "PASS"
+      },
+      {
+        "name": "backend-lock",
+        "status": "PASS"
+      },
+      {
+        "name": "bcr",
+        "status": "PASS"
+      },
+      {
+        "name": "dbt-projects",
+        "status": "PASS"
+      },
+      {
+        "name": "identity",
+        "status": "PASS"
+      },
+      {
+        "name": "plan",
+        "status": "PASS"
+      },
+      {
+        "name": "post-change-invariants",
+        "status": "PASS"
+      },
+      {
+        "name": "preview",
+        "status": "PASS"
+      },
+      {
+        "name": "provider-migrations",
+        "status": "PASS"
+      },
+      {
+        "name": "rollback",
+        "status": "PASS"
+      },
+      {
+        "name": "schemachange",
+        "status": "PASS"
+      },
+      {
+        "name": "state-backup",
+        "status": "PASS"
+      }
+    ],
+    "completed": true,
+    "operator_ref": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "receipt_sha256": "sha256:c3c5232b1079a4c626262fc7e5395c03250af8fb6933193c01ccf6bf658351e4"
+  },
+  "provider_migrations": [],
+  "provider_migrations_expected_count": 0,
+  "provider_migrations_verified": true,
+  "rollback": {
+    "migration_inventory_sha256": "sha256:39122977f119ed92438313fb53fb3a7625fd37a1abfddea7ca7d31193c544dff",
+    "owner_ref": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "plan_sha256": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "receipt_sha256": "sha256:bbf62815d9805d0bc409c315c5d1fd461eec9115d7cd89e4c28991848871732d",
+    "stop_condition_ref": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "strategy": "STATE_RESTORE",
+    "tested": true,
+    "tested_at": "2026-09-03T11:58:00Z"
+  },
+  "schema_version": "2",
+  "state_backup": {
+    "account_ref": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "backend_ref": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "captured_at": "2026-09-03T11:45:00Z",
+    "created": true,
+    "lineage_ref": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+    "receipt_sha256": "sha256:4cd19a31c91952ec7881155d4d2a43021be218a1f0b0383af2f35dcd2014992b",
+    "serial": 42,
+    "state_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "verified": false,
+    "workspace_ref": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "terraform": {
+    "backend_ref": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "lockfile_sha256": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+    "plan": {
+      "action_counts": {
+        "create": 0,
+        "create-delete": 0,
+        "delete": 0,
+        "delete-create": 0,
+        "no-op": 1,
+        "read": 0,
+        "update": 0
+      },
+      "action_inventory_complete": true,
+      "changes": 0,
+      "complete": true,
+      "errored": false,
+      "exit_code": 0,
+      "format_version": "1.2",
+      "generated_at": "2026-09-03T11:55:00Z",
+      "prior_state_lineage_ref": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "prior_state_serial": 42,
+      "receipt_sha256": "sha256:cce0bb1875b4214915ab66b09c7e4ebbf3209962704ffc7f5bd356c442c254c5",
+      "refresh_enabled": true,
+      "resource_change_count": 1,
+      "resources_sha256": "sha256:33c2c31eee9d8f0b8fe812e6053c294f86527a405448a5a89a370a4f6d4def06",
+      "saved_plan_sha256": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "terraform_version": "1.9.8"
+    },
+    "platform": "linux_amd64",
+    "preview_features_enabled": [
+      "experimental"
+    ],
+    "preview_inventory": {
+      "detected_count": 0,
+      "expected_count": 0,
+      "observed_at": "2026-09-03T11:58:00Z",
+      "provider_version": "2.20.0",
+      "receipt_sha256": "sha256:45efb8a9d9cb44e6365b367ab9e1be75c2c524444c66bd9627d29642e70a0132",
+      "resource_refs_sha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "source_url": "https://registry.terraform.io/providers/snowflakedb/snowflake/latest/docs",
+      "verified": true
+    },
+    "previous_provider_version": "2.20.0",
+    "provider_source": "snowflakedb/snowflake",
+    "provider_version": "2.20.0",
+    "resources": [
+      {
+        "actions": [
+          "delete",
+          "create"
+        ],
+        "existing": true,
+        "import_ref": null,
+        "preview": false,
+        "resource_ref": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "type": "snowflake_database"
+      }
+    ],
+    "runtime_version": "1.9.8",
+    "selected_provider_version": "2.20.0",
+    "state": {
+      "lineage_ref": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "lock_capability": "SUPPORTED",
+      "lock_status": "ACQUIRED",
+      "parseable": true,
+      "resource_count": 1,
+      "resource_refs": [
+        "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      ],
+      "resources_sha256": "sha256:9735116526ebec8187d8f2fad59d3146d4e23069ae6bdfc0fa951f2280a2f5df",
+      "serial": 42,
+      "state_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "valid": true
+    },
+    "workspace_ref": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "tools": {
+    "python_connector": {
+      "observed_at": "2026-09-03T11:58:00Z",
+      "source_url": "https://docs.snowflake.com/developer-guide/python-connector/python-connector",
+      "version": "3.17.2"
+    },
+    "schemachange": {
+      "observed_at": "2026-09-03T11:58:00Z",
+      "source_url": "https://github.com/Snowflake-Labs/schemachange/releases",
+      "version": "4.0.1"
+    },
+    "snowflake_cli": {
+      "observed_at": "2026-09-03T11:58:00Z",
+      "source_url": "https://docs.snowflake.com/developer-guide/snowflake-cli/index",
+      "version": "3.12.0"
+    }
+  },
+  "zero_change_receipt": {
+    "affected_objects": 0,
+    "issued": true,
+    "issued_at": "2026-09-03T12:00:00Z",
+    "plan_sha256": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "receipt_sha256": "sha256:56cd4c4ac47b3b1c9f9170b86fa5a998c4cd3d3424e1690b648a1bfc8aed336d",
+    "resources_sha256": "sha256:33c2c31eee9d8f0b8fe812e6053c294f86527a405448a5a89a370a4f6d4def06"
+  }
 }

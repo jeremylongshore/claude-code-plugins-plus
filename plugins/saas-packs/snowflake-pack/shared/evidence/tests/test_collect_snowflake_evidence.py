@@ -576,7 +576,8 @@ class CollectorTests(unittest.TestCase):
         canonical_sql = {path.name: path.read_bytes() for path in sorted((SCRIPT.parent / "sql").glob("*.sql"))}
         skills_dir = SCRIPT.parents[2] / "skills"
         bundled = sorted(skills_dir.glob("*/scripts/collect_snowflake_evidence.py"))
-        self.assertEqual(len(bundled), 8)
+        self.assertEqual(len(bundled), 7)
+        self.assertFalse((skills_dir / "snowflake-deploy-medic" / "scripts" / SCRIPT.name).exists())
         for path in bundled:
             with self.subTest(skill=path.parents[1].name):
                 self.assertEqual(path.read_bytes(), canonical)

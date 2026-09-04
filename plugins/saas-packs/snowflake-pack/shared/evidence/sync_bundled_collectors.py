@@ -54,7 +54,6 @@ BUNDLES: dict[str, tuple[str, ...]] = {
         "data-quality-expectations-current.sql",
         "data-quality-notification-current.sql",
     ),
-    "snowflake-deploy-medic": ("query.sql",),
     "snowflake-failover-readiness-drill": (
         "replication.sql",
         "replication-current.sql",
