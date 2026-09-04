@@ -7224,7 +7224,7 @@
       "name": "snowflake-pack",
       "source": "./plugins/saas-packs/snowflake-pack",
       "description": "Eight model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, governance, data quality, and failover",
-      "version": "3.6.0",
+      "version": "3.7.0",
       "category": "saas-packs",
       "keywords": [
         "snowflake",
