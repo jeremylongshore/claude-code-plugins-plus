@@ -1,6 +1,6 @@
 # Oracle Cloud Skill Pack
 
-> Claude Code skill pack for Oracle Cloud integration (24 skills)
+> Claude Code skill pack for Oracle Cloud integration (26 skills)
 
 Oracle Cloud Infrastructure (OCI) SDK for compute instances, object storage, networking, and IAM.
 

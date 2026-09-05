@@ -1,6 +1,6 @@
 # Navan Skill Pack
 
-> Claude Code skill pack for Navan integration (24 skills)
+> Claude Code skill pack for Navan integration (26 skills)
 
 Corporate travel and expense management API for flight booking, expense reporting, and spend analytics.
 
