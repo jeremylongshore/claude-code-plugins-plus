@@ -6,7 +6,7 @@
 
 **Outcome:** the v1 pack failed production accuracy and security review.
 
-## Verified contracts
+## Contracts audited against official documentation
 
 OAuth client credentials use form encoding at
 `https://auth.grammarly.com/v4/api/oauth2/token` with `grant_type`, `client_id`,

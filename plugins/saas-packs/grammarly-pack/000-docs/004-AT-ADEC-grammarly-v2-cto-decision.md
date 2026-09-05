@@ -31,7 +31,8 @@ skill-ID alias mechanism.
 
 The removed IDs are intentionally absent rather than retained as active tombstones:
 unsafe instructions must not remain discoverable. `migration-map.json` provides the
-stable redirect record. This is a breaking change and therefore a major version.
+human-readable migration reference; it is not a runtime alias or redirect mechanism.
+This is a breaking change and therefore a major version.
 
 ## Approval boundary
 
