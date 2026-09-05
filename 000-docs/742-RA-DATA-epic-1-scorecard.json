@@ -22,13 +22,13 @@
       "error_files": 719,
       "error_total": 3702,
       "grade_distribution": {
-        "A": 1889,
-        "B": 1087,
+        "A": 1881,
+        "B": 1076,
         "C": 409,
         "D": 157,
         "F": 5
       },
-      "rows": 3547
+      "rows": 3528
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3047,
-        "tracked_files": 23892
+        "raw_tracked_plugin_skill_files": 3028,
+        "tracked_files": 23880
       }
     },
     "2": {
@@ -95,13 +95,13 @@
           "terminal_denominator": {
             "agents": 358,
             "commands": 373,
-            "files": 4871,
+            "files": 4852,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
             "plugin_manifests": 593,
-            "skills": 3547
+            "skills": 3528
           },
           "validated_plugin_manifests": 601,
-          "validator_reported_mixed_denominator_percent": 23.5
+          "validator_reported_mixed_denominator_percent": 23.6
         },
         "skill_rows": {
           "a_error_total": 35,
@@ -112,13 +112,13 @@
           "error_files": 719,
           "error_total": 3702,
           "grade_distribution": {
-            "A": 1889,
-            "B": 1087,
+            "A": 1881,
+            "B": 1076,
             "C": 409,
             "D": 157,
             "F": 5
           },
-          "rows": 3547
+          "rows": 3528
         }
       }
     },
@@ -131,20 +131,20 @@
       "values": {
         "average_score": 87.5,
         "grade_distribution": {
-          "A": 1889,
-          "B": 1087,
+          "A": 1881,
+          "B": 1076,
           "C": 409,
           "D": 157,
           "F": 5
         },
         "grade_percentages": {
           "A": 53.3,
-          "B": 30.6,
-          "C": 11.5,
-          "D": 4.4,
+          "B": 30.5,
+          "C": 11.6,
+          "D": 4.5,
           "F": 0.1
         },
-        "rows": 3547
+        "rows": 3528
       }
     },
     "6": {
@@ -161,7 +161,7 @@
         "b_error_total": 568,
         "b_failing": 276,
         "certified_target": 0,
-        "skill_summary_rows": 3547
+        "skill_summary_rows": 3528
       }
     },
     "7": {
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3536,
+        "declared": 3517,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 11,
-        "rows": 3547,
+        "rows": 3528,
         "target_malformed": 0
       }
     },
@@ -286,10 +286,14 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "distinct_values": 56,
+        "distinct_values": 57,
         "invalid_or_empty": 0,
         "target_free_text_values": 0,
         "values": [
+          {
+            "count": 5,
+            "value": "Agent Skills-compatible hosts; requires Python 3.10+"
+          },
           {
             "count": 1,
             "value": "Any OS, but requires a persistent local filesystem and ~/.kobiton/.credentials (written by /automate:setup) — so it cannot run where the host offers only an MCP connection. A host affordance that streams a background command's output is strongly preferred; without one the skill falls back to a foreground loop. The watch loop runs the bundled scripts/poll-test-run.js (Node 18+), which reads those credentials, polls run state over REST, and emits only on change. Uses the Kobiton MCP tools getOrgSettings (up front) and terminateTestRun (on request); requires an authenticated Kobiton MCP connection, and getOrgSettings requires the automate plugin release that ships it. The optional live-remediation window (Step 4a) reuses run-automation-suite's chromeless-launcher scripts (Chrome; resize on macOS/Windows, launch-only on Linux) — if Chrome is absent the skill falls back to printing the URL."
@@ -351,7 +355,7 @@
             "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18, a persistent local filesystem (the observe-decide-act loop passes state through local turn files), and ~/.kobiton/.credentials written by /automate:setup — scripts/appium.js reads that file directly and never calls the MCP getCredential tool, so it is required, not a fallback. An authenticated Kobiton MCP connection is additionally useful for device selection."
           },
           {
-            "count": 3221,
+            "count": 3197,
             "value": "Designed for Claude Code"
           },
           {
@@ -1196,7 +1200,7 @@
         "answers": [
           {
             "cohort": "curated-mirror",
-            "value": 2408
+            "value": 2389
           },
           {
             "cohort": "curriculum",
@@ -1204,15 +1208,15 @@
           },
           {
             "cohort": "first-party",
-            "value": 2703
+            "value": 2684
           },
           {
             "cohort": "graded",
-            "value": 3547
+            "value": 3528
           },
           {
             "cohort": "marketplace-visible",
-            "value": 2956
+            "value": 2937
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1927,7 +1931,7 @@
         "invalid_patterns": 0,
         "invisible_files": 23,
         "target_invisible_files": 0,
-        "tracked_files": 23892
+        "tracked_files": 23880
       }
     },
     "47": {
@@ -2012,17 +2016,17 @@
       "dimension": "Inventory header versus rows",
       "reproduce": "pnpm run measure:e1 --row=52 --stdout",
       "source": [
-        "freshie/reports/run-delta-30.json",
+        "freshie/reports/run-delta-36.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py"
       ],
       "status": "target_met",
       "values": {
-        "dolt_commit": "0g093prj22qajinvqqf28cf5mcvtvhn2",
-        "header_total_skills": 2967,
-        "run_id": 30,
+        "dolt_commit": "lai3jk8kp7s640pnveraek6mtdsfku7j",
+        "header_total_skills": 2951,
+        "run_id": 36,
         "skill_row_delta": 0,
-        "skill_rows": 2967,
+        "skill_rows": 2951,
         "target_skill_row_delta": 0
       }
     },
@@ -2033,32 +2037,32 @@
       "source": [
         "freshie/grade-histogram.json",
         "freshie/grades.csv",
-        "freshie/reports/run-delta-30.json"
+        "freshie/reports/run-delta-36.json"
       ],
       "status": "target_met",
       "values": {
-        "compliance_rows": 3547,
-        "export_dolt_commit": "0g093prj22qajinvqqf28cf5mcvtvhn2",
-        "export_run_id": 30,
-        "grades_csv_rows": 3547,
-        "grades_csv_sha256": "47d8e4adf2b4a827166e9cc5887ff58ff7fd3840c786e7e98c4d4eec3052ba75",
+        "compliance_rows": 3528,
+        "export_dolt_commit": "lai3jk8kp7s640pnveraek6mtdsfku7j",
+        "export_run_id": 36,
+        "grades_csv_rows": 3528,
+        "grades_csv_sha256": "e3a13f38190c5414bc69916e41db00e058aba024557858599241c25cea7e4399",
         "histogram_grades": {
-          "A": 1889,
-          "B": 1087,
+          "A": 1881,
+          "B": 1076,
           "C": 409,
           "D": 157,
           "F": 5
         },
-        "histogram_total": 3547,
+        "histogram_total": 3528,
         "immutable_grade_counts": {
-          "A": 1889,
-          "B": 1087,
+          "A": 1881,
+          "B": 1076,
           "C": 409,
           "D": 157,
           "F": 5
         },
-        "inventory_dolt_commit": "0g093prj22qajinvqqf28cf5mcvtvhn2",
-        "inventory_run_id": 30,
+        "inventory_dolt_commit": "lai3jk8kp7s640pnveraek6mtdsfku7j",
+        "inventory_run_id": 36,
         "target_lag_runs": 0
       }
     },
@@ -2069,7 +2073,7 @@
       "source": [
         "freshie/reports/legacy-forge-proofs-demotion.json",
         "freshie/reports/run-delta-19.json",
-        "freshie/reports/run-delta-30.json",
+        "freshie/reports/run-delta-36.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py",
         "scripts/record-jrig-proofs.mjs"
@@ -2082,7 +2086,7 @@
           "E2": 0,
           "E3": 0
         },
-        "current_run_id": 30,
+        "current_run_id": 36,
         "invalid_identities": 0,
         "legacy_e0_records": 3,
         "retained_e2_e3": 0,
@@ -2107,7 +2111,7 @@
         "000-docs/807-DR-STND-evaluation-evidence.md",
         "freshie/reports/legacy-forge-proofs-demotion.json",
         "freshie/reports/run-delta-19.json",
-        "freshie/reports/run-delta-30.json",
+        "freshie/reports/run-delta-36.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py"
       ],
@@ -2153,6 +2157,11 @@
         "plugins/saas-packs/databricks-pack/skills/databricks-cost-leak-hunter/eval-spec.yaml",
         "plugins/saas-packs/databricks-pack/skills/databricks-streaming-guardian/eval-spec.yaml",
         "plugins/saas-packs/databricks-pack/skills/databricks-uc-migration-pilot/eval-spec.yaml",
+        "plugins/saas-packs/grammarly-pack/skills/grammarly-access-readiness/eval-spec.yaml",
+        "plugins/saas-packs/grammarly-pack/skills/grammarly-api-reliability/eval-spec.yaml",
+        "plugins/saas-packs/grammarly-pack/skills/grammarly-data-safety-guardian/eval-spec.yaml",
+        "plugins/saas-packs/grammarly-pack/skills/grammarly-document-evaluator/eval-spec.yaml",
+        "plugins/saas-packs/grammarly-pack/skills/grammarly-license-governor/eval-spec.yaml",
         "plugins/saas-packs/hubspot-pack/skills/hubspot-warehouse-sync/eval-spec.yaml",
         "plugins/saas-packs/sentry-pack/skills/sentry-data-handling/eval-spec.yaml",
         "plugins/saas-packs/snowflake-pack/skills/snowflake-access-guardian/eval-spec.yaml",
@@ -2176,6 +2185,11 @@
         "skills/.curated/databricks-cost-leak-hunter/eval-spec.yaml",
         "skills/.curated/databricks-streaming-guardian/eval-spec.yaml",
         "skills/.curated/databricks-uc-migration-pilot/eval-spec.yaml",
+        "skills/.curated/grammarly-access-readiness/eval-spec.yaml",
+        "skills/.curated/grammarly-api-reliability/eval-spec.yaml",
+        "skills/.curated/grammarly-data-safety-guardian/eval-spec.yaml",
+        "skills/.curated/grammarly-document-evaluator/eval-spec.yaml",
+        "skills/.curated/grammarly-license-governor/eval-spec.yaml",
         "skills/.curated/hubspot-warehouse-sync/eval-spec.yaml",
         "skills/.curated/sentry-data-handling/eval-spec.yaml",
         "skills/.curated/skill-creator/eval-spec.yaml",
@@ -2194,11 +2208,11 @@
       ],
       "status": "measured",
       "values": {
-        "adoption_percent": 0.79,
-        "curated_copies": 24,
-        "plugin_skill_rows": 3047,
-        "source_eval_specs": 24,
-        "tracked_eval_specs": 48
+        "adoption_percent": 0.96,
+        "curated_copies": 29,
+        "plugin_skill_rows": 3028,
+        "source_eval_specs": 29,
+        "tracked_eval_specs": 58
       }
     },
     "58": {
