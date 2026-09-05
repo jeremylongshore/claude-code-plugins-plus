@@ -21,6 +21,7 @@ const EXAMPLES = new Map([
   ['plugin-package-manifests', 'plugins/example/example/package.json'],
   ['curated-skill-mirror', 'skills/.curated/example/SKILL.md'],
   ['disposition-ledger', 'freshie/disposition-ledger.json'],
+  ['saas-tutorial-lattice', 'freshie/saas-tutorial-lattice.json'],
   ['marketplace-public-data', 'marketplace/public/data/catalog.json'],
   ['cowork-downloads', 'marketplace/public/downloads/example.zip'],
   ['freshie-run-snapshots', 'freshie/exports/run-1/plugin_values.json'],

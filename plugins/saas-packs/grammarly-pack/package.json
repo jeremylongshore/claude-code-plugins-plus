@@ -1,22 +1,24 @@
 {
   "name": "@intentsolutionsio/grammarly-pack",
-  "version": "1.0.3",
-  "description": "Claude Code skill pack for Grammarly - 24 skills covering writing assistance, grammar checking, and content style",
+  "version": "2.0.0",
+  "description": "Five model-agnostic Grammarly operator skills for secure access, document evaluation, API reliability, data safety, and license governance.",
   "main": "README.md",
   "type": "module",
   "files": [
     "README.md",
     ".claude-plugin/",
-    "skills/"
+    "migration-map.json",
+    "skills/",
+    "!**/__pycache__/**",
+    "!**/*.pyc",
+    "!**/*.pyo"
   ],
   "keywords": [
-    "claude-code",
-    "claude-code-plugin",
+    "agent-skills",
     "grammarly",
-    "writing-assistant",
-    "grammar-checking",
-    "content-style",
-    "ai-skills",
+    "api-operations",
+    "security",
+    "governance",
     "saas-pack"
   ],
   "author": {

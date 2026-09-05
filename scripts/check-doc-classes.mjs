@@ -16,6 +16,7 @@ export const VALID_CLASSES = new Set(['canonical', 'generated', 'frozen', 'recor
 const MARKER = /^<!-- doc-class: ([a-z-]+) -->\n/;
 const DOC_PREFIX = '000-docs/';
 const INDEX = `${DOC_PREFIX}000-INDEX.md`;
+const GENERATED = new Set([INDEX, `${DOC_PREFIX}813-RA-AUDT-saas-tutorial-lattice.md`]);
 const BASELINE_REF = process.env.DOC_CLASS_BASELINE_REF || 'origin/main';
 
 const FROZEN = new Set([
@@ -48,7 +49,7 @@ const CANONICAL = new Set([
 
 export function expectedClass(path) {
   if (FROZEN.has(path)) return 'frozen';
-  if (path === INDEX) return 'generated';
+  if (GENERATED.has(path)) return 'generated';
   if (CANONICAL.has(path)) return 'canonical';
   return 'record';
 }
@@ -164,7 +165,7 @@ export function checkDocClasses(root = ROOT) {
     docs: docs.length,
     counts,
     frozen: FROZEN.size,
-    generated: 1,
+    generated: GENERATED.size,
     issues,
     allow: issues.length === 0,
   };

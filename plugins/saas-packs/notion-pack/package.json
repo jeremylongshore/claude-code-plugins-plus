@@ -1,7 +1,7 @@
 {
   "name": "@intentsolutionsio/notion-pack",
-  "version": "1.0.3",
-  "description": "Claude Code skill pack for Notion - 30 skills covering workspace management, databases, and knowledge base APIs",
+  "version": "1.0.4",
+  "description": "Claude Code skill pack for Notion - 32 skills covering workspace management, databases, and knowledge base APIs",
   "main": "README.md",
   "type": "module",
   "files": [

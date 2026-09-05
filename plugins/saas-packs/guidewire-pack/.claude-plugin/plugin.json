@@ -1,7 +1,7 @@
 {
   "name": "guidewire-pack",
-  "version": "1.25.0",
-  "description": "Claude Code skill pack for Guidewire InsuranceSuite (24 skills)",
+  "version": "1.26.0",
+  "description": "Claude Code skill pack for Guidewire InsuranceSuite (10 skills)",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
