@@ -765,6 +765,8 @@ importers:
 
   plugins/saas-packs/vastai-pack: {}
 
+  plugins/saas-packs/veeva-pack: {}
+
   plugins/saas-packs/vercel-pack: {}
 
   plugins/saas-packs/webflow-pack: {}
