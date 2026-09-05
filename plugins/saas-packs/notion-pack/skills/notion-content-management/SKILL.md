@@ -14,7 +14,7 @@ description: 'Create, update, archive, and compose Notion pages and block conten
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.38.0
+version: 1.39.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

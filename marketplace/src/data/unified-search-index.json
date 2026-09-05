@@ -10817,7 +10817,7 @@
       "slug": "langchain-py-pack",
       "name": "langchain-py-pack",
       "displayName": "langchain py pack",
-      "description": "LangChain 1.0 + LangGraph 1.0 skill pack for Python. Pain-first skills anchored to a 68-entry pain catalog covering content blocks, streaming token accounting, structured-output, vector stores, checkpointing, HITL, middleware, Deep Agents, and native OTEL. Expanding toward 34 skills across four epics.",
+      "description": "LangChain 1.0 + LangGraph 1.0 skill pack for Python. Pain-first skills anchored to a 68-entry pain catalog covering content blocks, streaming token accounting, structured-output, vector stores, checkpointing, HITL, middleware, Deep Agents, and native OTEL. Includes 33 skills across four epics.",
       "category": "saas-packs",
       "keywords": [
         "langchain",
@@ -10837,12 +10837,12 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "2.5.0",
+      "version": "2.6.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
       "skillCount": 33,
-      "searchText": "langchain py pack langchain 1.0 + langgraph 1.0 skill pack for python. pain-first skills anchored to a 68-entry pain catalog covering content blocks, streaming token accounting, structured-output, vector stores, checkpointing, hitl, middleware, deep agents, and native otel. expanding toward 34 skills across four epics. saas-packs langchain langgraph python llm agents rag checkpointing streaming middleware langsmith"
+      "searchText": "langchain py pack langchain 1.0 + langgraph 1.0 skill pack for python. pain-first skills anchored to a 68-entry pain catalog covering content blocks, streaming token accounting, structured-output, vector stores, checkpointing, hitl, middleware, deep agents, and native otel. includes 33 skills across four epics. saas-packs langchain langgraph python llm agents rag checkpointing streaming middleware langsmith"
     },
     {
       "type": "plugin",
@@ -11248,7 +11248,7 @@
       "slug": "guidewire-pack",
       "name": "guidewire-pack",
       "displayName": "guidewire pack",
-      "description": "Complete Guidewire integration skill pack with 24 skills covering InsuranceSuite, PolicyCenter, ClaimCenter, and insurance platform development. Flagship tier vendor pack.",
+      "description": "Complete Guidewire integration skill pack with 10 skills covering InsuranceSuite, PolicyCenter, ClaimCenter, and insurance platform development. Flagship tier vendor pack.",
       "category": "saas-packs",
       "keywords": [
         "guidewire",
@@ -11265,7 +11265,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.25.0",
+      "version": "1.26.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -11273,7 +11273,7 @@
       "verificationScore": 62,
       "verificationGrade": "D",
       "verificationBadge": "bronze",
-      "searchText": "guidewire pack complete guidewire integration skill pack with 24 skills covering insurancesuite, policycenter, claimcenter, and insurance platform development. flagship tier vendor pack. saas-packs guidewire insurance policycenter claimcenter billingcenter insurancesuite enterprise"
+      "searchText": "guidewire pack complete guidewire integration skill pack with 10 skills covering insurancesuite, policycenter, claimcenter, and insurance platform development. flagship tier vendor pack. saas-packs guidewire insurance policycenter claimcenter billingcenter insurancesuite enterprise"
     },
     {
       "type": "plugin",
@@ -12838,7 +12838,7 @@
       "slug": "navan-pack",
       "name": "navan-pack",
       "displayName": "navan pack",
-      "description": "Claude Code skill pack for Navan (24 skills)",
+      "description": "Claude Code skill pack for Navan (26 skills)",
       "category": "saas-packs",
       "keywords": [
         "navan",
@@ -12852,7 +12852,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -12860,7 +12860,7 @@
       "verificationScore": 79,
       "verificationGrade": "C",
       "verificationBadge": "silver",
-      "searchText": "navan pack claude code skill pack for navan (24 skills) saas-packs navan saas sdk integration"
+      "searchText": "navan pack claude code skill pack for navan (26 skills) saas-packs navan saas sdk integration"
     },
     {
       "type": "plugin",
@@ -12868,7 +12868,7 @@
       "slug": "notion-pack",
       "name": "notion-pack",
       "displayName": "notion pack",
-      "description": "Claude Code skill pack for Notion (30 skills)",
+      "description": "Claude Code skill pack for Notion (32 skills)",
       "category": "saas-packs",
       "keywords": [
         "notion",
@@ -12882,7 +12882,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.38.0",
+      "version": "1.39.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -12890,7 +12890,7 @@
       "verificationScore": 79,
       "verificationGrade": "C",
       "verificationBadge": "silver",
-      "searchText": "notion pack claude code skill pack for notion (30 skills) saas-packs notion saas sdk integration"
+      "searchText": "notion pack claude code skill pack for notion (32 skills) saas-packs notion saas sdk integration"
     },
     {
       "type": "plugin",
@@ -12928,7 +12928,7 @@
       "slug": "oraclecloud-pack",
       "name": "oraclecloud-pack",
       "displayName": "oraclecloud pack",
-      "description": "Claude Code skill pack for Oracle Cloud (24 skills)",
+      "description": "Claude Code skill pack for Oracle Cloud (26 skills)",
       "category": "saas-packs",
       "keywords": [
         "oraclecloud",
@@ -12943,7 +12943,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -12951,7 +12951,7 @@
       "verificationScore": 79,
       "verificationGrade": "C",
       "verificationBadge": "silver",
-      "searchText": "oraclecloud pack claude code skill pack for oracle cloud (24 skills) saas-packs oraclecloud oracle cloud saas sdk integration"
+      "searchText": "oraclecloud pack claude code skill pack for oracle cloud (26 skills) saas-packs oraclecloud oracle cloud saas sdk integration"
     },
     {
       "type": "plugin",
@@ -44876,7 +44876,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.25.0",
+      "version": "1.26.0",
       "parentPlugin": {
         "name": "guidewire-pack",
         "category": "saas-packs"
@@ -44899,7 +44899,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.25.0",
+      "version": "1.26.0",
       "parentPlugin": {
         "name": "guidewire-pack",
         "category": "saas-packs"
@@ -44922,7 +44922,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.25.0",
+      "version": "1.26.0",
       "parentPlugin": {
         "name": "guidewire-pack",
         "category": "saas-packs"
@@ -44948,7 +44948,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.25.0",
+      "version": "1.26.0",
       "parentPlugin": {
         "name": "guidewire-pack",
         "category": "saas-packs"
@@ -44973,7 +44973,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.25.0",
+      "version": "1.26.0",
       "parentPlugin": {
         "name": "guidewire-pack",
         "category": "saas-packs"
@@ -44999,7 +44999,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.25.0",
+      "version": "1.26.0",
       "parentPlugin": {
         "name": "guidewire-pack",
         "category": "saas-packs"
@@ -45023,7 +45023,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.25.0",
+      "version": "1.26.0",
       "parentPlugin": {
         "name": "guidewire-pack",
         "category": "saas-packs"
@@ -45046,7 +45046,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.25.0",
+      "version": "1.26.0",
       "parentPlugin": {
         "name": "guidewire-pack",
         "category": "saas-packs"
@@ -45071,7 +45071,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.25.0",
+      "version": "1.26.0",
       "parentPlugin": {
         "name": "guidewire-pack",
         "category": "saas-packs"
@@ -45096,7 +45096,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.25.0",
+      "version": "1.26.0",
       "parentPlugin": {
         "name": "guidewire-pack",
         "category": "saas-packs"
@@ -50172,7 +50172,7 @@
         "Bash(pytest:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50191,7 +50191,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50212,7 +50212,7 @@
         "Bash(python:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50233,7 +50233,7 @@
         "Bash(python:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50255,7 +50255,7 @@
         "Bash(redis-cli:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50277,7 +50277,7 @@
         "Bash(pip:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50299,7 +50299,7 @@
         "Bash(pip:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50320,7 +50320,7 @@
         "Bash(python:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50343,7 +50343,7 @@
         "Bash(vercel:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50366,7 +50366,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50387,7 +50387,7 @@
         "Bash(python:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50410,7 +50410,7 @@
         "Bash(pytest:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50428,7 +50428,7 @@
         "Read"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50449,7 +50449,7 @@
         "Bash(python:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50470,7 +50470,7 @@
         "Bash(python:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50492,7 +50492,7 @@
         "Bash(psql:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50513,7 +50513,7 @@
         "Bash(python:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50534,7 +50534,7 @@
         "Bash(python:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50555,7 +50555,7 @@
         "Bash(python:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50578,7 +50578,7 @@
         "Bash(pip:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50599,7 +50599,7 @@
         "Bash(python:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50622,7 +50622,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50644,7 +50644,7 @@
         "Bash(gcloud:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50665,7 +50665,7 @@
         "Bash(python:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50687,7 +50687,7 @@
         "Bash(pip:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50709,7 +50709,7 @@
         "Bash(redis-cli:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50731,7 +50731,7 @@
         "Bash(pip:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50753,7 +50753,7 @@
         "Bash(redis-cli:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50773,7 +50773,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50795,7 +50795,7 @@
         "Bash(pip:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50817,7 +50817,7 @@
         "Bash(grep:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50839,7 +50839,7 @@
         "Bash(python:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -50860,7 +50860,7 @@
         "Bash(python:*)"
       ],
       "compatibleWith": [],
-      "version": "2.5.0",
+      "version": "2.6.0",
       "parentPlugin": {
         "name": "langchain-py-pack",
         "category": "saas-packs"
@@ -56773,7 +56773,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -56793,7 +56793,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -56816,7 +56816,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -56839,7 +56839,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -56862,7 +56862,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -56886,7 +56886,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -56910,7 +56910,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -56934,7 +56934,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -56957,7 +56957,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -56979,7 +56979,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57002,7 +57002,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57024,7 +57024,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57047,7 +57047,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57070,7 +57070,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57092,7 +57092,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57115,7 +57115,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57137,7 +57137,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57160,7 +57160,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57183,7 +57183,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57206,7 +57206,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57228,7 +57228,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57251,7 +57251,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57273,7 +57273,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57295,7 +57295,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57318,7 +57318,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57340,7 +57340,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "navan-pack",
         "category": "saas-packs"
@@ -57452,7 +57452,7 @@
         "Bash(node:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57473,7 +57473,7 @@
         "Bash(node:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57497,7 +57497,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57517,7 +57517,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57537,7 +57537,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57559,7 +57559,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57579,7 +57579,7 @@
         "Bash(npm:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57602,7 +57602,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57622,7 +57622,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57645,7 +57645,7 @@
         "Bash(node:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57669,7 +57669,7 @@
         "Bash(fly:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57689,7 +57689,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57709,7 +57709,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57729,7 +57729,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57750,7 +57750,7 @@
         "Bash(pip:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57769,7 +57769,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57790,7 +57790,7 @@
         "Bash(npx:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57811,7 +57811,7 @@
         "Bash(pnpm:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57831,7 +57831,7 @@
         "Bash(node:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57854,7 +57854,7 @@
         "Bash(vault:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57874,7 +57874,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57894,7 +57894,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57916,7 +57916,7 @@
         "Bash(node:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57938,7 +57938,7 @@
         "Bash(jq:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57961,7 +57961,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -57983,7 +57983,7 @@
         "Bash(npx:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -58003,7 +58003,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -58024,7 +58024,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -58046,7 +58046,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -58067,7 +58067,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -58092,7 +58092,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -58116,7 +58116,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.38.0",
+      "version": "1.39.0",
       "parentPlugin": {
         "name": "notion-pack",
         "category": "saas-packs"
@@ -60516,7 +60516,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60539,7 +60539,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60561,7 +60561,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60583,7 +60583,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60605,7 +60605,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60627,7 +60627,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60650,7 +60650,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60674,7 +60674,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60697,7 +60697,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60720,7 +60720,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60743,7 +60743,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60766,7 +60766,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60789,7 +60789,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60813,7 +60813,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60836,7 +60836,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60858,7 +60858,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60880,7 +60880,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60903,7 +60903,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60925,7 +60925,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60948,7 +60948,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60972,7 +60972,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -60994,7 +60994,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -61016,7 +61016,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -61039,7 +61039,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -61064,7 +61064,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"
@@ -61087,7 +61087,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.7.0",
+      "version": "1.8.0",
       "parentPlugin": {
         "name": "oraclecloud-pack",
         "category": "saas-packs"

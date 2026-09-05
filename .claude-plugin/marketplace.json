@@ -5664,8 +5664,8 @@
     {
       "name": "langchain-py-pack",
       "source": "./plugins/saas-packs/langchain-py-pack",
-      "description": "LangChain 1.0 + LangGraph 1.0 skill pack for Python. Pain-first skills anchored to a 68-entry pain catalog covering content blocks, streaming token accounting, structured-output, vector stores, checkpointing, HITL, middleware, Deep Agents, and native OTEL. Expanding toward 34 skills across four epics.",
-      "version": "2.5.0",
+      "description": "LangChain 1.0 + LangGraph 1.0 skill pack for Python. Pain-first skills anchored to a 68-entry pain catalog covering content blocks, streaming token accounting, structured-output, vector stores, checkpointing, HITL, middleware, Deep Agents, and native OTEL. Includes 33 skills across four epics.",
+      "version": "2.6.0",
       "category": "saas-packs",
       "keywords": [
         "langchain",
@@ -5942,8 +5942,8 @@
     {
       "name": "guidewire-pack",
       "source": "./plugins/saas-packs/guidewire-pack",
-      "description": "Complete Guidewire integration skill pack with 24 skills covering InsuranceSuite, PolicyCenter, ClaimCenter, and insurance platform development. Flagship tier vendor pack.",
-      "version": "1.25.0",
+      "description": "Complete Guidewire integration skill pack with 10 skills covering InsuranceSuite, PolicyCenter, ClaimCenter, and insurance platform development. Flagship tier vendor pack.",
+      "version": "1.26.0",
       "category": "saas-packs",
       "keywords": [
         "guidewire",
@@ -6927,8 +6927,8 @@
     {
       "name": "navan-pack",
       "source": "./plugins/saas-packs/navan-pack",
-      "description": "Claude Code skill pack for Navan (24 skills)",
-      "version": "1.7.0",
+      "description": "Claude Code skill pack for Navan (26 skills)",
+      "version": "1.8.0",
       "category": "saas-packs",
       "keywords": [
         "navan",
@@ -6945,8 +6945,8 @@
     {
       "name": "notion-pack",
       "source": "./plugins/saas-packs/notion-pack",
-      "description": "Claude Code skill pack for Notion (30 skills)",
-      "version": "1.38.0",
+      "description": "Claude Code skill pack for Notion (32 skills)",
+      "version": "1.39.0",
       "category": "saas-packs",
       "keywords": [
         "notion",
@@ -6981,8 +6981,8 @@
     {
       "name": "oraclecloud-pack",
       "source": "./plugins/saas-packs/oraclecloud-pack",
-      "description": "Claude Code skill pack for Oracle Cloud (24 skills)",
-      "version": "1.7.0",
+      "description": "Claude Code skill pack for Oracle Cloud (26 skills)",
+      "version": "1.8.0",
       "category": "saas-packs",
       "keywords": [
         "oraclecloud",

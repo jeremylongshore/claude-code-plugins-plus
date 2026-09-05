@@ -139,6 +139,17 @@ export const GENERATED_ARTIFACT_REGISTRY = [
     why: 'Blueprint 727 §8 first-match-wins disposition for every Freshie-graded artifact',
   },
   {
+    id: 'saas-tutorial-lattice',
+    kind: 'generated_projection',
+    tracking: 'tracked',
+    pattern:
+      /^(?:freshie\/saas-tutorial-lattice\.json|000-docs\/813-RA-AUDT-saas-tutorial-lattice\.md)$/,
+    canonical: '.claude-plugin/marketplace.extended.json and tracked SaaS pack skill sources',
+    regenerate: 'pnpm run generate:saas-lattice',
+    postprocess: 'pnpm run normalize:dead-domain-projections',
+    why: 'Bead claude-juoz.3.11 deterministic denominator and WIP-limited pack review queue',
+  },
+  {
     id: 'marketplace-public-data',
     kind: 'generated_projection',
     tracking: 'untracked',

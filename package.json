@@ -38,6 +38,8 @@
     "evaluate:certification": "node scripts/evaluate-certification.mjs",
     "generate:disposition-ledger": "node scripts/generate-disposition-ledger.mjs",
     "validate:disposition-ledger": "node --test scripts/generate-disposition-ledger.test.mjs && node scripts/generate-disposition-ledger.mjs --check",
+    "generate:saas-lattice": "node scripts/generate-saas-tutorial-lattice.mjs",
+    "validate:saas-lattice": "node --test scripts/generate-saas-tutorial-lattice.test.mjs && node scripts/generate-saas-tutorial-lattice.mjs --check",
     "validate:mirror-quarantine": "node --test scripts/check-mirror-quarantine.test.mjs && node scripts/check-mirror-quarantine.mjs",
     "validate:llm-box-provenance": "node scripts/check-llm-box-provenance.mjs",
     "evaluate:launch-readiness": "node scripts/evaluate-launch-readiness.mjs",

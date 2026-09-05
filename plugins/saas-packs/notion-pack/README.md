@@ -1,6 +1,6 @@
 # Notion Skill Pack
 
-> 30 production-ready skills for building Notion API integrations with `@notionhq/client`
+> 32 production-ready skills for building Notion API integrations with `@notionhq/client`
 
 Real API code. Real filter syntax. Real error handling. No placeholders.
 

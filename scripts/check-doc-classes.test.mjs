@@ -29,6 +29,7 @@ test('maps frozen, generated, canonical, and record paths deterministically', ()
     'frozen',
   );
   assert.equal(expectedClass('000-docs/000-INDEX.md'), 'generated');
+  assert.equal(expectedClass('000-docs/813-RA-AUDT-saas-tutorial-lattice.md'), 'generated');
   assert.equal(
     expectedClass('000-docs/727-AT-ARCH-master-modernization-blueprint.md'),
     'canonical',
