@@ -496,6 +496,9 @@ test('Epic 9 pin and shadow rows require retained matching boundary evidence', (
   rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[38].status, 'partial');
   assert.equal(rows[38].values.target_met, false);
+  assert.deepEqual(rows[38].limitations, [
+    'target requires exact pins matching the retained registry observation, one resolved kernel version, a blocking ordering-test corpus, and a routed staleness alert',
+  ]);
   assert.equal(rows[39].status, 'stale_evidence');
 });
 
