@@ -124,7 +124,10 @@ class ToolkitShapeTests(unittest.TestCase):
         capabilities = data["capabilities"]
         self.assertEqual(len({item["id"] for item in capabilities}), len(capabilities))
         legacy = {name for item in capabilities for name in item["legacyEntrypoints"]}
-        self.assertTrue({"skill-creator", "agent-creator", "plugin-creator", "validate-plugin"} <= legacy)
+        self.assertLessEqual(
+            {"skill-creator", "agent-creator", "plugin-creator", "validate-plugin"},
+            legacy,
+        )
         self.assertIn("does not replace", data["authorityPolicy"])
 
     def test_eval_specs_cover_adversarial_and_non_trigger_cases(self) -> None:
@@ -154,10 +157,10 @@ class ToolkitAgentTests(unittest.TestCase):
             tools = set(data["tools"])
             denied = set(data["disallowedTools"])
             if path.stem == "upgrade-implementation-engineer":
-                self.assertTrue({"Write", "Edit"} <= tools)
+                self.assertLessEqual({"Write", "Edit"}, tools)
             else:
                 self.assertFalse({"Write", "Edit"} & tools)
-                self.assertTrue({"Write", "Edit"} <= denied)
+                self.assertLessEqual({"Write", "Edit"}, denied)
 
     def test_verifier_has_no_broad_or_mutating_shell_prefix(self) -> None:
         data = frontmatter(PACK / "agents" / "upgrade-verification-engineer.md")
