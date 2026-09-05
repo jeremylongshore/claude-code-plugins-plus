@@ -50,7 +50,8 @@ Plugin zip packages (cowork downloads) are built with:
 ### Monitoring
 
 - **GitHub vulnerability alerts and security updates** — routine version-update PRs are
-  disabled; vulnerable npm dependencies receive grouped remediation PRs
+  disabled; vulnerable npm dependencies receive grouped remediation PRs, while vulnerable
+  GitHub Actions dependencies receive individual remediation PRs
 - **CodeQL** — static analysis on push, PR, and weekly schedule
 - **Secret scanning with push protection** — blocks commits containing detected secrets
 - **Weekly full-history secret scan** — trufflehog runs on a Sunday schedule against the entire git history (`.github/workflows/secret-scan.yml`)
