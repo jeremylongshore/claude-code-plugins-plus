@@ -12,8 +12,10 @@
     "agent-skills",
     "skill-creation",
     "plugin-development",
+    "agents",
     "mcp",
     "validation",
-    "production-readiness"
+    "production-upgrade",
+    "beads"
   ]
 }

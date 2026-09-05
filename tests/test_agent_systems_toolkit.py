@@ -72,9 +72,13 @@ class ToolkitShapeTests(unittest.TestCase):
     def test_plugin_and_package_versions_match(self) -> None:
         manifest = json.loads((PACK / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
         package = json.loads((PACK / "package.json").read_text(encoding="utf-8"))
+        catalog = json.loads((ROOT / ".claude-plugin" / "marketplace.extended.json").read_text(encoding="utf-8"))
+        entry = next(plugin for plugin in catalog["plugins"] if plugin["name"] == manifest["name"])
         self.assertEqual(manifest["name"], "agent-systems-toolkit")
         self.assertEqual(manifest["version"], package["version"])
         self.assertEqual(package["name"], "@intentsolutionsio/agent-systems-toolkit")
+        self.assertEqual(manifest["description"], entry["description"])
+        self.assertEqual(manifest["keywords"], entry["keywords"])
 
     def test_exact_skill_set_and_required_frontmatter(self) -> None:
         skill_paths = sorted((PACK / "skills").glob("*/SKILL.md"))
