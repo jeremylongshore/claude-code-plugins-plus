@@ -6747,14 +6747,15 @@
     {
       "name": "grammarly-pack",
       "source": "./plugins/saas-packs/grammarly-pack",
-      "description": "Claude Code skill pack for Grammarly (24 skills)",
-      "version": "1.8.0",
+      "description": "Five model-agnostic Grammarly operator skills for secure access, document evaluation, API reliability, data safety, and license governance.",
+      "version": "2.0.0",
       "category": "saas-packs",
       "keywords": [
         "grammarly",
         "saas",
-        "sdk",
-        "integration"
+        "agent-skills",
+        "security",
+        "operations"
       ],
       "author": {
         "name": "Jeremy Longshore",

@@ -6,7 +6,7 @@
   },
   "stats": {
     "totalPlugins": 439,
-    "totalSkills": 2956,
+    "totalSkills": 2937,
     "totalCommands": 85,
     "pluginsWithSkills": 406,
     "byCategory": {
@@ -9579,17 +9579,18 @@
       "slug": "grammarly-pack",
       "name": "grammarly-pack",
       "displayName": "grammarly pack",
-      "description": "Claude Code skill pack for Grammarly (24 skills)",
-      "version": "1.8.0",
+      "description": "Five model-agnostic Grammarly operator skills for secure access, document evaluation, API reliability, data safety, and license governance.",
+      "version": "2.0.0",
       "category": "saas-packs",
       "keywords": [
         "grammarly",
         "saas",
-        "sdk",
-        "integration"
+        "agent-skills",
+        "security",
+        "operations"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 5,
       "commandCount": 0,
       "installCommand": "/plugin install grammarly-pack",
       "sourcePath": "./plugins/saas-packs/grammarly-pack",

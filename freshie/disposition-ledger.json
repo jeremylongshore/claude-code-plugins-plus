@@ -3,8 +3,8 @@
   "authority": "Blueprint 727 §8; Freshie graded export",
   "source": {
     "path": "freshie/grades.csv",
-    "sha256": "47d8e4adf2b4a827166e9cc5887ff58ff7fd3840c786e7e98c4d4eec3052ba75",
-    "artifact_count": 3547
+    "sha256": "e3a13f38190c5414bc69916e41db00e058aba024557858599241c25cea7e4399",
+    "artifact_count": 3528
   },
   "rule_order": [
     "G0",
@@ -21,7 +21,7 @@
   "counts": {
     "AUTO-MIGRATE": 437,
     "CERTIFY": 0,
-    "CERTIFY-PENDING-EVIDENCE": 2764,
+    "CERTIFY-PENDING-EVIDENCE": 2745,
     "CERTIFY-UPSTREAM": 0,
     "DEEP-REMEDIATE": 2,
     "QUARANTINE": 344
@@ -20556,9 +20556,9 @@
       ]
     },
     {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-ci-integration/SKILL.md",
+      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-access-readiness/SKILL.md",
       "grade": "A",
-      "score": 93,
+      "score": 99,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -20567,62 +20567,7 @@
       ]
     },
     {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-common-errors/SKILL.md",
-      "grade": "A",
-      "score": 97,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-core-workflow-a/SKILL.md",
-      "grade": "B",
-      "score": 88,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-core-workflow-b/SKILL.md",
-      "grade": "B",
-      "score": 86,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-cost-tuning/SKILL.md",
-      "grade": "A",
-      "score": 92,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-data-handling/SKILL.md",
-      "grade": "A",
-      "score": 90,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-debug-bundle/SKILL.md",
+      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-api-reliability/SKILL.md",
       "grade": "A",
       "score": 91,
       "diagnostics": [],
@@ -20633,9 +20578,9 @@
       ]
     },
     {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-deploy-integration/SKILL.md",
+      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-data-safety-guardian/SKILL.md",
       "grade": "A",
-      "score": 90,
+      "score": 99,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -20644,9 +20589,9 @@
       ]
     },
     {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-enterprise-rbac/SKILL.md",
+      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-document-evaluator/SKILL.md",
       "grade": "A",
-      "score": 90,
+      "score": 98,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -20655,163 +20600,9 @@
       ]
     },
     {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-hello-world/SKILL.md",
-      "grade": "B",
-      "score": 88,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-incident-runbook/SKILL.md",
-      "grade": "A",
-      "score": 92,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-install-auth/SKILL.md",
-      "grade": "B",
-      "score": 89,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-local-dev-loop/SKILL.md",
-      "grade": "B",
-      "score": 89,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-migration-deep-dive/SKILL.md",
-      "grade": "A",
-      "score": 93,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-multi-env-setup/SKILL.md",
-      "grade": "B",
-      "score": 89,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-observability/SKILL.md",
-      "grade": "B",
-      "score": 88,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-performance-tuning/SKILL.md",
-      "grade": "A",
-      "score": 90,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-prod-checklist/SKILL.md",
-      "grade": "A",
-      "score": 90,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-rate-limits/SKILL.md",
-      "grade": "B",
-      "score": 87,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-reference-architecture/SKILL.md",
+      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-license-governor/SKILL.md",
       "grade": "A",
       "score": 94,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-sdk-patterns/SKILL.md",
-      "grade": "B",
-      "score": 87,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-security-basics/SKILL.md",
-      "grade": "A",
-      "score": 92,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-upgrade-migration/SKILL.md",
-      "grade": "B",
-      "score": 85,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
-      "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
-      ]
-    },
-    {
-      "path": "plugins/saas-packs/grammarly-pack/skills/grammarly-webhooks-events/SKILL.md",
-      "grade": "B",
-      "score": 87,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
