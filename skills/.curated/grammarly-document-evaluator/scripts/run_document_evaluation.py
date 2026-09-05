@@ -10,8 +10,8 @@ import time
 from pathlib import Path
 
 
-PACK_ROOT = Path(__file__).resolve().parents[3]
-sys.path.insert(0, str(PACK_ROOT / "shared"))
+SCRIPT_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(SCRIPT_DIR))
 
 from grammarly_api import (  # noqa: E402
     DOCUMENT_CONTRACTS,
@@ -28,9 +28,6 @@ from grammarly_api import (  # noqa: E402
     upload_document,
     validated_upload_origin,
 )
-
-SAFETY_SCRIPT_DIR = PACK_ROOT / "skills" / "grammarly-data-safety-guardian" / "scripts"
-sys.path.insert(0, str(SAFETY_SCRIPT_DIR))
 
 from audit_submission_manifest import AuditError as SafetyAuditError  # noqa: E402
 from audit_submission_manifest import audit as audit_submission  # noqa: E402

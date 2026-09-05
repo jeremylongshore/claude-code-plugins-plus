@@ -6,8 +6,8 @@
     "catalog": ".claude-plugin/marketplace.extended.json",
     "catalog_sha256": "24494442d00e97d9ac548daf2fd039387468516e2e8ff536b70afd8749fe334c",
     "curated_manifest": "skills/.curated/MANIFEST.json",
-    "curated_manifest_sha256": "9b803345972a2d58aa68bb06f87603f363f84df31345cfd2d7a22093a29d9c77",
-    "tracked_inventory_sha256": "8c50ef9e6558e2738c955b3a3a33682ae814c21220249ba5f5a130a03353365e"
+    "curated_manifest_sha256": "77555c877216c6ada8cf80fa0376e1025759cb767ba379f6c442c40b755a90bc",
+    "tracked_inventory_sha256": "125f7396d0c64f8e20ca1a87cb7ca335294f75558e6704473100f26791e93b54"
   },
   "family_definition": [
     "advanced-troubleshooting",
@@ -17524,7 +17524,7 @@
       "ownership": {
         "status": "first-party"
       },
-      "pack_inventory_sha256": "85d28734fe7f28af469711bd11c8c1b93c02292ebd2eb3f3e8de358f7d71befa",
+      "pack_inventory_sha256": "bfc36548b60cb9b7fca1d38a3cc9692cb0f8fa0cf5a4627793a85b3355f7c193",
       "candidate_set_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "skill_count": 5,
       "catalog_declared_skill_count": 5,

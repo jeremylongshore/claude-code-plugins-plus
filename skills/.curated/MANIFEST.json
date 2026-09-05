@@ -15740,6 +15740,8 @@
         "eval-spec.yaml",
         "references/api-contract.md",
         "references/security-boundaries.md",
+        "scripts/audit_submission_manifest.py",
+        "scripts/grammarly_api.py",
         "scripts/run_document_evaluation.py"
       ]
     },

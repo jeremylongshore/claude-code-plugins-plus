@@ -16,7 +16,8 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 PACK = ROOT / "plugins" / "saas-packs" / "grammarly-pack"
-SHARED = PACK / "shared" / "grammarly_api.py"
+CURATED = ROOT / "skills" / ".curated"
+SHARED = PACK / "skills" / "grammarly-document-evaluator" / "scripts" / "grammarly_api.py"
 EXPECTED_SKILLS = {
     "grammarly-access-readiness",
     "grammarly-api-reliability",
@@ -482,6 +483,45 @@ class GrammarlyOfflineAnalyzerTests(unittest.TestCase):
 
 
 class GrammarlyPackShapeTests(unittest.TestCase):
+    def test_curated_document_evaluator_is_self_contained(self) -> None:
+        source_scripts = PACK / "skills" / "grammarly-document-evaluator" / "scripts"
+        curated_scripts = CURATED / "grammarly-document-evaluator" / "scripts"
+        safety_source = PACK / "skills" / "grammarly-data-safety-guardian" / "scripts" / "audit_submission_manifest.py"
+        self.assertEqual(
+            (source_scripts / "audit_submission_manifest.py").read_bytes(),
+            safety_source.read_bytes(),
+        )
+        for filename in (
+            "grammarly_api.py",
+            "audit_submission_manifest.py",
+            "run_document_evaluation.py",
+        ):
+            self.assertEqual(
+                (curated_scripts / filename).read_bytes(),
+                (source_scripts / filename).read_bytes(),
+            )
+
+        with tempfile.TemporaryDirectory() as directory:
+            document = Path(directory) / "input.txt"
+            document.write_text(" ".join(["approved"] * 30), encoding="utf-8")
+            clean_env = {key: value for key, value in os.environ.items() if not key.startswith("GRAMMARLY_")}
+            clean_env["PYTHONDONTWRITEBYTECODE"] = "1"
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(curated_scripts / "run_document_evaluation.py"),
+                    "--operation",
+                    "writing-score",
+                    "--file",
+                    str(document),
+                ],
+                check=True,
+                capture_output=True,
+                text=True,
+                env=clean_env,
+            )
+        self.assertEqual(json.loads(completed.stdout)["mode"], "dry-run")
+
     def test_exact_v2_skill_set_and_frontmatter_names(self) -> None:
         actual = {path.parent.name for path in (PACK / "skills").glob("*/SKILL.md")}
         self.assertEqual(actual, EXPECTED_SKILLS)

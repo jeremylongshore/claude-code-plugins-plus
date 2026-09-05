@@ -30,4 +30,11 @@ comment was on 2026-08-26. Restoring Greptile or explicitly waiving that unavail
 external review remains a merge-time maintainer decision. The independent disposition
 is recorded in the [PR discussion](https://github.com/jeremylongshore/tons-of-skills-marketplace/pull/1449#issuecomment-5550254153).
 
+A final Luna security pass found that the curated document evaluator still resolved
+two runtime modules through the source-pack directory layout. The release candidate now
+bundles those reviewed modules inside the evaluator skill, removes the obsolete pack-level
+copy, and executes the curated workflow in the focused regression suite. That suite passes
+34/34, and curated promotion checks the bundled files byte-for-byte against their canonical
+skill source.
+
 No merge or publication is authorized by this plan.

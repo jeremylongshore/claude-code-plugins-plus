@@ -8,8 +8,10 @@
     "README.md",
     ".claude-plugin/",
     "migration-map.json",
-    "shared/",
-    "skills/"
+    "skills/",
+    "!**/__pycache__/**",
+    "!**/*.pyc",
+    "!**/*.pyo"
   ],
   "keywords": [
     "agent-skills",
