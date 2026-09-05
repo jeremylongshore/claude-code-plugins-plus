@@ -9,6 +9,11 @@ c981c39992716a9c8dfd678952ff45a237574e4192f26a3ccbd603471b3c9d5d  plugins/saas-p
 612e95e032e99f3861a86ab4a6a6a7d675127951099b8ffa5fecf4243641cee1  plugins/saas-packs/databricks-pack/skills/databricks-cost-leak-hunter/eval-spec.yaml
 73f412c16a3687b3b49ab5c5f415c692170f3c52fc44362d73e59fcc3a35e25e  plugins/saas-packs/databricks-pack/skills/databricks-streaming-guardian/eval-spec.yaml
 3a4ae971a3f941de41e94ced00697fc2561a3555af9122d872fca23b29e39bde  plugins/saas-packs/databricks-pack/skills/databricks-uc-migration-pilot/eval-spec.yaml
+541bea78668c52f6759ae560fffdfd9c3fa8e4f5189cc0be2ad5351a8ffb42c5  plugins/saas-packs/grammarly-pack/skills/grammarly-access-readiness/eval-spec.yaml
+edf550a176fa847dc9580e09278a5aeaed910c65b941493baf9e896f4453b7ef  plugins/saas-packs/grammarly-pack/skills/grammarly-api-reliability/eval-spec.yaml
+cfdbcbf984d1d4353bcf89d910e258fd4cbeb57fffca94db7fcc827a128f6fa6  plugins/saas-packs/grammarly-pack/skills/grammarly-data-safety-guardian/eval-spec.yaml
+2016b189ab62d8c8b464bd2682d2f7d2ec609a0b79ff8da82fd35c966f7833b1  plugins/saas-packs/grammarly-pack/skills/grammarly-document-evaluator/eval-spec.yaml
+aec1ccbc2020a4a52670a8ee090dbb20c6a2d9b1bcfb6a92ae5fd76d1b74f051  plugins/saas-packs/grammarly-pack/skills/grammarly-license-governor/eval-spec.yaml
 7312747954bc4618385908f57a7dd08f7b11fa27ca762cb840e00f8fa800161d  plugins/saas-packs/hubspot-pack/skills/hubspot-warehouse-sync/eval-spec.yaml
 d543f74906821a7fa80ba90dc80d3b6ff7fbdc81078ab0a9d75e45e965b3a5d3  plugins/saas-packs/sentry-pack/skills/sentry-data-handling/eval-spec.yaml
 bcf6cd151df5eabc437ea58a67057fa5e3d24bf8bbcd7b969339f5824bfa00b7  plugins/saas-packs/snowflake-pack/skills/snowflake-access-guardian/eval-spec.yaml
@@ -32,6 +37,11 @@ c981c39992716a9c8dfd678952ff45a237574e4192f26a3ccbd603471b3c9d5d  skills/.curate
 612e95e032e99f3861a86ab4a6a6a7d675127951099b8ffa5fecf4243641cee1  skills/.curated/databricks-cost-leak-hunter/eval-spec.yaml
 73f412c16a3687b3b49ab5c5f415c692170f3c52fc44362d73e59fcc3a35e25e  skills/.curated/databricks-streaming-guardian/eval-spec.yaml
 3a4ae971a3f941de41e94ced00697fc2561a3555af9122d872fca23b29e39bde  skills/.curated/databricks-uc-migration-pilot/eval-spec.yaml
+541bea78668c52f6759ae560fffdfd9c3fa8e4f5189cc0be2ad5351a8ffb42c5  skills/.curated/grammarly-access-readiness/eval-spec.yaml
+edf550a176fa847dc9580e09278a5aeaed910c65b941493baf9e896f4453b7ef  skills/.curated/grammarly-api-reliability/eval-spec.yaml
+cfdbcbf984d1d4353bcf89d910e258fd4cbeb57fffca94db7fcc827a128f6fa6  skills/.curated/grammarly-data-safety-guardian/eval-spec.yaml
+2016b189ab62d8c8b464bd2682d2f7d2ec609a0b79ff8da82fd35c966f7833b1  skills/.curated/grammarly-document-evaluator/eval-spec.yaml
+aec1ccbc2020a4a52670a8ee090dbb20c6a2d9b1bcfb6a92ae5fd76d1b74f051  skills/.curated/grammarly-license-governor/eval-spec.yaml
 7312747954bc4618385908f57a7dd08f7b11fa27ca762cb840e00f8fa800161d  skills/.curated/hubspot-warehouse-sync/eval-spec.yaml
 d543f74906821a7fa80ba90dc80d3b6ff7fbdc81078ab0a9d75e45e965b3a5d3  skills/.curated/sentry-data-handling/eval-spec.yaml
 81eabecbc8b79a87d105d061bd0f3380e6d74648e412fa46f20885a1abf46160  skills/.curated/skill-creator/eval-spec.yaml

@@ -38,6 +38,7 @@ marketplace/src/data/skills-catalog.json
 marketplace/src/data/unified-search-index.json
 marketplace/src/data/cowork-manifest.json
 marketplace/src/data/npm-stats.json
+000-docs/813-RA-AUDT-saas-tutorial-lattice.md
 
 # Source of truth — DO NOT reformat. Hand-edit only, formatting is load-bearing.
 # A CI guard (scripts/check-catalog-format.py) rejects PRs that collapse the

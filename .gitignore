@@ -70,6 +70,10 @@
 # was explicitly NOT done). No inherent secrets risk; transparency is the point.
 **/*/000-docs/
 **/*/000-docs/**
+# EXCEPTION: Grammarly v2 public contract research, architecture decisions,
+# and release evidence ship with the operator pack.
+!plugins/saas-packs/grammarly-pack/000-docs/
+!plugins/saas-packs/grammarly-pack/000-docs/**
 # EXCEPTION: Snowflake operator research and architecture records are published
 # with the curated pack, like the Databricks benchmark corpus.
 !plugins/saas-packs/snowflake-pack/000-docs/
