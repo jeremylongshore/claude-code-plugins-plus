@@ -263,8 +263,20 @@ def self_test() -> None:
                 "migration": "migration.md",
             },
             "validation": {
-                "commands": [{"command": "fixture-pass", "exit_code": 0, "artifact": "pass.txt", "artifact_sha256": digest("pass.txt")}],
-                "baseline_delta": {"command": "fixture-fail", "exit_code": 1, "artifact": "fail.txt", "artifact_sha256": digest("fail.txt")},
+                "commands": [
+                    {
+                        "command": "fixture-pass",
+                        "exit_code": 0,
+                        "artifact": "pass.txt",
+                        "artifact_sha256": digest("pass.txt"),
+                    }
+                ],
+                "baseline_delta": {
+                    "command": "fixture-fail",
+                    "exit_code": 1,
+                    "artifact": "fail.txt",
+                    "artifact_sha256": digest("fail.txt"),
+                },
                 "adversarial_cases": 1,
             },
             "review": {"independent": False, "reviewer": None, "review_revision": None, "findings": []},

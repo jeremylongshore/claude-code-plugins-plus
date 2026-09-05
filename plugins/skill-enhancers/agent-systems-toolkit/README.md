@@ -29,6 +29,14 @@ The repository harness registry remains authoritative for named support. A
 runtime that can read a `SKILL.md` may execute these instructions manually, but
 that fact alone does not qualify it for a public verified-support claim.
 
+The marketplace-specific frontmatter is the repository overlay defined by
+[`STANDARDS.md`](../../../STANDARDS.md) and enforced by
+[`scripts/validate-skills-schema.py`](../../../scripts/validate-skills-schema.py).
+Fields that are optional or host-specific are not presented as requirements of
+the open Agent Skills contract. Repository provenance classifies artifacts with
+no upstream source record as first-party; the executable rule lives in
+[`scripts/plugin-provenance.mjs`](../../../scripts/plugin-provenance.mjs).
+
 ## Durable work
 
 When a repository uses Beads, `production-upgrade` requires the `bd` workflow:

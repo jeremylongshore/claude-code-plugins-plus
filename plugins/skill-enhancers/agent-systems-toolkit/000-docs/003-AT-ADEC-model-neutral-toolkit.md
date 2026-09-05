@@ -7,7 +7,7 @@ checkpoint.
 
 ## Decision
 
-Create `agent-systems-toolkit` as one first-party front door with three portable
+Create `agent-systems-toolkit` as one repository-owned front door with three portable
 Agent Skills:
 
 1. `artifact-creator` for creating skills, agents, plugins, MCP integrations,
