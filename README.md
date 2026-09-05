@@ -97,7 +97,7 @@ Across **393 published packages** in the [claude-code-plugins](https://www.npmjs
 | 9   | [`@intentsolutionsio/penetration-tester`](https://www.npmjs.com/package/@intentsolutionsio/penetration-tester)           |      125 |
 | 10  | [`@intentsolutionsio/langchain-py-pack`](https://www.npmjs.com/package/@intentsolutionsio/langchain-py-pack)             |      121 |
 
-<sub>Last refreshed 2026-09-03T04:13:59.701Z.</sub>
+<sub>Last refreshed 2026-09-05T01:26:47.498Z.</sub>
 
 <!-- NPM-STATS:END -->
 
