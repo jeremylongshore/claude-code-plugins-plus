@@ -116,6 +116,18 @@ plugins/security/agent-safety-preflight/scripts/agent_preflight_lite.py:outbound
 plugins/saas-packs/snowflake-pack/skills/snowflake-cost-leak-hunter/scripts/analyze_cost_evidence.py:outbound-network  Reviewer Jeremy Longshore; expires 2027-08-31; Python stdlib urlsplit validates local strings only and performs no network I/O
 plugins/saas-packs/snowflake-pack/skills/snowflake-failover-readiness-drill/scripts/test_analyze_failover_readiness.py:outbound-network  negative AST isolation test names urllib only to assert the analyzer cannot import network/process modules; reviewed exact implementation SHA b6ffdad68d5c
 
+# ── Grammarly v2 operator client — reviewed 2026-09-05 on PR #1449. ──
+# OAuth credentials go only to the exact Grammarly token endpoint. Bearer tokens
+# go only to exact, fixed api.grammarly.com document contracts and are never sent
+# to the presigned upload destination. Uploads accept only HTTPS S3-shaped hosts,
+# globally routable DNS results, an exact approved origin, and a pinned address
+# while TLS still verifies the approved hostname. The manifest auditor parses an
+# origin string offline and performs no network I/O.
+plugins/saas-packs/grammarly-pack/skills/grammarly-document-evaluator/scripts/grammarly_api.py:secret-exfil-cooccur  bundled standalone evaluator runtime: OAuth client credentials are form-posted only to auth.grammarly.com; bearer tokens are sent only to fixed api.grammarly.com contracts and never to upload URLs
+plugins/saas-packs/grammarly-pack/skills/grammarly-document-evaluator/scripts/grammarly_api.py:outbound-network  bundled standalone evaluator runtime: documented Grammarly control-plane calls plus origin-approved S3 upload with public-address validation, address pinning, and hostname-verified TLS
+plugins/saas-packs/grammarly-pack/skills/grammarly-data-safety-guardian/scripts/audit_submission_manifest.py:outbound-network  false positive: urllib.parse.urlsplit validates an origin string offline; the script contains no socket or request operation
+plugins/saas-packs/grammarly-pack/skills/grammarly-document-evaluator/scripts/audit_submission_manifest.py:outbound-network  bundled standalone evaluator runtime; false positive: urllib.parse.urlsplit validates an origin string offline and performs no network I/O
+
 # ── databricks-streaming-guardian: the PreToolUse guard IS the skill's purpose. ──
 # The pack's only blocking hook. It intercepts Bash and BLOCKS a DROP/CREATE-OR-
 # REPLACE/VACUUM only when it positively confirms an active streaming consumer of

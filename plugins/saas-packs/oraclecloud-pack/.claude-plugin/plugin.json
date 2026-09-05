@@ -1,7 +1,7 @@
 {
   "name": "oraclecloud-pack",
-  "version": "1.7.0",
-  "description": "Claude Code skill pack for Oracle Cloud (24 skills)",
+  "version": "1.8.0",
+  "description": "Claude Code skill pack for Oracle Cloud (26 skills)",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
