@@ -2,6 +2,8 @@
 
 **Audit date:** 2026-09-04
 
+**Reverified date:** 2026-09-05
+
 **Authority:** current official Grammarly developer documentation
 
 **Outcome:** the v1 pack failed production accuracy and security review.

@@ -18,10 +18,16 @@
 
 ## PR gates
 
-- [ ] Commit and push an exact reviewed HEAD.
-- [ ] Open a PR linked to Beads `claude-juoz.3.11.1`.
-- [ ] Wait for required checks and configured automated reviewers.
-- [ ] Independently reproduce or reject every material reviewer claim.
-- [ ] Report status and exact HEAD SHA to Jeremy before any merge.
+- [x] Commit and push an exact reviewed HEAD.
+- [x] Open [PR #1449](https://github.com/jeremylongshore/tons-of-skills-marketplace/pull/1449), linked to Beads `claude-juoz.3.11.1`.
+- [x] Wait for required checks and available configured automated reviewers; document unavailable integrations.
+- [x] Independently reproduce or reject every material reviewer claim.
+- [x] Report status and exact HEAD SHA to Jeremy before any merge.
+
+MiniMax's primary, adversarial, and A-grade-coach lanes completed. Greptile did not
+engage the PR despite a valid repository configuration; its latest observed repository
+comment was on 2026-08-26. Restoring Greptile or explicitly waiving that unavailable
+external review remains a merge-time maintainer decision. The independent disposition
+is recorded in the [PR discussion](https://github.com/jeremylongshore/tons-of-skills-marketplace/pull/1449#issuecomment-5550254153).
 
 No merge or publication is authorized by this plan.

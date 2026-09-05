@@ -3,7 +3,7 @@
 | ID | Type | Document | Status |
 |---|---|---|---|
 | 001 | BL-LICN | [License](001-BL-LICN-license.txt) | Active |
-| 002 | RL-RSRC | [Official API contract audit](002-RL-RSRC-grammarly-api-contract-audit.md) | Audited against official docs 2026-09-04 |
+| 002 | RL-RSRC | [Official API contract audit](002-RL-RSRC-grammarly-api-contract-audit.md) | Reverified against official docs 2026-09-05 |
 | 003 | RL-RSRC | [Databricks production benchmark](003-RL-RSRC-databricks-production-benchmark.md) | Accepted |
 | 004 | AT-ADEC | [Grammarly v2 CTO decision](004-AT-ADEC-grammarly-v2-cto-decision.md) | Accepted |
 | 005 | AT-PLAN | [v2 release and review plan](005-AT-PLAN-grammarly-v2-release.md) | In progress |
