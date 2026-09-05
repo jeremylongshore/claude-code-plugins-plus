@@ -64,7 +64,7 @@ intercom,Intercom,flagship,24,@intentsolutionsio/intercom-skill-md-pack,reserved
 linktree,Linktree,pro,18,@intentsolutionsio/linktree-skill-md-pack,reserved,ccpi-linktree,18,0,not_started,not_added,Extended #64
 bamboohr,BambooHR,pro,18,@intentsolutionsio/bamboohr-skill-md-pack,reserved,ccpi-bamboohr,18,0,not_started,not_added,Extended #65
 miro,Miro,flagship,24,@intentsolutionsio/miro-skill-md-pack,reserved,ccpi-miro,24,0,not_started,not_added,Extended #66
-grammarly,Grammarly,flagship,24,@intentsolutionsio/grammarly-skill-md-pack,reserved,ccpi-grammarly,24,0,not_started,not_added,Extended #67
+grammarly,Grammarly,production,5,@intentsolutionsio/grammarly-pack,reserved,grammarly-pack,5,5,complete,added,v2.0.0 rebuild: 5 security-first model-agnostic operator skills; replaces 24 unsafe tutorial skills
 shopify,Shopify,flagship+,30,@intentsolutionsio/shopify-skill-md-pack,reserved,ccpi-shopify,30,0,not_started,not_added,Extended #68
 canva,Canva,flagship+,30,@intentsolutionsio/canva-skill-md-pack,reserved,ccpi-canva,30,0,not_started,not_added,Extended #69
 clickup,ClickUp,flagship,24,@intentsolutionsio/clickup-skill-md-pack,reserved,ccpi-clickup,24,0,not_started,not_added,Extended #70

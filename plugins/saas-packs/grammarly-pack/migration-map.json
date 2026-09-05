@@ -1,0 +1,37 @@
+{
+  "schema_version": "1",
+  "pack": "grammarly-pack",
+  "from_version": "1.x",
+  "to_version": "2.0.0",
+  "retired": {
+    "grammarly-ci-integration": ["grammarly-access-readiness"],
+    "grammarly-common-errors": ["grammarly-api-reliability"],
+    "grammarly-core-workflow-a": ["grammarly-document-evaluator"],
+    "grammarly-core-workflow-b": ["grammarly-document-evaluator"],
+    "grammarly-cost-tuning": [],
+    "grammarly-data-handling": ["grammarly-document-evaluator", "grammarly-data-safety-guardian"],
+    "grammarly-debug-bundle": ["grammarly-api-reliability"],
+    "grammarly-deploy-integration": ["grammarly-access-readiness"],
+    "grammarly-enterprise-rbac": ["grammarly-access-readiness", "grammarly-license-governor"],
+    "grammarly-hello-world": ["grammarly-document-evaluator"],
+    "grammarly-incident-runbook": ["grammarly-api-reliability"],
+    "grammarly-install-auth": ["grammarly-access-readiness"],
+    "grammarly-local-dev-loop": ["grammarly-access-readiness"],
+    "grammarly-migration-deep-dive": ["grammarly-access-readiness"],
+    "grammarly-multi-env-setup": ["grammarly-access-readiness"],
+    "grammarly-observability": ["grammarly-api-reliability"],
+    "grammarly-performance-tuning": ["grammarly-api-reliability"],
+    "grammarly-prod-checklist": [],
+    "grammarly-rate-limits": ["grammarly-api-reliability"],
+    "grammarly-reference-architecture": ["grammarly-data-safety-guardian"],
+    "grammarly-sdk-patterns": ["grammarly-access-readiness", "grammarly-document-evaluator"],
+    "grammarly-security-basics": ["grammarly-data-safety-guardian"],
+    "grammarly-upgrade-migration": ["grammarly-access-readiness"],
+    "grammarly-webhooks-events": []
+  },
+  "cut_reason": {
+    "grammarly-cost-tuning": "No public provider pricing or quota model is claimed; reliability retains only documented rate evidence.",
+    "grammarly-prod-checklist": "Release and safety checks are embedded in each operator workflow.",
+    "grammarly-webhooks-events": "No public Grammarly push-webhook contract is documented; document operations use bounded polling."
+  }
+}
