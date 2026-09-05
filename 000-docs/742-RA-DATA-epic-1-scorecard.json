@@ -1664,6 +1664,9 @@
     "38": {
       "cohort": "exact root pins, retained npm registry observation, and coupling workflow",
       "dimension": "Kernel, eval CLI, and harness pins",
+      "limitations": [
+        "target requires exact pins matching the retained registry observation, one resolved kernel version, a blocking ordering-test corpus, and a routed staleness alert"
+      ],
       "reproduce": "pnpm run measure:e1 --row=38 --stdout",
       "source": [
         ".github/workflows/kernel-vendor-hash.yml",
@@ -1671,14 +1674,14 @@
         "package.json",
         "pnpm-lock.yaml"
       ],
-      "status": "target_met",
+      "status": "partial",
       "values": {
         "one_resolved_core_version": true,
         "ordering_test_blocking": true,
         "pins": {
           "@intentsolutions/audit-harness": {
             "exact": true,
-            "version": "1.3.1"
+            "version": "1.4.0"
           },
           "@intentsolutions/core": {
             "exact": true,
@@ -1694,9 +1697,9 @@
           "@intentsolutions/core": "0.10.0",
           "@intentsolutions/jrig-cli": "0.2.0"
         },
-        "registry_matches_pins": true,
+        "registry_matches_pins": false,
         "staleness_alert_routed": true,
-        "target_met": true
+        "target_met": false
       }
     },
     "39": {
