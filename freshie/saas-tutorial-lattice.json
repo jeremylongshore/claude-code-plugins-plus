@@ -4,10 +4,10 @@
   "semantics": "Family-name matches are review candidates, not automatic quality or retirement verdicts.",
   "sources": {
     "catalog": ".claude-plugin/marketplace.extended.json",
-    "catalog_sha256": "789da6287884b80bd584904b0ff5d8d50ff57c27f9f7fcf86c2e5b9d69b4da38",
+    "catalog_sha256": "5e79f08ee72a7f04dea49f87813e53e99898a48a642e6da498605de912f6b640",
     "curated_manifest": "skills/.curated/MANIFEST.json",
     "curated_manifest_sha256": "9a8be500d5eeef7c5551963a807a862ac1117d6219deadc45c02d0649aebb67b",
-    "tracked_inventory_sha256": "1f00f272e419cf004868cb9307d29a6c6a1cacd1d99bddd203950432dbbb86f0"
+    "tracked_inventory_sha256": "9ba9a68d3cb37fcca8abb0ea8381a261a162bbc58a846ac7cf98a092085c0204"
   },
   "family_definition": [
     "advanced-troubleshooting",
@@ -1158,8 +1158,8 @@
       "candidate_basis_points": 9375,
       "verification_grade": "C",
       "verification_score": 79,
-      "pack_inventory_sha256": "7773c415c444372ff8d1cf158701649dc6241579f72e6999cb488bed19125c90",
-      "candidate_set_sha256": "d6fc2e1160b2789742b51951cf921cb3ce83dc4d54ee48aa2916312a9328e9c8",
+      "pack_inventory_sha256": "befb327e67dbb308ae16dabd30fa4bf8a4860ed49732a3c13687b0022ce030ea",
+      "candidate_set_sha256": "eb98c203dc48e855e3dbc68f33080837b9a69b50bee2193508cd1a4ab6bcbc9a",
       "next_action": "ENSURE_EXACTLY_ONE_PACK_DISPOSITION_CHILD"
     },
     {
@@ -1194,8 +1194,8 @@
       "candidate_basis_points": 9231,
       "verification_grade": "C",
       "verification_score": 79,
-      "pack_inventory_sha256": "e3d0a71c64cf6bd3cd51d95c05cecc71006d667a46fe10f77cd094efa0deb09a",
-      "candidate_set_sha256": "fd4beaaace68f1668278d28e17e378aa13966ad6e30f635c5703c5fd5d6a2468",
+      "pack_inventory_sha256": "934608c6e5a793c0adf75d349fb81117dc5281fa6702c3b751da3d9d758e06b6",
+      "candidate_set_sha256": "3d845a0e1870b848dadd61563d57aaefa623e4e56c82497e30eb419a1a4152d7",
       "next_action": "ENSURE_EXACTLY_ONE_PACK_DISPOSITION_CHILD"
     },
     {
@@ -1206,8 +1206,8 @@
       "candidate_basis_points": 9231,
       "verification_grade": "C",
       "verification_score": 79,
-      "pack_inventory_sha256": "36a3aec9bf9d1a8b144c3b576c6a2e1df4f67ec26ed8eb8e8336a735070ccaeb",
-      "candidate_set_sha256": "3cc15268c9d8dfb56f3c3952a70072960aecca06c358ea7fb1f37f980485a42e",
+      "pack_inventory_sha256": "c55896ec01ccaff6f5cb6f2346fa10d10f34b96d032f78aafe993a0993b6683b",
+      "candidate_set_sha256": "e451445d92f2a627c8589b452f4834f6af0de439900e318969e6a8a87401a181",
       "next_action": "ENSURE_EXACTLY_ONE_PACK_DISPOSITION_CHILD"
     },
     {
@@ -1266,8 +1266,8 @@
       "candidate_basis_points": 5455,
       "verification_grade": null,
       "verification_score": null,
-      "pack_inventory_sha256": "aa4750fec73706a9caf270653c370a018da1b5bcd60f9b1697e199dbc93b3112",
-      "candidate_set_sha256": "421d0b3b09071dd675024a0f635cfa89cf3cf8cee33a85286487dcc4b1a5d9a0",
+      "pack_inventory_sha256": "60a397ce2ccaa075ce0e74b40e7d3d35a318c7b6b1e063040a0d28b34c0fe24c",
+      "candidate_set_sha256": "74696a19c0f96a38a131d1c6b825ecac29db6eb424cfdbdfdc398845bb7b117d",
       "next_action": "ENSURE_EXACTLY_ONE_PACK_DISPOSITION_CHILD"
     },
     {
@@ -1278,8 +1278,8 @@
       "candidate_basis_points": 5000,
       "verification_grade": "D",
       "verification_score": 62,
-      "pack_inventory_sha256": "e58d8abe26b3924d69b781a276a624202828fa5d7aed3f45eaf348c6fead8d57",
-      "candidate_set_sha256": "995cbd9a10dec07f0df2ddd09e317409f36a990ca922362c0240326ca6fa9992",
+      "pack_inventory_sha256": "251407e7640249e8e9256cbc699a2d3eaa1599fe5e9b44e29f5d338e506c36c8",
+      "candidate_set_sha256": "b0a616533493ce7c33e220006d0f6875c54e18ff5eca3dca73f2232481aa3ead",
       "next_action": "ENSURE_EXACTLY_ONE_PACK_DISPOSITION_CHILD"
     },
     {
@@ -18720,14 +18720,14 @@
     {
       "name": "guidewire-pack",
       "source": "plugins/saas-packs/guidewire-pack",
-      "version": "1.25.0",
+      "version": "1.26.0",
       "verification": {
         "grade": "D",
         "score": 62
       },
       "npm_candidate": {
         "name": "@intentsolutionsio/guidewire-pack",
-        "version": "2.0.5",
+        "version": "2.0.6",
         "private": false,
         "files_include_skills": true,
         "live_registry_check": "REQUIRED_BEFORE_MUTATION"
@@ -18736,8 +18736,8 @@
       "ownership": {
         "status": "first-party"
       },
-      "pack_inventory_sha256": "e58d8abe26b3924d69b781a276a624202828fa5d7aed3f45eaf348c6fead8d57",
-      "candidate_set_sha256": "995cbd9a10dec07f0df2ddd09e317409f36a990ca922362c0240326ca6fa9992",
+      "pack_inventory_sha256": "251407e7640249e8e9256cbc699a2d3eaa1599fe5e9b44e29f5d338e506c36c8",
+      "candidate_set_sha256": "b0a616533493ce7c33e220006d0f6875c54e18ff5eca3dca73f2232481aa3ead",
       "skill_count": 10,
       "catalog_declared_skill_count": 10,
       "tutorial_lattice_count": 5,
@@ -21750,14 +21750,14 @@
     {
       "name": "langchain-py-pack",
       "source": "plugins/saas-packs/langchain-py-pack",
-      "version": "2.5.0",
+      "version": "2.6.0",
       "verification": {
         "grade": null,
         "score": null
       },
       "npm_candidate": {
         "name": "@intentsolutionsio/langchain-py-pack",
-        "version": "2.0.3",
+        "version": "2.0.4",
         "private": false,
         "files_include_skills": true,
         "live_registry_check": "REQUIRED_BEFORE_MUTATION"
@@ -21766,8 +21766,8 @@
       "ownership": {
         "status": "first-party"
       },
-      "pack_inventory_sha256": "aa4750fec73706a9caf270653c370a018da1b5bcd60f9b1697e199dbc93b3112",
-      "candidate_set_sha256": "421d0b3b09071dd675024a0f635cfa89cf3cf8cee33a85286487dcc4b1a5d9a0",
+      "pack_inventory_sha256": "60a397ce2ccaa075ce0e74b40e7d3d35a318c7b6b1e063040a0d28b34c0fe24c",
+      "candidate_set_sha256": "74696a19c0f96a38a131d1c6b825ecac29db6eb424cfdbdfdc398845bb7b117d",
       "skill_count": 33,
       "catalog_declared_skill_count": 33,
       "tutorial_lattice_count": 18,
@@ -25813,14 +25813,14 @@
     {
       "name": "navan-pack",
       "source": "plugins/saas-packs/navan-pack",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "verification": {
         "grade": "C",
         "score": 79
       },
       "npm_candidate": {
         "name": "@intentsolutionsio/navan-pack",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "private": false,
         "files_include_skills": true,
         "live_registry_check": "REQUIRED_BEFORE_MUTATION"
@@ -25829,8 +25829,8 @@
       "ownership": {
         "status": "first-party"
       },
-      "pack_inventory_sha256": "e3d0a71c64cf6bd3cd51d95c05cecc71006d667a46fe10f77cd094efa0deb09a",
-      "candidate_set_sha256": "fd4beaaace68f1668278d28e17e378aa13966ad6e30f635c5703c5fd5d6a2468",
+      "pack_inventory_sha256": "934608c6e5a793c0adf75d349fb81117dc5281fa6702c3b751da3d9d758e06b6",
+      "candidate_set_sha256": "3d845a0e1870b848dadd61563d57aaefa623e4e56c82497e30eb419a1a4152d7",
       "skill_count": 26,
       "catalog_declared_skill_count": 26,
       "tutorial_lattice_count": 24,
@@ -26216,14 +26216,14 @@
     {
       "name": "notion-pack",
       "source": "plugins/saas-packs/notion-pack",
-      "version": "1.38.0",
+      "version": "1.39.0",
       "verification": {
         "grade": "C",
         "score": 79
       },
       "npm_candidate": {
         "name": "@intentsolutionsio/notion-pack",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "private": false,
         "files_include_skills": true,
         "live_registry_check": "REQUIRED_BEFORE_MUTATION"
@@ -26232,8 +26232,8 @@
       "ownership": {
         "status": "first-party"
       },
-      "pack_inventory_sha256": "7773c415c444372ff8d1cf158701649dc6241579f72e6999cb488bed19125c90",
-      "candidate_set_sha256": "d6fc2e1160b2789742b51951cf921cb3ce83dc4d54ee48aa2916312a9328e9c8",
+      "pack_inventory_sha256": "befb327e67dbb308ae16dabd30fa4bf8a4860ed49732a3c13687b0022ce030ea",
+      "candidate_set_sha256": "eb98c203dc48e855e3dbc68f33080837b9a69b50bee2193508cd1a4ab6bcbc9a",
       "skill_count": 32,
       "catalog_declared_skill_count": 32,
       "tutorial_lattice_count": 30,
@@ -28044,14 +28044,14 @@
     {
       "name": "oraclecloud-pack",
       "source": "plugins/saas-packs/oraclecloud-pack",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "verification": {
         "grade": "C",
         "score": 79
       },
       "npm_candidate": {
         "name": "@intentsolutionsio/oraclecloud-pack",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "private": false,
         "files_include_skills": true,
         "live_registry_check": "REQUIRED_BEFORE_MUTATION"
@@ -28060,8 +28060,8 @@
       "ownership": {
         "status": "first-party"
       },
-      "pack_inventory_sha256": "36a3aec9bf9d1a8b144c3b576c6a2e1df4f67ec26ed8eb8e8336a735070ccaeb",
-      "candidate_set_sha256": "3cc15268c9d8dfb56f3c3952a70072960aecca06c358ea7fb1f37f980485a42e",
+      "pack_inventory_sha256": "c55896ec01ccaff6f5cb6f2346fa10d10f34b96d032f78aafe993a0993b6683b",
+      "candidate_set_sha256": "e451445d92f2a627c8589b452f4834f6af0de439900e318969e6a8a87401a181",
       "skill_count": 26,
       "catalog_declared_skill_count": 26,
       "tutorial_lattice_count": 24,
