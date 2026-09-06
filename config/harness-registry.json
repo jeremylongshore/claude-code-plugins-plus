@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "portableArtifact": {
     "source": "plugins/<category>/<plugin>/skills/<skill>/",
     "specification": "https://agentskills.io/specification",

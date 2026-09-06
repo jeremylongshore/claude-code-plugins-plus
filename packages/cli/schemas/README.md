@@ -23,6 +23,12 @@ Only a canonical first-party plugin skill path is eligible:
 arbitrary directories, and trees beneath a `.source.json` marker fail closed. The
 root mirror remains an external discovery projection; it cannot become canonical by
 appearing in a receipt.
+
+This authority correction is harness-registry schema v2. Registry v1 named root
+`skills/`, conflating the legacy curriculum/generated discovery surface with the
+canonical plugin source. Consumers migrating from v1 must resolve the catalog skill
+to its canonical plugin path and must not rewrite or reverse-sync either root mirror.
+Portable install receipts therefore require harness-registry v2 or newer.
 The installed-tree verifier hashes every entry except the reserved receipt file
 `.ccpi-portable-install.json`; an unexpected extra file is therefore local drift.
 

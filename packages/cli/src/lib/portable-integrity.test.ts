@@ -1,6 +1,6 @@
 import { Buffer } from 'node:buffer';
 import { execFile as execFileCallback } from 'node:child_process';
-import { chmod, mkdir, mkdtemp, readFile, rm, symlink, utimes, writeFile } from 'node:fs/promises';
+import { chmod, mkdir, mkdtemp, readFile, rm, utimes, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { promisify } from 'node:util';
@@ -62,8 +62,10 @@ async function createRepository(): Promise<{ root: string; commit: string; repos
   await git(root, 'init', '--quiet');
   await git(root, 'config', 'user.name', 'Portable Contract Test');
   await git(root, 'config', 'user.email', 'portable@example.invalid');
+  await git(root, 'config', 'core.filemode', 'false');
   await git(root, 'remote', 'add', 'origin', repository);
   await git(root, 'add', '.');
+  await git(root, 'update-index', '--chmod=+x', '--', `${sourcePath}/scripts/run.sh`);
   await git(root, 'commit', '--quiet', '-m', 'test: fixture');
   return { root, commit: await git(root, 'rev-parse', 'HEAD'), repository };
 }
@@ -81,7 +83,7 @@ function receipt(tree = hashPortableTree(checkoutA)): PortableInstallReceiptV1 {
     validation: {
       validator: { name: 'intent-skills-validator', version: '4.2.0' },
       skillSchemaVersion: '4.2.0',
-      harnessRegistryVersion: 1,
+      harnessRegistryVersion: 2,
     },
     tree,
     evidence: [
@@ -286,9 +288,19 @@ describe('immutable Git source acquisition', () => {
 
     const linked = await createRepository();
     try {
-      await symlink('../../../../../../outside', path.join(linked.root, sourcePath, 'linked.md'));
-      await git(linked.root, 'add', '.');
+      const linkedPath = `${sourcePath}/linked.md`;
+      await writeFile(path.join(linked.root, linkedPath), '../../../../../../outside');
+      const linkedBlob = await git(linked.root, 'hash-object', '-w', '--', linkedPath);
+      await git(
+        linked.root,
+        'update-index',
+        '--add',
+        '--cacheinfo',
+        `120000,${linkedBlob},${linkedPath}`,
+      );
       await git(linked.root, 'commit', '--quiet', '-m', 'test: symlink');
+      await git(linked.root, 'config', 'core.symlinks', 'false');
+      await git(linked.root, 'reset', '--hard', '--quiet', 'HEAD');
       linked.commit = await git(linked.root, 'rev-parse', 'HEAD');
       await expect(
         readPortableTreeFromCleanCommit({ ...linked, repoRoot: linked.root, sourcePath }),
@@ -296,7 +308,7 @@ describe('immutable Git source acquisition', () => {
     } finally {
       await rm(linked.root, { recursive: true, force: true });
     }
-  });
+  }, 20_000);
 });
 
 describe('portable install receipt v1', () => {
@@ -352,6 +364,10 @@ describe('portable install receipt v1', () => {
   });
 
   test('rejects mutable provenance, noncanonical sources, mismatched object formats, and private data', () => {
+    const obsoleteRegistry = structuredClone(receipt());
+    obsoleteRegistry.validation.harnessRegistryVersion = 1;
+    expect(() => validatePortableInstallReceipt(obsoleteRegistry)).toThrow(/must be 2 or newer/);
+
     const badCommit = structuredClone(receipt());
     badCommit.source.commit.digest = 'main';
     expect(() => validatePortableInstallReceipt(badCommit)).toThrow(/does not match sha1/);
@@ -442,11 +458,16 @@ describe('portable install receipt v1', () => {
     const nonPortablePath = structuredClone(receipt());
     nonPortablePath.tree.entries[0].path = 'references/café.md';
     expect(validateSchema(nonPortablePath)).toBe(false);
+    const obsoleteRegistry = structuredClone(receipt());
+    obsoleteRegistry.validation.harnessRegistryVersion = 1;
+    expect(validateSchema(obsoleteRegistry)).toBe(false);
 
     const registryUrl = new URL('../../../../config/harness-registry.json', import.meta.url);
     const registry = JSON.parse(await readFile(registryUrl, 'utf8')) as {
+      schemaVersion: number;
       portableArtifact: { source: string };
     };
+    expect(registry.schemaVersion).toBe(2);
     expect(registry.portableArtifact.source).toBe('plugins/<category>/<plugin>/skills/<skill>/');
   });
 });

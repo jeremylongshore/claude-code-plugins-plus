@@ -15,6 +15,7 @@ const MAX_TREE_ENTRIES = 10_000;
 const MAX_EVIDENCE_ENTRIES = 64;
 const MAX_GIT_OUTPUT_BYTES = 64 * 1024 * 1024;
 const MAX_TREE_BYTES = 64 * 1024 * 1024;
+const MIN_HARNESS_REGISTRY_VERSION = 2;
 const SHA256_PATTERN = /^sha256:[0-9a-f]{64}$/;
 const SHA1_OBJECT_PATTERN = /^[0-9a-f]{40}$/;
 const SHA256_OBJECT_PATTERN = /^[0-9a-f]{64}$/;
@@ -424,7 +425,9 @@ export function validatePortableInstallReceipt(value: unknown): PortableInstallR
     validation.harnessRegistryVersion,
     'validation.harnessRegistryVersion',
   );
-  if (harnessRegistryVersion < 1) fail('validation.harnessRegistryVersion must be positive');
+  if (harnessRegistryVersion < MIN_HARNESS_REGISTRY_VERSION) {
+    fail(`validation.harnessRegistryVersion must be ${MIN_HARNESS_REGISTRY_VERSION} or newer`);
+  }
 
   if (!Array.isArray(receipt.evidence) || receipt.evidence.length === 0) {
     fail('evidence must be a non-empty array');
