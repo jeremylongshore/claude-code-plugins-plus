@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:tonsofskills:schema:portable-install-receipt:v1",
+  "title": "Tons of Skills portable install receipt v1",
+  "$comment": "This schema enforces wire shape and bounded fields. Consumers MUST also use the semantic validator to enforce path collisions, canonical ordering, aggregate digests, matching evidence hashes, and provenance binding.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "source", "installation", "validation", "tree", "evidence"],
+  "properties": {
+    "schemaVersion": { "const": "portable-install-receipt/v1" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "commit", "tree", "path"],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "maxLength": 512,
+          "pattern": "^(?!.*\\.[Gg][Ii][Tt]$)https://[A-Za-z0-9.-]+(?:/[A-Za-z0-9._~-]+){2,}$"
+        },
+        "commit": { "$ref": "#/$defs/gitObjectId" },
+        "tree": { "$ref": "#/$defs/gitObjectId" },
+        "path": {
+          "type": "string",
+          "pattern": "^plugins/[a-z0-9]+(?:-[a-z0-9]+)*/[a-z0-9]+(?:-[a-z0-9]+)*/skills/[a-z0-9]+(?:-[a-z0-9]+)*$"
+        }
+      }
+    },
+    "installation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["harness", "scope"],
+      "properties": {
+        "harness": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "scope": { "enum": ["project", "user"] }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["validator", "skillSchemaVersion", "harnessRegistryVersion"],
+      "properties": {
+        "validator": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "version"],
+          "properties": {
+            "name": { "$ref": "#/$defs/token" },
+            "version": { "$ref": "#/$defs/token" }
+          }
+        },
+        "skillSchemaVersion": { "$ref": "#/$defs/token" },
+        "harnessRegistryVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      }
+    },
+    "tree": { "$ref": "#/$defs/treeManifest" },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": { "$ref": "#/$defs/evidence" }
+    }
+  },
+  "$defs": {
+    "token": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "gitObjectId": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "digest"],
+      "properties": {
+        "algorithm": { "enum": ["sha1", "sha256"] },
+        "digest": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "algorithm": { "const": "sha1" } }, "required": ["algorithm"] },
+          "then": {
+            "properties": {
+              "digest": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "algorithm": { "const": "sha256" } }, "required": ["algorithm"] },
+          "then": {
+            "properties": {
+              "digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+            }
+          }
+        }
+      ]
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "mode", "size", "sha256"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^[A-Za-z0-9._()+&-]+(?:/[A-Za-z0-9._()+&-]+)*$"
+        },
+        "mode": { "enum": ["100644", "100755"] },
+        "size": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "treeManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format", "algorithm", "digest", "fileCount", "byteCount", "entries"],
+      "properties": {
+        "format": { "const": "portable-skill-tree/v1" },
+        "algorithm": { "const": "sha256-tree-v1" },
+        "digest": { "$ref": "#/$defs/sha256" },
+        "fileCount": { "type": "integer", "minimum": 1, "maximum": 10000 },
+        "byteCount": { "type": "integer", "minimum": 0, "maximum": 67108864 },
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10000,
+          "items": { "$ref": "#/$defs/entry" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "uri", "sha256", "retention"],
+      "properties": {
+        "kind": { "$ref": "#/$defs/token" },
+        "uri": {
+          "type": "string",
+          "pattern": "^urn:sha256:[0-9a-f]{64}$"
+        },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "retention": { "const": "indefinite" }
+      }
+    }
+  }
+}

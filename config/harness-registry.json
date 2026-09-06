@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "portableArtifact": {
-    "source": "skills/",
+    "source": "plugins/<category>/<plugin>/skills/<skill>/",
     "specification": "https://agentskills.io/specification",
-    "policy": "One portable source is installed into native harness paths; native extensions are not adapters."
+    "policy": "Canonical first-party plugin skill trees are installed into native harness paths; root skills/ is a legacy curriculum plus generated discovery surface and native extensions are not adapters."
   },
   "harnesses": [
     {
