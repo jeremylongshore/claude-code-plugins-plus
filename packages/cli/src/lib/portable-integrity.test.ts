@@ -462,6 +462,31 @@ describe('portable install receipt v1', () => {
     obsoleteRegistry.validation.harnessRegistryVersion = 1;
     expect(validateSchema(obsoleteRegistry)).toBe(false);
 
+    for (const [candidate, expected] of [
+      [sourcePath, true],
+      ['skills/demo-skill', false],
+      ['plugins/testing/demo-plugin/skills/demo-skill/extra', false],
+      ['plugins/Testing/demo-plugin/skills/demo-skill', false],
+      ['plugins/testing/demo-plugin/skills/demo_skill', false],
+    ] as const) {
+      const candidateReceipt = structuredClone(receipt());
+      candidateReceipt.source.path = candidate;
+      expect(validateSchema(candidateReceipt), `JSON Schema source path: ${candidate}`).toBe(
+        expected,
+      );
+      expect(
+        (() => {
+          try {
+            validateCanonicalSkillSourcePath(candidate);
+            return true;
+          } catch {
+            return false;
+          }
+        })(),
+        `runtime source path: ${candidate}`,
+      ).toBe(expected);
+    }
+
     const registryUrl = new URL('../../../../config/harness-registry.json', import.meta.url);
     const registry = JSON.parse(await readFile(registryUrl, 'utf8')) as {
       schemaVersion: number;
