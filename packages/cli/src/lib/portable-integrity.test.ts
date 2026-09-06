@@ -170,7 +170,7 @@ describe('portable tree identity', () => {
   });
 });
 
-describe('immutable Git source acquisition', () => {
+describe('immutable Git source acquisition', { timeout: 20_000 }, () => {
   test('two clean checkouts at different host paths produce the same tree identity', async () => {
     const fixture = await createRepository();
     const cloneParent = await mkdtemp(path.join(tmpdir(), 'ccpi-portable-clone-'));
@@ -308,7 +308,7 @@ describe('immutable Git source acquisition', () => {
     } finally {
       await rm(linked.root, { recursive: true, force: true });
     }
-  }, 20_000);
+  });
 });
 
 describe('portable install receipt v1', () => {
