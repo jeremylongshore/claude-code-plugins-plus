@@ -1260,6 +1260,7 @@ sources:
     include:
       - '/.claude-plugin/plugin.json'
       - '/skills/hol-guard/SKILL.md'
+      - '/skills/plugin-scanner/SKILL.md'
       - '/README.md'
       - '/LICENSE'
     exclude:
