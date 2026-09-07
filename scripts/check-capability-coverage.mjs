@@ -24,10 +24,11 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 import { parseTokenList } from './lib/tool-token-parser.mjs';
 
-const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 const MAP = JSON.parse(
   readFileSync(join(ROOT, 'schemas', 'canonical', 'v0', 'capability-map.json'), 'utf-8'),

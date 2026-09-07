@@ -45,6 +45,21 @@ function normalizeRepositoryPath(candidate) {
   return path;
 }
 
+export function repositoryRootsMatch(
+  topLevel,
+  root,
+  { resolvePath = resolve, caseInsensitive = process.platform === 'win32' } = {},
+) {
+  // Git prints Windows worktree roots with forward slashes while Node's native
+  // resolver returns backslashes. Compare resolved filesystem identities, not
+  // their display spelling. Drive and path case are insensitive on Windows.
+  const normalize = (candidate) => {
+    const resolved = resolvePath(candidate);
+    return caseInsensitive ? resolved.toLowerCase() : resolved;
+  };
+  return normalize(topLevel) === normalize(root);
+}
+
 export function readIndexedArtifact(candidate, { root = process.cwd() } = {}) {
   const path = normalizeRepositoryPath(candidate);
   const indexed = spawnSync('git', ['ls-files', '--stage', '--', path], {
@@ -123,6 +138,7 @@ export function assertGeneratedContentCurrent(candidates, { root = process.cwd()
 }
 
 export function checkUntrackedProjections({ root = process.cwd() } = {}) {
+  let repositoryRoot;
   try {
     const topLevel = execFileSync('git', ['rev-parse', '--show-toplevel'], {
       ...BUF,
@@ -131,7 +147,7 @@ export function checkUntrackedProjections({ root = process.cwd() } = {}) {
     })
       .toString()
       .trim();
-    if (topLevel !== resolve(root)) throw new Error(`repository root is ${topLevel}`);
+    repositoryRoot = resolve(topLevel);
   } catch (error) {
     throw new Error(
       `generated-artifacts refuses to pass without Git evidence: ${error instanceof Error ? error.message : String(error)}`,
@@ -144,7 +160,7 @@ export function checkUntrackedProjections({ root = process.cwd() } = {}) {
     try {
       tracked = execFileSync('git', ['ls-files', '--', p.pathspec], {
         ...BUF,
-        cwd: root,
+        cwd: repositoryRoot,
       })
         .toString()
         .trim();

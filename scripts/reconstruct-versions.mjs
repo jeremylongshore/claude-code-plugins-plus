@@ -43,10 +43,10 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseVersion, compareVersion } from './auto-bump-changed-plugins.mjs';
 
-const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CATALOG = join(ROOT, '.claude-plugin', 'marketplace.extended.json');
 const CLI_CATALOG = join(ROOT, '.claude-plugin', 'marketplace.json');
 

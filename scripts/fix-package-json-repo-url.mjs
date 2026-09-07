@@ -11,8 +11,9 @@
 
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PLUGINS = join(ROOT, 'plugins');
 
 const OLD_GIT = 'git+https://github.com/jeremylongshore/claude-code-plugins.git';

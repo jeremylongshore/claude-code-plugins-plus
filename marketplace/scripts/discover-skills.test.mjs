@@ -1,10 +1,14 @@
 import assert from 'node:assert/strict';
+import { win32 } from 'node:path';
 import test from 'node:test';
 
 import {
+  extractCategory,
+  extractPluginName,
   normalizeDescription,
   normalizeListField,
   parseFrontmatter,
+  repositoryRelativePath,
   resolveSkillVersion,
 } from './discover-skills.mjs';
 
@@ -22,6 +26,19 @@ const SNOWFLAKE_MIGRATION_DESCRIPTION =
   'loads, validating data, or preparing a controlled cutover and rollback. ' +
   'Trigger with phrases like "migrate to Snowflake", "Snowflake migration", ' +
   '"Redshift to Snowflake", "BigQuery to Snowflake", or "Snowflake replatform".';
+
+test('normalizes Windows skill and parent-plugin paths for catalog projections', () => {
+  const root = String.raw`C:\repo`;
+  const plugin = String.raw`C:\repo\plugins\security\hol-guard`;
+  const skill = String.raw`C:\repo\plugins\security\hol-guard\skills\guard\SKILL.md`;
+  assert.equal(repositoryRelativePath(root, plugin, win32), 'plugins/security/hol-guard');
+  assert.equal(
+    repositoryRelativePath(root, skill, win32),
+    'plugins/security/hol-guard/skills/guard/SKILL.md',
+  );
+  assert.equal(extractCategory(plugin, win32), 'security');
+  assert.equal(extractPluginName(plugin, win32), 'hol-guard');
+});
 
 test('parses the exact Snowflake migration folded description semantically', () => {
   const metadata = parseFrontmatter(`---

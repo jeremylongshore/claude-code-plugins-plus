@@ -12,9 +12,12 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 
-const installer = new URL('../ops/install-security-headers.sh', import.meta.url).pathname;
-const source = new URL('../ops/tonsofskills-security-headers.caddy', import.meta.url).pathname;
+const installer = fileURLToPath(new URL('../ops/install-security-headers.sh', import.meta.url));
+const source = fileURLToPath(
+  new URL('../ops/tonsofskills-security-headers.caddy', import.meta.url),
+);
 
 function fixture(mainText = 'example.invalid {\n    import security-headers\n}\n') {
   const directory = mkdtempSync(join(tmpdir(), 'security-header-install-'));
