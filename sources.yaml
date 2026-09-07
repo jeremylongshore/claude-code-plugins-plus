@@ -1247,9 +1247,9 @@ sources:
   # ============================================================
 
   - name: hol-guard
-    description: Local security controls and pre-install scanning for AI coding agents, Agent Skills, plugins, MCP servers, and package actions
+    description: Local pre-execution security controls and pre-install scanning for AI agent tools, packages, skills, plugins, and MCP servers.
     repo: hashgraph-online/hol-guard-plugin
-    source_path: .
+    source_path: distributions/tons-of-skills-marketplace
     target_path: plugins/security/hol-guard
     author:
       name: Hashgraph Online
@@ -1258,16 +1258,14 @@ sources:
     category: security
     verified: false
     include:
-      - '/.claude-plugin/**'
-      - '/commands/**'
-      - '/skills/plugin-scanner/**'
+      - '/.claude-plugin/plugin.json'
+      - '/skills/hol-guard/SKILL.md'
       - '/README.md'
       - '/LICENSE'
     exclude:
       - 'node_modules/**'
       - '.git/**'
       - '*.log'
-
 # Sync configuration
 config:
   # Branch to sync from (default: main)
