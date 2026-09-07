@@ -1,19 +1,18 @@
-name: "CodeQL Security Analysis"
+name: 'CodeQL Security Analysis'
 
 on:
   push:
-    branches: [ "main" ]
-  # pull_request re-added 2026-07 but SCOPED to first-party app/library code only.
-  # The 2026-05-16 disable (#652) was because CodeQL fired false positives on PRs
-  # for release/ + scripts/ (documented known-safe). Those dirs are outside this
-  # scope, and plugin PRs (plugins/**) don't match either — so this adds no fan-out
-  # to plugin PRs while restoring real PR-time coverage of the code CodeQL is good
-  # at. Advisory only — never a required status check.
+    branches: ['main']
+  # PR analysis covers first-party app, library, and repository automation code.
+  # Current-main high findings in scripts/ proved that excluding automation leaves
+  # security fixes unverifiable until after merge. Plugin mirrors remain outside
+  # this path scope. Advisory only — never a required status check.
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
     paths:
       - 'packages/**'
       - 'marketplace/src/**'
+      - 'scripts/**'
   # schedule disabled — burns Actions minutes
   # - cron: '0 6 * * 1'
 
@@ -30,25 +29,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript', 'typescript', 'python' ]
+        language: ['javascript', 'typescript', 'python']
         # CodeQL supports: 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby', 'swift'
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v6
+      - name: Checkout repository
+        uses: actions/checkout@v6
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v4
-      with:
-        languages: ${{ matrix.language }}
-        # Queries to run (security-extended includes more checks)
-        queries: security-extended,security-and-quality
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          # Queries to run (security-extended includes more checks)
+          queries: security-extended,security-and-quality
 
-    # Autobuild attempts to build any compiled languages
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v4
+      # Autobuild attempts to build any compiled languages
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v4
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v4
-      with:
-        category: "/language:${{matrix.language}}"
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: '/language:${{matrix.language}}'
