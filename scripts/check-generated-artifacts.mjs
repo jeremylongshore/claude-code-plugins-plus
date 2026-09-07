@@ -19,6 +19,7 @@
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import * as nodePath from 'node:path';
 import { basename, isAbsolute, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -45,19 +46,17 @@ function normalizeRepositoryPath(candidate) {
   return path;
 }
 
-export function repositoryRootsMatch(
-  topLevel,
-  root,
-  { resolvePath = resolve, caseInsensitive = process.platform === 'win32' } = {},
-) {
-  // Git prints Windows worktree roots with forward slashes while Node's native
-  // resolver returns backslashes. Compare resolved filesystem identities, not
-  // their display spelling. Drive and path case are insensitive on Windows.
-  const normalize = (candidate) => {
-    const resolved = resolvePath(candidate);
-    return caseInsensitive ? resolved.toLowerCase() : resolved;
-  };
-  return normalize(topLevel) === normalize(root);
+export function repositoryRootContains(topLevel, root, pathApi = nodePath) {
+  // Git may print a Windows root with forward slashes while Node uses native
+  // separators. Resolve both with the platform path API, then preserve the old
+  // fail-closed root invariant as a boundary check that also permits deliberate
+  // invocation from a nested repository directory.
+  const repositoryRoot = pathApi.resolve(topLevel);
+  const requestedRoot = pathApi.resolve(root);
+  const rel = pathApi.relative(repositoryRoot, requestedRoot);
+  return (
+    rel === '' || (rel !== '..' && !rel.startsWith(`..${pathApi.sep}`) && !pathApi.isAbsolute(rel))
+  );
 }
 
 export function readIndexedArtifact(candidate, { root = process.cwd() } = {}) {
@@ -147,6 +146,9 @@ export function checkUntrackedProjections({ root = process.cwd() } = {}) {
     })
       .toString()
       .trim();
+    if (!repositoryRootContains(topLevel, root)) {
+      throw new Error(`requested root ${resolve(root)} is outside repository ${topLevel}`);
+    }
     repositoryRoot = resolve(topLevel);
   } catch (error) {
     throw new Error(

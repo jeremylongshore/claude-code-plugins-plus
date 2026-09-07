@@ -9,31 +9,26 @@ import { fileURLToPath } from 'node:url';
 import {
   assertGeneratedContentCurrent,
   readIndexedArtifact,
-  repositoryRootsMatch,
+  repositoryRootContains,
 } from './check-generated-artifacts.mjs';
 
 const CHECKER = fileURLToPath(new URL('./check-generated-artifacts.mjs', import.meta.url));
 
-test('accepts equivalent Windows Git and Node repository-root spellings', () => {
+test('accepts equivalent and nested Windows roots but rejects adjacent trees', () => {
   assert.equal(
-    repositoryRootsMatch('C:/Users/dev/repo', String.raw`C:\Users\dev\repo`, {
-      resolvePath: win32.resolve,
-      caseInsensitive: true,
-    }),
+    repositoryRootContains('C:/Users/dev/repo', String.raw`C:\Users\dev\repo`, win32),
     true,
   );
   assert.equal(
-    repositoryRootsMatch('c:/Users/DEV/repo', String.raw`C:\users\dev\repo`, {
-      resolvePath: win32.resolve,
-      caseInsensitive: true,
-    }),
+    repositoryRootContains(
+      'c:/Users/DEV/repo',
+      String.raw`C:\users\dev\repo\nested\directory`,
+      win32,
+    ),
     true,
   );
   assert.equal(
-    repositoryRootsMatch('C:/Users/dev/repository', String.raw`C:\Users\dev\repo`, {
-      resolvePath: win32.resolve,
-      caseInsensitive: true,
-    }),
+    repositoryRootContains('C:/Users/dev/repo', String.raw`C:\Users\dev\repository`, win32),
     false,
   );
 });
