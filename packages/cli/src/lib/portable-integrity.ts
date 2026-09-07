@@ -118,7 +118,15 @@ function nonEmptyString(value: unknown, label: string, pattern?: RegExp, maxLeng
   if (
     [...value].some((character) => {
       const codePoint = character.codePointAt(0) ?? 0;
-      return codePoint <= 31 || codePoint === 127 || (codePoint >= 0x202a && codePoint <= 0x202e);
+      return (
+        codePoint <= 31 ||
+        codePoint === 127 ||
+        codePoint === 0x061c ||
+        codePoint === 0x200e ||
+        codePoint === 0x200f ||
+        (codePoint >= 0x202a && codePoint <= 0x202e) ||
+        (codePoint >= 0x2066 && codePoint <= 0x2069)
+      );
     })
   ) {
     fail(`${label} contains a control or bidirectional formatting character`);

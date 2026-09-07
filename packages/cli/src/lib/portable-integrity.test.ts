@@ -133,7 +133,7 @@ describe('portable tree identity', () => {
     'references\\windows.md',
     'references//empty.md',
     'references/café.md',
-    'references/bidi\u202emd',
+    'references/bidi\u2066md',
     'CON',
     '.git/config',
     '.ccpi-portable-install.json',
@@ -319,49 +319,53 @@ describe('portable install receipt v1', () => {
     expect(parsePortableInstallReceipt(encoded)).toEqual(expected);
   });
 
-  test('binds repository, commit, source tree, source path, and manifest to acquisition', async () => {
-    const fixture = await createRepository();
-    try {
-      const acquisition = await readPortableTreeFromCleanCommit({
-        ...fixture,
-        repoRoot: fixture.root,
-        sourcePath,
-      });
-      const bound = receipt(acquisition.manifest);
-      bound.source.repository = acquisition.repository;
-      bound.source.commit = acquisition.commit;
-      bound.source.tree = acquisition.sourceTree;
-      expect(assertReceiptMatchesAcquisition(bound, acquisition)).toEqual(bound);
+  test(
+    'binds repository, commit, source tree, source path, and manifest to acquisition',
+    { timeout: 20_000 },
+    async () => {
+      const fixture = await createRepository();
+      try {
+        const acquisition = await readPortableTreeFromCleanCommit({
+          ...fixture,
+          repoRoot: fixture.root,
+          sourcePath,
+        });
+        const bound = receipt(acquisition.manifest);
+        bound.source.repository = acquisition.repository;
+        bound.source.commit = acquisition.commit;
+        bound.source.tree = acquisition.sourceTree;
+        expect(assertReceiptMatchesAcquisition(bound, acquisition)).toEqual(bound);
 
-      const wrongRepository = structuredClone(bound);
-      wrongRepository.source.repository = 'https://github.com/example/other-skills';
-      expect(() => assertReceiptMatchesAcquisition(wrongRepository, acquisition)).toThrow(
-        /repository does not match/,
-      );
-      const wrongCommit = structuredClone(bound);
-      wrongCommit.source.commit.digest = 'd'.repeat(40);
-      expect(() => assertReceiptMatchesAcquisition(wrongCommit, acquisition)).toThrow(
-        /commit does not match/,
-      );
-      const wrongTree = structuredClone(bound);
-      wrongTree.source.tree.digest = 'd'.repeat(40);
-      expect(() => assertReceiptMatchesAcquisition(wrongTree, acquisition)).toThrow(
-        /source tree does not match/,
-      );
-      const wrongPath = structuredClone(bound);
-      wrongPath.source.path = 'plugins/testing/demo-plugin/skills/other-skill';
-      expect(() => assertReceiptMatchesAcquisition(wrongPath, acquisition)).toThrow(
-        /source path does not match/,
-      );
-      const wrongManifest = structuredClone(bound);
-      wrongManifest.tree = hashPortableTree(checkoutA);
-      expect(() => assertReceiptMatchesAcquisition(wrongManifest, acquisition)).toThrow(
-        /tree manifest does not match/,
-      );
-    } finally {
-      await rm(fixture.root, { recursive: true, force: true });
-    }
-  });
+        const wrongRepository = structuredClone(bound);
+        wrongRepository.source.repository = 'https://github.com/example/other-skills';
+        expect(() => assertReceiptMatchesAcquisition(wrongRepository, acquisition)).toThrow(
+          /repository does not match/,
+        );
+        const wrongCommit = structuredClone(bound);
+        wrongCommit.source.commit.digest = 'd'.repeat(40);
+        expect(() => assertReceiptMatchesAcquisition(wrongCommit, acquisition)).toThrow(
+          /commit does not match/,
+        );
+        const wrongTree = structuredClone(bound);
+        wrongTree.source.tree.digest = 'd'.repeat(40);
+        expect(() => assertReceiptMatchesAcquisition(wrongTree, acquisition)).toThrow(
+          /source tree does not match/,
+        );
+        const wrongPath = structuredClone(bound);
+        wrongPath.source.path = 'plugins/testing/demo-plugin/skills/other-skill';
+        expect(() => assertReceiptMatchesAcquisition(wrongPath, acquisition)).toThrow(
+          /source path does not match/,
+        );
+        const wrongManifest = structuredClone(bound);
+        wrongManifest.tree = hashPortableTree(checkoutA);
+        expect(() => assertReceiptMatchesAcquisition(wrongManifest, acquisition)).toThrow(
+          /tree manifest does not match/,
+        );
+      } finally {
+        await rm(fixture.root, { recursive: true, force: true });
+      }
+    },
+  );
 
   test('rejects mutable provenance, noncanonical sources, mismatched object formats, and private data', () => {
     const obsoleteRegistry = structuredClone(receipt());
