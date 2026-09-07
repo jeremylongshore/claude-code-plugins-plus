@@ -22,13 +22,13 @@
       "error_files": 719,
       "error_total": 3702,
       "grade_distribution": {
-        "A": 1884,
+        "A": 1885,
         "B": 1076,
         "C": 409,
         "D": 157,
         "F": 5
       },
-      "rows": 3531
+      "rows": 3532
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 352,
-        "raw_tracked_plugin_skill_files": 3031,
-        "tracked_files": 23949
+        "raw_tracked_plugin_skill_files": 3032,
+        "tracked_files": 23961
       }
     },
     "2": {
@@ -53,9 +53,9 @@
       "status": "measured",
       "target_status": "pass",
       "values": {
-        "distinct_names": 443,
+        "distinct_names": 444,
         "duplicate_names": [],
-        "entries": 443
+        "entries": 444
       }
     },
     "3": {
@@ -80,27 +80,27 @@
       "values": {
         "agent_lane": {
           "error_total_all_validated_surfaces": 236,
-          "fully_compliant_surfaces": 775,
+          "fully_compliant_surfaces": 776,
           "terminal_denominator": {
             "agents": 363,
-            "files": 957,
+            "files": 958,
             "label": "agents_plus_plugin_manifests",
-            "plugin_manifests": 594
+            "plugin_manifests": 595
           },
           "validator_reported_mixed_denominator_percent": 81
         },
         "marketplace_terminal": {
           "error_total_all_validated_surfaces": 3939,
-          "fully_compliant_surfaces": 1153,
+          "fully_compliant_surfaces": 1154,
           "terminal_denominator": {
             "agents": 363,
             "commands": 373,
-            "files": 4861,
+            "files": 4863,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
-            "plugin_manifests": 594,
-            "skills": 3531
+            "plugin_manifests": 595,
+            "skills": 3532
           },
-          "validated_plugin_manifests": 602,
+          "validated_plugin_manifests": 603,
           "validator_reported_mixed_denominator_percent": 23.7
         },
         "skill_rows": {
@@ -112,13 +112,13 @@
           "error_files": 719,
           "error_total": 3702,
           "grade_distribution": {
-            "A": 1884,
+            "A": 1885,
             "B": 1076,
             "C": 409,
             "D": 157,
             "F": 5
           },
-          "rows": 3531
+          "rows": 3532
         }
       }
     },
@@ -131,7 +131,7 @@
       "values": {
         "average_score": 87.5,
         "grade_distribution": {
-          "A": 1884,
+          "A": 1885,
           "B": 1076,
           "C": 409,
           "D": 157,
@@ -144,7 +144,7 @@
           "D": 4.4,
           "F": 0.1
         },
-        "rows": 3531
+        "rows": 3532
       }
     },
     "6": {
@@ -161,7 +161,7 @@
         "b_error_total": 568,
         "b_failing": 276,
         "certified_target": 0,
-        "skill_summary_rows": 3531
+        "skill_summary_rows": 3532
       }
     },
     "7": {
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3520,
+        "declared": 3521,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 11,
-        "rows": 3531,
+        "rows": 3532,
         "target_malformed": 0
       }
     },
@@ -286,7 +286,7 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "distinct_values": 60,
+        "distinct_values": 61,
         "invalid_or_empty": 0,
         "target_free_text_values": 0,
         "values": [
@@ -445,6 +445,10 @@
           {
             "count": 1,
             "value": "Designed for Claude Code; the same MCP server also works in Claude Desktop, Cursor, Windsurf, and OpenAI Codex CLI. Requires the mnemos binary on PATH — run mnemos init to wire the MCP server and mnemos doctor to verify."
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code; the underlying CLI grades skills, subagents, slash commands, MCP configs, and plugins"
           },
           {
             "count": 7,
@@ -1224,11 +1228,11 @@
           },
           {
             "cohort": "graded",
-            "value": 3531
+            "value": 3532
           },
           {
             "cohort": "marketplace-visible",
-            "value": 2940
+            "value": 2941
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1289,10 +1293,10 @@
       "source": ["sources.lock.json", "sources.yaml"],
       "status": "measured",
       "values": {
-        "lock_keys": 36,
+        "lock_keys": 37,
         "lock_only": [],
         "target_equal": true,
-        "yaml_keys": 36,
+        "yaml_keys": 37,
         "yaml_only": []
       }
     },
@@ -1313,6 +1317,7 @@
         "plugins/community/mnemos/.source.json",
         "plugins/community/portaljs/.source.json",
         "plugins/community/quit-sponsor/.source.json",
+        "plugins/community/skillcrossroads/.source.json",
         "plugins/community/skills-janitor/.source.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/design/brand-forge/.source.json",
@@ -1340,17 +1345,17 @@
       ],
       "status": "measured",
       "values": {
-        "mirrors_shipping_license_text": 36,
+        "mirrors_shipping_license_text": 37,
         "missing_license_text": [],
-        "provenance_marked_mirrors": 36,
-        "target_shipping_license_text": 36
+        "provenance_marked_mirrors": 37,
+        "target_shipping_license_text": 37
       }
     },
     "29": {
       "cohort": "provenance-marked mirrors",
       "dimension": "Mirror SKILL.md contradicting upstream license",
       "measured_proxy": {
-        "local_source_records_with_parseable_json": 36
+        "local_source_records_with_parseable_json": 37
       },
       "reason_code": "MISSING_PINNED_UPSTREAM_LICENSE_EVIDENCE",
       "reproduce": "pnpm run measure:e1 --row=29 --stdout",
@@ -1371,6 +1376,7 @@
         "plugins/community/mnemos/.source.json",
         "plugins/community/portaljs/.source.json",
         "plugins/community/quit-sponsor/.source.json",
+        "plugins/community/skillcrossroads/.source.json",
         "plugins/community/skills-janitor/.source.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/design/brand-forge/.source.json",
@@ -1431,6 +1437,8 @@
         "plugins/community/portaljs/package.json",
         "plugins/community/quit-sponsor/.source.json",
         "plugins/community/quit-sponsor/package.json",
+        "plugins/community/skillcrossroads/.source.json",
+        "plugins/community/skillcrossroads/package.json",
         "plugins/community/skills-janitor/.source.json",
         "plugins/community/skills-janitor/package.json",
         "plugins/crypto/aomi/.source.json",
@@ -1482,10 +1490,10 @@
       ],
       "status": "partial",
       "values": {
-        "non_private": [],
+        "non_private": ["plugins/community/skillcrossroads/package.json"],
         "private_packages": 36,
-        "repository_package_mirrors": 36,
-        "scoped_packages": 31,
+        "repository_package_mirrors": 37,
+        "scoped_packages": 32,
         "target_publishable": 0
       }
     },
@@ -1521,6 +1529,8 @@
         "plugins/community/portaljs/package.json",
         "plugins/community/quit-sponsor/.source.json",
         "plugins/community/quit-sponsor/package.json",
+        "plugins/community/skillcrossroads/.source.json",
+        "plugins/community/skillcrossroads/package.json",
         "plugins/community/skills-janitor/.source.json",
         "plugins/community/skills-janitor/package.json",
         "plugins/crypto/aomi/.source.json",
@@ -1574,12 +1584,12 @@
       ],
       "status": "measured",
       "values": {
-        "boundaries_live": 2,
+        "boundaries_live": 1,
         "mirror_capable_publishers": [
           ".github/workflows/publish-all-packages.yml",
           ".github/workflows/publish-changed-packages.yml"
         ],
-        "package_private_boundary": true,
+        "package_private_boundary": false,
         "publisher_provenance_boundary": true,
         "target_boundaries": 2
       }
@@ -1946,7 +1956,7 @@
         "invalid_patterns": 0,
         "invisible_files": 23,
         "target_invisible_files": 0,
-        "tracked_files": 23949
+        "tracked_files": 23961
       }
     },
     "47": {
@@ -2231,7 +2241,7 @@
       "values": {
         "adoption_percent": 1.06,
         "curated_copies": 32,
-        "plugin_skill_rows": 3031,
+        "plugin_skill_rows": 3032,
         "source_eval_specs": 32,
         "tracked_eval_specs": 64
       }

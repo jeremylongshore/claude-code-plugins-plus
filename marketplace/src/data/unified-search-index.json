@@ -5,10 +5,10 @@
     "generator": "marketplace/scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 440,
-    "totalSkills": 2940,
+    "totalPlugins": 441,
+    "totalSkills": 2941,
     "totalDocs": 24,
-    "totalItems": 3404,
+    "totalItems": 3406,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -1057,6 +1057,7 @@
       "linear",
       "linkerd",
       "linktree",
+      "linter",
       "linting",
       "liquid-glass",
       "liquidation",
@@ -1408,6 +1409,7 @@
       "scenarios",
       "schedule",
       "schema",
+      "scorecard",
       "scraper",
       "scraping",
       "screen-reader",
@@ -1706,8 +1708,8 @@
     "pluginsWithAgents": 91,
     "pluginsWithHooks": 20,
     "officialPlugins": 390,
-    "communityPlugins": 50,
-    "communityContributors": 39
+    "communityPlugins": 51,
+    "communityContributors": 40
   },
   "items": [
     {
@@ -5444,6 +5446,31 @@
       "badges": [],
       "skillCount": 0,
       "searchText": "fairdb ops manager database operations management for fairdb postgresql clusters community database postgresql operations"
+    },
+    {
+      "type": "plugin",
+      "id": "skillcrossroads",
+      "slug": "skillcrossroads",
+      "name": "skillcrossroads",
+      "displayName": "skillcrossroads",
+      "description": "Evidence-cited grader for Claude Code artifacts — the audit-skill runs the free skillcrossroads CLI for file:line scorecards, letter grades, and ranked fix lists",
+      "category": "community",
+      "keywords": [
+        "audit",
+        "quality",
+        "linter",
+        "scorecard"
+      ],
+      "author": {
+        "name": "Steve Harlow"
+      },
+      "authorType": "community",
+      "version": "0.11.4",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 1,
+      "searchText": "skillcrossroads evidence-cited grader for claude code artifacts — the audit-skill runs the free skillcrossroads cli for file:line scorecards, letter grades, and ranked fix lists community audit quality linter scorecard"
     },
     {
       "type": "plugin",
@@ -22177,6 +22204,28 @@
         "category": "productivity"
       },
       "searchText": "audit-plugin performs a deep review of the claude code plugin, skill, or sub-agent defined in the current project against official best practices. documents findings as github issues and writes a prioritised fix plan to the project claude.md. use when the user says audit this plugin, review this skill, check this agent, or audit addon. productivity read glob grep bash websearch webfetch "
+    },
+    {
+      "type": "skill",
+      "id": "audit-skill",
+      "slug": "audit-skill",
+      "name": "audit-skill",
+      "description": "Audit and improve a Claude Code skill using Skill Crossroads. Use when the user says \"audit my skill\", \"grade my skill\", \"check my skill quality\", \"why doesn't my skill trigger\", or \"lint my SKILL.md\" — or before publishing any skill, to get an evidence-cited quality score, ranked fix list, and badge. Trigger with \"audit my skill\".",
+      "category": "community",
+      "allowedTools": [
+        "Read",
+        "Edit",
+        "Grep",
+        "Glob",
+        "Bash(npx:*)"
+      ],
+      "compatibleWith": [],
+      "version": "0.11.4",
+      "parentPlugin": {
+        "name": "skillcrossroads",
+        "category": "community"
+      },
+      "searchText": "audit-skill audit and improve a claude code skill using skill crossroads. use when the user says \"audit my skill\", \"grade my skill\", \"check my skill quality\", \"why doesn't my skill trigger\", or \"lint my skill.md\" — or before publishing any skill, to get an evidence-cited quality score, ranked fix list, and badge. trigger with \"audit my skill\". community read edit grep glob bash(npx:*) "
     },
     {
       "type": "skill",

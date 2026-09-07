@@ -1,1 +1,6 @@
 *.sqlite binary
+
+# Preserve canonical CRLF bytes in the upstream SkillCrossroads mirror.
+plugins/community/skillcrossroads/docs/PRD.md -text whitespace=cr-at-eol
+plugins/community/skillcrossroads/skills/audit-skill/SKILL.md -text whitespace=cr-at-eol
+plugins/community/skillcrossroads/skills/audit-skill/references/flags-quick-reference.md -text whitespace=cr-at-eol

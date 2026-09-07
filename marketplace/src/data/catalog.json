@@ -5,10 +5,10 @@
     "generator": "marketplace/scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 440,
-    "totalSkills": 2940,
+    "totalPlugins": 441,
+    "totalSkills": 2941,
     "totalCommands": 85,
-    "pluginsWithSkills": 407,
+    "pluginsWithSkills": 408,
     "byCategory": {
       "productivity": 29,
       "security": 27,
@@ -24,7 +24,7 @@
       "skill-enhancers": 10,
       "database": 26,
       "business-tools": 6,
-      "community": 20,
+      "community": 21,
       "examples": 5,
       "saas-packs": 104,
       "analytics": 1,
@@ -3299,6 +3299,30 @@
       "isFeatured": false,
       "author": {
         "name": "Community"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "skillcrossroads",
+      "name": "skillcrossroads",
+      "displayName": "skillcrossroads",
+      "description": "Evidence-cited grader for Claude Code artifacts — the audit-skill runs the free skillcrossroads CLI for file:line scorecards, letter grades, and ranked fix lists",
+      "version": "0.11.4",
+      "category": "community",
+      "keywords": [
+        "audit",
+        "quality",
+        "linter",
+        "scorecard"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install skillcrossroads",
+      "sourcePath": "./plugins/community/skillcrossroads",
+      "isFeatured": false,
+      "author": {
+        "name": "Steve Harlow"
       },
       "type": "instruction-plugin"
     },
