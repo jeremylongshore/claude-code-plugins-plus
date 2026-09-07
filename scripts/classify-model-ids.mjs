@@ -15,10 +15,15 @@
  *   node scripts/classify-model-ids.mjs --json         # full machine output
  *   node scripts/classify-model-ids.mjs --check        # gate mode: exit 1 on
  *                                                        census drift
+ *   node scripts/classify-model-ids.mjs --generate-exclusions
+ *                                                      # regenerate from
+ *                                                        authoritative Dolt
+ *   node scripts/classify-model-ids.mjs --audit-live   # compare projection
+ *                                                        with live Dolt
  */
 
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import {
   BEAD_ID,
@@ -63,10 +68,60 @@ export function classifyTree() {
 /**
  * Handle prefixes that match the bead shape but are product vocabulary, never
  * beads-issue handles in this repo. If bd ever minted one of these, the
- * local-workspace census (classify-model-ids.test.mjs, live-export leg) would
+ * local-workspace census (classify-model-ids.test.mjs, live-Dolt leg) would
  * still catch it at generation time.
  */
 const NOT_A_HANDLE = new Set(['claude-code']);
+
+export function issueRowsToHandleRoots(rows) {
+  const roots = new Set();
+  for (const row of rows) {
+    const id = row?.id;
+    if (typeof id !== 'string' || !BEAD_ID.test(id)) continue;
+    roots.add(id.split('.')[0]);
+  }
+  return [...roots].sort();
+}
+
+export function diffHandleRoots(liveRoots, pinned = loadExclusions().protected_handles) {
+  const live = new Set(liveRoots);
+  const projected = new Set(pinned);
+  return {
+    missing: [...live].filter((root) => !projected.has(root)).sort(),
+    extra: [...projected].filter((root) => !live.has(root)).sort(),
+  };
+}
+
+function primaryBeadsRoot() {
+  let commonDirectory;
+  try {
+    commonDirectory = execFileSync(
+      'git',
+      ['rev-parse', '--path-format=absolute', '--git-common-dir'],
+      { cwd: ROOT, encoding: 'utf-8' },
+    ).trim();
+  } catch {
+    return null;
+  }
+  const primaryRoot = dirname(commonDirectory);
+  if (existsSync(join(primaryRoot, '.beads'))) return primaryRoot;
+  if (existsSync(join(ROOT, '.beads'))) return ROOT;
+  return null;
+}
+
+export function liveBeadRootHandles() {
+  const beadsRoot = primaryBeadsRoot();
+  if (beadsRoot === null) return null;
+  const rows = JSON.parse(
+    execFileSync('bd', ['--readonly', '-C', beadsRoot, 'list', '--all', '--limit', '0', '--json'], {
+      cwd: ROOT,
+      encoding: 'utf-8',
+      maxBuffer: 256 * 1024 * 1024,
+    }),
+  );
+  if (!Array.isArray(rows)) throw new TypeError('bd list did not return an issue array');
+  return issueRowsToHandleRoots(rows);
+}
 
 /**
  * The CI-reachable census: every bead-handle-shaped token on a bead-context
@@ -117,13 +172,41 @@ export function unpinnedTrackedHandles(pinned = new Set(loadExclusions().protect
 
 const isMain = process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href;
 if (isMain) {
+  if (process.argv.includes('--generate-exclusions')) {
+    const liveRoots = liveBeadRootHandles();
+    if (liveRoots === null) {
+      console.error('model-id-generate: FAIL — no local authoritative Beads/Dolt database');
+      process.exit(1);
+    }
+    const path = join(ROOT, 'schemas', 'canonical', 'v0', 'model-id-exclusions.json');
+    const projection = loadExclusions();
+    projection.protected_handles = liveRoots;
+    writeFileSync(path, JSON.stringify(projection, null, 2) + '\n');
+    console.log(`model-id-generate: wrote ${liveRoots.length} authoritative Beads root handles`);
+    process.exit(0);
+  }
+  if (process.argv.includes('--audit-live')) {
+    const liveRoots = liveBeadRootHandles();
+    if (liveRoots === null) {
+      console.error('model-id-live-audit: FAIL — no local authoritative Beads/Dolt database');
+      process.exit(1);
+    }
+    const diff = diffHandleRoots(liveRoots);
+    if (diff.missing.length > 0 || diff.extra.length > 0) {
+      for (const root of diff.missing) console.error(`model-id-live-audit: MISSING ${root}`);
+      for (const root of diff.extra) console.error(`model-id-live-audit: EXTRA ${root}`);
+      process.exit(1);
+    }
+    console.log(`model-id-live-audit: PASS — ${liveRoots.length} authoritative roots match`);
+    process.exit(0);
+  }
   if (process.argv.includes('--check')) {
     const missing = unpinnedTrackedHandles();
     if (missing.size > 0) {
       for (const [prefix, where] of missing) {
         console.error(
           `model-id-check: FAIL — handle ${prefix} referenced at ${where} is missing from ` +
-            'schemas/canonical/v0/model-id-exclusions.json (regenerate from .beads/issues.jsonl)',
+            'schemas/canonical/v0/model-id-exclusions.json (run --generate-exclusions locally)',
         );
       }
       process.exit(1);

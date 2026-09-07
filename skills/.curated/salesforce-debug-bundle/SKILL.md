@@ -173,6 +173,12 @@ if (incidents.length > 0) {
 | System status | Salesforce-side outages | Yes |
 | Environment | Node.js, jsforce versions | Yes |
 
+## Examples
+
+### Assemble a support bundle with deliberate redaction
+
+Collect the sandbox org ID, platform status, API-limit snapshot, and a narrow time range of debug logs into a temporary directory. Strip access tokens, session identifiers, user email addresses, and record field values before archiving; include reproducible synthetic steps instead of customer records. Encrypt or use the approved support channel for delivery, set local bundle expiry, and retain the original deployment or sandbox configuration until the escalation is resolved.
+
 ## Resources
 
 - [Salesforce Status API](https://api.status.salesforce.com/)

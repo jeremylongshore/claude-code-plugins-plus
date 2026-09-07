@@ -2,7 +2,7 @@
 
 import { pathToFileURL } from 'node:url';
 
-const CANONICAL_REPOSITORY = 'jeremylongshore/claude-code-plugins-plus-skills';
+const CANONICAL_REPOSITORY = 'jeremylongshore/tons-of-skills-marketplace';
 const TRUSTED_APP_SLUG = 'github-actions';
 const SUCCESS_CONCLUSION = 'success';
 

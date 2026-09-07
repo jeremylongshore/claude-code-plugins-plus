@@ -28,6 +28,12 @@ compatibility: Designed for Claude Code
 
 Post-fundraise investor management: send periodic updates, share metrics, manage cap table, and maintain relationships for future rounds.
 
+## Prerequisites
+
+- Confirm the update audience, source-of-truth metrics, and internal approval owner.
+- Verify that recipients are authorized for the selected content and documents.
+- Prepare a redacted draft outside of production mailing lists for review.
+
 ## Instructions
 
 ### Investor Updates
@@ -80,6 +86,21 @@ Finta's network feature identifies 2nd-degree connections:
 - Track ownership percentages after each round
 - Model dilution for future rounds
 - Export for legal and compliance
+
+## Output
+
+Create an approved investor-update record containing the audience segment, source metric date, reviewer, send time, and any open follow-up requests. Keep cap-table exports and recipient-level details in their approved systems, not in local drafts or repository files.
+
+## Error Handling
+
+- Stop a send when the recipient segment, attached document permissions, or source metrics cannot be verified.
+- Treat bounced messages, unsubscribe requests, or audience mismatches as a review queue; do not automatically resend to an alternate address.
+- If connected metrics are stale or incomplete, label the update as pending and obtain an owner’s decision before sending.
+- Revoke access and document the correction if a restricted update or document is shared with the wrong audience.
+
+## Examples
+
+Draft a monthly update with fictional metrics, have the designated reviewer approve the audience, and send it only to a test segment. Verify the activity record and document permissions, then use the same reviewed template for the authorized production segment.
 
 ## Resources
 

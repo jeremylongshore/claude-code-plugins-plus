@@ -12,7 +12,7 @@ description: 'Implement Documenso template-based workflows and direct signing li
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,6 +22,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Core Workflow B: Templates & Direct Signing
+
+## Output
+
+- A reviewed template/direct-signing workflow with role-limited access, lifecycle validation, and a safe disable/rollback action.
+- A redacted receipt showing environment, document/template version, state transitions, and result.
+
+## Examples
+
+Create a development template with synthetic fields and signer, verify role order, expiration, authentication, signing state, and callback behavior, then disable/archive the test document. Do not use real agreements or signer identity for the walkthrough, and stop promotion if authorization or lifecycle state differs from the review.
 
 ## Overview
 

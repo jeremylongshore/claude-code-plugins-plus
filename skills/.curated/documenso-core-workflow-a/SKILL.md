@@ -12,7 +12,7 @@ description: 'Implement Documenso document creation and recipient management wor
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,6 +22,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Core Workflow A: Document Creation & Recipients
+
+## Output
+
+- A role-limited document/recipient workflow with validated metadata, lifecycle, authorization, and redacted audit result.
+- A safe disable/rollback path for an incorrect recipient, permission, or state transition.
+
+## Examples
+
+Create a synthetic development document, assign a test recipient with the minimum required role, verify expiration/authentication/callback behavior, and archive it after the check. If role or recipient behavior is wrong, disable the workflow and correct it before promotion; do not substitute a real signer for the test.
 
 ## Overview
 

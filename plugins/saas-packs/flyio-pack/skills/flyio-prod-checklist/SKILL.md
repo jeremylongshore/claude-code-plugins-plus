@@ -8,7 +8,7 @@ description: 'Execute Fly.io production deployment checklist with health checks,
 
   '
 allowed-tools: Read, Bash(fly:*), Bash(curl:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,6 +22,26 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Fly.io runs applications on edge infrastructure across 30+ regions with Machines, Volumes, and managed Postgres. A production deployment requires multi-region redundancy, proper secret management, health checks, and rollback procedures. Misconfigured auto-scaling means cold starts; missing volume backups mean data loss. This checklist ensures your Fly.io app is production-hardened.
+
+## Prerequisites
+
+- A launch owner, approver, on-call contact, recovery owner, and completed staging evidence using synthetic traffic.
+- Documented data locality, backup/restore, access, retention, and escalation requirements.
+
+## Instructions
+
+1. Complete every applicable checklist item with evidence or an explicit owner decision.
+2. Confirm secrets, identities, health checks, backup/restore, monitoring, region policy, and rollback before launch.
+3. Run a canary, observe aggregate health/cost/error signals, and stop promotion when any defined threshold is breached.
+4. Record approval, exceptions, and recovery verification in the release receipt.
+
+## Output
+
+Produce a go-live receipt with controls completed, evidence references, canary metrics, regions, approver, rollback owner, exceptions, and follow-up date. Do not include secrets or user data.
+
+## Examples
+
+Deploy a synthetic workload to one staging region, revoke a test deployment token, and simulate a health failure. Promote only after the rollback succeeds and the designated approver records the canary evidence.
 
 ## Authentication & Secrets
 

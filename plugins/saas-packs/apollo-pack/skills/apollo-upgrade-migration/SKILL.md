@@ -147,8 +147,6 @@ const MIGRATION_RULES: MigrationRule[] = [
 // src/migration/feature-flags.ts
 const flags = {
   useNewSearchEndpoint: process.env.FF_NEW_SEARCH === 'true',
-  useHeaderAuth: process.env.FF_HEADER_AUTH === 'true',
-  useNewBaseUrl: process.env.FF_NEW_BASE_URL === 'true',
 };
 
 export function getSearchEndpoint(): string {
@@ -156,40 +154,28 @@ export function getSearchEndpoint(): string {
 }
 
 export function getBaseUrl(): string {
-  return flags.useNewBaseUrl ? 'https://api.apollo.io/api/v1' : 'https://api.apollo.io/v1';
+  return 'https://api.apollo.io/api/v1';
 }
 
 export function getAuthConfig(): Record<string, any> {
-  if (flags.useHeaderAuth) {
-    return { headers: { 'x-api-key': process.env.APOLLO_API_KEY! } };
-  }
-  return { params: { api_key: process.env.APOLLO_API_KEY! } };
+  // Header authentication is mandatory in every migration state.
+  return { headers: { 'x-api-key': process.env.APOLLO_API_KEY! } };
 }
 ```
 
 ### Step 4: Run Parallel Comparison
 
 ```typescript
-async function shadowTest(searchParams: Record<string, any>) {
-  const oldClient = axios.create({ baseURL: 'https://api.apollo.io/v1', params: { api_key: process.env.APOLLO_API_KEY } });
-  const newClient = axios.create({ baseURL: 'https://api.apollo.io/api/v1', headers: { 'x-api-key': process.env.APOLLO_API_KEY! } });
-
-  const [oldResult, newResult] = await Promise.allSettled([
-    oldClient.post('/people/search', searchParams),
-    newClient.post('/mixed_people/api_search', searchParams),
-  ]);
-
-  console.log('Shadow test results:');
-  console.log(`  Old: ${oldResult.status === 'fulfilled' ? oldResult.value.status : 'FAIL'}`);
-  console.log(`  New: ${newResult.status === 'fulfilled' ? newResult.value.status : 'FAIL'}`);
-
-  if (oldResult.status === 'fulfilled' && newResult.status === 'fulfilled') {
-    const oldCount = oldResult.value.data.people?.length ?? 0;
-    const newCount = newResult.value.data.people?.length ?? 0;
-    console.log(`  Results match: ${oldCount === newCount} (old: ${oldCount}, new: ${newCount})`);
-  }
+function compareRecordedResponses(oldFixture: { people?: unknown[] }, newFixture: { people?: unknown[] }) {
+  const oldCount = oldFixture.people?.length ?? 0;
+  const newCount = newFixture.people?.length ?? 0;
+  return { oldCount, newCount, countsMatch: oldCount === newCount };
 }
 ```
+
+Capture the fixture once from an authorized staging request, redact contact
+data, and run the comparison offline. Do not keep a production key or a
+query-string authentication path alive merely to compare a deprecated endpoint.
 
 ### Step 5: Post-Migration Cleanup
 
@@ -207,8 +193,20 @@ echo "Cleanup complete. Remove feature flags: FF_NEW_SEARCH, FF_HEADER_AUTH, FF_
 - API usage audit identifying current and deprecated patterns
 - Migration rule map for auth, base URL, and endpoint changes
 - Feature-flagged migration with environment variable controls
-- Shadow testing for comparing old vs new API responses
+- Offline fixture comparison for checking old vs new API response contracts
 - Post-migration cleanup script
+
+## Examples
+
+For an endpoint migration, inventory deprecated calls, add the new endpoint
+behind a staging-only feature flag, and compare its result shape with a
+redacted recorded fixture rather than replaying a live legacy request. Keep
+header authentication and the current base URL mandatory throughout the change.
+After the new path meets the agreed count and field-contract checks, promote it
+gradually, monitor error and credit signals, then delete the legacy route and
+all migration flags. If the comparison diverges, an audit finds query-string
+auth, or a rollback would restore an insecure credential path, halt and repair
+the migration before release.
 
 ## Error Handling
 

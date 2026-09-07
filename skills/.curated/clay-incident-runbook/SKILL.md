@@ -28,6 +28,13 @@ compatibility: Designed for Claude Code
 
 Rapid response procedures for Clay-related production incidents. Clay is a hosted SaaS platform, so incidents fall into two categories: (1) Clay-side issues (platform outage, provider degradation) and (2) your-side issues (webhook misconfiguration, credit exhaustion, handler failures).
 
+## Prerequisites
+
+- Named incident commander, service/data owners, and escalation contacts
+- Access to redacted telemetry, queue state, table configuration, and runbooks
+- A tested ability to pause enrichment, CRM sync, and webhook intake
+- Approved communications and evidence-retention procedures
+
 ## Severity Levels
 
 | Level | Definition | Response Time | Examples |
@@ -197,6 +204,21 @@ Enrichment not running?
 | Webhook test returns nothing | Webhook URL malformed | Re-copy full URL from Clay table |
 | All providers returning empty | Account-level issue | Contact Clay support at community.clay.com |
 | CRM pushing wrong data | Column references changed | Re-map HTTP API column body fields |
+
+## Output
+
+Produce a time-stamped incident record with severity, scope, affected tables
+and destinations, containment steps, safe correlation IDs, communications,
+recovery evidence, root-cause status, and prevention owner. Do not include live
+secrets, raw lead/CRM records, or personal data in status updates or postmortems.
+
+## Examples
+
+When a webhook reaches its submission limit, pause intake, protect pending work
+in the queue, notify the service owner with the approved template, and test the
+replacement path in staging before reopening production. If CRM data is wrong,
+suspend the sync, reconcile only authorized records, and retain the incident
+open until validation proves the corrected mapping.
 
 ## Resources
 

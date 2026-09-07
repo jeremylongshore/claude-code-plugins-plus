@@ -223,6 +223,20 @@ async function sendWithThrottle(rows: any[], webhookUrl: string) {
 | No new rows from webhook | Test webhook URL with curl | Re-create webhook source |
 | Credits depleting fast | Check waterfall depth | Reduce to 2 providers, add conditions |
 
+## Output
+
+Produce a redacted diagnostic record with table/environment, observed symptom,
+correlation ID, likely cause, containment action, data-certification state, and
+named escalation owner. Avoid including raw contacts, CRM records, credentials,
+or complete provider responses in tickets and shared logs.
+
+## Examples
+
+When CRM sync duplicates a contact, pause the affected action, verify the
+deduplication key with a synthetic row, and repair/update the existing record
+before resuming. When credits drain unexpectedly, disable auto-runs, preserve
+the table state, and review conditions and waterfall behavior before retrying.
+
 ## Resources
 
 - [Clay University -- HTTP API Integration](https://university.clay.com/docs/http-api-integration-overview)

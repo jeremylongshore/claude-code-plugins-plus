@@ -4,13 +4,20 @@ import PluginCard from '../components/PluginCard.astro';
 import PartnerBar from '../components/PartnerBar.astro';
 import searchIndex from '../data/unified-search-index.json';
 import spotlightData from '../data/spotlights.json';
-const hallOfFame = spotlightData.hallOfFame || [];
+
+// The unified index already contains only publishable catalog rows. Historical
+// spotlights remain editorial data, but a quarantined plugin must never render
+// as a currently recommended marketplace artifact.
+const allPlugins = searchIndex.items.filter(i => i.type === 'plugin');
+const publishedPluginSlugs = new Set(allPlugins.map(plugin => plugin.slug));
+const hallOfFame = (spotlightData.hallOfFame || []).filter(item =>
+  publishedPluginSlugs.has(item.pluginSlug)
+);
 
 const pageTitle = 'Community Contributors';
 const pageDescription = 'Meet the community contributors who build and share plugins for the Claude Code ecosystem.';
 
 // Compute community stats from search index
-const allPlugins = searchIndex.items.filter(i => i.type === 'plugin');
 const communityPlugins = allPlugins.filter(p => p.authorType === 'community');
 const officialPlugins = allPlugins.filter(p => p.authorType === 'official');
 

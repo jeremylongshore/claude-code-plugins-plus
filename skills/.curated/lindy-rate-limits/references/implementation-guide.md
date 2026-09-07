@@ -1,133 +1,139 @@
-# Lindy Rate Limits - Implementation Guide
+# Lindy Trigger Traffic-Control Guide
 
-# Lindy Rate Limits
+This guide defines the evidence and architecture needed to control outbound
+traffic to Lindy webhook triggers. It deliberately contains no fixed Lindy price,
+credit, request-rate, concurrency, or action-limit values.
 
-## Overview
+## Contents
 
-Rate limit management for Lindy AI agent API. Lindy's agent execution model involves orchestrating multiple service calls per request, making rate limits apply at both the API level and the agent action level.
+1. [Evidence inventory](#evidence-inventory)
+2. [Trust boundaries](#trust-boundaries)
+3. [Admission architecture](#admission-architecture)
+4. [Idempotency limits](#idempotency-limits)
+5. [Response policy](#response-policy)
+6. [Observability](#observability)
+7. [Qualification tests](#qualification-tests)
 
-## Prerequisites
+## Evidence Inventory
 
-- Lindy API configured
-- Understanding of agent execution costs
-- Monitoring for action-level limits
+Before choosing controls, record:
 
-## Lindy Rate Limits
+| Fact | Authoritative source | Reviewed at | Owner |
+|---|---|---|---|
+| Workspace usage and available credits | target workspace UI | timestamp | FinOps owner |
+| Contract-specific constraints | current order form or contract | timestamp | contract owner |
+| Observed task throughput and latency | retained task/run evidence | window | service owner |
+| Application traffic envelope | application telemetry | window | service owner |
+| Local retry and queue policy | approved design record | revision | engineering owner |
 
-| Resource | Limit | Window |
-|----------|-------|--------|
-| API Requests | 100/min | Per API key |
-| Agent Triggers | 50/min | Per agent |
-| Actions Per Agent | 200/hour | Per agent |
-| Webhook Deliveries | 500/min | Per endpoint |
+If a source does not state a platform constraint, mark it unknown. Never fill the
+gap with an old blog post, copied skill, guessed default, or hard-coded table.
 
-## Instructions
+## Trust Boundaries
 
-### Step 1: API-Level Rate Limiter
+Validate the webhook destination before constructing an Authorization header:
 
-```python
-import time
+- scheme is `https`;
+- hostname is exactly `public.lindy.ai`;
+- URL has no embedded username or password;
+- path is the generated webhook path expected by the application; and
+- the per-trigger secret is nonempty and loaded from an approved secret manager.
 
-class LindyRateLimiter:
-    def __init__(self, rpm: int = 100):
-        self.rpm = rpm
-        self.timestamps = []
+The caller's trigger secret authenticates to Lindy. An application callback
+receiver needs a separate application-owned callback secret. Rotation, expiry,
+and overlap procedures are organization choices unless current authoritative
+evidence says otherwise.
 
-    def wait(self):
-        now = time.time()
-        self.timestamps = [t for t in self.timestamps if now - t < 60]
-        if len(self.timestamps) >= self.rpm:
-            sleep_time = 60 - (now - self.timestamps[0])
-            time.sleep(sleep_time + 0.1)
-        self.timestamps.append(time.time())
+## Admission Architecture
 
-limiter = LindyRateLimiter(rpm=100)
+Use shared, durable components whenever multiple senders exist:
 
-def call_lindy_api(endpoint: str, payload: dict):
-    limiter.wait()
-    response = requests.post(
-        f"https://api.lindy.ai/v1/{endpoint}",
-        json=payload, headers={"Authorization": f"Bearer {API_KEY}"}
-    )
-    if response.status_code == 429:
-        retry_after = int(response.headers.get("Retry-After", 10))
-        time.sleep(retry_after)
-        return call_lindy_api(endpoint, payload)
-    response.raise_for_status()
-    return response.json()
+```text
+producer
+  -> closed schema and byte-bound validation
+  -> atomic idempotency reservation
+  -> durable queue / transactional outbox
+  -> shared atomic admission control
+  -> webhook worker
+  -> durable outcome ledger and reconciliation
 ```
 
-### Step 2: Agent Action Budget
+The admission controller can use a token bucket, leaky bucket, fixed concurrency
+semaphore, or a combination. Its state must be shared and mutations atomic.
+Choose keys that preserve intended isolation, such as `tenant + agent`, and add a
+global ceiling only when the deployment needs one.
 
-Track actions per agent to prevent hitting hourly limits.
+Do not silently fall back to a process-local limiter when the shared store fails.
+Keep work durable or shed it explicitly according to the approved policy.
 
-```python
-class AgentActionBudget:
-    def __init__(self, hourly_limit: int = 200):
-        self.limit = hourly_limit
-        self.actions = {}  # agent_id -> [(timestamp, action)]
+## Idempotency Limits
 
-    def can_execute(self, agent_id: str) -> bool:
-        now = time.time()
-        history = self.actions.get(agent_id, [])
-        recent = [t for t, _ in history if now - t < 3600]
-        return len(recent) < self.limit
+Require a stable request ID derived from the source business event. Atomically
+associate it with the durable job. Prefer a transactional outbox or a queue that
+supports unique job keys. If reservation and enqueue cannot be one transaction,
+use a lease and a recovery process so a crash cannot strand a permanent claim.
 
-    def record(self, agent_id: str, action: str):
-        if agent_id not in self.actions:
-            self.actions[agent_id] = []
-        self.actions[agent_id].append((time.time(), action))
+Local idempotency prevents duplicate local jobs. It cannot guarantee exactly-once
+execution across an ambiguous network timeout: Lindy may have accepted a request
+even when the caller did not receive the response. Keep the same request ID on
+every attempt, reconcile it against the Tasks view or authenticated callback, and
+design downstream actions to tolerate duplicates where possible.
 
-    def remaining(self, agent_id: str) -> int:
-        now = time.time()
-        recent = [t for t, _ in self.actions.get(agent_id, []) if now - t < 3600]
-        return max(0, self.limit - len(recent))
+Do not assume Lindy honors an `Idempotency-Key` request header unless the current
+official webhook documentation explicitly states that behavior.
 
-budget = AgentActionBudget()
-```
+## Response Policy
 
-### Step 3: Webhook Rate Management
+Classify outcomes explicitly:
 
-```python
-from collections import defaultdict
+| Outcome | Disposition |
+|---|---|
+| 2xx | transport accepted; await task corroboration |
+| 408 | transient candidate; bounded retry |
+| 429 | transient candidate; honor bounded `Retry-After` when valid |
+| selected 5xx | transient candidate; bounded retry |
+| 401/403 | permanent authentication failure; stop and alert |
+| other 4xx | permanent request failure unless current documentation proves otherwise |
+| timeout / connection reset | ambiguous; reconcile before or during bounded retry |
 
-class WebhookRateTracker:
-    def __init__(self, max_per_minute: int = 500):
-        self.limit = max_per_minute
-        self.counts = defaultdict(list)
+Cap attempt count, per-attempt timeout, backoff delay, and total elapsed time.
+After exhaustion, write a terminal outcome, move the event to a dead-letter queue,
+and alert the accountable owner. A recursive retry with no limit is prohibited.
 
-    def should_process(self, endpoint: str) -> bool:
-        now = time.time()
-        self.counts[endpoint] = [t for t in self.counts[endpoint] if now - t < 60]
-        if len(self.counts[endpoint]) >= self.limit:
-            return False
-        self.counts[endpoint].append(now)
-        return True
-```
+## Observability
 
-## Error Handling
+Record only identifiers and operational metadata:
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| 429 API response | Exceeded 100 RPM | Rate limiter with backoff |
-| Agent actions blocked | Exceeded 200 actions/hour | Track and budget agent actions |
-| Webhook flood | External trigger storm | Rate limit webhook processing |
-| Agent stalled | Hit action limit mid-workflow | Monitor remaining budget |
+- request ID, queue job ID, and sanitized agent identifier;
+- admission outcome and shared-limiter key;
+- attempt number, latency, and response status class;
+- retry schedule and terminal disposition;
+- task ID once corroborated; and
+- queue age, depth, dead-letter count, and duplicate count.
 
-## Examples
+Never log Authorization headers, webhook URLs containing sensitive identifiers,
+full request/response bodies, customer content, or secrets.
 
-### Status Dashboard
+## Qualification Tests
 
-```python
-status = {
-    "api_rpm_used": len(limiter.timestamps),
-    "agents": {
-        agent_id: {"actions_remaining": budget.remaining(agent_id)}
-        for agent_id in budget.actions
-    }
-}
-```
+| Test | Passing evidence |
+|---|---|
+| Exact-host rejection | secret is never sent to lookalike, HTTP, credential-bearing, or unexpected URLs |
+| Empty secret | configuration fails before a request is possible |
+| Schema and size bounds | unknown, malformed, and oversized events create no durable job |
+| Concurrent duplicate | two instances produce one durable job for one request ID |
+| Shared limit contention | combined traffic from all instances respects the chosen local policy |
+| Store outage | no silent per-process fallback; work remains durable or is explicitly rejected |
+| Transient response | bounded retries use jitter and reach a terminal disposition |
+| Permanent 4xx | no retry storm; owner receives a redacted alert |
+| Worker termination | queued work survives and resumes according to policy |
+| Ambiguous timeout | request is reconciled using the stable request ID |
+| 2xx response | matching task is found before completion is claimed |
 
-## Resources
+Retain sanitized test receipts and review the design whenever traffic, topology,
+contract, or workspace configuration changes.
 
-- [Lindy API Docs](https://docs.lindy.ai)
+## Official References
+
+- [Lindy webhook triggers](https://docs.lindy.ai/skills/by-lindy/webhooks)
+- [Lindy HTTP Request actions](https://docs.lindy.ai/skills/by-lindy/http-request)

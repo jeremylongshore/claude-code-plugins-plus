@@ -132,7 +132,7 @@ bd ready  # Should show only infra tasks
 
 **Flagship (24 skills):** Clerk, PostHog, ClickHouse, Together AI, Mistral AI, Alchemy, Apify, Bright Data
 
-**Pro (18 skills):** Cursor, OpenRouter, Groq, Perplexity, Linear, Fly.io, StackBlitz, Framer, Hex, Fathom, ElevenLabs, Deepgram, AssemblyAI, Retell AI, Runway, Ideogram, FireCrawl, Exa, Customer.io, Attio, Apollo, Windsurf
+**Pro (18 skills):** Cursor, OpenRouter, Groq, Linear, Fly.io, StackBlitz, Framer, Hex, Fathom, ElevenLabs, Deepgram, AssemblyAI, Retell AI, Runway, Ideogram, FireCrawl, Exa, Customer.io, Attio, Apollo, Windsurf
 
 **Standard (12 skills):** Clay, CodeRabbit, Fireflies.ai, Gamma, Granola, Instantly, Kling AI, Lindy, SerpApi, Vast.ai, Juicebox, Fondo, Finta, Wispr, Anima
 

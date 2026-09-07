@@ -188,6 +188,32 @@ class UsageTracker:
             f.write(json.dumps(entry) + "\n")
 ```
 
+## Prerequisites
+
+- An approved credit budget, synthetic or rights-cleared test brief, authorized workspace, policy review, draft-only destination, redaction policy, and rollback owner.
+
+## Instructions
+
+1. Measure credit controls with a bounded sandbox canary and log aggregate consumption only; never store prompt previews, private data, asset URLs, or credentials in cost records.
+2. Verify the approved budget, policy/rights outcome, destination, retention, and cancellation path before submitting work.
+3. Halt and cancel queued drafts on a credit anomaly, policy concern, or retention drift; restore the prior budget configuration before retrying.
+4. Retain a redacted cost receipt only for the approved window, then remove temporary assets and test records.
+
+## Output
+
+Produce a cost-control receipt with environment, approved/observed aggregate credits, model/duration category, policy/rights and draft-only checks, cancellation or rollback action, owner approval, and cleanup proof. Exclude prompts, asset URLs, identities, and secrets.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Credit cap is exceeded or usage is anomalous | Stop the canary, cancel queued work, and restore the approved budget configuration. |
+| Sensitive data reaches a cost log | Delete the record, correct redaction, and repeat only with aggregate fields. |
+
+## Examples
+
+`env=ci-sandbox; category=standard-5s; budget=40-credits; observed=20-credits; policy=pass; destination=draft-only; cleanup=verified` supports review.
+
 ## Resources
 
 - [Pricing](https://app.klingai.com/global/dev/document-api/productBilling/prePaidResourcePackage)

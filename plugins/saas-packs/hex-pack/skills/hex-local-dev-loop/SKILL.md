@@ -111,6 +111,23 @@ describe('HexClient', () => {
 });
 ```
 
+## Prerequisites
+
+- A mock or sandbox endpoint, safe project fixture, no production token in source/history/test output, and a fixture-reset command.
+- A parameter/data-minimization assertion plus a change record and rollback path for future promotion.
+
+## Output
+
+Return a local-loop receipt with fixture revision, environment, project scope, test totals, aggregate assertion outcome, temporary credential reference, and cleanup state. Exclude SQL, output, tokens, and identities.
+
+## Error Handling
+
+Stop on production destination, missing data-minimization assertion, unbounded fixture, or failed cleanup. Do not use production output as a fallback test fixture.
+
+## Examples
+
+`fixtures=v7; mode=mock->sandbox; project=proj-dev-1; tests=12/12; assertions=pass; cleanup=complete` is a safe promotion candidate.
+
 ## Resources
 
 - [Hex API](https://learn.hex.tech/docs/api/api-overview)

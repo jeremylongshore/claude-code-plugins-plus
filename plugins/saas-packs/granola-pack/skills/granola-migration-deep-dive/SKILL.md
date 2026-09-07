@@ -246,6 +246,10 @@ After 1 week on Granola exclusively:
 | Audio quality different than bot | System audio vs. platform API | Optimize audio setup (see `granola-performance-tuning`) |
 | Low adoption post-migration | Setup issues | Run drop-in support sessions, share quick-start guide |
 
+## Examples
+
+`cohort=synthetic-meetings-01; baseline=420; migrated=420; consent=pass; destination=approved; retention=none; cutover=held; rollback=old-client-r8` documents a safe rehearsal.
+
 ## Resources
 
 - [Granola Setup Guide](https://docs.granola.ai/help-center/getting-started/setting-up-granola-for-the-first-time)

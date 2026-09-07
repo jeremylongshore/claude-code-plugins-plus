@@ -187,6 +187,10 @@ for (const [category, severity] of Object.entries(summary)) {
 - Data retention automation
 - Content safety detection
 
+## Examples
+
+For a browser feature, have an authenticated backend issue a narrowly scoped short-lived token after enforcing user and rate limits; never return the project API key. For deletion, generate a reviewed dry-run manifest first, require an explicit retention-policy approval, delete in bounded batches, and record opaque transcript identifiers plus outcomes for reconciliation.
+
 ## Error Handling
 
 | Security Issue | Detection | Mitigation |

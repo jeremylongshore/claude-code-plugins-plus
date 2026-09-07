@@ -36,6 +36,10 @@ Two advanced workflows: (1) real-time streaming transcription via WebSocket for 
 - API key configured in `ASSEMBLYAI_API_KEY`
 - For streaming: microphone or audio stream source
 
+## Instructions
+
+Use server-controlled credentials for service-to-service work and short-lived tokens for browser streaming. Obtain consent for live audio, set a session and retention limit, and process only the transcript IDs and prompts approved for the stated purpose. Validate structured LeMUR output before taking any downstream action.
+
 ## Part 1: Real-Time Streaming Transcription
 
 ### Step 1: Basic Streaming Setup
@@ -263,6 +267,10 @@ console.log(response);
 - Speaker-labeled streaming turns (nova-3-pro)
 - LeMUR summaries, Q&A responses, action items
 - Custom LLM analysis with structured output
+
+## Examples
+
+For live captions, issue a short-lived browser token from an authenticated backend, apply a session duration and concurrency limit, and discard partial text by default after delivery. For LeMUR, submit only approved transcript IDs, constrain the prompt to the stated purpose, validate structured output before use, and record a redacted request receipt rather than the response body.
 
 ## Error Handling
 

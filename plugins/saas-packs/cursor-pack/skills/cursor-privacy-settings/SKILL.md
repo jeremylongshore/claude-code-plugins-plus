@@ -20,6 +20,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Privacy Settings
 
+## Overview
+
+Configure Cursor data, privacy, and model-routing settings according to the repository's data classification and organization policy before code is added to AI context.
+
+## Prerequisites
+
+- A current data-classification decision, tenant owner, and approved provider/model policy.
+- Authority to inspect or enforce tenant settings and a process for exceptions/incidents.
+
+## Instructions
+
+1. Select the approved privacy/data controls and verify their effective tenant/user state.
+2. Configure `.cursorignore` and workspace trust to prevent secrets, customer data, and generated artifacts entering context.
+3. Test the boundary with sanitized fixtures and retain redacted verification evidence.
+4. Review settings after tenant, provider, policy, or data-classification changes.
+
+## Output
+
+- A verified privacy configuration and context-exclusion boundary for the intended workspace.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Effective privacy setting is unclear | Do not use sensitive code; escalate to the tenant/security owner. |
+| Sensitive path is included | Stop, remove/exclude it, and follow the exposure procedure. |
+| Required setting conflicts with policy | Use the restrictive option and obtain a documented exception decision. |
+
+## Examples
+
+Before opening a production repository, verify the approved privacy mode, add known secret/export paths to reviewed ignore configuration, and test with a sanitized path. If the file can still be attached, stop onboarding the repository until the boundary is fixed.
+
 Configure Cursor's privacy controls to protect your code and data. Covers Privacy Mode, data handling policies, file exclusion, telemetry, and enterprise security settings.
 
 ## Privacy Mode

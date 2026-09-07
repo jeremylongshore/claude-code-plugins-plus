@@ -202,6 +202,34 @@ async function enforceRetention(db: any) {
 | Retention job fails | DB connection | Add retry logic to cron job |
 | Custom field PII missed | New field types | Re-scan fields via `/list/{id}/field` |
 
+## Prerequisites
+
+- Approved data inventory, purpose, classification, and named data owner
+- Documented authorized destinations, access controls, retention, and deletion path
+- Redaction tests for task/comment/custom-field and webhook data
+
+## Instructions
+
+Minimize collection, classify fields before storage, enforce destination and
+retention controls, and verify deletion/export behavior across every synced
+system. Treat task text, comments, assignees, custom fields, and attachments as
+potentially sensitive; use redacted diagnostics and obtain legal/privacy review
+when the use case or jurisdiction requires it.
+
+## Output
+
+Maintain a data-handling record with source, purpose, classification, allowed
+uses/destinations, access owner, retention/deletion results, request status,
+and audit reference. Do not place personal task data, tokens, or raw API
+responses in the record.
+
+## Examples
+
+Before syncing a new custom field, classify it, add it to the redaction and
+retention tests, and verify it is excluded from general logs. For a deletion
+request, enumerate ClickUp and downstream copies, remove or suppress them via
+the approved route, and record redacted completion evidence.
+
 ## Resources
 
 - [ClickUp Privacy Policy](https://clickup.com/privacy)

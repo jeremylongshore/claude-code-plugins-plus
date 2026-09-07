@@ -24,6 +24,28 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Cost Tuning
 
+## Prerequisites
+
+- An approved cost owner, billing/usage baseline, message/event retention policy, and delivery SLO.
+- Aggregate reporting that does not require exporting customer payloads or individual message content.
+
+## Output
+
+- A measured cost optimization with owner, delivery/consent guardrails, and rollback threshold.
+- An aggregate usage receipt supporting the decision without exposing recipient data.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Spend rises unexpectedly | Verify configuration, rate, and authorized campaigns; pause unsafe scale changes and investigate aggregate signals. |
+| Optimization risks delivery or consent | Do not apply it until the service/data owner approves a safe test. |
+| Data is missing or misallocated | Repair attribution before making a budget decision. |
+
+## Examples
+
+Compare aggregate event volume and message spend for a development/staging campaign, reduce unnecessary duplicate events through an idempotency fix, and observe the agreed window. Revert if delivery errors, latency, or consent checks regress; do not suppress customer messages solely to make a dashboard look cheaper.
+
 ## Overview
 
 Optimize Customer.io costs by managing profile count (the primary billing driver), suppressing/deleting inactive users, deduplicating events, reducing unnecessary API calls, and monitoring usage trends.

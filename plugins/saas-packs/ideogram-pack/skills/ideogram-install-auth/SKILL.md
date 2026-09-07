@@ -168,6 +168,10 @@ else:
 - `.env` file with key (git-ignored)
 - Successful test generation confirming connectivity
 
+## Examples
+
+`env=sandbox; secret_ref=ideogram-client-v4; scope=generation; destination=approved; synthetic_probe=200; output_retention=none; rotation_owner=platform-ops` proves setup without exposing a credential.
+
 ## Resources
 
 - [Ideogram Developer Docs](https://developer.ideogram.ai)

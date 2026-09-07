@@ -75,6 +75,11 @@ blocks a merge. Promotion to a blocking gate is a separate, later cutover step.
 runs it automatically when the extended catalog is staged, and CI fails if any
 derived file drifts. Authoring workflow: [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
+Skill frontmatter is YAML data, not Markdown. Keep `description` and other YAML
+strings in plain prose: backticks, `$()`, and unguarded `${VAR}` are deliberately
+refused as shell-substitution-shaped text. Put code-formatted commands and paths in
+the Markdown body instead.
+
 ## External plugins: mirror by default
 
 Externally-synced plugins (registered in `sources.yaml`, a small minority of the
@@ -119,6 +124,9 @@ pinned by the doc-governance assertions (`validate:doc-fact-assertions`).
 | External-PR review standard                                                                                                      | [000-docs/709-DR-GUID-reviewing-external-prs.md](000-docs/709-DR-GUID-reviewing-external-prs.md)                               |
 | Document filing standard (numbering, category codes, 000-docs layout)                                                            | [000-docs/000-DR-STND-document-filing-system.md](000-docs/000-DR-STND-document-filing-system.md)                               |
 | Cross-repo source-of-truth map (which system owns which fact class)                                                              | [000-docs/718-AT-ARCH-source-of-truth-map.md](000-docs/718-AT-ARCH-source-of-truth-map.md)                                     |
+| Cross-repository authority contract (one writer per fact class across platform systems)                                          | [000-docs/806-AT-ARCH-cross-repo-authority-contract.md](000-docs/806-AT-ARCH-cross-repo-authority-contract.md)                 |
+| Evaluation and evidence classes, retention, claim ceiling, and storage split                                                     | [000-docs/807-DR-STND-evaluation-evidence.md](000-docs/807-DR-STND-evaluation-evidence.md)                                     |
+| Certification definition, G1–G10/E1–E6 gates, and computed T0–T4 tiers                                                           | [000-docs/808-DR-STND-certification-standard.md](000-docs/808-DR-STND-certification-standard.md)                               |
 | Safety enforcement register (every claimed safety property → its enforcing boundary)                                             | [000-docs/790-DR-STND-safety-enforcement-register.md](000-docs/790-DR-STND-safety-enforcement-register.md)                     |
 | Contribution requirements                                                                                                        | [CONTRIBUTING.md](.github/CONTRIBUTING.md)                                                                                     |
 | Security policy                                                                                                                  | [SECURITY.md](.github/SECURITY.md)                                                                                             |

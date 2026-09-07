@@ -22,13 +22,32 @@ compatibility: Designed for Claude Code
 
 Local development workflow for AppFolio property management API integration. Provides a fast feedback loop with mock property, tenant, and lease endpoints so you can build and test integrations without consuming live API quota. Toggle between mock mode for rapid iteration and sandbox mode for pre-deployment validation against the real AppFolio Stack API.
 
+## Prerequisites
+
+- A mock-only local environment with synthetic property, tenant, lease, and
+  work-order fixtures that contain no production addresses, names, or payments.
+- A separately managed sandbox credential and an approved safe-read fixture for
+  the dedicated integration lane; it is never loaded by the local dev server.
+- A log policy that records request shape and status only, plus an explicit
+  owner for sandbox quota, fixture reset, and credential rotation.
+
+## Instructions
+
+1. Run the local server only in mock mode and exercise reads/writes against
+   synthetic routes with deterministic fixtures.
+2. Test request validation, idempotency, redaction, and error handling in unit
+   tests before any sandbox connectivity check.
+3. Run the sandbox lane separately with the contract-bound managed client and
+   one authorized safe-read fixture; do not turn a local proxy into a live API
+   tunnel.
+4. Stop when the fixture, credentials, request budget, or output redaction is
+   unverified, then correct the environment before continuing.
+
 ## Environment Setup
 
 ```bash
 cp .env.example .env
-# Set your credentials:
-# APPFOLIO_API_KEY=af_live_xxxxxxxxxxxx
-# APPFOLIO_BASE_URL=https://api.appfolio.com/api/v1
+# Leave provider credentials blank locally. Mock mode is the default.
 # MOCK_MODE=true
 npm install express axios dotenv tsx typescript @types/node
 npm install -D vitest supertest @types/express
@@ -39,20 +58,12 @@ npm install -D vitest supertest @types/express
 ```typescript
 // src/dev/server.ts
 import express from "express";
-import { createProxyMiddleware } from "http-proxy-middleware";
 const app = express();
 app.use(express.json());
 const MOCK = process.env.MOCK_MODE === "true";
-if (!MOCK) {
-  app.use("/api/v1", createProxyMiddleware({
-    target: process.env.APPFOLIO_BASE_URL,
-    changeOrigin: true,
-    headers: { Authorization: `Bearer ${process.env.APPFOLIO_API_KEY}` },
-  }));
-} else {
-  const { mountMockRoutes } = require("./mocks");
-  mountMockRoutes(app);
-}
+if (!MOCK) throw new Error("Local server is mock-only; use the managed sandbox integration lane");
+const { mountMockRoutes } = require("./mocks");
+mountMockRoutes(app);
 app.listen(3001, () => console.log(`AppFolio dev server on :3001 [mock=${MOCK}]`));
 ```
 
@@ -81,16 +92,32 @@ export function mountMockRoutes(app: any) {
 npm run dev:mock &                    # Start mock server in background
 npm run test                          # Unit tests with vitest
 npm run test -- --watch               # Watch mode for rapid iteration
-MOCK_MODE=false npm run test:integration  # Integration test against real API
+npm run test:sandbox                     # Managed, read-only sandbox lane
 ```
 
 ## Debug Tips
 
 - Set `DEBUG=express:*` to trace all route matching and middleware execution
-- Use `curl -v http://localhost:3001/api/v1/properties` to inspect raw responses
+- Use local test assertions for fixture counts and schema shape, not raw tenant payload dumps
 - Check `X-RateLimit-Remaining` header when testing against the live API
 - AppFolio sandbox returns `403` for properties you do not own — verify your API key scope
-- Enable `axios` interceptors to log request/response pairs during development
+- Use interceptors only for redacted endpoint/status/count telemetry during development
+
+## Output
+
+- A deterministic mock-only local server with synthetic property-management
+  fixtures and no provider credential dependency
+- Unit-test evidence for validation, idempotency, and PII-safe observability
+- A separate managed sandbox result containing only redacted safe-read status
+
+## Examples
+
+For a work-order UI change, add a synthetic mock fixture and test the request
+schema plus duplicate-submission behavior locally. Assert the returned ID and
+status without emitting the request body or tenant record. After unit tests
+pass, run the dedicated sandbox lane against one approved safe-read fixture.
+If mock mode is disabled, a sandbox credential appears locally, or a response
+contains unredacted tenant fields, stop the run and restore the local boundary.
 
 ## Error Handling
 

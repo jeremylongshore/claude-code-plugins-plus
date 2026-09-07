@@ -24,6 +24,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Data Handling
 
+## Output
+
+Record source reference, approved field/destination policy, retention rule, aggregate validation result, owner, and exception state. Keep presentation content, viewer data, and credentials outside the receipt.
+
+## Examples
+
+Process a fictional staging deck through a field allowlist, confirm only approved metadata reaches the test destination, and remove the fixture according to the retention policy.
+
 ## Overview
 
 Data handling, privacy controls, and compliance for Gamma API integrations. Gamma processes user-submitted content through AI to generate presentations -- understand what data flows where and how to handle PII, retention, and GDPR requirements.

@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Promote a tested agent configuration through a preview route
+
+Create a versioned agent configuration and attach it to an internal preview
+number first. Exercise a synthetic call that verifies the expected webhook,
+tool permissions, and fallback transfer, then record the configuration version
+and test result. Promote only that reviewed version to the production routing
+rule, while retaining the previous version and its routing target for a fast,
+auditable rollback if call quality or completion rate regresses.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

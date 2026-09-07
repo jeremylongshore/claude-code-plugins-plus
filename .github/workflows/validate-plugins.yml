@@ -59,6 +59,19 @@ jobs:
       - name: Assert sources.yaml and sources.lock.json key parity
         run: pnpm run validate:sources-lock-parity
 
+      # Blueprint 727 E7.14 / P2: every configured mirror must explicitly
+      # select license text and every checked-in mirrored artifact must carry it
+      # at its root. This is a hard gate, not a sync-time warning.
+      - name: Enforce mirror license coverage
+        run: pnpm run validate:mirror-licenses
+
+      # Blueprint 727 E7.5: package display versions must agree across the
+      # plugin manifest, editable marketplace catalog, and skill frontmatter.
+      # This is deliberately inside the existing validate job so it blocks
+      # ci-required without adding another required status context.
+      - name: Enforce version-surface agreement
+        run: node scripts/reconstruct-versions.mjs --check
+
       # Credential pre-flight (blueprint 727 E1.14 / § 18.7): the root
       # .mcp.json must never hold a live-shaped credential in plaintext env —
       # values are SOPS-encrypted in the untracked machine-local .env.sops and
@@ -98,6 +111,30 @@ jobs:
         run: |
           python3 -c "import yaml" 2>/dev/null || python3 -m pip install --quiet pyyaml
           pnpm run validate:safety-ratchet
+
+      # Blueprint 727 E8.8: missing-required-frontmatter remediation stops at
+      # a .source.json boundary. The canonical validator reports editable
+      # first-party and upstream mirror records separately; first-party debt is
+      # pinned at zero with count + set-hash + members, while every mirror row
+      # must remain QUARANTINE in the disposition ledger. No waiver path exists.
+      - name: Enforce the structural remediation ratchet
+        run: pnpm run validate:structural-ratchet
+
+      # Blueprint 727 E8.1: Freshie's graded cohort is the authority for the
+      # disposition ledger. Regenerate-and-compare proves each current graded
+      # artifact has exactly one first-match-wins outcome; missing/stale rows
+      # fail closed instead of silently changing publication eligibility.
+      - name: Verify the generated legacy disposition ledger
+        run: pnpm run validate:disposition-ledger
+
+      # Bead claude-juoz.3.11: repeated family names establish a review
+      # denominator only. Regenerate-and-compare prevents local/untracked files
+      # or stale catalog counts from changing the pack-by-pack queue silently.
+      - name: Verify the SaaS tutorial-lattice denominator
+        run: pnpm run validate:saas-lattice
+
+      - name: Keep quarantined external mirrors off publishable grade surfaces
+        run: pnpm run validate:mirror-quarantine
 
       # E4.13: a denylist (disallowed-tools) posture is enforced by the
       # Claude Code runtime only. This gate forbids silent-drop: a
@@ -185,6 +222,13 @@ jobs:
       - name: Validate catalog invariants (FS path = category)
         run: python3 scripts/validate-catalog-invariants.py
 
+      # Public HTML reaches set:html sinks, so the response policy is a
+      # required defense-in-depth surface. The test pins the exact Astro
+      # preview/Caddy projection and plants missing/weak directives; this job
+      # is already an input to ci-required.
+      - name: Enforce marketplace response-security policy
+        run: pnpm run validate:security-headers
+
       # Unicode-hygiene gate. Detects the supply-chain attack class
       # schema validation cannot see: invisible tag characters
       # (U+E0000-U+E007F, the Socket TrapDoor vector, advisory 2026-05-24),
@@ -206,13 +250,20 @@ jobs:
       # ungated. safety-eval.yaml cites tests/test_sql_classifier.py as this gate.
       - name: Test in-repo Python suites (validators, exporters, skill scripts)
         run: |
+          python3 -m pip install --quiet -r freshie/requirements-doltlite.txt
+          python3 -c "import doltlite; assert doltlite.__version__ == '0.50.1'"
           python3 -m unittest tests.test_sql_classifier -v
           python3 -m unittest tests.test_dolt_sync -v
+          python3 -m unittest tests.test_doltlite_sync -v
+          python3 -m unittest tests.test_promote_curated_workflow -v
           python3 -m unittest tests.test_run_delta -v
           python3 -m unittest tests.test_batch_remediate_compat -v
           python3 -m unittest tests.test_hms_readiness_classifier -v
           python3 -m unittest tests.test_enable_system_schemas -v
           python3 -m unittest tests.test_cluster_forensics -v
+          python3 -m unittest tests.test_marketplace_compliance_baseline -v
+          python3 -m unittest tests.test_marketplace_compliance_ratchet -v
+          python3 -m unittest tests.test_sync_marketplace_root_resolution -v
 
       # Reject PRs that reformat .claude-plugin/marketplace.extended.json beyond
       # the line budget implied by added/modified entries. Prevents prettier or
@@ -364,6 +415,14 @@ jobs:
       - name: Test npm publication locks
         run: node --test scripts/npm-publication-lock.test.mjs
 
+      # E7.9: any workflow that can mint OIDC credentials, publish to npm, or
+      # sign evidence must pin every external action to an immutable commit.
+      - name: Enforce privileged action SHA pins
+        run: pnpm run validate:privileged-action-pins
+
+      - name: Pin the required skill-conform harness exactly
+        run: node --test scripts/check-audit-harness-pin.test.mjs
+
       - name: Validate marketplace catalog
         run: |
           echo "Validating marketplace catalog..."
@@ -499,6 +558,85 @@ jobs:
             fi
           done
           echo "✅ Dependency scan complete"
+
+  # Blueprint 727 E6.4/E6.7: R1 plus the post-observation R2/R4 monotone metric
+  # checks need an independently visible, always-reporting blocking job.  It
+  # is listed in ci-required below rather than folded into `validate`, so a
+  # pre-existing failure in an unrelated validation lane cannot obscure the
+  # compliance-ratchet result.  The validator emits the complete
+  # skills/commands/agents/manifests corpus; observed runtime is about 70
+  # seconds, bounded here at two minutes.
+  marketplace-compliance-ratchet:
+    name: marketplace-compliance-ratchet
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # E6.6 compares the PR range to origin/main. The default one-commit
+          # checkout makes Git treat both refs as shallow roots, so the
+          # fail-closed range check cannot find their merge base.
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Refuse unauthorized marketplace baseline policy-envelope changes
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_REF: ${{ github.head_ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REPOSITORY: ${{ github.repository }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin "$BASE_REF"
+          args=(
+            --check-growth-only
+            --base "origin/$BASE_REF"
+            --head-ref "$HEAD_REF"
+          )
+          if [[ "$HEAD_REF" =~ ^automation/compliance-baseline-([1-9][0-9]*)$ ]]; then
+            run_id="${BASH_REMATCH[1]}"
+            evidence_dir="$(mktemp -d)"
+            trap 'rm -rf -- "$evidence_dir"' EXIT
+            gh api "repos/$REPOSITORY/actions/runs/$run_id" > "$evidence_dir/run.json"
+            gh api "repos/$REPOSITORY/actions/runs/$run_id/jobs?filter=latest" > "$evidence_dir/jobs.json"
+            gh api --method GET "repos/$REPOSITORY/pulls" \
+              -f state=all \
+              -f "head=$REPOSITORY_OWNER:$HEAD_REF" \
+              -f per_page=100 > "$evidence_dir/pulls.json"
+            mkdir "$evidence_dir/artifact"
+            gh run download "$run_id" \
+              --repo "$REPOSITORY" \
+              --name "marketplace-compliance-baseline-$run_id" \
+              --dir "$evidence_dir/artifact"
+            mapfile -d '' artifact_files < <(find "$evidence_dir/artifact" -type f -print0)
+            test "${#artifact_files[@]}" -eq 1
+            args+=(
+              --head-sha "$HEAD_SHA"
+              --repository "$REPOSITORY"
+              --repository-owner "$REPOSITORY_OWNER"
+              --base-ref "$BASE_REF"
+              --pr-number "$PR_NUMBER"
+              --capture-run-metadata "$evidence_dir/run.json"
+              --capture-run-jobs "$evidence_dir/jobs.json"
+              --capture-pull-requests "$evidence_dir/pulls.json"
+              --capture-artifact "${artifact_files[0]}"
+            )
+          fi
+          python3 scripts/check-marketplace-compliance-baseline.py "${args[@]}"
+      - name: Enforce R1/R2/R4 marketplace compliance ratchet
+        run: |
+          python3 -c "import yaml" 2>/dev/null || python3 -m pip install --quiet pyyaml
+          python3 scripts/check-marketplace-compliance-baseline.py
 
   # Verification Pipeline (scoring + badge generation)
   verify:
@@ -683,11 +821,16 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Verify Snowflake collector bundle integrity
+        if: matrix.test-type == 'python-tests'
+        run: python3 plugins/saas-packs/snowflake-pack/shared/evidence/sync_bundled_collectors.py --check
+
       - name: Install Python test dependencies
         if: matrix.test-type == 'python-tests'
         run: |
           python -m pip install --upgrade pip
           pip install pytest pytest-cov pytest-asyncio
+          python -m pip install --require-hashes -r freshie/requirements-doltlite.txt
 
           # Install dependencies if requirements.txt exists
           if [ -f "requirements.txt" ]; then
@@ -703,6 +846,62 @@ jobs:
           # Install additional testing tools
           pip install pyyaml jsonschema
 
+      - name: Install pinned Dolt for Freshie integration tests
+        if: matrix.test-type == 'python-tests'
+        run: |
+          set -euo pipefail
+          readonly dolt_version='2.3.1'
+          readonly dolt_sha256='0a2a318f27c5e1088a2883038573c2054e00f356dc9752e74bca934f8321959a'
+          readonly dolt_archive="${RUNNER_TEMP}/dolt-linux-amd64-v${dolt_version}.tar.gz"
+          readonly dolt_extract="${RUNNER_TEMP}/dolt-v${dolt_version}"
+          mkdir -p "$dolt_extract"
+          curl --fail --location --silent --show-error \
+            "https://github.com/dolthub/dolt/releases/download/v${dolt_version}/dolt-linux-amd64.tar.gz" \
+            --output "$dolt_archive"
+          printf '%s  %s\n' "$dolt_sha256" "$dolt_archive" | sha256sum --check --strict
+          tar -xzf "$dolt_archive" -C "$dolt_extract"
+          sudo install -m 0755 "$dolt_extract/dolt-linux-amd64/bin/dolt" /usr/local/bin/dolt
+          installed_dolt_version="$(dolt version | awk 'NR == 1 { print $3 }')"
+          readonly installed_dolt_version
+          test "$installed_dolt_version" = "$dolt_version"
+
+      - name: Run Freshie hermetic publication cycle
+        if: matrix.test-type == 'python-tests'
+        run: |
+          python3 - <<'PY'
+          import unittest
+          from tests.test_freshie_hermetic_cycle import HermeticFreshieCycleTests
+
+          method_name = "test_full_cycle_uses_only_scratch_state_and_refuses_live_server"
+          original_method = HermeticFreshieCycleTests.__dict__[method_name]
+          invocations = []
+
+          def guarded_method(self):
+              invocations.append(1)
+              return original_method(self)
+
+          setattr(HermeticFreshieCycleTests, method_name, guarded_method)
+          suite = unittest.TestSuite([HermeticFreshieCycleTests(method_name)])
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          valid = (
+              result.wasSuccessful()
+              and result.testsRun == 1
+              and not result.skipped
+              and not result.expectedFailures
+              and not result.unexpectedSuccesses
+              and len(invocations) == 1
+              and HermeticFreshieCycleTests.__dict__.get(method_name) is guarded_method
+          )
+          raise SystemExit(0 if valid else 1)
+          PY
+
+      # DoltLite replaces SQLite for its host process. Keep its native tests in
+      # a fresh interpreter so pytest-cov and unrelated sqlite3 users retain
+      # the stock SQLite library for the repository-wide suite.
+      - name: Run native DoltLite tests in an isolated process
+        if: matrix.test-type == 'python-tests'
+        run: python -W error -m unittest tests.test_doltlite_sync -v
+
       - name: Run Python tests
         if: matrix.test-type == 'python-tests'
         run: |
@@ -716,7 +915,7 @@ jobs:
             echo "$TEST_FILES"
 
             # Run pytest with coverage
-            pytest -v --cov=. --cov-report=term-missing --cov-report=xml || exit 1
+            pytest -v --ignore=tests/test_doltlite_sync.py --cov=. --cov-report=term-missing --cov-report=xml || exit 1
             echo "✅ Python tests passed"
           else
             echo "⚠️  No Python test files found"
@@ -841,6 +1040,9 @@ jobs:
 
       - name: Validate Internal Links (dist)
         run: node marketplace/scripts/validate-internal-links.mjs
+
+      - name: Validate permanent skill redirect projection
+        run: node --test marketplace/scripts/skill-redirects.test.mjs marketplace/scripts/install-skill-redirects.test.mjs
 
       - name: Smoke Test - Verify Build Output
         run: |
@@ -1220,7 +1422,7 @@ jobs:
       # ruff.toml at repo root governs rule selection.
       # No report-only crutch: external PRs that introduce ruff errors fail here.
       - name: Run ruff check
-        run: ruff check plugins/ scripts/
+        run: ruff check plugins/ scripts/ freshie/scripts/doltlite-sync.py tests/test_doltlite_sync.py
 
   ruff-format-check:
     runs-on: ubuntu-latest
@@ -1239,7 +1441,7 @@ jobs:
       # BLOCKING — 374 files formatted at PR #765 baseline.
       # Run `ruff format plugins/ scripts/` locally to fix before pushing.
       - name: Check ruff formatting
-        run: ruff format --check plugins/ scripts/
+        run: ruff format --check plugins/ scripts/ freshie/scripts/doltlite-sync.py tests/test_doltlite_sync.py
 
   markdownlint:
     runs-on: ubuntu-latest
@@ -1527,7 +1729,20 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          # The exact historical source is fetched from the reviewed registry
+          # below, so this checkout can stay shallow without relying on the
+          # source commit remaining an immediate parent.
+          fetch-depth: 1
           persist-credentials: false
+
+      - name: Fetch pinned README presentation source
+        shell: bash
+        run: >-
+          set -euo pipefail;
+          source_commit="$(node -e "const r=require('./marketplace/ops/readme-presentation-routes.json'); process.stdout.write(r.audit.source_commit)")";
+          readonly source_commit;
+          [[ "$source_commit" =~ ^[0-9a-f]{40}$ ]];
+          git fetch --no-tags --depth=1 origin "$source_commit"
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -1536,7 +1751,7 @@ jobs:
 
       - name: Check deterministic marketplace projections
         run: |
-          node --test scripts/generated-content-ci.test.mjs marketplace/scripts/sync-catalog.test.mjs marketplace/scripts/generate-unified-search.test.mjs
+          node --test scripts/generated-content-ci.test.mjs marketplace/scripts/discover-skills.test.mjs marketplace/scripts/md-to-html.test.mjs marketplace/scripts/truncate-html.test.mjs marketplace/scripts/sync-catalog.test.mjs marketplace/scripts/generate-unified-search.test.mjs
           node marketplace/scripts/discover-skills.mjs --level=full --check
           node marketplace/scripts/sync-catalog.mjs --check
           node marketplace/scripts/generate-unified-search.mjs --check
@@ -1663,6 +1878,14 @@ jobs:
       - name: Check the README landing contract
         run: pnpm run validate:readme-contract
 
+      # Model-neutral rename compatibility (blueprint 727 E11.10 / decision
+      # 803): canonical repository/catalog endpoints coexist with the frozen
+      # marketplace slug, npm package, ccpi command, and tons binary alias.
+      # Public redirects are checked separately with the script's --live mode;
+      # required CI remains deterministic and network-free.
+      - name: Check the post-rename identity compatibility contract
+        run: pnpm run validate:identity-compatibility
+
       # The canonical harness-free skill contract (blueprint 727 § 5.2, Epic 3
       # E3.2): schemas/canonical/v0 must compile under Ajv 2020 strict and hold
       # its red runs (closed schema, no vendor-literal model class, registry-
@@ -1779,6 +2002,7 @@ jobs:
     if: always()
     needs:
       - validate
+      - marketplace-compliance-ratchet
       - verify
       - test
       - check-package-manager

@@ -257,6 +257,12 @@ import Image from 'next/image';
 | Cold start > 1s | Heavy top-level imports | Move to lazy initialization pattern |
 | Images not optimized | External domain not whitelisted | Add to `images.domains` in config |
 
+## Examples
+
+### Tune caching with a correctness guardrail
+
+Choose a read-only route with no per-user content, deploy a preview change that adds a conservative `s-maxage` and stale-while-revalidate policy, and compare cache headers, response content, and P95 latency with synthetic requests. Keep an automated assertion that authenticated or cookie-dependent responses are never cached publicly. If the content is stale or personalized, revert the header change immediately and preserve the preview metrics for the next design review.
+
 ## Resources
 
 - [Vercel Caching](https://vercel.com/docs/edge-network/caching)

@@ -25,9 +25,31 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave Debug Bundle
 
+## Overview
+
+Collect the minimum redacted cluster, workload, and rate-limit evidence needed to
+triage a CoreWeave incident. A debug bundle is diagnostic evidence, not an archive
+for credentials, prompts, model weights, datasets, kubeconfigs, or raw secret values.
+
+## Prerequisites
+
+- Authorized read-only Kubernetes access to the affected namespace or cluster.
+- An incident identifier, retention destination, and named incident owner.
+- A local encrypted workspace with sufficient space; do not collect a bundle on a
+  shared or unmanaged machine.
+
+## Instructions
+
+1. Create the bundle for the affected scope and set restrictive file permissions.
+2. Capture status, events, allocation, and bounded log tails; remove headers or
+   values that contain credentials before packaging.
+3. Inspect the archive locally for secrets and customer data, then attach it only to
+   the approved incident record with the required retention period.
+4. Delete the local copy after verified upload, according to the incident policy.
+
 > **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
 
-## Overview
+## Scope
 
 Collect GPU node health, Kubernetes pod status, event logs, and API connectivity into a single diagnostic archive for CoreWeave support tickets. This bundle captures cluster-level resource allocation, failed pod logs, GPU device plugin state, and network reachability so support engineers can diagnose infrastructure issues without requesting additional information. Useful when GPU pods are stuck pending, inference workloads OOM, or node autoscaling behaves unexpectedly.
 
@@ -92,6 +114,36 @@ cat debug-coreweave-*/gpu-allocation.txt   # GPU resource pressure
 | Node NotReady | `nodes.txt` status column | Check `events.txt` for kubelet issues; contact CoreWeave if persistent |
 | API returns 401 | `summary.txt` shows HTTP 401 | Regenerate API key at CoreWeave dashboard; verify `COREWEAVE_API_KEY` is set |
 | NVIDIA device plugin missing | `gpu-plugin.txt` empty or error | Verify namespace `kube-system` has device plugin DaemonSet; redeploy if missing |
+
+## Output
+
+- A scope-limited, redacted diagnostic archive with cluster state, relevant events,
+  GPU allocation, and bounded failure logs.
+- A reproducible incident receipt identifying collection time, scope, owner, and
+  approved storage location without embedding credentials.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Bundle contains a secret or customer data | Stop distribution, delete the local archive, rotate exposed credentials, and recollect with stronger redaction. |
+| Collection command is denied | Request temporary read-only incident access; do not use another user's kubeconfig. |
+| Archive is too large | Restrict it to the affected namespace and reduce log tails; do not omit events or security review. |
+| API probe fails | Record the status and request ID only; do not paste authorization headers into the bundle. |
+
+## Examples
+
+For an OOM incident, collect only the affected namespace and verify that the archive
+does not contain secret values before upload:
+
+```bash
+INCIDENT=inc-2026-08-26
+./collect-coreweave-debug.sh --namespace inference --incident "$INCIDENT"
+tar -tzf "debug-coreweave-${INCIDENT}.tar.gz"
+```
+
+Have a second authorized responder review the archive manifest, then store it in the
+approved incident system. Delete the local copy only after the upload is verified.
 
 ## Automated Health Check
 

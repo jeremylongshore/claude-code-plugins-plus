@@ -200,6 +200,10 @@ class ScrapeMetrics {
 - Concurrent scraping with backpressure control
 - Bulk API for large-scale jobs
 
+## Examples
+
+Benchmark a provider-approved controlled target with a fixed target policy, request cap, and data-retention setting, then change one cache, timeout, or concurrency control behind a rollback flag. Compare status, compliance signals, and aggregate latency/cost; revert if the tuning change weakens scope or reconciliation guarantees.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

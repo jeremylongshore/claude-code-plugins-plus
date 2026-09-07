@@ -12,7 +12,7 @@ description: 'Handle document data, signatures, and PII in Documenso integration
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,6 +22,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Data Handling
+
+## Output
+
+- A document-data flow with defined classification, access/retention/deletion controls, audit ownership, and safe recovery path.
+- Evidence that document content, signer identity, and signature artifacts are excluded from unsafe logs and test fixtures.
+
+## Examples
+
+Use a synthetic document and test signer in development to verify encryption/access/retention configuration. Record only a correlation ID and policy result; never place signed documents, signer PII, signature material, or document URLs into repositories, screenshots, or diagnostic logs.
 
 ## Overview
 

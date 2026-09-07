@@ -274,6 +274,18 @@ function logTranslationChange(entry: TranslationAuditEntry): void {
 | Unauthorized changes | No audit trail | Register webhook for `project.translation.updated` events |
 | Token in git history | Committed .env file | Rotate token immediately, use `git filter-repo` to scrub |
 
+## Examples
+
+### Separate CI download access from an administrative repair
+
+Use a read-only token for the CI job that downloads approved translation
+bundles, and keep the write-capable token out of that workflow. When a
+translation key needs administrative repair, run the change from a controlled
+operator session using the admin token, record the project and key identifiers
+without recording the translated text, then revoke or rotate any token that
+was exposed. This prevents a build-only credential from gaining contributor or
+webhook-management authority.
+
 ## Resources
 
 - [Lokalise API Authentication](https://developers.lokalise.com/reference/api-authentication)

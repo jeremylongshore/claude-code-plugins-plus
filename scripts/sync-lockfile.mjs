@@ -303,3 +303,26 @@ export function unanchoredIncludes(patterns) {
     (p) => typeof p === 'string' && !p.startsWith('/') && !p.startsWith('**'),
   );
 }
+
+/**
+ * A mirror's declared include list must explicitly carry a license file. The
+ * sync engine installs the selected upstream file at the mirror root, so a
+ * nested glob is not sufficient: consumers must receive the text alongside
+ * the mirrored bytes. Kept pure so both the runtime gate and CI can share the
+ * exact policy.
+ */
+export function hasRootLicenseInclude(patterns) {
+  return (patterns || []).some(
+    (pattern) =>
+      typeof pattern === 'string' && /^\/?(?:LICENSE|COPYING)(?:[.-][^/]*)?$/i.test(pattern),
+  );
+}
+
+/**
+ * A license file must land at the root of every mirror, not only somewhere in
+ * a nested upstream directory. This is intentionally stricter than the
+ * include matcher, whose ordinary bare-file behavior is recursive.
+ */
+export function isRootLicenseFile(filePath) {
+  return typeof filePath === 'string' && /^(?:LICENSE|COPYING)(?:[.-][^/]*)?$/i.test(filePath);
+}

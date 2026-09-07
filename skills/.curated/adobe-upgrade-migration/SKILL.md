@@ -6,7 +6,7 @@ description: "Analyze, plan, and execute Adobe SDK upgrades \u2014 including the
   , \"adobe migration\",\n\"adobe breaking changes\", \"update adobe SDK\", \"jwt\
   \ to oauth\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -175,6 +175,10 @@ git commit -m "chore: upgrade Adobe SDKs to latest"
 | `ExecutionContext is not a constructor` | v3 API in v4 SDK | Use new Job-based API |
 | `404 /sensei/cutout` | Old Photoshop endpoint | Update to `/v2/remove-background` |
 | `Cannot find module` | Import paths changed | Check SDK changelog for new imports |
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

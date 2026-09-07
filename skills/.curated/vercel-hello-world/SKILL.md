@@ -170,6 +170,12 @@ These are available in every function at runtime:
 | `NO_RESPONSE_FROM_FUNCTION` | Handler didn't call `res.send/json` | Ensure all code paths return a response |
 | `FUNCTION_PAYLOAD_TOO_LARGE` | Response body > 4.5 MB | Paginate or stream the response |
 
+## Examples
+
+### Deploy a harmless preview before connecting a domain
+
+Create a minimal route that returns a static health response and deploy it with `vercel --yes` from a feature branch. Test the generated preview URL, verify the commit SHA in the deployment metadata, and keep environment variables absent unless the example requires them. Only after the preview is healthy should a reviewer approve the production workflow; do not point a customer domain at an unreviewed hello-world deployment.
+
 ## Resources
 
 - [Vercel Serverless Functions](https://vercel.com/docs/functions)

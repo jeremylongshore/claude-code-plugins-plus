@@ -104,6 +104,32 @@ async function checkJuicebox(): Promise<void> {
 checkJuicebox();
 ```
 
+## Prerequisites
+
+- A sandbox workspace, synthetic fixture, approved diagnostic scope, redaction rules, secret references, source/destination allowlists, and an incident owner with a cleanup path.
+
+## Instructions
+
+1. Collect diagnostics from a sandbox fixture only; reject literal credentials, contact-level payloads, and unapproved sources or destinations.
+2. Capture aggregate health, quota, and error signals, then verify suppression, log redaction, and `contacts_exported=0`.
+3. Stop collection on policy, scope, or retention drift; revoke temporary access and restore the known-good configuration if required.
+4. Store only the redacted bundle for the approved retention window, then delete staged artifacts.
+
+## Output
+
+Produce a debug receipt with environment, fixture type, aggregate health/error/quota signals, suppression/no-export/redaction checks, incident owner, retention/deletion proof, and rollback reference. Exclude request payloads, identities, contact data, and secrets.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Sensitive material appears in the bundle | Stop collection, delete the artifact, rotate/revoke access as appropriate, and repeat with redaction enforced. |
+| Scope or policy drift | Halt the canary and restore the approved configuration before further diagnostics. |
+
+## Examples
+
+`env=staging; fixture=synthetic; health=pass; quota=within-budget; suppression=pass; contacts_exported=0; bundle=redacted; cleanup=verified` is a safe debug receipt.
+
 ## Resources
 
 - Juicebox Status

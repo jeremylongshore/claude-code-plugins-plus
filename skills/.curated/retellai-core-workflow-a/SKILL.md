@@ -98,6 +98,17 @@ await retell.agent.update(agent.agent_id, {
 | Voice quality issues | Wrong voice selection | Test different voices |
 | Call ending too early | Short silence timeout | Increase `end_call_after_silence_ms` |
 
+## Examples
+
+### Create and validate a new appointment-intake agent
+
+Build the agent in a development project with a narrow appointment-booking
+tool and a synthetic calendar. Run representative happy-path, no-availability,
+and human-handoff calls, checking that each tool request uses the expected
+arguments. Review the redacted transcripts with the service owner, then create
+a versioned preview for a limited internal canary; keep the previous agent
+version available until the new flow meets its completion and transfer goals.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

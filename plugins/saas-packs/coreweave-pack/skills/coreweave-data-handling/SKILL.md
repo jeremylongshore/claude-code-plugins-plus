@@ -31,6 +31,23 @@ compatibility: Designed for Claude Code
 
 CoreWeave GPU cloud workloads involve large-scale data artifacts: model weights (multi-GB safetensors/GGUF), training datasets (parquet, TFRecord, WebDataset), checkpoint snapshots, and inference cache volumes. Data flows through Kubernetes PersistentVolumeClaims backed by region-specific storage classes. Compliance requires encryption at rest via the storage driver, namespace-scoped RBAC for volume access, and audit logging for any data egress from GPU nodes.
 
+## Prerequisites
+
+- Approved data classification, retention schedule, and region for the artifact.
+- A namespace-scoped service account, encrypted storage class, and approved destination.
+- Expected artifact size and SHA-256 from a trusted source before import.
+
+## Instructions
+
+1. Create or select an encrypted PVC in the approved region and grant its mount only
+   to the intended namespace service account.
+2. Import artifacts using a short-lived job; verify the expected SHA-256 before any
+   training or serving workload consumes them.
+3. Export only to a reviewed destination, preserve the checksum and data-owner
+   approval, and enforce the retention policy for checkpoints and datasets.
+4. Record storage provisioning, access changes, deletion, and external egress in the
+   audit system without copying sensitive artifact contents into logs.
+
 ## Data Classification
 
 | Data Type | Sensitivity | Retention | Encryption |
@@ -123,6 +140,28 @@ function validateArtifact(artifact: ModelArtifact): string[] {
 | Permission denied on volume | RBAC misconfigured for namespace | Verify ServiceAccount has PVC access via RoleBinding |
 | Checksum mismatch after import | Partial transfer or corruption | Re-run import job; enable retry with backoff |
 | Secret not found | KMS key rotation or namespace mismatch | Verify secret exists in target namespace with `kubectl get secret` |
+
+## Output
+
+- An encrypted, namespace-scoped storage path with validated artifact integrity.
+- A redacted import/export receipt containing source/destination approval, checksum,
+  retention, and data-owner information.
+- A reversible failure path that prevents corrupted or unauthorized data from being mounted.
+
+## Examples
+
+Import only a manifest-approved artifact and verify its checksum inside the isolated
+job before promoting it to a serving or training workload:
+
+```bash
+kubectl -n research apply -f dataset-import-job.yaml
+kubectl -n research wait --for=condition=complete job/dataset-import --timeout=30m
+kubectl -n research logs job/dataset-import | grep SHA256
+```
+
+If the checksum differs, quarantine the PVC content, retain the redacted job receipt,
+and reacquire the artifact from the approved source. Do not retry into a production
+volume or disable integrity verification.
 
 ## Resources
 

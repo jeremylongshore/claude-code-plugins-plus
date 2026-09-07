@@ -21,6 +21,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Advanced Composer
 
+## Overview
+
+Use Composer for bounded multi-file proposals when a human owner can inspect the plan, diff, tests, and rollback before applying changes.
+
+## Prerequisites
+
+- A defined task, affected-file boundary, repository rules, and a clean working tree or recoverable branch.
+- Required test commands and a reviewer for changes that alter architecture, security, or data flow.
+
+## Instructions
+
+1. Ask Composer for a plan and affected-file list before applying any edits.
+2. Constrain it to the approved scope and provide acceptance checks/non-goals.
+3. Inspect each diff, run focused validation, and split or reject changes that exceed scope.
+4. Commit only reviewed, test-backed changes; retain a revert path.
+
+## Output
+
+- A reviewed multi-file change proposal with affected files, validation results, and rollback reference.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Composer proposes unrelated files | Reject or split the request; do not apply all. |
+| Output conflicts with rules/tests | Treat project controls as authoritative and revise manually or with a narrower prompt. |
+| Sensitive context is attached | Stop, remove it, and follow exposure handling. |
+
+## Examples
+
+Ask Composer to add a feature only in `src/feature/` and its existing tests, requiring a plan first. Apply no files until the plan and diff are reviewed; run the focused suite and revert the commit if acceptance fails.
+
 Advanced patterns for Cursor Composer including agent orchestration, complex multi-file refactoring, architecture migrations, and quality-control workflows.
 
 ## Agent Mode Deep Dive

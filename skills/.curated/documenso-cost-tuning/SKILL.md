@@ -12,7 +12,7 @@ description: 'Optimize Documenso usage costs and manage subscription efficiency.
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,6 +22,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Cost Tuning
+
+## Output
+
+- A measured cost decision with document/signing quality, delivery, compliance, and retention guardrails.
+- An aggregate usage receipt and reversible change record owned by the appropriate service/data lead.
+
+## Examples
+
+Compare aggregate document volume, workflow duration, and error data in development/staging, change one approved capacity or lifecycle setting, and observe the stated window. Revert on signing/delivery/security regression; do not reduce audit, retention, authorization, or document-protection controls to lower cost.
 
 ## Overview
 

@@ -100,6 +100,26 @@ kubectl logs -f deployment/my-inference
 | CUDA mismatch | Driver vs container version | Match CUDA version to node drivers |
 | Dry-run fails | Invalid manifest | Fix YAML syntax |
 
+## Output
+
+- A locally built, versioned image and a server-validated deployment manifest.
+- A staging rollout receipt with readiness and bounded log evidence.
+- A repeatable local-to-cluster loop that leaves production credentials and data out of the workspace.
+
+## Examples
+
+Use the staging namespace for the complete loop and inspect the diff before apply:
+
+```bash
+docker build -t ghcr.io/myorg/my-inference:dev-20260826 .
+kubectl -n inference-staging diff -f k8s/deployment.yaml
+kubectl -n inference-staging apply --dry-run=server -f k8s/
+kubectl -n inference-staging apply -f k8s/
+```
+
+If the server dry-run fails, correct the manifest before pushing an image or changing
+GPU quota. Do not point local development at production namespaces or copy kubeconfigs between environments.
+
 ## Resources
 
 - [CoreWeave CKS Docs](https://docs.coreweave.com/docs/products/cks)

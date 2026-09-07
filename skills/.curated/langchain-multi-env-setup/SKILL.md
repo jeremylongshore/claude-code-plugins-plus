@@ -1,14 +1,14 @@
 ---
 name: langchain-multi-env-setup
 description: "Build reliable dev / staging / prod isolation for LangChain 1.0 services\
-  \ \u2014\nPydantic `Settings` + `SecretStr`, cloud Secret Manager in prod, per-env\n\
+  \ \u2014\nPydantic Settings + SecretStr, cloud Secret Manager in prod, per-env\n\
   prompt and model version pinning, env-specific checkpointer and observability.\n\
-  Use when graduating from `.env`-in-dev to real prod infra, or debugging a\nconfig\
+  Use when graduating from .env-in-dev to real prod infra, or debugging a\nconfig\
   \ that loaded the wrong values in the wrong env.\nTrigger with \"langchain multi-env\"\
   , \"langchain pydantic settings\",\n\"langchain secret manager\", \"langchain env\
   \ config\", \"langchain prod setup\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(gcloud:*)
-version: 2.5.0
+version: 2.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

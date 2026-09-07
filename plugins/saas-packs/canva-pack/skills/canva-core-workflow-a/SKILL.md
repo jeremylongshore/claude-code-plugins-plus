@@ -186,6 +186,14 @@ const downloadUrls = await waitForExport(job.id, token);
 | GIF | `gif` | `width`, `height`, `export_quality` |
 | MP4 | `mp4` | `quality` (horizontal_480p, 720p, 1080p, 4k) |
 
+## Output
+
+The workflow returns validated design/export job references and a redacted status receipt. It keeps OAuth material, edit/download URLs, design content, and tenant identity out of ordinary logs.
+
+## Examples
+
+For an approved campaign asset, authorize the caller and source design, create an idempotent export job, poll only to the configured timeout, and store the result in encrypted expiry-controlled storage. Stop if asset rights, destination, or policy scope differs from the approved request.
+
 ## Error Handling
 
 | Error | Cause | Solution |

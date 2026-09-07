@@ -1,0 +1,208 @@
+# Klaviyo Webhooks — Full Implementation Walkthrough
+
+This is the complete step-by-step build referenced from `SKILL.md`. Each step
+carries the full source so you can copy it directly into a project. The order
+matters: create the subscription (Step 1), verify signatures (Step 2), wire the
+handler (Step 3), then layer routing (Step 4) and idempotency (Step 5) on top.
+
+## Step 1: Create a Webhook via API
+
+```typescript
+import { ApiKeySession, WebhooksApi } from 'klaviyo-api';
+
+const session = new ApiKeySession(process.env.KLAVIYO_PRIVATE_KEY!);
+const webhooksApi = new WebhooksApi(session);
+
+// Create a webhook subscription
+const webhook = await webhooksApi.createWebhook({
+  data: {
+    type: 'webhook',
+    attributes: {
+      name: 'Profile Updates',
+      endpointUrl: 'https://your-app.com/webhooks/klaviyo',
+      // The secret used for HMAC-SHA256 signing
+      // Store this as KLAVIYO_WEBHOOK_SIGNING_SECRET
+      description: 'Receives profile create/update events',
+    },
+    relationships: {
+      webhookTopics: {
+        data: [
+          { type: 'webhook-topic', id: 'profile.created' },
+          { type: 'webhook-topic', id: 'profile.updated' },
+        ],
+      },
+    },
+  },
+});
+
+console.log('Webhook ID:', webhook.body.data.id);
+// Save the signing secret from the response
+```
+
+## Step 2: Signature Verification
+
+```typescript
+// src/klaviyo/webhook-verify.ts
+import crypto from 'crypto';
+
+/**
+ * Verify Klaviyo webhook HMAC-SHA256 signature.
+ * Klaviyo sends the signature in the webhook-signature header.
+ */
+export function verifyWebhookSignature(
+  rawBody: Buffer | string,
+  signature: string,
+  secret: string
+): boolean {
+  if (!signature || !secret) return false;
+
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(typeof rawBody === 'string' ? rawBody : rawBody.toString())
+    .digest('base64');
+
+  try {
+    return crypto.timingSafeEqual(
+      Buffer.from(signature),
+      Buffer.from(expectedSignature)
+    );
+  } catch {
+    return false;
+  }
+}
+```
+
+## Step 3: Express Webhook Handler
+
+```typescript
+import express from 'express';
+import { verifyWebhookSignature } from './klaviyo/webhook-verify';
+
+const app = express();
+
+// CRITICAL: Use raw body parser for signature verification
+app.post('/webhooks/klaviyo',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    // 1. Verify signature
+    const signature = req.headers['webhook-signature'] as string;
+    if (!verifyWebhookSignature(
+      req.body,
+      signature,
+      process.env.KLAVIYO_WEBHOOK_SIGNING_SECRET!
+    )) {
+      console.warn('[Webhook] Invalid signature rejected');
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
+
+    // 2. Parse event
+    const event = JSON.parse(req.body.toString());
+
+    // 3. Check idempotency (prevent duplicate processing)
+    const eventId = event.id || event.data?.id;
+    if (eventId && await isAlreadyProcessed(eventId)) {
+      return res.status(200).json({ status: 'already_processed' });
+    }
+
+    // 4. Route to handler
+    try {
+      await routeWebhookEvent(event);
+      if (eventId) await markProcessed(eventId);
+      res.status(200).json({ received: true });
+    } catch (error) {
+      console.error('[Webhook] Processing failed:', error);
+      res.status(500).json({ error: 'Processing failed' });
+    }
+  }
+);
+```
+
+## Step 4: Event Router
+
+```typescript
+// src/klaviyo/webhook-router.ts
+
+type WebhookHandler = (data: any) => Promise<void>;
+
+const handlers: Record<string, WebhookHandler> = {
+  'profile.created': async (data) => {
+    const profile = data.attributes;
+    console.log(`New profile: ${profile.email}`);
+    // Sync to your database, trigger welcome flow, etc.
+    await db.users.upsert({
+      email: profile.email,
+      firstName: profile.firstName,
+      klaviyoProfileId: data.id,
+    });
+  },
+
+  'profile.updated': async (data) => {
+    const profile = data.attributes;
+    console.log(`Updated profile: ${profile.email}`);
+    await db.users.update({
+      where: { klaviyoProfileId: data.id },
+      data: { firstName: profile.firstName, lastName: profile.lastName },
+    });
+  },
+
+  'list.member.added': async (data) => {
+    console.log(`Profile ${data.relationships.profile.data.id} added to list ${data.relationships.list.data.id}`);
+  },
+
+  'campaign.sent': async (data) => {
+    console.log(`Campaign sent: ${data.attributes.name}`);
+    await analytics.track('campaign_sent', { campaignId: data.id });
+  },
+};
+
+export async function routeWebhookEvent(event: any): Promise<void> {
+  const topic = event.type || event.topic;
+  const handler = handlers[topic];
+
+  if (!handler) {
+    console.log(`[Webhook] Unhandled topic: ${topic}`);
+    return;
+  }
+
+  await handler(event.data || event);
+}
+```
+
+## Step 5: Idempotency with Redis
+
+```typescript
+// src/klaviyo/webhook-idempotency.ts
+import { Redis } from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+const TTL_SECONDS = 86400 * 7;  // 7 days
+
+export async function isAlreadyProcessed(eventId: string): Promise<boolean> {
+  const key = `klaviyo:webhook:${eventId}`;
+  return (await redis.exists(key)) === 1;
+}
+
+export async function markProcessed(eventId: string): Promise<void> {
+  const key = `klaviyo:webhook:${eventId}`;
+  await redis.setex(key, TTL_SECONDS, new Date().toISOString());
+}
+```
+
+## Step 6: List and Manage Webhooks
+
+```typescript
+// List all webhooks
+const webhooks = await webhooksApi.getWebhooks();
+for (const wh of webhooks.body.data) {
+  console.log(`${wh.attributes.name}: ${wh.attributes.endpointUrl}`);
+}
+
+// Get webhook topics (available event types)
+const topics = await webhooksApi.getWebhookTopics();
+for (const topic of topics.body.data) {
+  console.log(`Topic: ${topic.id} - ${topic.attributes.description}`);
+}
+
+// Delete a webhook
+await webhooksApi.deleteWebhook({ id: 'WEBHOOK_ID' });
+```

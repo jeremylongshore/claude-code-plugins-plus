@@ -203,6 +203,46 @@ generate-video:
 
 **Never** put API keys in the workflow YAML or commit them to the repo.
 
+## Prerequisites
+
+- A CI environment with Python 3.11+, pinned dependencies, a secret-manager-backed Kling credential, and an explicit per-run credit and concurrency budget.
+- A repository-controlled model, duration, destination, and content-policy allowlist. CI fixtures must be synthetic or rights-cleared; never use customer media or real-person likenesses in unattended jobs.
+- A private artifact bucket, short retention period, and an approval gate. Automated jobs produce draft, watermarked media only until a named owner approves promotion.
+
+## Instructions
+
+1. Validate the workflow and prompt manifest before any API call: require a synthetic/rights-cleared fixture identifier, approved model and duration, permitted destination, and a nonzero but bounded budget.
+2. Load credentials only from masked CI secrets, run a policy and consent check, and use a stable manifest hash to prevent duplicate submissions on retries.
+3. Submit a single sandbox canary first. Assert that output remains private and watermarked, that no source or prompt is echoed into logs, and that the run has not exceeded its credit or concurrency budget.
+4. Require an owner approval artifact before promotion. Publish by immutable output digest to the allowlisted bucket; do not publish directly from a provider URL.
+5. On cancellation, policy rejection, budget breach, or failed verification, fail the job closed, revoke temporary access, delete staged artifacts, and restore the prior release manifest. Retain only a redacted receipt.
+
+## Output
+
+The job should emit a machine-readable receipt with the run and manifest digests, model, environment, canary status, policy and rights checks, budget usage, approval status, artifact digest, retention deadline, and rollback reference. CI logs may contain task status and timings, but must exclude credentials, source URLs, prompts, face or contact data, and raw provider responses.
+
+## Error Handling
+
+Treat authentication failures, policy rejections, unavailable source fixtures, quota or budget errors, and provider timeouts as non-publish failures. Retry only bounded, idempotent polling or transient transport errors; never retry a rejected prompt or blindly resubmit a billable generation. Mark the run for owner review when the provider returns an unknown status, quarantine all artifacts, and use the previous approved manifest for rollback.
+
+## Examples
+
+A safe dispatch manifest can be represented as:
+
+```yaml
+fixture: synthetic-product-v4
+rights: cleared-for-internal-test
+model: kling-v2-6
+duration: 5
+environment: staging
+canary: watermarked-private
+budget_credits: 10
+publish: false
+approval: required
+```
+
+The promotion job should require `approval: recorded` and an immutable artifact digest; a pull request or scheduled run must never turn an unreviewed live photograph into a public video.
+
 ## Resources
 
 - [API Reference](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)

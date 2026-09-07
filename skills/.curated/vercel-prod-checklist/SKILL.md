@@ -231,6 +231,12 @@ curl -s https://yourdomain.com/api/health
 | Function cold starts in prod | No warm-up traffic | Enable concurrency scaling or use edge functions |
 | Rollback fails | Previous deployment expired | Redeploy from known good commit |
 
+## Examples
+
+### Execute a production readiness check with a tested reversal
+
+Before release, record the exact candidate and prior deployment IDs, verify Production-only variable names and domain configuration, and run authenticated synthetic checks that do not mutate customer data. Promote only through the protected release workflow while watching health and error thresholds. If a threshold fails, roll back to the recorded deployment, verify recovery, and leave the candidate available for diagnosis rather than attempting live fixes under pressure.
+
 ## Resources
 
 - [Production Deployments](https://vercel.com/docs/deployments)

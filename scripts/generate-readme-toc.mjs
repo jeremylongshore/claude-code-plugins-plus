@@ -27,11 +27,19 @@
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import prettier from 'prettier';
 import { resolveCorpus } from './corpus-resolver.mjs';
 
-const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+const require = createRequire(import.meta.url);
+const { publishedPlugins } = require('./publication-policy.cjs');
+
+// See the note in generate-plugin-package-jsons.mjs: `URL.pathname` resolves to
+// `C:\C:\repo` on Windows, which is what made this script the loud half of
+// issue #1436. `fileURLToPath` answers correctly on every platform.
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const EXTENDED = join(ROOT, '.claude-plugin', 'marketplace.extended.json');
 const README = join(ROOT, 'README.md');
 
@@ -42,7 +50,7 @@ const README = join(ROOT, 'README.md');
 // NOT the working directory, so a local-only/untracked SKILL.md can't skew the
 // number and the result is byte-identical between a dev machine and CI's clean
 // checkout (which is what `--check` compares against):
-//   - plugins: catalog length (marketplace.extended.json)
+//   - plugins: publishable catalog rows (quarantined extended records excluded)
 //   - skills:  every tracked SKILL.md under plugins/ or skills/
 //   - agents:  every tracked *.md inside an agents/ dir under plugins/
 function trackedFiles() {
@@ -55,7 +63,7 @@ function trackedFiles() {
 }
 
 function computeStats(catalog) {
-  const plugins = (catalog.plugins || []).length;
+  const plugins = publishedPlugins(catalog.plugins || [], 'extended catalog').length;
   const files = trackedFiles();
   // The skills badge links to https://tonsofskills.com/skills, so it uses the
   // canonical marketplace-visible cohort rather than a second local walker:
@@ -167,7 +175,7 @@ function truncate(text, max = 120) {
 }
 
 function buildBlock(catalog) {
-  const plugins = catalog.plugins || [];
+  const plugins = publishedPlugins(catalog.plugins || [], 'extended catalog');
   const byCategory = new Map();
   for (const p of plugins) {
     const cat = p.category || 'uncategorized';
@@ -232,10 +240,11 @@ function buildScaleBlock({ plugins, skills, agents }, categoryCount) {
   ].join('\n');
 }
 
-// § 6A R10 — the certified/pending split renders from the certification report;
-// an absent report renders the honest zero state, never a blank.
+// § 6A R10 — the expiry-swept projection is authoritative for rendering; an
+// absent source report renders the honest zero state, never a blank.
 function buildCertBlock() {
   const reportPath = join(ROOT, 'certification-report.json');
+  const renderingPath = join(ROOT, 'certification-rendering.json');
   // Only a genuinely ABSENT report renders the not-yet-certified state. A
   // present-but-malformed report must fail the generator loudly — treating it
   // as absent would hide a broken certification pipeline behind an honest-
@@ -258,17 +267,51 @@ function buildCertBlock() {
   } catch (err) {
     throw new Error(`certification-report.json exists but is unparseable: ${err.message}`);
   }
-  const { certified, pending } = report ?? {};
+  if (report?.schema_version !== 'certification-report/v1') {
+    throw new Error('certification-report.json has an invalid schema_version');
+  }
+  let rendering;
+  try {
+    rendering = JSON.parse(readFileSync(renderingPath, 'utf-8'));
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      throw new Error(
+        'certification-report.json exists but certification-rendering.json is absent — run scripts/sweep-certification-expiry.mjs before rendering',
+      );
+    }
+    throw err;
+  }
+  if (rendering?.schema_version !== 'certification-rendering/v1') {
+    throw new Error('certification-rendering.json has an invalid schema_version');
+  }
+  const { certified, pending } = rendering;
   const validCount = (n) => Number.isInteger(n) && n >= 0;
   if (!validCount(certified) || !validCount(pending)) {
     throw new Error(
-      'certification-report.json exists but certified/pending are not non-negative integers — refusing to render a coerced number',
+      'certification-rendering.json has invalid certified/pending counts — refusing to render a coerced number',
     );
   }
+  if (!Array.isArray(rendering.artifacts)) {
+    throw new Error('certification-rendering.json must contain artifacts for the published set');
+  }
+  const certifiedPaths = rendering.artifacts
+    .filter((artifact) => artifact?.verdict === 'CERTIFIED')
+    .map((artifact) => artifact.path)
+    .filter((artifact) => typeof artifact === 'string')
+    .sort();
+  if (certifiedPaths.length !== certified) {
+    throw new Error(
+      'certification-rendering.json certified count disagrees with certified artifact set',
+    );
+  }
+  const set =
+    certifiedPaths.length === 0
+      ? 'No artifacts are currently certified.'
+      : `Certified artifacts: ${certifiedPaths.map((artifact) => `\`${artifact}\``).join(', ')}.`;
   const body =
-    `Certification status from \`certification-report.json\`: ` +
-    `**${certified} certified** · **${pending} pending**. A tier is a computed, expiring ` +
-    `claim with retained evidence — never a self-approved badge.`;
+    `Certification status from expiry-swept \`certification-rendering.json\`: ` +
+    `**${certified} certified** · **${pending} artifacts in the uncertified backlog**. ${set} ` +
+    'Uncertified artifacts render no certification badge; a tier is a computed, expiring claim with retained evidence.';
   return [CERT_START, '', body, '', CERT_END].join('\n');
 }
 
@@ -345,8 +388,11 @@ async function main() {
   const catalog = JSON.parse(readFileSync(EXTENDED, 'utf-8'));
   const block = buildBlock(catalog);
   const stats = computeStats(catalog);
-  const categoryCount = new Set((catalog.plugins || []).map((p) => p.category || 'uncategorized'))
-    .size;
+  const categoryCount = new Set(
+    publishedPlugins(catalog.plugins || [], 'extended catalog').map(
+      (p) => p.category || 'uncategorized',
+    ),
+  ).size;
   const current = readFileSync(README, 'utf-8');
   let spliced = replaceBlock(current, block);
   spliced = spliceBlock(spliced, SCALE_START, SCALE_END, buildScaleBlock(stats, categoryCount));

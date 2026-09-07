@@ -22,6 +22,27 @@ compatibility: Designed for Claude Code
 
 AppFolio manages properties, tenants, leases, and work orders for real estate operations. A production integration handles sensitive tenant PII, financial transactions, and maintenance workflows. Failures here mean missed rent collections, unprocessed work orders, or tenant data exposure under CCPA. This checklist ensures your AppFolio API integration is resilient, compliant, and observable.
 
+## Prerequisites
+
+- A verified production partner contract, base URL, auth mechanism, permitted
+  endpoint scopes, and named owners for business, security, operations, and
+  rollback decisions.
+- A completed sandbox rehearsal using synthetic data, separate managed
+  credentials, a request budget, and a recorded rollback/reconciliation plan.
+- Evidence for observability, PII minimization, idempotent writes, and alert
+  routing—not a checklist item that merely asserts those controls exist.
+
+## Instructions
+
+1. Validate the actual provider-issued client configuration through the secret
+   manager; do not default an endpoint or authentication scheme in release code.
+2. Run the readiness checks in staging, then a controlled production-shaped
+   rehearsal that performs only authorized safe reads.
+3. Review every failed, skipped, or unverifiable control as a no-go; preserve
+   redacted receipts for credentials, endpoints, monitoring, and recovery.
+4. Release progressively only with a tested rollback and reconciliation owner;
+   pause write paths if payment, work-order, tenant, or lease state is unknown.
+
 ## Authentication & Secrets
 
 - [ ] `APPFOLIO_API_KEY` stored in secrets manager (not environment files)
@@ -32,7 +53,7 @@ AppFolio manages properties, tenants, leases, and work orders for real estate op
 
 ## API Integration
 
-- [ ] Production base URL configured (`https://api.appfolio.com/v1`)
+- [ ] Production base URL and authentication method verified against the current partner contract
 - [ ] Rate limit handling with exponential backoff
 - [ ] Pagination implemented for property and tenant list endpoints
 - [ ] Work order creation tested with all required fields
@@ -62,22 +83,18 @@ AppFolio manages properties, tenants, leases, and work orders for real estate op
 ```typescript
 async function checkAppFolioReadiness(): Promise<void> {
   const checks: { name: string; pass: boolean; detail: string }[] = [];
-  const baseUrl = process.env.APPFOLIO_BASE_URL || 'https://api.appfolio.com/v1';
+  const client = createVerifiedAppFolioClient(); // contract-bound client from appfolio-security-basics
   // API connectivity
   try {
-    const res = await fetch(`${baseUrl}/properties?limit=1`, {
-      headers: { Authorization: `Bearer ${process.env.APPFOLIO_API_KEY}` },
-    });
-    checks.push({ name: 'API Connectivity', pass: res.ok, detail: res.ok ? 'Connected' : `HTTP ${res.status}` });
+    const res = await client.get('/properties?limit=1');
+    checks.push({ name: 'API Connectivity', pass: res.status >= 200 && res.status < 300, detail: `HTTP ${res.status}` });
   } catch (e: any) { checks.push({ name: 'API Connectivity', pass: false, detail: e.message }); }
-  // Credentials present
-  checks.push({ name: 'API Key Set', pass: !!process.env.APPFOLIO_API_KEY, detail: process.env.APPFOLIO_API_KEY ? 'Present' : 'MISSING' });
+  // Client construction proves the managed credential and provider contract are available.
+  checks.push({ name: 'Verified client configuration', pass: true, detail: 'Loaded from managed configuration' });
   // Work order endpoint
   try {
-    const res = await fetch(`${baseUrl}/work_orders?limit=1`, {
-      headers: { Authorization: `Bearer ${process.env.APPFOLIO_API_KEY}` },
-    });
-    checks.push({ name: 'Work Orders', pass: res.ok, detail: res.ok ? 'Accessible' : `HTTP ${res.status}` });
+    const res = await client.get('/work_orders?limit=1');
+    checks.push({ name: 'Work Orders', pass: res.status >= 200 && res.status < 300, detail: `HTTP ${res.status}` });
   } catch (e: any) { checks.push({ name: 'Work Orders', pass: false, detail: e.message }); }
   for (const c of checks) console.log(`[${c.pass ? 'PASS' : 'FAIL'}] ${c.name}: ${c.detail}`);
 }
@@ -93,6 +110,24 @@ checkAppFolioReadiness();
 | Tenant PII exposure | CCPA violation, legal liability | P1 |
 | Work order duplication | Duplicate maintenance dispatch | P2 |
 | Rate limit handling | 429 errors during bulk property import | P3 |
+
+## Output
+
+- A redacted go/no-go receipt binding the verified client, safe-read checks,
+  monitoring state, owner approvals, and rollback/reconciliation plan
+- A list of failed or unproven controls that blocks release until remediated
+- A bounded release decision that keeps sensitive or write-capable paths off
+  until their production-shaped rehearsal has evidence
+
+## Examples
+
+For a work-order integration release, run the checklist first against a
+synthetic staging fixture, then use the managed production-shaped client for a
+single authorized safe read. Confirm the alert route, PII redaction, and
+idempotency/reconciliation controls while all writes remain disabled. If a
+credential, endpoint contract, readiness check, or rollback exercise cannot be
+verified, declare no-go, retain the previous revision, and have the assigned
+owner remediate before a new rehearsal.
 
 ## Resources
 

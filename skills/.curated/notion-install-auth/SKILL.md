@@ -12,7 +12,7 @@ description: 'Install and configure the Notion API SDK with authentication.
 
   '
 allowed-tools: Read, Edit, Bash(npm:*), Bash(pip:*)
-version: 1.38.0
+version: 1.39.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

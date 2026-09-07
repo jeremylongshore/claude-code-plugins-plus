@@ -24,6 +24,10 @@ compatibility: Designed for Claude Code
 ---
 # Gamma CI Integration
 
+## Examples
+
+Run fixture-based content tests without credentials on a pull request. A protected staging job processes a fictional document and blocks promotion on an unexpected destination, sharing setting, or privacy-policy failure.
+
 ## Overview
 
 Set up continuous integration for Gamma-powered applications with automated testing and deployment.

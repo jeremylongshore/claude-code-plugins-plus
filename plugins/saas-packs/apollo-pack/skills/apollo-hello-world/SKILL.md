@@ -153,6 +153,17 @@ print(f"Company: {org.get('name')} ({org.get('estimated_num_employees')} employe
 - Enriched person with email, phone, LinkedIn URL
 - Enriched organization with industry, headcount, revenue, tech stack
 
+## Examples
+
+Start with the free people search against an organization you are authorized to
+research and confirm the credentials, response shape, and pagination without
+requesting contact details. For the first credit-consuming check, use a public
+organization domain and set a one-credit test budget; retain only the returned
+company-level fields needed to verify the integration. Do not use a real
+person’s email as a tutorial fixture or print a response containing personal
+contact data. If authentication fails, the response is empty, or the budget
+guard is unavailable, stop before enrichment and correct the configuration.
+
 ## Error Handling
 
 | Error | Cause | Solution |

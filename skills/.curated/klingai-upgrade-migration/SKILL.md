@@ -124,6 +124,33 @@ body["model_name"] = KLING_MODEL
 # To rollback: export KLING_MODEL_VERSION=kling-v1-6
 ```
 
+## Prerequisites
+
+- A pinned source and target model, a migration owner, an approved credit budget, and a tested feature-flag rollback to the last known-good version.
+- Use synthetic prompts and rights-cleared test media only. Confirm that reference images, likenesses, audio, and other inputs have the required consent and do not violate provider content policy.
+- Have a sandbox project, draft/watermarked canary destination, acceptance thresholds for quality/latency/cost, and a removal plan for failed outputs before touching production traffic.
+
+## Instructions
+
+1. Snapshot the current request schema, model flag, output retention, and aggregate baseline. Check the provider's current model documentation rather than assuming the version table is current.
+2. Run the same synthetic fixture against source and target in sandbox. Compare capability support, policy outcomes, quality, latency, and credit usage without publishing either result.
+3. Obtain owner approval for the target, budget delta, and acceptance thresholds. Release behind `KLING_MODEL_VERSION` to one draft/watermarked canary, then expand in measured stages only if every threshold remains green.
+4. Keep the source version available until the migration window closes. Revoke temporary test credentials, delete rejected or superseded media, and retain only redacted comparison and approval receipts.
+
+## Output
+
+Produce a migration receipt with source/target model IDs, schema or feature changes, synthetic fixture ID, canary scope, aggregate pass/fail metrics, credit and latency deltas, policy/rights review, owner approval, rollout state, retention deadline, and rollback reference. Do not include prompts, media, likenesses, audio, signed URLs, identities, or secrets.
+
+## Error Handling
+
+- If a model is unavailable or a capability is unsupported, stop the rollout and select an explicitly approved fallback; do not silently substitute a model.
+- If quality, latency, cost, policy, or rights thresholds regress, set the feature flag to the last known-good version, cancel queued target jobs where supported, and remove target canary outputs.
+- Treat authentication, schema, and policy failures as non-retryable until reviewed. Reconcile in-flight tasks before retrying transient transport errors, and document any partial migration in the receipt.
+
+## Examples
+
+Compare `kling-v1-6` and `kling-v2-master` using `fixture=synthetic-city-01`, `environment=sandbox`, `canary=watermarked`, `max_credit_delta=20%`, and `publish=false`. Record `rights=pass`, `policy=pass`, and owner approval before changing `KLING_MODEL_VERSION`; on any failed threshold, restore `kling-v1-6` and delete the comparison outputs.
+
 ## Resources
 
 - [Model Documentation](https://app.klingai.com/global/dev/document-api/apiReference/model/skillsMap)

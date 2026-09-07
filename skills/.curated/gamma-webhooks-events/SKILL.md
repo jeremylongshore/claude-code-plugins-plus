@@ -23,6 +23,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Webhooks & Events
 
+## Output
+
+Return opaque event ID, validation outcome, idempotency result, destination status, and redacted error category. Keep event payloads and credentials out of logs.
+
+## Examples
+
+Deliver a fictional event twice, process the first once, record the second as duplicate, and reject an unknown destination before content is forwarded.
+
 ## Overview
 
 Gamma's public API (v1.0) is generation-focused and does not expose a traditional webhook system at time of writing. Instead, use the **poll-based pattern** (GET `/v1.0/generations/{id}`) to detect completion. For event-driven architectures, wrap polling in a background worker that emits application-level events when generations complete or fail.

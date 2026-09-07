@@ -28,6 +28,10 @@ compatibility: Designed for Claude Code
 
 Set up a fast local development workflow for Fireflies.ai integrations: project structure, mock data for offline development, test helpers, and API response recording for replay.
 
+## Examples
+
+Create a fixture containing fictional speakers, an opaque meeting ID, and a short invented action item. Verify tests pass with network access disabled and that the fixture contains no real participant names, transcript text, recordings, or credentials. Store raw recordings nowhere in the repository.
+
 ## Prerequisites
 
 - Completed `fireflies-install-auth` setup

@@ -25,6 +25,10 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram SDK Patterns
 
+## Examples
+
+Wrap the SDK behind a client that receives a scoped secret reference, validates media metadata, applies timeout/retry limits, and emits only redacted request metrics. Unit-test the wrapper with a mocked response; use a development fixture for one integration test and verify that credentials, audio, and transcript content never enter logs.
+
 ## Overview
 
 Production patterns for `@deepgram/sdk` (TypeScript) and `deepgram-sdk` (Python). Covers singleton client, typed wrappers, text-to-speech with Aura, audio intelligence pipeline, error handling, and SDK v5 migration path.

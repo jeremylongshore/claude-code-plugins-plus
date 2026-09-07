@@ -26,6 +26,20 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Load & Scale
 
+## Prerequisites
+
+- A baseline for event volume, queue depth, latency, error/rate-limit behavior, and an approved load window.
+- Synthetic payloads, capacity owner, delivery/consent guardrails, and a rollback decision threshold.
+
+## Output
+
+- A measured load/capacity result with bounded concurrency, rate-limit behavior, and owner-approved scale decision.
+- A rollback/recovery record that prevents duplicate or unauthorized customer messaging.
+
+## Examples
+
+Run a staged load test using synthetic profiles and fixed idempotency keys, gradually increase only within the provider limit, and record throughput, 429s, queue age, and processing errors. Stop and reduce load on error/ordering regression; never use a live recipient list as a load-test fixture.
+
 ## Overview
 
 Load testing and scaling strategies for high-volume Customer.io integrations: k6 load test scripts, scaling architecture selection based on volume tier, Kubernetes HPA autoscaling, message queue buffering, and rate-limit-aware batch processing.

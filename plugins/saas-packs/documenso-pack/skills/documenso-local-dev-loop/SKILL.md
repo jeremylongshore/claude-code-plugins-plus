@@ -12,7 +12,7 @@ description: 'Set up local development environment and testing workflow for Docu
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(docker:*), Bash(node:*)
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -23,6 +23,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Local Dev Loop
+
+## Output
+
+- A small test-backed local change using synthetic documents/signers and a normal source-control rollback path.
+- A redacted development verification receipt without document content, signing links, credentials, or signer PII.
+
+## Examples
+
+Use a development workspace with a synthetic template and signer, make one integration/config change, run its focused tests and a bounded lifecycle check, then inspect redacted status. Commit only reviewed changes; never use production documents, signing URLs, or credentials in local development.
 
 ## Overview
 
@@ -134,8 +143,8 @@ services:
       - NEXT_PRIVATE_ENCRYPTION_KEY=local-encryption-key
       - NEXT_PRIVATE_ENCRYPTION_SECONDARY_KEY=local-secondary-key
       - NEXT_PUBLIC_WEBAPP_URL=http://localhost:3000
-      - NEXT_PRIVATE_DATABASE_URL=postgresql://documenso:password@db:5432/documenso
-      - NEXT_PRIVATE_DIRECT_DATABASE_URL=postgresql://documenso:password@db:5432/documenso
+      - NEXT_PRIVATE_DATABASE_URL=${DOCUMENSO_DATABASE_URL}
+      - NEXT_PRIVATE_DIRECT_DATABASE_URL=${DOCUMENSO_DIRECT_DATABASE_URL}
       - NEXT_PRIVATE_SMTP_TRANSPORT=smtp-auth
       - NEXT_PRIVATE_SMTP_HOST=mailhog
       - NEXT_PRIVATE_SMTP_PORT=1025

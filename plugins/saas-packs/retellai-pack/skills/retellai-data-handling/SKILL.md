@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Minimize transcript data in a support escalation
+
+For a failed call, retain the call identifier, timestamps, selected agent
+version, and error classification in the incident record. Do not paste full
+recordings or transcripts into a ticket; redact names, phone numbers, and
+payment details before attaching a narrow excerpt. Set the retention owner and
+expiry for the exported evidence, then delete the copy after the investigation
+and any agreed remediation are complete.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

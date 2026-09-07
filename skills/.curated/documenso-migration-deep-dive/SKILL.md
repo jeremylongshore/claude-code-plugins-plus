@@ -12,7 +12,7 @@ description: 'Execute comprehensive Documenso migration strategies for platform 
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,6 +22,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Migration Deep Dive
+
+## Output
+
+- A staged migration record with document/template/signing compatibility evidence, owner, observation window, and rollback path.
+- Preserved prior documents/configuration until the migration acceptance and retention requirements are complete.
+
+## Examples
+
+Migrate a synthetic document/template set in development, verify roles, state transitions, callbacks, audit evidence, and retention, then promote through staging before a production canary. Stop and roll back on authorization, signing, or audit regression; never bulk-migrate sensitive documents as a test.
 
 ## Current State
 

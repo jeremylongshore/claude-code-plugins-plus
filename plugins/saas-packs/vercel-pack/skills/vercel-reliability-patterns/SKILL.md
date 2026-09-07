@@ -339,6 +339,12 @@ echo "Deployment healthy"
 | Health check false positive | Timeout too short | Increase AbortSignal timeout to 5s |
 | Rollback reverts good deployment | Flaky health check | Add retry to health check before rollback |
 
+## Examples
+
+### Protect a payment mutation from retries and rollback safely
+
+Require a client-supplied idempotency key for the mutation, store the key and outcome in the authoritative data store, and retry only transient upstream failures with bounded backoff. Exercise a synthetic duplicate request in preview and confirm that it returns the original outcome without creating a second charge or record. Pair health-check rollback with multiple checks and an explicit deployment ID so a noisy probe cannot revert a healthy release.
+
 ## Resources
 
 - [Vercel Instant Rollback](https://vercel.com/docs/instant-rollback)

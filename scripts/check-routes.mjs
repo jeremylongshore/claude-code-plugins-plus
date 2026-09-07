@@ -5,8 +5,12 @@
 // Exit codes: 0 = All routes found, 1 = Missing routes detected
 
 import fs from 'fs';
+import { createRequire } from 'node:module';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
+const require = createRequire(import.meta.url);
+const { publishedPlugins } = require('./publication-policy.cjs');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -96,7 +100,11 @@ function generateExpectedRoutes() {
     process.exit(1);
   }
 
-  const catalog = JSON.parse(fs.readFileSync(CATALOG_PATH, 'utf-8'));
+  const extendedCatalog = JSON.parse(fs.readFileSync(CATALOG_PATH, 'utf-8'));
+  const catalog = {
+    ...extendedCatalog,
+    plugins: publishedPlugins(extendedCatalog.plugins, 'extended catalog'),
+  };
 
   // Plugin detail pages
   for (const plugin of catalog.plugins) {

@@ -8,7 +8,7 @@ description: 'Together AI local dev loop for inference, fine-tuning, and model d
 
   '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -118,4 +118,4 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 
 ## Next Steps
 
-See `together-debug-bundle`.
+See `together-common-errors` for live-integration failures and recovery.

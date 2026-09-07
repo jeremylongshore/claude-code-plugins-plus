@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/podium-pack",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Claude Code skill pack for Podium - 10 production-engineer skills covering OAuth, webhook reliability, rate-limit survival, call transcripts, webchat, review automation, history export, RAG context, multi-location routing, contact dedup",
   "main": "README.md",
   "type": "module",
@@ -26,7 +26,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "url": "git+https://github.com/jeremylongshore/tons-of-skills-marketplace.git",
     "directory": "plugins/saas-packs/podium-pack"
   },
   "homepage": "https://tonsofskills.com/learn/podium/",

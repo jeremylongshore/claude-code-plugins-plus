@@ -347,6 +347,22 @@ User Query
 - Error classification for retry/alert decisions
 - Model selection per environment and use case
 
+## Instructions
+
+Define the data, retrieval, model, tool, and authorization boundaries first;
+implement the client/service layers in a staging environment; then verify
+grounding, error classification, observability, and rollback with a bounded
+workload. Keep model and tool access explicit and fail closed for unrecognized
+inputs, missing citations, cross-tenant data, or unsupported provider changes.
+
+## Examples
+
+Build a small staging RAG path with a sanitized corpus, a single allow-listed
+tool, redacted traces, and a known fallback, then verify citation coverage and
+error behavior before scaling. If the design allows an unauthorized tool or
+retrieval result, halt promotion and correct the boundary rather than masking
+the failure in application code.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

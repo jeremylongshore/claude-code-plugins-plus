@@ -25,6 +25,10 @@ compatibility: Designed for Claude Code
 ---
 # Finta Hello World
 
+## Examples
+
+Use a fictional workspace and a read-only, scoped credential supplied by a secret manager. Run the smallest supported verification, confirm the output is redacted, then revoke the test credential and verify the request no longer succeeds. Do not use real investor, deal-room, or payment data for a first integration check.
+
 ## Overview
 
 Create your first fundraise pipeline in Finta: add target investors, configure deal stages, and use Aurora AI for investor prospecting.

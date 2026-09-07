@@ -40,6 +40,15 @@ Performance optimization for high-volume Abridge deployments. Large health syste
 | Patient summary generation | < 10s | > 30s |
 | Concurrent sessions per org | 100+ | < 50 |
 
+## Prerequisites
+
+- A staging or sandbox environment with synthetic encounter fixtures and a
+  representative, authorized load profile.
+- Baseline latency, error-rate, and concurrency measurements for the current
+  release, with timestamps and measurement window recorded.
+- Clinical, EHR, and security owners agree on safe concurrency limits and a
+  rollback threshold before changing production traffic behavior.
+
 ## Instructions
 
 ### Step 1: Audio Streaming Optimization
@@ -241,6 +250,17 @@ class PerformanceMonitor {
 - Adaptive polling for note generation (500ms → 3s backoff)
 - Connection-pooled FHIR batch pushes
 - Real-time performance monitoring with P50/P99 latency tracking
+
+## Examples
+
+Run a staged load test using synthetic cardiology encounters at the approved
+concurrency level. Capture baseline and tuned P50/P99 note latency, FHIR push
+success rate, and audio-drop rate over the same measurement window. Enable
+connection pooling and adaptive polling only after the baseline is saved, then
+compare the two snapshots without logging transcripts or identifiers. If P99
+latency, error rate, or downstream EHR saturation crosses the agreed threshold,
+disable the change and return traffic to the previous configuration before
+investigating the aggregate metrics.
 
 ## Error Handling
 

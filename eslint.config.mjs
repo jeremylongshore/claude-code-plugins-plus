@@ -20,6 +20,9 @@ export default [
       '**/.astro/**',
       'coverage/**',
       '**/coverage/**',
+      // Exact upstream distribution; byte identity is enforced by
+      // scripts/generated-content-ci.test.mjs, so never auto-fix it.
+      'scripts/vendor/js-yaml-4.1.1/js-yaml.mjs',
       'backups/**',
       'archive/**',
       '_PRESERVE_MIGRATION/**',

@@ -224,6 +224,12 @@ curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
 | Audit log missing events | Free/Pro plan limitation | Upgrade to Enterprise for audit logs |
 | Off-boarded user still has access | SSO not enforced | Enable "Require SAML for login" |
 
+## Examples
+
+### Off-board a production deployer with evidence
+
+Remove the person from the identity-provider group that maps to Vercel production access, then confirm their team membership and Access Group assignments no longer grant deployment capability. Keep at least two designated owners in the recovery group before making changes, and test a non-production access path with a substitute account rather than the departed user’s credentials. Export the relevant audit event to the approved SIEM and retain the change ticket identifier without copying user data into the repository.
+
 ## Resources
 
 - [Vercel RBAC](https://vercel.com/docs/rbac)

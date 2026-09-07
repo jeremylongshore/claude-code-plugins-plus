@@ -22,6 +22,22 @@ compatibility: Designed for Claude Code
 ---
 # Framer Security Basics
 
+## Prerequisites
+
+A security owner, least-privilege access policy, secret-manager references, domain/DNS ownership, and synthetic test project.
+
+## Output
+
+Maintain a security receipt with identity scope, control result, access-review date, owner, and redacted incident state. Do not include keys, form submissions, or private content.
+
+## Error Handling
+
+Deny unexpected permissions or publishing destinations, revoke access on suspected exposure, and route incidents through the designated owner.
+
+## Examples
+
+Use a staging site to verify a temporary collaborator cannot publish to production, remove access, and record only the control outcome and opaque project reference.
+
 ## Overview
 
 Security best practices for Framer API keys, plugin development, and Server API access.

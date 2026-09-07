@@ -26,6 +26,15 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Security Basics
 
+## Prerequisites
+
+- A data classification and consent decision for the audio/transcript workload.
+- Scoped project credentials in the approved secret manager, an owner, and an incident/revocation route.
+
+## Examples
+
+Use a development credential and a licensed non-sensitive audio fixture to verify the integration, logging only an opaque request ID and outcome. If recordings, transcripts, or keys are exposed, restrict access, revoke credentials where applicable, and follow the organization’s incident process before continuing.
+
 ## Overview
 
 Security best practices for Deepgram integration: scoped API keys, key rotation, Deepgram's built-in PII redaction feature, client-side temporary keys, SSRF prevention for audio URLs, and audit logging.

@@ -252,6 +252,14 @@ fi
 | 429/503 | `Retry-After` | Rate limited | Backoff and retry |
 | 500/502 | — | Server error | Retry; check status page |
 
+## Error Handling
+
+Classify failures using redacted status, endpoint category, and opaque request identifier. Do not expose employee details or API credentials while debugging. Pause a workflow that might duplicate a payroll, access, or employee-data mutation; reconcile the prior operation before retrying, and escalate authorization or data-integrity failures to the designated HR owner.
+
+## Examples
+
+For a 503, record the `Retry-After` guidance if present, pause the scoped queue, and retry a single idempotent read after backoff. For a 401/403, stop retries and have the integration owner review the least-privilege service account rather than testing against an employee record or changing permissions broadly.
+
 ## Resources
 
 - [BambooHR API Details](https://documentation.bamboohr.com/docs/api-details)

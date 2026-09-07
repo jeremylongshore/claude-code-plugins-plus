@@ -101,6 +101,14 @@ A successful workflow produces filtered candidate lists with relevance scores,
 cross-dataset comparison tables showing talent market shifts, and regional
 skill-density rankings. Results can be exported as CSV for downstream reporting.
 
+## Prerequisites
+
+- An approved analysis purpose, sandbox datasets containing only synthetic records, source/destination allowlists, a suppression check, and a named owner for review and rollback.
+
+## Examples
+
+Run the comparison in `workspace=ci-synthetic`, restrict output to aggregate metrics, verify `suppression=pass; contacts_exported=0`, then delete the staged dataset after the redacted receipt is approved.
+
 ## Resources
 
 - Juicebox API Docs

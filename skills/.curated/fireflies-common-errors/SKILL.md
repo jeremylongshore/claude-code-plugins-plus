@@ -27,6 +27,29 @@ compatibility: Designed for Claude Code
 
 Quick reference for all Fireflies.ai GraphQL API error codes with root causes and fixes.
 
+## Prerequisites
+
+- An authorized support role, opaque correlation ID, and access to redacted application telemetry.
+- A synthetic meeting or read-only query for safe reproduction; never use a real transcript for routine diagnosis.
+- An incident owner for access, consent, retention, or credential concerns.
+
+## Instructions
+
+1. Classify the error as authentication, authorization, schema, throttling, quota, or upstream availability.
+2. Reproduce with the smallest read-only synthetic query, then check scopes, query shape, rate controls, and queue state.
+3. Apply a reversible correction and confirm both the expected response and safe failure behavior.
+4. Pause processing and escalate immediately for unexpected transcript access, consent issues, or possible credential exposure.
+
+## Error Handling
+
+- Do not retry authentication or permission failures with broader credentials; route them to the authorized owner.
+- Use bounded backoff and idempotency for throttles; quarantine exhausted jobs for review.
+- Redact transcript content, participant identity, and authorization headers from diagnostic evidence.
+
+## Examples
+
+Use a synthetic query that triggers a controlled validation error, record the error category and opaque request ID, correct the query shape, and verify success. For an authorization failure, stop the worker until the approved owner adjusts scope and validates a read-only request.
+
 ## Error Response Format
 
 All Fireflies errors follow this GraphQL error structure:

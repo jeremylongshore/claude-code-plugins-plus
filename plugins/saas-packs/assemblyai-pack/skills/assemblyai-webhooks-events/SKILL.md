@@ -241,6 +241,10 @@ If `redact_pii_audio` was enabled, a second webhook fires when redacted audio is
 - Idempotent processing to handle retries
 - LeMUR auto-analysis triggered on completion
 
+## Examples
+
+On receipt, verify the authentication header against a secret manager value using constant-time comparison, validate the expected schema, write a durable idempotency record before acknowledging, and enqueue the transcript ID for a worker. Do not log the payload, transcript text, error detail, or generated summary; retries must reuse the same durable idempotency key.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

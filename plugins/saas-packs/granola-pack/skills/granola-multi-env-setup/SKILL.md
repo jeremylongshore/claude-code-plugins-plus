@@ -179,6 +179,10 @@ Workspace Settings > Security:
 | Integration not syncing in workspace | Connected to different workspace | Reconnect integration within the correct workspace context |
 | JIT provisioning creates duplicate users | Multiple IdP groups | Consolidate groups, ensure one user maps to one account |
 
+## Examples
+
+`env=staging; config=r22; fixture=meeting-v4; destination=approved; consent=pass; retention=none; rollback=r21` is evidence for a controlled promotion.
+
 ## Resources
 
 - [Granola Enterprise](https://www.granola.ai/security)

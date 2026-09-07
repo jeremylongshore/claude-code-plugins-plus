@@ -151,6 +151,27 @@ async function createFirstTask(listId: string) {
 | 400 Bad Request | Missing `name` field | Task name is required |
 | 429 Rate Limited | Too many requests | Wait for `X-RateLimit-Reset` |
 
+## Instructions
+
+Use a dedicated staging list and scoped token, resolve the target list ID, then
+create one clearly labeled test task. Re-read the returned task to verify its
+list and status, and delete or close the test according to the environment
+policy. Do not use a personal production token or create test tasks in a shared
+operational list.
+
+## Output
+
+Return a redacted operation receipt with the target environment/list, task ID,
+observed status, token owner reference, and cleanup decision. Do not log the
+token, full task body, comments, attachments, or unneeded assignee data.
+
+## Examples
+
+Create a single task named `integration-smoke-test` in an isolated staging
+list, confirm the API response and follow-up GET agree, then delete it. If the
+ID is unknown or authorization fails, stop and repair scope rather than trying
+another workspace or privileged credential.
+
 ## Resources
 
 - [ClickUp Create Task Reference](https://developer.clickup.com/reference/createtask)

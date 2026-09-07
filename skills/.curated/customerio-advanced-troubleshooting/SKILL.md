@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Advanced Troubleshooting
 
+## Output
+
+- A minimal redacted root-cause record with affected environment, correlation IDs, evidence, mitigation, owner, and follow-up action.
+- A tested recovery that avoids duplicate delivery, lost consent state, or disclosure of recipient data.
+
+## Examples
+
+When a production campaign appears delayed, compare aggregate queue/acceptance metrics with a synthetic control event, inspect the workflow/template version and opaque correlation ID, and apply the documented pause or rollback if customer impact is confirmed. Escalate with a redacted bundle; do not export recipient lists or replay the whole campaign until idempotency and consent are verified.
+
 ## Overview
 
 Advanced debugging techniques for complex Customer.io issues: systematic investigation framework, API debug client, user profile analysis, campaign/broadcast debugging, network diagnostics, and incident response runbooks.

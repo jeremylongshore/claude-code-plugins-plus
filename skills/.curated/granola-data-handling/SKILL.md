@@ -235,6 +235,10 @@ echo "Granola cache backed up"
 | Archive missing notes | Cache didn't contain all notes | Use Enterprise API for complete workspace data |
 | Deletion incomplete | Backup retention period | Allow 30 days for Granola to purge from all backups |
 
+## Examples
+
+Process a fictitious meeting fixture and record `source=synthetic-notes; class=internal-test; accepted=8; quarantined=1; consent=recorded; retention=24h; cleanup=verified`. Do not retain transcript text, participant names, or generated notes in the receipt.
+
 ## Resources
 
 - [Privacy & Data FAQs](https://docs.granola.ai/help-center/consent-security-privacy/security-privacy-data-faqs)

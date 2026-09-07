@@ -176,6 +176,32 @@ def generate_with_cache(prompt, model="kling-v2-master", duration=5, mode="stand
 - [ ] Use `callback_url` instead of polling
 - [ ] Download videos async (don't block on CDN download)
 
+## Prerequisites
+
+- An approved performance baseline, synthetic or rights-cleared test brief, sandbox workspace, content-policy review, credit cap, draft-only destination, and rollback/removal owner.
+
+## Instructions
+
+1. Benchmark caching, model selection, batching, and callback changes using bounded watermarked sandbox drafts only.
+2. Capture aggregate latency, error, task, and credit metrics; verify policy, rights, destination, retention, and removal controls before comparison.
+3. Halt the canary on quality, policy, rights, budget, scope, or retention drift and restore the prior configuration.
+4. Promote tuning changes only after owner approval; retain a redacted benchmark receipt and remove temporary assets at the approved boundary.
+
+## Output
+
+Produce a performance receipt with environment, baseline and aggregate measurements, model/configuration category, policy/rights/budget checks, draft-only assertion, owner approval, retention/removal proof, and rollback reference. Exclude prompts, assets, identities, and secrets.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Performance gain causes a policy, rights, or budget regression | Stop the canary, restore the prior configuration, and remove the affected drafts. |
+| Retention or destination control fails | Reject the run and correct the configuration before resuming. |
+
+## Examples
+
+`env=staging; brief=synthetic; p95_delta=-18%; credits=within-cap; policy=pass; destination=draft-only; rollback=available` supports approval.
+
 ## Resources
 
 - [Model Catalog](https://app.klingai.com/global/dev/document-api/apiReference/model/skillsMap)

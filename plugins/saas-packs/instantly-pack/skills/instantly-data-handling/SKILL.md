@@ -352,6 +352,14 @@ async function verifyEmail(email: string) {
 | Block list full | Too many entries | Remove outdated entries periodically |
 | Email verification timeout | External service delay | Poll status endpoint |
 
+## Output
+
+Return a handling receipt with source classification, consent basis, campaign/destination scope, policy revision, input/accepted/quarantined counts, suppression result, retention date, and deletion/rollback reference. Do not include recipient addresses, email copy, or sender credentials.
+
+## Examples
+
+`source=synthetic-recipient-fixture; class=internal-test; accepted=96; quarantined=4; consent=pass; suppression=pass; retention=24h; cleanup=verified` is a compliant processing result.
+
 ## Resources
 
 - Instantly Lead API

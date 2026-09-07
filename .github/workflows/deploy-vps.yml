@@ -27,10 +27,10 @@ jobs:
     name: pre-deploy gate
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
 
@@ -50,6 +50,7 @@ jobs:
         run: |
           node marketplace/scripts/validate-routes.mjs
           node marketplace/scripts/validate-links.mjs
+          node --test marketplace/scripts/skill-redirects.test.mjs marketplace/scripts/install-skill-redirects.test.mjs
 
       - name: Verify build artifacts
         run: |
@@ -64,7 +65,7 @@ jobs:
           echo "build artifacts present (max line: $MAX_LINE chars)"
 
       - name: Upload dist as workflow artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: marketplace-dist
           path: marketplace/dist
@@ -87,3 +88,15 @@ jobs:
       TS_AUDIENCE: ${{ secrets.TS_AUDIENCE }}
       VPS_DEPLOY_KEY: ${{ secrets.VPS_DEPLOY_KEY }}
       VPS_HOST_KEY: ${{ secrets.VPS_HOST_KEY }}
+
+  verify-redirects:
+    name: verify permanent redirects
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Assert both legacy URL forms return exact permanent redirects
+        run: node marketplace/scripts/verify-skill-redirects-production.mjs

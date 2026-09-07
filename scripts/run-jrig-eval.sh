@@ -4,30 +4,27 @@
 #
 # Flow:
 #   1. Decrypt DEEPSEEK_API_KEY via SOPS, in-memory only (never written to
-#      disk; the only disk artifacts live under /dev/shm and are removed by
-#      the cleanup trap).
+#      disk; the SOPS key and j-rig runtime DB live under /dev/shm and are
+#      removed by the cleanup trap).
 #   2. Run `pnpm exec j-rig eval` against a SCRATCH SQLite DB under /dev/shm.
 #      j-rig writes its own run tables into whatever --db it is given, so it
 #      must NEVER be pointed at the tracked freshie/inventory.sqlite — the
 #      guard below refuses any scratch path containing 'freshie'.
-#   3. Feed the --json result to scripts/record-jrig-proofs.mjs, which
+#   3. Atomically retain the primary --json result outside /dev/shm, then feed
+#      that retained file to scripts/record-jrig-proofs.mjs, which
 #      upserts the tier3-jrig row into the REAL inventory DB (passed
 #      separately via --inventory-db).
 #
 # Usage:
 #   scripts/run-jrig-eval.sh --skill-dir <dir> --plugin <catalog-name> \
 #     --inventory-db freshie/inventory.sqlite \
-#     [--run-id <int>] [--models <csv>] [--provider <name>] [--spec <path>] \
-#     [--scratch-db <path-under-/dev/shm>] [--stub]
+#     --jrig-run-id <int> [--models <csv>] [--provider <name>] [--spec <path>] \
+#     [--scratch-db <path-under-/dev/shm>] [--artifact-dir <durable-dir>] [--stub]
 #
 # Defaults: --provider deepseek, --models deepseek-v4-flash, scratch DB
-# under /dev/shm. --run-id defaults to the CURRENT discovery run
-# (MAX(id) FROM discovery_runs in --inventory-db): forge_proofs.run_id is
-# part of the recorder's UNIQUE(plugin_name, verification_type, run_id)
-# upsert key AND should be joinable to the discovery run the proof grades,
-# so the default must be stable across re-runs (the old $(date +%s) default
-# minted a new row per invocation, defeating the recorder's idempotency).
-# Pass --run-id explicitly to pin a different run.
+# under /dev/shm. --jrig-run-id is a behavioral-evaluation identity, deliberately distinct
+# from Freshie's discovery_runs.id. Pass it explicitly so a proof cannot be
+# accidentally joined to the discovery counter it evaluates.
 #
 # --stub runs the j-rig stub provider (J_RIG_ALLOW_STUB=1, no API key, no
 # spend) and passes --allow-stub to the recorder. Stub results are NOT
@@ -37,9 +34,14 @@
 # DoltHub by dolt-sync. Copy first:
 #   cp freshie/inventory.sqlite /dev/shm/inventory-scratch.sqlite
 #
+# The retained artifacts default to freshie/eval-artifacts (gitignored). Set
+# JRIG_ARTIFACT_DIR or pass --artifact-dir to use a durable external store.
+# They must never live under /dev/shm: retention is evidence validity.
+#
 # Env overrides:
 #   JRIG_BIN       — j-rig binary to use instead of `pnpm exec j-rig`
 #   JRIG_SOPS_ENV  — SOPS dotenv file carrying DEEPSEEK_API_KEY
+#   JRIG_ARTIFACT_DIR — durable directory for primary eval JSON artifacts
 
 set -euo pipefail
 
@@ -53,11 +55,12 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 skill_dir=""
 plugin=""
 inventory_db=""
-run_id=""  # resolved after the guards: defaults to the current discovery run
+jrig_run_id=""
 models="deepseek-v4-flash"
 provider="deepseek"
 spec=""
 scratch_db=""
+artifact_dir="${JRIG_ARTIFACT_DIR:-$repo_root/freshie/eval-artifacts}"
 stub=0
 
 while [ $# -gt 0 ]; do
@@ -65,11 +68,12 @@ while [ $# -gt 0 ]; do
     --skill-dir)    skill_dir="${2:?--skill-dir needs a value}"; shift 2 ;;
     --plugin)       plugin="${2:?--plugin needs a value}"; shift 2 ;;
     --inventory-db) inventory_db="${2:?--inventory-db needs a value}"; shift 2 ;;
-    --run-id)       run_id="${2:?--run-id needs a value}"; shift 2 ;;
+    --jrig-run-id)  jrig_run_id="${2:?--jrig-run-id needs a value}"; shift 2 ;;
     --models)       models="${2:?--models needs a value}"; shift 2 ;;
     --provider)     provider="${2:?--provider needs a value}"; shift 2 ;;
     --spec)         spec="${2:?--spec needs a value}"; shift 2 ;;
     --scratch-db)   scratch_db="${2:?--scratch-db needs a value}"; shift 2 ;;
+    --artifact-dir) artifact_dir="${2:?--artifact-dir needs a value}"; shift 2 ;;
     --stub)         stub=1; shift ;;
     *)              die "Unknown argument: $1" ;;
   esac
@@ -80,9 +84,9 @@ done
 [ -n "$inventory_db" ] || die "--inventory-db is required"
 [ -d "$skill_dir" ] || die "--skill-dir does not exist: $skill_dir"
 [ -f "$inventory_db" ] || die "--inventory-db does not exist: $inventory_db"
-if [ -n "$run_id" ]; then
-  case "$run_id" in
-    *[!0-9]*) die "--run-id must be a non-negative integer (got: $run_id)" ;;
+if [ -n "$jrig_run_id" ]; then
+  case "$jrig_run_id" in
+    *[!0-9]*) die "--jrig-run-id must be a non-negative integer (got: $jrig_run_id)" ;;
   esac
 fi
 
@@ -128,18 +132,19 @@ if [ "$stub" -eq 1 ]; then
 fi
 # ----------------------------------------------------------------------------
 
-# Resolve the default --run-id AFTER the guards: the current discovery run,
-# read from the inventory DB. Stable across re-runs → the recorder's upsert
-# is actually idempotent, and the proof row is joinable to the discovery run
-# it grades. (An epoch-seconds default minted a new forge_proofs row per
-# invocation and matched no discovery run.)
-if [ -z "$run_id" ]; then
-  run_id="$(sqlite3 "$inventory_db" 'SELECT COALESCE(MAX(id), 0) FROM discovery_runs;' 2>/dev/null || true)"
-  case "$run_id" in
-    ''|0|*[!0-9]*) die "could not resolve a default --run-id from $inventory_db (discovery_runs missing or empty) — pass --run-id <int> explicitly" ;;
-  esac
-  echo "[run-jrig-eval] --run-id defaulted to current discovery run: $run_id" >&2
-fi
+[ -n "$jrig_run_id" ] || die "--jrig-run-id is required; it must never default from discovery_runs"
+
+artifact_dir="$(readlink -m "$artifact_dir")"
+case "$artifact_dir" in
+  /dev/shm|/dev/shm/*) die "artifact directory must be durable and outside /dev/shm (got: $artifact_dir)" ;;
+esac
+mkdir -p "$artifact_dir" || die "cannot create artifact directory: $artifact_dir"
+
+# Keep the public ledger URI unambiguous and collision-free while retaining
+# the original bytes. Plugin names are catalog slugs, but sanitize defensively
+# before using one as a filename component.
+artifact_plugin="${plugin//[^A-Za-z0-9._-]/_}"
+artifact_json="$artifact_dir/${artifact_plugin}.jrig-run-${jrig_run_id}.json"
 
 result_json="$scratch_dir/result.json"
 jrig_bin="${JRIG_BIN:-}"
@@ -178,11 +183,19 @@ run_jrig "${jrig_args[@]}" > "$result_json" || die "j-rig eval failed (see outpu
 
 [ -s "$result_json" ] || die "j-rig eval produced no JSON output"
 
-record_args=(--db "$inventory_db" --plugin "$plugin" --run-id "$run_id" --result "$result_json")
+# The raw evaluator output is the primary E2 artifact. Copy into the durable
+# store using a same-directory temporary name and rename it atomically, so a
+# ledger row can never point at a partially-written JSON document.
+artifact_tmp="$artifact_dir/.${artifact_plugin}.jrig-run-${jrig_run_id}.$$.tmp"
+install -m 600 "$result_json" "$artifact_tmp" || die "failed to stage retained eval artifact"
+mv -f "$artifact_tmp" "$artifact_json" || die "failed to publish retained eval artifact"
+[ -s "$artifact_json" ] || die "retained eval artifact is empty: $artifact_json"
+
+record_args=(--db "$inventory_db" --plugin "$plugin" --jrig-run-id "$jrig_run_id" --result "$artifact_json")
 if [ "$stub" -eq 1 ]; then
   record_args+=(--allow-stub)
 fi
 
 node "$repo_root/scripts/record-jrig-proofs.mjs" "${record_args[@]}"
 
-echo "[run-jrig-eval] Done — tier3-jrig row recorded for '$plugin' (run_id=$run_id) in $inventory_db" >&2
+echo "[run-jrig-eval] Done — tier3-jrig row recorded for '$plugin' (jrig_run_id=$jrig_run_id) in $inventory_db" >&2

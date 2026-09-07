@@ -127,9 +127,18 @@ if status["status"] == "COMPLETED":
 
 ## Output
 
-- List of forecasts with IDs and time periods
-- Exported forecast data with rep-level calls
-- Quota, adjustments, and CRM totals
+The first run returns the authorized forecast list, job status, and a bounded
+summary needed to confirm connectivity. Treat the downloaded payload as
+sensitive revenue data: do not print or persist rep-level calls, quota,
+adjustments, or CRM totals outside an approved storage boundary.
+
+## Examples
+
+Use a staging token to list forecast names, submit one read-only export for an
+approved test period, and log only the job ID, terminal status, and aggregate
+entry count. If the job does not complete or the period is not expected, stop
+the walkthrough and investigate through the bounded rate-limit or diagnostic
+workflow rather than downloading more data.
 
 ## Error Handling
 

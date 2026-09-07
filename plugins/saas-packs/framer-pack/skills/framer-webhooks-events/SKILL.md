@@ -22,6 +22,18 @@ compatibility: Designed for Claude Code
 ---
 # Framer Webhooks & Events
 
+## Prerequisites
+
+Approved event source/destinations, signing or authentication controls where supported, event ledger, redaction policy, and synthetic fixtures.
+
+## Error Handling
+
+Reject unknown event schemas/destinations, deduplicate replayed events, bound retries, and pause downstream actions on access or privacy failures.
+
+## Examples
+
+Deliver a fictional event twice, process it once under an opaque ID, and reject an unknown destination without forwarding page or visitor data.
+
 ## Overview
 
 Framer's Server API uses a WebSocket channel for real-time communication, not traditional REST webhooks. For event-driven integrations, you subscribe to changes via the WebSocket connection or set up your own webhook endpoints that trigger Framer sync via the Server API.

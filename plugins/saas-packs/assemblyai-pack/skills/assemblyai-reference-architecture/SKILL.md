@@ -355,6 +355,10 @@ export const config = {
 - Streaming service with temporary token management
 - Batch processing with concurrency control
 
+## Examples
+
+Place authentication, audio authorization, size/type validation, and rate controls at the API boundary; persist an idempotency key before submitting work. The webhook handler verifies its secret, stores the receipt durably, and queues a worker; the worker fetches only the approved transcript fields and emits redacted observability data. Keep caches encrypted and bind any operational endpoint to an authenticated private network.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

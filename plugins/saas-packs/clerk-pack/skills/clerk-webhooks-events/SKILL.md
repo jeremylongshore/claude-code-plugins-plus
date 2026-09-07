@@ -315,6 +315,21 @@ ngrok http 3000
 - Monitor webhook delivery in Dashboard > Webhooks > Message Logs -- failed messages auto-retry with exponential backoff
 - Use `verifyWebhook()` from `@clerk/backend/webhooks` when possible -- it handles header extraction and secret key resolution automatically
 
+## Output
+
+Record the verified Svix event ID, event type, tenant/user scope when needed,
+timestamp/replay decision, idempotency result, queued work status, and redacted
+failure reason. A 2xx response is issued only after durable idempotency state
+is recorded; do not log signing secrets, raw event bodies, or unnecessary user
+attributes.
+
+## Examples
+
+For a `user.created` event, verify the raw request, persist the `svix-id` with
+the allowed event metadata, enqueue one provisioning job, and return 200. If
+the same delivery retries, return a safe acknowledgement without provisioning
+again; reject invalid or expired signatures without echoing their contents.
+
 ## Resources
 
 - [Webhooks Overview](https://clerk.com/docs/guides/development/webhooks/overview)

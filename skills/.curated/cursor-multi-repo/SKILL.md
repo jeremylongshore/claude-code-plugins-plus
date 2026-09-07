@@ -21,6 +21,37 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Multi-Repo
 
+## Overview
+
+Configure multi-root workspaces so Cursor sees only repositories and files needed for the task, preserving repository ownership and context boundaries.
+
+## Prerequisites
+
+- Explicit authorization for each repository and a data-classification review for shared roots.
+- Reviewed rules and ignore files in each root; only necessary filesystem permissions.
+
+## Instructions
+
+1. Start with one repository, add another root only for a defined cross-repository task, and remove it afterward.
+2. Use repository-specific rules/ignore files and verify indexing scope before asking a cross-repo question.
+3. Keep changes separated by repository and use each repository's normal review and test process.
+
+## Output
+
+- A deliberately scoped multi-root workspace with documented context and ownership boundaries.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Unrelated repository appears in context | Remove the root, start a new chat, and verify indexing scope. |
+| Rules conflict across roots | Apply the most restrictive relevant rule and resolve the conflict through repository owners. |
+| Memory/indexing becomes slow | Close inactive roots rather than disabling ignore or security controls. |
+
+## Examples
+
+To change an API contract and its client, open only those two repositories, attach the contract file explicitly, and create separate reviewed commits. Close the client root when the cross-repo validation is complete.
+
 Work with multiple repositories and monorepo structures in Cursor. Covers multi-root workspaces, selective indexing, cross-project context, and rule inheritance patterns.
 
 ## Multi-Root Workspaces

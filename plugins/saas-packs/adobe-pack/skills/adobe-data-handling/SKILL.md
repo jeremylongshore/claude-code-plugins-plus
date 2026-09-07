@@ -12,7 +12,7 @@ description: 'Implement data handling for Adobe APIs including PII redaction in 
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -236,6 +236,10 @@ export async function submitPrivacyRequest(
 | Firefly prompt rejected | Content policy | Pre-screen with validatePrompt() |
 | Credentials in logs | Missing redaction | Configure pino redact paths |
 | Privacy request failed | Missing org ID | Set `ADOBE_IMS_ORG_ID` env var |
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

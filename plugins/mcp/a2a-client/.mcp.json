@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "a2a-client": {
+      "name": "a2a-client",
+      "description": "Security-hardened MCP client for the Agent2Agent protocol",
+      "version": "0.1.0",
+      "enabled": true,
+      "type": "stdio",
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/dist/index.js"],
+      "env": {
+        "A2A_ALLOWED_HOSTS": "${A2A_ALLOWED_HOSTS:-}",
+        "A2A_ALLOWED_DESTINATIONS": "${A2A_ALLOWED_DESTINATIONS:-}",
+        "A2A_BEARER_TOKEN": "${A2A_BEARER_TOKEN:-}",
+        "A2A_API_KEY": "${A2A_API_KEY:-}",
+        "A2A_AUTH_HEADER_NAME": "${A2A_AUTH_HEADER_NAME:-Authorization}",
+        "A2A_ALLOW_PRIVATE_HOSTS": "${A2A_ALLOW_PRIVATE_HOSTS:-}",
+        "A2A_ALLOW_TASK_CANCELLATION": "${A2A_ALLOW_TASK_CANCELLATION:-}",
+        "A2A_REQUEST_TIMEOUT_MS": "${A2A_REQUEST_TIMEOUT_MS:-30000}",
+        "A2A_MAX_RESPONSE_BYTES": "${A2A_MAX_RESPONSE_BYTES:-2097152}"
+      }
+    }
+  }
+}

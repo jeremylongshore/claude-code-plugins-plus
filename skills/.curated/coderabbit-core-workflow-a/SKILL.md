@@ -195,6 +195,14 @@ finishing_touches:
 | Config changes not applied | YAML syntax error | Run `@coderabbitai configuration` to verify |
 | Review on draft PR | `drafts: true` in config | Set `drafts: false` to skip drafts |
 
+## Examples
+
+Configure a pilot repository to review only non-draft pull requests targeting
+its main branch, open a small test PR, and inspect the walkthrough and one
+line-level finding for relevance. If generated files or noise dominate the
+review, adjust path instructions in a follow-up change and verify the active
+configuration before widening scope.
+
 ## Resources
 
 - [Configuration Reference](https://docs.coderabbit.ai/reference/configuration)

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/documenso-pack",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Claude Code skill pack for Documenso - 24 skills covering open-source document signing platform",
   "main": "README.md",
   "type": "module",
@@ -26,7 +26,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "url": "git+https://github.com/jeremylongshore/tons-of-skills-marketplace.git",
     "directory": "plugins/saas-packs/documenso-pack"
   },
   "homepage": "https://tonsofskills.com/learn/documenso/",

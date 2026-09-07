@@ -246,6 +246,12 @@ Sentry.init({
 | Sentry not capturing errors | DSN not set in production env | Add `NEXT_PUBLIC_SENTRY_DSN` to Production scope |
 | OTEL traces missing | instrumentation.ts not loaded | Enable `instrumentationHook` in next.config.js |
 
+## Examples
+
+### Add trace correlation without retaining user content
+
+Generate a request correlation ID at the edge, propagate it through server-side spans, and log route, duration, status, and a redacted error classification only. Send logs to the approved drain with least-privilege credentials and a documented retention period, then test alerting with a synthetic failure in preview. Before production rollout, confirm the dashboard can link a trace to the deployment SHA while excluding tokens, cookies, and request bodies.
+
 ## Resources
 
 - [Vercel Observability](https://vercel.com/docs/observability)

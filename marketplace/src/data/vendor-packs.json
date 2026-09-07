@@ -224,25 +224,6 @@
       "dashboardUrl": "https://beta.retellai.com"
     },
     {
-      "id": "perplexity",
-      "name": "Perplexity",
-      "tier": "flagship+",
-      "skillCount": 30,
-      "description": "AI search engine and answer engine with real-time web access",
-      "icon": "search",
-      "color": "#20808D",
-      "installCommand": "/plugin install perplexity-pack@claude-code-plugins-plus",
-      "categories": [
-        { "name": "Onboarding & Foundations", "skills": ["perplexity-install-auth", "perplexity-hello-world", "perplexity-local-dev-loop", "perplexity-sdk-patterns", "perplexity-core-workflow-a", "perplexity-core-workflow-b"] },
-        { "name": "Operations & Debugging", "skills": ["perplexity-common-errors", "perplexity-debug-bundle", "perplexity-rate-limits", "perplexity-security-basics", "perplexity-prod-checklist", "perplexity-upgrade-migration"] },
-        { "name": "CI/CD & Deployment", "skills": ["perplexity-ci-integration", "perplexity-deploy-integration", "perplexity-webhooks-events", "perplexity-performance-tuning", "perplexity-cost-tuning", "perplexity-reference-architecture"] },
-        { "name": "Enterprise & Compliance", "skills": ["perplexity-multi-env-setup", "perplexity-observability", "perplexity-incident-runbook", "perplexity-data-handling", "perplexity-enterprise-rbac", "perplexity-migration-deep-dive"] },
-        { "name": "Advanced Patterns", "skills": ["perplexity-advanced-troubleshooting", "perplexity-load-scale", "perplexity-reliability-patterns", "perplexity-policy-guardrails", "perplexity-architecture-variants", "perplexity-known-pitfalls"] }
-      ],
-      "docsUrl": "https://docs.perplexity.ai",
-      "dashboardUrl": "https://perplexity.ai"
-    },
-    {
       "id": "windsurf",
       "name": "Windsurf",
       "tier": "flagship+",

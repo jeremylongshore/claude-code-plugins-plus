@@ -204,6 +204,10 @@ describe('Transcription', () => {
 - Mocked test suite that runs without API credentials
 - Environment variable management with `.env.local`
 
+## Examples
+
+Use mocked responses by default and cache only synthetic, redacted test results in a directory excluded from version control. If a real integration call is necessary, use an approved short sample and dedicated development key, set an expiration for the cache, and remove the resulting transcript after the assertion passes.
+
 ## Error Handling
 
 | Error | Cause | Solution |

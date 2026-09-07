@@ -26,6 +26,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Deploy Pipeline
 
+## Output
+
+- A versioned, staged deployment of Customer.io configuration/code with owner approval, validation evidence, and a rollback reference.
+- A protected promotion path that prevents unreviewed changes from affecting production recipients.
+
+## Examples
+
+Validate an event/template configuration in development and staging with synthetic profiles, attach schema/template test results to the change, then release through an approved canary. If the canary shows wrong audience, consent, or rendering behavior, stop promotion and restore the last approved configuration.
+
 ## Overview
 
 Deploy Customer.io integrations to production: GCP Cloud Run with Secret Manager, Vercel serverless functions, AWS Lambda with SSM, Kubernetes with external secrets, plus health check endpoints and blue-green deployment scripts.

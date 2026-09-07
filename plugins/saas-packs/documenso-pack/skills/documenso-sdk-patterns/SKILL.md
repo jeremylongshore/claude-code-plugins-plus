@@ -12,7 +12,7 @@ description: 'Apply production-ready Documenso SDK patterns for TypeScript and P
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -23,6 +23,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso SDK Patterns
+
+## Output
+
+- A scoped SDK boundary with document authorization, idempotency, redacted telemetry, and safe error handling.
+- A test-backed client design that never logs signing URLs, document content, signer PII, or credentials.
+
+## Examples
+
+Instantiate the SDK with a development secret reference, create a synthetic test document with a stable idempotency key, and assert the mocked request shape in unit tests. For one development integration check, record only correlation ID and lifecycle state; never log document or signer payloads.
 
 ## Overview
 

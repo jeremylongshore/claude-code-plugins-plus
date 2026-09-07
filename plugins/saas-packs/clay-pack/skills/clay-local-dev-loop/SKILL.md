@@ -197,9 +197,18 @@ describe('Clay enriched data handler', () => {
 
 ## Output
 
-- Local server receiving enriched data from Clay
-- Test data pipeline: local script -> Clay webhook -> enrichment -> HTTP API -> local server
-- Unit tests with mocked Clay payloads
+The development loop returns a local test receipt with fixture version, callback
+result, validation status, and any sanitized correlation ID. Use synthetic or
+irreversibly redacted fixtures; never tunnel production lead data, live secrets,
+or CRM credentials into a developer workstation.
+
+## Examples
+
+Start the local handler, submit the mocked payload shown above through a
+temporary tunnel, and assert that the response is accepted without writing a
+real contact to a database or CRM. If the tunnel URL changes or the test fails,
+update only the staging test configuration and revoke the temporary endpoint
+after the session.
 
 ## Resources
 

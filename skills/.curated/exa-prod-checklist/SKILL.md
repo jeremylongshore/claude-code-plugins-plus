@@ -25,6 +25,24 @@ compatibility: Designed for Claude Code
 ---
 # Exa Production Checklist
 
+## Prerequisites
+
+- A named service/policy/data owner, approved model/provider route, production rollback plan, and passing staging evidence.
+
+## Instructions
+
+1. Complete evidence gates for identity/secrets, data handling, policy controls, source/citation requirements, observability, rate limits, and rollback.
+2. Validate an approved non-sensitive canary and verify its expected routing/guardrail behavior.
+3. Block release when any security, policy, data, ownership, or recovery gate is unverified.
+
+## Output
+
+- A production-readiness receipt with evidence, owners, exceptions, canary result, and rollback path.
+
+## Examples
+
+Release an approved staging configuration to a small canary using sanitized queries, verify policy/source/citation and alert behavior, then observe the defined window. Restore the previous configuration if any guardrail or SLO fails; do not widen automation to conceal a failure.
+
 ## Overview
 
 Complete checklist for deploying Exa search integrations to production. Covers API key management, error handling verification, performance baselines, monitoring, and rollback procedures.

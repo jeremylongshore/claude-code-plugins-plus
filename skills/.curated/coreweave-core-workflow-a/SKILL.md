@@ -131,6 +131,28 @@ curl -X POST "${INFERENCE_URL}/v1/chat/completions" \
 | Model loading timeout | Large model download | Pre-cache model in PVC |
 | OOMKilled | Model too large | Use multi-GPU or quantized model |
 
+## Output
+
+- A namespace-scoped inference service with declared compute, GPU, and secret inputs.
+- A readiness and endpoint smoke-test result suitable for the deployment record.
+- A scale-to-zero configuration limited to appropriate non-production workloads,
+  with a documented production availability decision.
+
+## Examples
+
+Deploy to staging and wait for the service readiness condition before sending a
+minimal health request:
+
+```bash
+kubectl -n inference-staging apply -f inference-service.yaml
+kubectl -n inference-staging get inferenceservice llama-inference --watch
+kubectl -n inference-staging get pods -l serving.kserve.io/inferenceservice=llama-inference
+```
+
+If readiness stalls, inspect events, image pull status, GPU availability, and the
+secret reference. Do not expose the endpoint publicly or replace a secret reference
+with a plaintext token as a debugging shortcut.
+
 ## Resources
 
 - [CoreWeave Inference](https://docs.coreweave.com/docs/products/cks/tutorials/deploy-vllm-inference)

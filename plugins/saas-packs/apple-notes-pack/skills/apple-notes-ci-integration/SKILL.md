@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Apple Notes automation is macOS-only because it depends on the Apple Events subsystem and Notes.app. CI pipelines must use GitHub Actions macOS runners (`macos-latest` or `macos-14`). However, macOS CI runners have restricted TCC (Transparency, Consent, and Control) permissions, which means direct Notes.app automation via `osascript` will fail in CI. The standard pattern is to run unit tests against a mock JXA client in CI, and reserve real Notes.app integration tests for local macOS machines or self-hosted runners with pre-granted automation permissions.
 
+## Prerequisites
+
+- A Node 20+ project with deterministic dependencies and a mockable Notes client boundary.
+- A macOS runner only for syntax and mock tests; do not treat a GitHub-hosted runner as eligible for real Notes access.
+- A separately administered self-hosted Mac for opt-in integration tests, with an interactive user session and TCC consent granted through normal macOS or MDM controls.
+
+## Instructions
+
+1. Keep unit tests independent of Notes.app by injecting the mock client shown below.
+2. Run `npm ci`, lint, and mocked tests on every pull request.
+3. Gate any real integration job behind an explicit repository environment and a self-hosted runner label; do not run it for forks or untrusted pull requests.
+4. Record the macOS version and the job's test mode (mock or integration) in the job summary so a green mock job is not misread as device coverage.
+
 ## GitHub Actions Workflow
 
 ```yaml
@@ -89,8 +102,8 @@ export class MockAppleNotesClient {
 # 3. Verify with:
 osascript -l JavaScript -e 'Application("Notes").defaultAccount.notes.length'
 
-# For headless runners, use tccutil (requires SIP adjustment or MDM profile):
-# sudo tccutil --insert com.apple.Notes --service AppleEvents --app /usr/bin/osascript
+# Do not alter the TCC database with undocumented tools or disable SIP. Use a
+# managed PPPC/MDM profile or grant consent interactively on the owned runner.
 ```
 
 ## Error Handling
@@ -102,6 +115,14 @@ osascript -l JavaScript -e 'Application("Notes").defaultAccount.notes.length'
 | Flaky tests on `macos-latest` | Runner image updates change Notes state | Pin to `macos-14`; always use mocked client |
 | Tests pass locally, fail in CI | Different macOS version or missing app | Check `sw_vers` output; ensure Notes.app exists on runner |
 | Timeout waiting for Notes.app | App launch delay on cold runner | Add `open -a Notes && sleep 3` before osascript calls |
+
+## Output
+
+The CI lane produces a reproducible unit-test result against the mock client and a job summary identifying the runner image and test mode. A self-hosted integration lane, when enabled, additionally reports whether its pre-authorized Notes smoke test ran; it must fail closed if authorization is absent.
+
+## Examples
+
+For a pull request, run only the mock lane: `npm ci && npm test`. For an approved release candidate on the protected self-hosted runner, run the same mocked tests first, then invoke one non-destructive read-only Notes smoke test. Never use CI to create or delete a user note merely to prove authorization.
 
 ## Resources
 

@@ -113,6 +113,28 @@ function redactHexLog(record: Record<string, unknown>): Record<string, unknown> 
 | Overly broad notebook sharing | Confidential analytics visible to wrong teams | Per-notebook permission scoping |
 | No token expiration | Indefinite access from compromised token | 90-day expiration policy |
 
+## Prerequisites
+
+- A threat model naming token custodians, project/data owners, untrusted parameters, incident owner, and approved secret manager.
+- Low-privilege sandbox credentials and a project that contains no production-sensitive fixtures for verification.
+- Rotation, revocation, project-disable, and cancellation runbooks with tested rollback.
+
+## Instructions
+
+1. Scope credentials by environment and project, inject them from the secret manager, and deny unknown scope or destination.
+2. Validate parameters, origin, size, and allowed project before starting a run; quarantine failures with opaque correlation IDs.
+3. Verify webhook authenticity before parsing, reject stale/replayed events, and store only bounded redacted envelopes.
+4. Test least-privilege and denied access with sandbox projects after every authorization or client change.
+5. Revoke suspected credentials immediately, cancel affected runs if integrity is uncertain, and preserve only redacted incident evidence.
+
+## Output
+
+Return a security receipt with environment, project scope, secret-reference version, validation/authorization outcomes, rotation/revocation state, correlation ID, and rollback action. Never include tokens, SQL, output, or raw events.
+
+## Examples
+
+`env=staging; project=proj-sandbox-12; secret_ref=runner-v12; parameter_validation=pass; access=least-privilege; rollback=run-cancelled` is an auditable control result.
+
 ## Resources
 
 - [Hex API Authentication](https://learn.hex.tech/docs/api/api-overview)

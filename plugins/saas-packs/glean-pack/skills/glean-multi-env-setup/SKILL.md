@@ -101,6 +101,28 @@ curl -X POST "$GLEAN_BASE_URL/indexing/datasources/wiki_prod/crawl" \
 | Connector sync fails | OAuth credentials expired for data source | Re-authorize connector in Glean admin for the target env |
 | Staging indexes prod data | Connector config copied without suffix update | Always update datasource names when promoting configs |
 
+## Prerequisites
+
+- Distinct credentials, opaque datasource names, and network destinations for sandbox, staging, and production.
+- A secret-manager reference per environment, protected promotion approval, and a documented production rollback revision.
+- Synthetic fixtures for sandbox and an owner-approved minimized staging sample; never copy production credentials or unrestricted documents into CI.
+
+## Instructions
+
+1. Validate the selected environment against an explicit allowlist before reading credentials or creating a datasource.
+2. Apply versioned, idempotent configuration changes in sandbox and run synthetic allow/deny probes.
+3. Promote to staging only with owner approval, bounded samples, redacted observability, and comparison against the prior relevance/freshness baseline.
+4. Canary one production datasource after protected review; halt and restore the prior revision for an ACL, freshness, or error-budget regression.
+5. Record only environment, opaque source IDs, revisions, aggregate counts, and rollback results in the promotion receipt.
+
+## Output
+
+Produce a promotion receipt with environment, configuration revision, datasource, synthetic test counts, staging/canary result, owner approval, and rollback reference. Exclude credentials, documents, queries, and real identities.
+
+## Examples
+
+`env=staging; datasource=sandbox-guides-stg; config=r22; allow=pass; deny=pass; relevance_delta=within-budget; rollback=r21` is sufficient evidence for a controlled promotion.
+
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)

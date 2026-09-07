@@ -334,6 +334,21 @@ function filterForExport(
 | Wasted credits on bad data | No input validation | Pre-validate all batches |
 | Unauthorized data export | No export restrictions | Implement per-destination field filtering |
 
+## Output
+
+Create an enforceable policy record with approved purpose, input quality rules,
+credit limits, blocked/sensitive fields, permitted destinations, approval
+requirements, audit owner, and exception expiry. Policy code must fail closed:
+an unknown destination, missing consent/purpose, or absent approval cannot
+silently export or enrich a record.
+
+## Examples
+
+For a CSV export request, apply the destination-specific field filter, require
+the documented manager approval, and preserve a redacted audit decision. If a
+row includes a blocked field or has no qualifying purpose, suppress it and
+notify the requester rather than dropping the policy check to complete a batch.
+
 ## Resources
 
 - [GDPR Official Text](https://gdpr.eu/what-is-gdpr/)

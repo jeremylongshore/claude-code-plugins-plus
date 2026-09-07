@@ -223,6 +223,12 @@ export default async function handler(request: Request): Promise<Response> {
 | Rate limit not applied | Middleware not matching routes | Check `config.matcher` pattern |
 | In-memory rate limit resets | Edge function isolate recycled | Use Redis or Vercel KV for persistent state |
 
+## Examples
+
+### Apply a fair API limit without blocking trusted automation
+
+Start with a per-route, per-principal limit in preview and exempt only named, authenticated service identities through a reviewed allowlist. Exercise normal, burst, and retry behavior with synthetic clients, ensuring 429 responses include a safe retry interval and do not reveal internal quota details. Monitor false positives after rollout; if a critical integration is blocked, use a narrowly scoped temporary limit adjustment, then correct the policy instead of disabling rate limiting.
+
 ## Resources
 
 - [Vercel Limits](https://vercel.com/docs/limits)

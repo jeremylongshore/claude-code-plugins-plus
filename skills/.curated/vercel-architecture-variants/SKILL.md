@@ -283,6 +283,12 @@ Static Site → Full-Stack Next.js → Monorepo → Multi-Zone
 | Shared package not found | pnpm workspace misconfigured | Check `pnpm-workspace.yaml` includes |
 | API-only 404 on root | No `public/index.html` | Add a minimal index or redirect |
 
+## Examples
+
+### Choose a reversible multi-zone boundary
+
+For a growing product, keep `/app/*` in the existing Next.js deployment and place a new independently released documentation zone under `/docs/*`. Write explicit non-overlapping rewrites, use a shared identity provider rather than forwarding session secrets, and deploy the new zone behind a preview hostname. Exercise both routes, a signed-out flow, and the rollback rewrite before moving production traffic; retain the prior routing configuration until the cutover has been observed.
+
 ## Resources
 
 - [Vercel Monorepos](https://vercel.com/docs/monorepos)

@@ -204,6 +204,17 @@ async function runSecurityAudit() {
 - Key rotation procedure with verification
 - Automated security audit checking for hardcoded keys and header auth
 
+## Examples
+
+For a scheduled key rotation, assign a credential owner and change window,
+create the replacement in the provider console, and inject it into the secret
+manager without placing either key in a ticket, commit, or shell history. Run
+the health check from the new deployed revision, inspect redacted audit events,
+and only then revoke the prior key. If the replacement cannot authenticate, the
+new revision shows unexpected master-key use, or the audit finds a possible
+source or log exposure, abort the rotation, contain the affected key, and open
+an incident before retrying.
+
 ## Error Handling
 
 | Issue | Mitigation |

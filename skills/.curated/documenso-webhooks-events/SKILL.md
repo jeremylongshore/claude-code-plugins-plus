@@ -12,7 +12,7 @@ description: 'Implement Documenso webhook configuration and event handling.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(ngrok:*)
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,6 +22,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Webhooks & Events
+
+## Output
+
+- A verified signed, idempotent webhook/event path with redacted observability and recovery ownership.
+- A receipt that records correlation ID, environment, event type, lifecycle result, and safe retry decision.
+
+## Examples
+
+Validate the callback signature before parsing the event, deduplicate with an opaque event ID, acknowledge within the documented timeout, and log only state/result metadata. Test in development using a synthetic document; retry transient errors with bounded backoff and quarantine terminal failures without replaying signing actions blindly.
 
 ## Overview
 

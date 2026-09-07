@@ -328,6 +328,12 @@ echo "Deploy allowed"
 | CI edge check false positive | Dead import | Remove unused import |
 | Deploy freeze too restrictive | Urgent hotfix needed | Use `--force` flag with team approval |
 
+## Examples
+
+### Authorize an urgent deployment-freeze exception
+
+For a production incident, create a time-boxed exception that names the incident, deployment SHA, approving owner, and rollback deployment. Run required tests and a synthetic preview check before the exception is used; the bypass must be scoped to this release rather than disabling the freeze globally. After recovery, revoke the exception, review why the normal window could not be used, and add a focused prevention item to the incident record.
+
 ## Resources
 
 - [ESLint Custom Rules](https://eslint.org/docs/latest/extend/plugins)

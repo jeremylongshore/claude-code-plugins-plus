@@ -34,6 +34,12 @@ Deploy Canva Connect API integrations to popular platforms with secure OAuth cre
 - HTTPS domain for OAuth redirect URIs
 - Application code ready for deployment
 
+## Instructions
+
+1. Deploy an immutable, reviewed artifact with OAuth credentials injected only at runtime and redirect URIs exactly matching approved configuration.
+2. Verify a read-only health path and synthetic-asset flow before enabling exports, writes, or publication actions.
+3. Promote gradually under rate/cost limits with a tested rollback path; keep deployment receipts redacted.
+
 ## Vercel
 
 ### Secrets
@@ -178,6 +184,14 @@ After deploying, update your Canva integration settings with the production redi
 | Fly.io | `https://your-app.fly.dev/auth/canva/callback` |
 | Cloud Run | `https://your-service-xxxxx.run.app/auth/canva/callback` |
 | Custom Domain | `https://app.yourdomain.com/auth/canva/callback` |
+
+## Output
+
+Deployment produces a redacted receipt containing artifact/config versions, redirect-URI validation, health result, approved scope, rollout state, and rollback version. It excludes secrets, tokens, design content, and asset URLs.
+
+## Examples
+
+Deploy to staging with a dedicated OAuth client and synthetic asset, validate the callback and read-only health check, then promote the same immutable artifact. If the redirect URI, scope policy, or webhook verification differs from the approved configuration, keep traffic disabled and roll back.
 
 ## Error Handling
 

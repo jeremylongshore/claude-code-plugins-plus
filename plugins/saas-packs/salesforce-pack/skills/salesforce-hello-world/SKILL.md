@@ -153,6 +153,12 @@ sf.Account.delete(new_account['id'])
 | `REQUIRED_FIELD_MISSING` | Missing required field on create | Add required fields (e.g., `Name` for Account) |
 | `ENTITY_IS_DELETED` | Record already deleted | Query with `isDeleted = true` to find in Recycle Bin |
 
+## Examples
+
+### Run a disposable CRUD smoke test in a sandbox
+
+Authenticate with a sandbox-only integration user, create an Account whose name includes a unique test run ID, query it by that ID, and update only a non-sensitive test field. Assert the expected result count, delete the test record, and confirm it is absent from normal SOQL results. Never aim this tutorial at a production org or use real customer names; preserve only the run ID and pass/fail result in the test log.
+
 ## Resources
 
 - [SOQL Reference](https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql.htm)

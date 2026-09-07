@@ -180,6 +180,10 @@ Reassign seats:
 | Features missing after upgrade | Cache not refreshed | Log out and log back in to refresh entitlements |
 | SSO stops working after downgrade | Enterprise feature removed | Switch to Google/Microsoft social login |
 
+## Examples
+
+`from=client-r12; to=client-r13; sandbox=pass; staging=pass; output=redacted; retention=none; canary=held; rollback=r12` is a defensible upgrade record.
+
 ## Resources
 
 - [Granola Updates & Changelog](https://www.granola.ai/updates)

@@ -12,7 +12,7 @@ description: 'Diagnose and resolve common Documenso API errors and issues.
 
   '
 allowed-tools: Read, Write, Edit, Grep
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -23,6 +23,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Common Errors
+
+## Output
+
+- A classified document/signing integration failure with redacted evidence and a bounded remediation or escalation.
+- A verified recovery that preserves authorization, document integrity, signing lifecycle, and audit continuity.
+
+## Examples
+
+For a failed signing action, record the opaque document/correlation ID, environment, lifecycle state, status class, and timestamp. Verify signer role, expiration, callback, and authorization with a synthetic fixture; escalate with redacted evidence if unresolved, rather than sharing the document or signing link.
 
 ## Overview
 

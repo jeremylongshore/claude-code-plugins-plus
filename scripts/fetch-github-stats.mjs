@@ -37,7 +37,7 @@ const REPO_ROOT = join(__dirname, '..');
 const OUT = join(REPO_ROOT, 'marketplace', 'src', 'data', 'github-stats.json');
 
 const OWNER = 'jeremylongshore';
-const REPO = 'claude-code-plugins-plus-skills';
+const REPO = 'tons-of-skills-marketplace';
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
 async function fetchJson(url, ms = 20_000) {

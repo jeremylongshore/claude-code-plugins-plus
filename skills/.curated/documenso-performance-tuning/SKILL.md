@@ -13,7 +13,7 @@ description: 'Optimize Documenso integration performance with caching, batching,
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -24,6 +24,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Performance Tuning
+
+## Output
+
+- A measured performance change with document/signing lifecycle, authorization, audit, and reliability guardrails.
+- A reversible change record with aggregate metrics, owner, threshold, and rollback decision.
+
+## Examples
+
+Measure synthetic-document workflow latency, throughput, error rate, and callback completion in staging, change one approved capacity/cache/concurrency setting, and compare against baseline. Revert if signing state, authorization, audit, or error behavior regresses; do not use real documents or weaken controls to improve a benchmark.
 
 ## Overview
 

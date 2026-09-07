@@ -33,6 +33,14 @@ Configure ClickUp API v2 authentication. ClickUp supports two auth methods: **Pe
 - Node.js 18+ or Python 3.10+
 - For OAuth 2.0: registered app in ClickUp's integrations dashboard
 
+## Instructions
+
+Choose the least-privileged supported method, store its credential only in the
+approved secret manager, and verify `/user` plus the intended workspace before
+performing mutations. Keep personal tokens out of shared automation; use an
+owned OAuth/service integration where the application must survive employee
+offboarding, and rotate/revoke compromised or unnecessary credentials promptly.
+
 ## Authentication Methods
 
 ### Method 1: Personal API Token (Recommended for Server-Side)
@@ -153,6 +161,20 @@ CLICKUP_API_TOKEN=pk_12345678_ABCDEFGHIJKLMNOPQRSTUVWXYZ
 CLICKUP_CLIENT_ID=your_client_id
 CLICKUP_CLIENT_SECRET=your_client_secret
 ```
+
+## Output
+
+Record the environment, chosen auth method, credential owner, secret reference,
+approved workspaces/scopes, verification timestamp, and rotation/revocation
+path. Do not record live tokens, client secrets, raw user/workspace responses,
+or authorization URLs in source control or tickets.
+
+## Examples
+
+Configure a staging OAuth integration with its callback allow-list, exchange
+credentials server-side, and verify access to only the intended test workspace.
+If `/user` or `/team` indicates unexpected scope, revoke the credential and
+correct the authorization flow before creating any task or webhook.
 
 ## Resources
 

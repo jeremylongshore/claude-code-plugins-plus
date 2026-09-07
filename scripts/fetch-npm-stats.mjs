@@ -27,8 +27,12 @@
 
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+import prettier from 'prettier';
+
+const THIS_FILE = fileURLToPath(import.meta.url);
+const ROOT = resolve(dirname(THIS_FILE), '..');
 const OUT_JSON = join(ROOT, 'marketplace', 'src', 'data', 'npm-stats.json');
 const README = join(ROOT, 'README.md');
 
@@ -299,7 +303,7 @@ function fmt(n) {
   return Number(n || 0).toLocaleString('en-US');
 }
 
-function buildReadmeBlock(agg) {
+export function buildReadmeBlock(agg) {
   const lines = [
     START_SENTINEL,
     '',
@@ -334,8 +338,7 @@ function buildReadmeBlock(agg) {
   return lines.join('\n');
 }
 
-function updateReadme(block) {
-  const readme = readFileSync(README, 'utf-8');
+export function spliceReadmeStats(readme, block) {
   const s = readme.indexOf(START_SENTINEL);
   const e = readme.indexOf(END_SENTINEL);
   if (s === -1 || e === -1) {
@@ -344,6 +347,24 @@ function updateReadme(block) {
     );
   }
   return readme.slice(0, s) + block + readme.slice(e + END_SENTINEL.length);
+}
+
+export async function prepareStatsArtifacts(
+  agg,
+  {
+    readme = readFileSync(README, 'utf-8'),
+    formatter = prettier,
+    prettierOptions = {},
+    filepath = README,
+  } = {},
+) {
+  const jsonOutput = JSON.stringify(agg, null, 2) + '\n';
+  const spliced = spliceReadmeStats(readme, buildReadmeBlock(agg));
+  const readmeOutput = await formatter.format(spliced, {
+    ...prettierOptions,
+    filepath,
+  });
+  return { jsonOutput, readmeOutput };
 }
 
 async function main() {
@@ -434,27 +455,26 @@ async function main() {
   if (dryRun) {
     console.log('\n(--dry-run: no files written)');
   } else {
-    // 5. Write JSON + README block
-    writeFileSync(OUT_JSON, JSON.stringify(agg, null, 2) + '\n');
+    // 5. Prepare BOTH generated artifacts before writing either one. Prettier
+    // is a required dependency, not an optional enhancement: publishing fresh
+    // JSON while silently retaining a stale README makes the public surfaces
+    // contradict one another. Any import/config/format failure reaches the
+    // top-level catch and turns the automation run red.
+    const options = (await prettier.resolveConfig(README)) || {};
+    const currentReadme = readFileSync(README, 'utf-8');
+    const { jsonOutput, readmeOutput: updatedReadme } = await prepareStatsArtifacts(agg, {
+      readme: currentReadme,
+      prettierOptions: options,
+    });
+
+    writeFileSync(OUT_JSON, jsonOutput);
     console.log(`\nWrote ${OUT_JSON}`);
 
-    try {
-      // Pipe the spliced README through the repo's Prettier config so the
-      // daily bot commit satisfies format-check and the TOC byte-compare —
-      // the same contract generate-readme-toc.mjs honors (issue #657 class).
-      const prettier = (await import('prettier')).default;
-      const spliced = updateReadme(buildReadmeBlock(agg));
-      const options = (await prettier.resolveConfig(README)) || {};
-      const updated = await prettier.format(spliced, { ...options, filepath: README });
-      const current = readFileSync(README, 'utf-8');
-      if (updated !== current) {
-        writeFileSync(README, updated);
-        console.log('Updated README NPM-STATS block');
-      } else {
-        console.log('README NPM-STATS block already current');
-      }
-    } catch (err) {
-      console.warn(`⚠ README update skipped: ${err.message}`);
+    if (updatedReadme !== currentReadme) {
+      writeFileSync(README, updatedReadme);
+      console.log('Updated README NPM-STATS block');
+    } else {
+      console.log('README NPM-STATS block already current');
     }
   }
 
@@ -469,7 +489,9 @@ async function main() {
   }
 }
 
-main().catch((err) => {
-  console.error('fetch-npm-stats failed:', err);
-  process.exit(1);
-});
+if (process.argv[1] && resolve(process.argv[1]) === THIS_FILE) {
+  main().catch((err) => {
+    console.error('fetch-npm-stats failed:', err);
+    process.exit(1);
+  });
+}

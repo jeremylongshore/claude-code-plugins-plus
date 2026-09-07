@@ -5,6 +5,6 @@
   "description": "CI-only signed-evidence emitter for the intent-eval-dashboard reports hub (repo row key: ccp). Not a workspace package, never published; installed standalone in .github/workflows/emit-evidence.yml via `pnpm install --ignore-workspace`.",
   "type": "module",
   "dependencies": {
-    "@intentsolutions/core": "0.9.0"
+    "@intentsolutions/core": "0.10.0"
   }
 }

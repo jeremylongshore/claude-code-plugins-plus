@@ -1,9 +1,10 @@
 # CODEOWNERS for claude-code-plugins-plus-skills
 #
-# GitHub auto-requests the owners listed here whenever a matching path changes,
-# and — with branch protection "Require review from Code Owners" — an owner's
-# approval is the structural merge gate. The *last* matching rule wins; more
-# specific paths near the bottom override the catch-all at the top.
+# GitHub can auto-request the owners listed here whenever a matching path changes.
+# On the current personal-repository policy, these entries route ownership and
+# optional review; branch protection does not require an approving or code-owner
+# review. The *last* matching rule wins; more specific paths near the bottom
+# override the catch-all at the top.
 #
 # This file is the ownership half of the maintainer ladder. The tiers, areas, and
 # who-owns-what policy live in GOVERNANCE.md; the roster is MAINTAINERS.md; the
@@ -25,18 +26,17 @@
 
 # ---------------------------------------------------------------------------
 # area: ci-infra  — HIGH TRUST. A workflow edit can bypass every validator gate.
-# @opeyemiariyo-netizen is an Approver here (Lead promotion 2026-07-16 — see GOVERNANCE
-# § Vetting; the pipeline quiz was waived in favor of learn-on-the-job mentoring).
 # ---------------------------------------------------------------------------
 /.github/                           @jeremylongshore @blueandyellow44
-/.github/workflows/                 @jeremylongshore @blueandyellow44 @opeyemiariyo-netizen
-/.github/workflows/deploy-vps.yml   @jeremylongshore @blueandyellow44 @opeyemiariyo-netizen
+/.github/workflows/                 @jeremylongshore @blueandyellow44
+/.github/workflows/deploy-vps.yml   @jeremylongshore @blueandyellow44
 
 # ---------------------------------------------------------------------------
 # area: validator-schema  — HIGH TRUST. The quality bar itself. Changes are
 # approval-gated per 000-docs/SCHEMA_CHANGELOG.md NON-NEGOTIABLES. Lead-owned.
 # ---------------------------------------------------------------------------
 /scripts/validate-skills-schema.py  @jeremylongshore @blueandyellow44
+/scripts/.marketplace-compliance-baseline.json @jeremylongshore @blueandyellow44
 /scripts/validate-unicode-hygiene.py  @jeremylongshore @blueandyellow44
 /scripts/run-verification-pipeline.mjs  @jeremylongshore @blueandyellow44
 /scripts/check-package-manager.mjs  @jeremylongshore @blueandyellow44
@@ -62,9 +62,8 @@
 
 # ---------------------------------------------------------------------------
 # area: marketplace-site  — the Astro site, design system, build pipeline.
-# @opeyemiariyo-netizen is an Approver here (Lead promotion 2026-07-16).
 # ---------------------------------------------------------------------------
-/marketplace/                       @jeremylongshore @blueandyellow44 @opeyemiariyo-netizen
+/marketplace/                       @jeremylongshore @blueandyellow44
 
 # ---------------------------------------------------------------------------
 # area: freshie  — the inventory CMDB, Dolt sync, grading.

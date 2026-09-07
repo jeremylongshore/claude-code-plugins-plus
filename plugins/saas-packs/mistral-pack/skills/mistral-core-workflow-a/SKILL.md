@@ -13,7 +13,7 @@ description: 'Execute Mistral AI chat completions with streaming, multi-turn, an
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -241,6 +241,12 @@ function selectModel(use: UseCase): string {
 | `400 Bad Request` | Invalid model or params | Check model ID and message format |
 | Context exceeded | Too many tokens | Trim conversation history |
 | Empty JSON response | Missing instruction | Tell model to respond in JSON in prompt |
+
+## Examples
+
+### Classify a support ticket with a strict result shape
+
+Use JSON Schema mode when a downstream workflow must receive a predictable category and severity. Reject or retry the request when the returned payload cannot be parsed or does not satisfy the schema; do not fall back to free-form text for an automated decision.
 
 ## Resources
 

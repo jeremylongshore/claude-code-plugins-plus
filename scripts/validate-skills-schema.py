@@ -46,11 +46,13 @@ Schema:  3.8.0  (see 000-docs/SCHEMA_CHANGELOG.md)
 
 import argparse
 import difflib
+import hashlib
 import json as json_module
 import os
 import re
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Tuple, Dict, Any, Optional
 
@@ -1560,7 +1562,6 @@ def calculate_modifiers(path: Path, body: str, fm: dict) -> dict:
     modifiers = {}
     name = str(fm.get("name", ""))
     desc = str(fm.get("description", ""))
-    lines = len(body.splitlines())
 
     # Bonuses (up to +5)
     # Gerund-style name (verb-ing pattern) +1
@@ -1607,10 +1608,6 @@ def calculate_modifiers(path: Path, body: str, fm: dict) -> dict:
     # === ANTI-PATTERN DETECTION (graduated penalty system) ===
     # Each detected anti-pattern reduces score by 1pt, floor at -5
     skill_dir = path.parent
-    code_blocks = len(re.findall(r"```", body)) // 2
-    md_links = len(re.findall(r"\[.*?\]\((?!https?://)[^)]+\)", body))
-    body_word_count = len(body.split())
-
     anti_patterns_found = []
 
     # AP1: Over-constrained — excessive MUST/NEVER/ALWAYS keywords
@@ -1649,28 +1646,10 @@ def calculate_modifiers(path: Path, body: str, fm: dict) -> dict:
         if orphan_refs:
             anti_patterns_found.append(f"orphan references: {', '.join(orphan_refs[:3])}")
 
-    # AP5: Stub detection (replaces old flat -3 penalty with graduated system)
-    placeholder_tokens = ["TODO", "FIXME", "REPLACE_ME", "TBD", "[YOUR_", "<insert"]
-    placeholder_count = sum(len(re.findall(re.escape(tok), body, re.IGNORECASE)) for tok in placeholder_tokens) + len(
-        re.findall(r"\{[a-z_]+\}", body)
-    )
-    placeholder_density = placeholder_count / body_word_count if body_word_count > 0 else 0.0
-    stub_signals = 0
-    stub_reasons_mod = []
-    if lines < 30:
-        stub_signals += 1
-        stub_reasons_mod.append(f"{lines} lines")
-    if code_blocks == 0 and md_links == 0:
-        stub_signals += 1
-        stub_reasons_mod.append("no code blocks or links")
-    if body_word_count < 150:
-        stub_signals += 1
-        stub_reasons_mod.append(f"{body_word_count} words")
-    if placeholder_density > 0.05:
-        stub_signals += 1
-        stub_reasons_mod.append(f"placeholder density {placeholder_density:.1%}")
-    if stub_signals >= 2:
-        anti_patterns_found.append(f"stub skill: {', '.join(stub_reasons_mod)}")
+    # Stub classification belongs exclusively to deterministic_stub_flags(),
+    # which evaluates the complete run.  Do not reintroduce thin-content,
+    # placeholder-density, or link-count guesses here: those are local
+    # heuristics and disagree with the persisted Freshie is_stub verdict.
 
     # AP6: Ecosystem coherence — bonus for cross-referencing siblings
     has_cross_ref = bool(re.search(r"(?i)(see also|related skill|sibling|cross-reference|companion)", body))
@@ -1760,6 +1739,11 @@ VALID_DIFFICULTIES = ["beginner", "intermediate", "advanced", "expert"]
 
 def check_yaml_shell_substitution(fm: Dict[str, Any]) -> List[str]:
     """Flag shell substitutions ($(...), backticks, unguarded ${VAR}) in YAML string values.
+
+    YAML frontmatter values are data, not Markdown: backticks do not provide
+    code formatting there. They are intentionally refused as command-
+    substitution-shaped text. Put commands and code-formatted paths in the
+    Markdown body; keep frontmatter descriptions plain prose.
 
     Known-safe template vars (CLAUDE_SKILL_DIR, $ARGUMENTS, positional params)
     are allow-listed. Anything else is treated as a likely unevaluated template
@@ -4535,6 +4519,95 @@ def validate_skill(path: Path, tier: str = TIER_STANDARD) -> Dict[str, Any]:
     }
 
 
+# === MARKETPLACE COMPLIANCE BASELINE =========================================
+
+
+def baseline_finding_triple(artifact_path: str, error: str) -> Tuple[str, str, str]:
+    """Return a stable ``(path, rule_id, field)`` identity for one validator
+    error.
+
+    The ratchet must preserve the validator's actual finding surface. It must
+    not scrape terminal output or collapse a file's findings into a count: a
+    new field error at an existing path is still new debt. Common rule shapes
+    receive readable IDs; every other shape gets a deterministic ID based on
+    the normalized validator message, so an unrecognized new error can never
+    silently alias an old one.
+    """
+    scoped = re.match(r"^\[([^\]]+)\]\s*(.*)$", error)
+    scope = scoped.group(1) if scoped else "validator"
+    detail = scoped.group(2) if scoped else error
+    field_match = re.search(
+        r"(?:field|section|Reference|Link|resource|script)\s*(?:missing|escapes|does not exist|must be|invalid)?[: ]*'?([^' :]+)'?",
+        detail,
+        re.IGNORECASE,
+    )
+    quoted_match = re.search(r"'([^']+)'", detail)
+    field = field_match.group(1) if field_match else (quoted_match.group(1) if quoted_match else "_")
+    if "Missing required field:" in detail:
+        rule_id = "E-MISSING-REQUIRED-FIELD"
+    elif "Required section missing:" in detail:
+        rule_id = "E-MISSING-REQUIRED-SECTION"
+    elif "Invalid field" in detail:
+        rule_id = "E-INVALID-FIELD"
+    elif "shell substitution" in detail.lower():
+        rule_id = "E-YAML-SHELL-SUBSTITUTION"
+    elif "Link escapes skill directory" in detail or "Reference escapes skill directory" in detail:
+        rule_id = "E-REFERENCE-ESCAPES-SKILL-DIRECTORY"
+    else:
+        normalized = re.sub(r"\d+", "#", detail.lower())
+        normalized = re.sub(r"\s+", " ", normalized).strip()
+        category = re.sub(r"[^A-Z0-9]+", "-", scope.upper()).strip("-") or "VALIDATOR"
+        digest = hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:12]
+        rule_id = f"E-{category}-{digest}"
+    return artifact_path, rule_id, field
+
+
+def marketplace_baseline_payload(
+    findings: List[Tuple[str, str, str]],
+    skill_files: int,
+    command_files: int,
+    plugin_dirs: int,
+    agent_files: int,
+    grade_a_plus_b: int,
+    repo_root: Path,
+) -> Dict[str, Any]:
+    """Build the shrink-only baseline schema from a full validator run."""
+    triples = sorted(set(findings))
+    entries = [f"{path} :: {rule_id} :: {field}" for path, rule_id, field in triples]
+    try:
+        proc = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo_root, capture_output=True, text=True, check=True)
+        sha = proc.stdout.strip()
+    except Exception:
+        sha = "unknown"
+    run_id = os.environ.get("GITHUB_RUN_ID")
+    return {
+        "$comment": (
+            "Shrink-only. Entries may ONLY be REMOVED. Regenerate ONLY via --emit-baseline "
+            "in the owner-dispatched CI capture whose immutable artifact is verified by required CI."
+        ),
+        "schema_version": SCHEMA_VERSION,
+        "generated_from": {
+            "sha": sha,
+            "run_id": run_id if run_id else None,
+            "captured_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        },
+        "corpus_definition": "resolveCorpus('graded')",
+        "corpus": {
+            "skill_files": skill_files,
+            "command_files": command_files,
+            "plugin_dirs": plugin_dirs,
+            "agent_files": agent_files,
+        },
+        "totals": {
+            "errors": len(entries),
+            "grade_A_plus_B": grade_a_plus_b,
+            "grade_A_plus_B_pct": round((grade_a_plus_b / skill_files * 100) if skill_files else 0.0, 4),
+        },
+        "rule_inventory": sorted({rule_id for _path, rule_id, _field in triples}),
+        "entries": entries,
+    }
+
+
 def validate_plugin(plugin_dir: Path, tier: str = TIER_STANDARD, strict: bool = False) -> Dict[str, Any]:
     """Validate a plugin as a complete unit.
     Walks all components and rolls up scores.
@@ -4650,6 +4723,47 @@ def validate_plugin(plugin_dir: Path, tier: str = TIER_STANDARD, strict: bool = 
 
 
 # === COMPLIANCE DATABASE ===
+
+
+def deterministic_stub_flags(records: list) -> dict:
+    """Return run-scoped stub findings without heuristic thin-content guesses.
+
+    A finding is limited to repeated normalized content within one plugin pack
+    (three or more skills) or a relative in-plugin link to a missing path.
+    Templates are intentionally excluded and A/B graded skills are protected.
+    """
+    hashes: Dict[Tuple[str, str], list] = {}
+    flags: Dict[str, list] = {}
+    for record in records:
+        path = record["path"]
+        if "templates" in path.parts:
+            continue
+        normalized = re.sub(r"\s+", " ", record["body"].strip()).lower()
+        if normalized:
+            digest = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+            hashes.setdefault((str(record["pack"]), digest), []).append(record)
+        for target in re.findall(r"\[[^\]]*\]\(([^)]+)\)", record["body"]):
+            target = target.strip().split("#", 1)[0]
+            if not target or re.match(r"(?:https?:|mailto:|/)", target):
+                continue
+            resolved = (path.parent / target).resolve()
+            try:
+                resolved.relative_to(record["pack"].resolve())
+            except ValueError:
+                continue
+            if not resolved.exists():
+                flags.setdefault(str(path), []).append(f"missing in-plugin reference: {target}")
+    for (_pack, _digest), members in hashes.items():
+        if len(members) >= 3:
+            for record in members:
+                flags.setdefault(str(record["path"]), []).append(
+                    f"normalized body hash shared by {len(members)} skills in pack"
+                )
+    return {
+        path: reasons
+        for path, reasons in flags.items()
+        if next(record for record in records if str(record["path"]) == path)["grade"] not in {"A", "B"}
+    }
 
 
 def populate_compliance_db(
@@ -4898,19 +5012,53 @@ def populate_compliance_db(
     # /skill-creator --forge generation pipeline (Tier 1+2+3 results) and
     # joined into the marketplace build at render time so the JRig-Verified
     # badge surfaces real evidence on plugin detail pages.
+    forge_columns = [r[1] for r in c.execute("PRAGMA table_info(forge_proofs)").fetchall()]
+    if "run_id" in forge_columns and "jrig_run_id" not in forge_columns:
+        c.execute("ALTER TABLE forge_proofs RENAME COLUMN run_id TO jrig_run_id")
     c.execute("""CREATE TABLE IF NOT EXISTS forge_proofs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         plugin_name TEXT NOT NULL,
-        run_id INTEGER,
+        jrig_run_id INTEGER,
+        discovery_run_id INTEGER REFERENCES discovery_runs(id),
         verification_type TEXT NOT NULL,
         passed INTEGER NOT NULL,
         evidence TEXT,
+        evidence_class TEXT NOT NULL DEFAULT 'E0' CHECK(evidence_class IN ('E0', 'E1', 'E2', 'E3')),
+        artifact_sha256 TEXT,
+        artifact_uri TEXT,
+        spec_sha256 TEXT,
+        tool_version TEXT,
+        kernel_version TEXT,
+        provider TEXT,
+        model TEXT,
+        recorded_by_identity TEXT,
+        producing_identity TEXT,
         layers_passed INTEGER DEFAULT NULL,
         total_layers INTEGER DEFAULT 7,
         baseline_delta REAL DEFAULT NULL,
         verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        UNIQUE(plugin_name, verification_type, run_id)
+        UNIQUE(plugin_name, verification_type, jrig_run_id)
     )""")
+
+    # Evidence v2 migration. SQLite permits an ADD COLUMN foreign-key
+    # reference with the required NULL default, so old ledger rows stay E0
+    # while all future non-null discovery references are checked.
+    forge_columns = {r[1] for r in c.execute("PRAGMA table_info(forge_proofs)").fetchall()}
+    for col_name, col_def in (
+        ("discovery_run_id", "INTEGER REFERENCES discovery_runs(id)"),
+        ("evidence_class", "TEXT NOT NULL DEFAULT 'E0' CHECK(evidence_class IN ('E0', 'E1', 'E2', 'E3'))"),
+        ("artifact_sha256", "TEXT"),
+        ("artifact_uri", "TEXT"),
+        ("spec_sha256", "TEXT"),
+        ("tool_version", "TEXT"),
+        ("kernel_version", "TEXT"),
+        ("provider", "TEXT"),
+        ("model", "TEXT"),
+        ("recorded_by_identity", "TEXT"),
+        ("producing_identity", "TEXT"),
+    ):
+        if col_name not in forge_columns:
+            c.execute(f"ALTER TABLE forge_proofs ADD COLUMN {col_name} {col_def}")
 
     # Complete the legacy-UNIQUE migration started above: copy rows from the
     # renamed `*__migrate_tmp` tables into the freshly created tables (which
@@ -4948,6 +5096,28 @@ def populate_compliance_db(
 
     now = datetime.now(timezone.utc).isoformat()
 
+    # Build the complete run snapshot before writing rows: duplicate stamping
+    # cannot be established safely while visiting one skill at a time.
+    stub_records = []
+    for result in skill_results:
+        raw = result.get("path", "")
+        skill_file = Path(raw)
+        if not skill_file.is_absolute():
+            skill_file = repo_root_for_paths / skill_file
+        if skill_file.is_dir():
+            skill_file = skill_file / "SKILL.md"
+        try:
+            _fm, body = parse_frontmatter(skill_file.read_text(encoding="utf-8"))
+        except Exception:
+            body = ""
+        parts = skill_file.parts
+        try:
+            pack = Path(*parts[: parts.index("skills")])
+        except ValueError:
+            pack = skill_file.parent
+        stub_records.append({"path": skill_file, "pack": pack, "body": body, "grade": result.get("grade", "F")})
+    deterministic_stubs = deterministic_stub_flags(stub_records)
+
     for result in skill_results:
         raw_skill_path = result.get("path", "")
         # Read the file via the raw (possibly absolute) path before normalizing
@@ -4982,28 +5152,8 @@ def populate_compliance_db(
         total_fields = anthropic_fields + enterprise_fields
         missing = [k for k in ALWAYS_REQUIRED if k not in fm]
 
-        # Compute stub criteria from body
-        _db_stub_reasons: list = []
-        if body_for_stub:
-            _db_lines = len(body_for_stub.strip().splitlines())
-            _db_code_blocks = len(re.findall(r"```", body_for_stub)) // 2
-            _db_md_links = len(re.findall(r"\[.*?\]\((?!https?://)[^)]+\)", body_for_stub))
-            _db_word_count = len(body_for_stub.split())
-            _db_placeholder_tokens = ["TODO", "FIXME", "REPLACE_ME", "TBD", "[YOUR_", "<insert"]
-            _db_placeholder_count = sum(
-                len(re.findall(re.escape(tok), body_for_stub, re.IGNORECASE)) for tok in _db_placeholder_tokens
-            ) + len(re.findall(r"\{[a-z_]+\}", body_for_stub))
-            _db_placeholder_density = _db_placeholder_count / _db_word_count if _db_word_count > 0 else 0.0
-            if _db_lines < 30:
-                _db_stub_reasons.append(f"body < 30 lines ({_db_lines})")
-            if _db_code_blocks == 0 and _db_md_links == 0:
-                _db_stub_reasons.append("no code blocks and no markdown links")
-            if _db_word_count < 150:
-                _db_stub_reasons.append(f"word count < 150 ({_db_word_count})")
-            if _db_placeholder_density > 0.05:
-                _db_stub_reasons.append(f"placeholder density > 5% ({_db_placeholder_density:.1%})")
-        # Require 2+ stub signals to flag as stub (single signal = false positive)
-        is_stub_val = 1 if len(_db_stub_reasons) >= 2 else 0
+        _db_stub_reasons = deterministic_stubs.get(str(skill_file), [])
+        is_stub_val = 1 if _db_stub_reasons else 0
 
         try:
             mtime = (
@@ -5360,6 +5510,15 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--structural-metrics",
+        action="store_true",
+        help=(
+            "4.1.0 (E8.8): emit missing-required-frontmatter metrics as JSON and exit. "
+            "First-party and provenance-marked mirror records are reported separately so "
+            "the remediation ratchet can fail closed without editing upstream-owned files."
+        ),
+    )
+    parser.add_argument(
         "--standard",
         action="store_true",
         help="Use standard tier (Anthropic spec exactly: name + description required). This is the default.",
@@ -5419,11 +5578,26 @@ def main() -> int:
         help="Output machine-readable JSON with per-skill scoring data",
     )
     parser.add_argument(
+        "--emit-baseline",
+        action="store_true",
+        help=(
+            "Emit the full marketplace compliance baseline JSON keyed by "
+            "(path, rule_id, field), then exit. Intended for the dedicated CI "
+            "baseline-capture transaction; never hand-edit its output."
+        ),
+    )
+    parser.add_argument(
         "--populate-db",
         type=str,
         default=None,
         metavar="DB_PATH",
         help="Write validation results to SQLite database (e.g., freshie/inventory.sqlite)",
+    )
+    parser.add_argument(
+        "--repo-root",
+        type=Path,
+        default=repo_root,
+        help="repository root to validate (default: this checkout)",
     )
     parser.add_argument(
         "--deep",
@@ -5462,7 +5636,9 @@ def main() -> int:
         help="Path to a single SKILL.md file to validate (optional)",
     )
     args, _unknown = parser.parse_known_args()
+    repo_root = args.repo_root.resolve()
     verbose = args.verbose
+    machine_output = args.json or args.emit_baseline
 
     # Kernel shadow (DR-049, advisory): the comparison block is always embedded
     # in --json output; the human-readable startup print is opt-in via
@@ -5493,6 +5669,16 @@ def main() -> int:
         tier = TIER_MARKETPLACE  # Auto-detect CI
     else:
         tier = TIER_STANDARD
+
+    if args.emit_baseline:
+        if args.standard or args.agents_only or args.commands_only or args.path:
+            print(
+                "ERROR: --emit-baseline requires a full --marketplace corpus run (no --standard, "
+                "single path, --agents-only, or --commands-only)",
+                file=sys.stderr,
+            )
+            return 1
+        tier = TIER_MARKETPLACE
 
     # Single-file mode: validate just one SKILL.md
     if args.path:
@@ -5733,6 +5919,38 @@ def main() -> int:
         print(_json.dumps(metrics, indent=1))
         return 0
 
+    if args.structural_metrics:
+
+        def _is_mirror(path: Path) -> bool:
+            probe = path.parent
+            while probe != repo_root and probe != probe.parent:
+                if (probe / ".source.json").exists():
+                    return True
+                probe = probe.parent
+            return False
+
+        missing_pattern = re.compile(r"^\[frontmatter\] Missing required field: '([^']+)' \(marketplace\)$")
+        first_party: List[str] = []
+        mirrors: List[str] = []
+        for skill_path in find_skill_files(repo_root):
+            rel = str(skill_path.relative_to(repo_root))
+            result = validate_skill(skill_path, TIER_MARKETPLACE)
+            for error in result.get("errors", []):
+                match = missing_pattern.match(error)
+                if not match:
+                    continue
+                member = f"{rel}::{match.group(1)}"
+                (mirrors if _is_mirror(skill_path) else first_party).append(member)
+        import json as _json
+
+        metrics = {
+            "schema_version": SCHEMA_VERSION,
+            "first_party_missing_required_frontmatter": sorted(first_party),
+            "mirror_missing_required_frontmatter": sorted(mirrors),
+        }
+        print(_json.dumps(metrics, indent=1))
+        return 0
+
     # Determine what to validate
     validate_skills = not args.commands_only and not args.agents_only
     validate_commands = not args.skills_only and not args.agents_only
@@ -5745,10 +5963,22 @@ def main() -> int:
 
     total_files = len(skills) + len(commands) + len(agents)
     if total_files == 0:
+        if args.emit_baseline:
+            baseline = marketplace_baseline_payload(
+                findings=[],
+                skill_files=0,
+                command_files=0,
+                plugin_dirs=len(find_plugin_json_files(repo_root)),
+                agent_files=0,
+                grade_a_plus_b=0,
+                repo_root=repo_root,
+            )
+            print(json_module.dumps(baseline, indent=2, sort_keys=True))
+            return 0
         print("No files found to validate.")
         return 0
 
-    if not args.json:
+    if not machine_output:
         print(f"🔍 CLAUDE CODE PLUGIN VALIDATOR v7.0 / schema {SCHEMA_VERSION} ({tier} tier)")
         if tier == TIER_MARKETPLACE:
             print("   Marketplace Polish (Anthropic spec + IS 100-point rubric)")
@@ -5778,13 +6008,14 @@ def main() -> int:
 
     grade_thresholds = {"A": 90, "B": 80, "C": 70, "D": 60}
     json_skill_results = []  # Collected for --json output
+    baseline_findings: List[Tuple[str, str, str]] = []
 
     for skill in skills:
         rel = skill.relative_to(repo_root)
         result = validate_skill(skill, tier)
 
         if "fatal" in result:
-            if not args.json:
+            if not machine_output:
                 print(f"❌ {rel}: FATAL - {result['fatal']}")
             total_errors += 1
             files_with_errors.append(str(rel))
@@ -5794,6 +6025,8 @@ def main() -> int:
                     "fatal": result["fatal"],
                 }
             )
+            if args.emit_baseline:
+                baseline_findings.append(baseline_finding_triple(str(rel), f"[fatal] {result['fatal']}"))
             continue
 
         has_issues = False
@@ -5811,6 +6044,11 @@ def main() -> int:
                 "score": score,
                 "grade": letter,
                 "errors": len(result.get("errors", [])),
+                # Consumers that make a disposition decision need the canonical
+                # diagnostic text, not only an opaque count.  This is additive
+                # to the long-standing --json contract and keeps classification
+                # tied to the validator rather than a second parser.
+                "error_details": result.get("errors", []),
                 "warnings": len(result.get("warnings", [])),
             }
         )
@@ -5826,16 +6064,18 @@ def main() -> int:
             low_grade_skills.append((str(rel), score, letter, grade_info.get("breakdown", {})))
 
         if result["errors"]:
-            if not args.json:
+            if not machine_output:
                 print(f"❌ {rel}:")
                 for error in result["errors"]:
                     print(f"   ERROR: {error}")
             total_errors += len(result["errors"])
             files_with_errors.append(str(rel))
             has_issues = True
+            if args.emit_baseline:
+                baseline_findings.extend(baseline_finding_triple(str(rel), error) for error in result["errors"])
 
         if result["warnings"]:
-            if not args.json:
+            if not machine_output:
                 if not has_issues:
                     print(f"⚠️  {rel}:")
                 for warning in result["warnings"]:
@@ -5845,13 +6085,13 @@ def main() -> int:
                 files_with_warnings.append(str(rel))
             has_issues = True
 
-        if result.get("infos") and verbose and not args.json:
+        if result.get("infos") and verbose and not machine_output:
             if not has_issues:
                 print(f"💡 {rel}:")
             for info in result["infos"]:
                 print(f"   INFO: {info}")
 
-        if verbose and not has_issues and not result.get("infos") and not args.json:
+        if verbose and not has_issues and not result.get("infos") and not machine_output:
             print(f"✅ {rel} - {letter} ({score}/100) ({result['word_count']} words, {result['line_count']} lines)")
 
         if not result["errors"] and not result["warnings"]:
@@ -5872,21 +6112,28 @@ def main() -> int:
         result = validate_command(cmd)
 
         if "fatal" in result:
-            print(f"❌ {rel} (command): FATAL - {result['fatal']}")
+            if not machine_output:
+                print(f"❌ {rel} (command): FATAL - {result['fatal']}")
             total_errors += 1
             files_with_errors.append(str(rel))
+            if args.emit_baseline:
+                baseline_findings.append(baseline_finding_triple(str(rel), f"[fatal] {result['fatal']}"))
             continue
 
         if result["errors"]:
-            print(f"❌ {rel} (command):")
-            for error in result["errors"]:
-                print(f"   ERROR: {error}")
+            if not machine_output:
+                print(f"❌ {rel} (command):")
+                for error in result["errors"]:
+                    print(f"   ERROR: {error}")
             total_errors += len(result["errors"])
             files_with_errors.append(str(rel))
+            if args.emit_baseline:
+                baseline_findings.extend(baseline_finding_triple(str(rel), error) for error in result["errors"])
         elif result["warnings"]:
-            print(f"⚠️  {rel} (command):")
-            for warning in result["warnings"]:
-                print(f"   WARN: {warning}")
+            if not machine_output:
+                print(f"⚠️  {rel} (command):")
+                for warning in result["warnings"]:
+                    print(f"   WARN: {warning}")
             total_warnings += len(result["warnings"])
             files_with_warnings.append(str(rel))
         else:
@@ -5901,10 +6148,13 @@ def main() -> int:
         result = validate_agent(agent)
 
         if "fatal" in result:
-            print(f"❌ {rel} (agent): FATAL - {result['fatal']}")
+            if not machine_output:
+                print(f"❌ {rel} (agent): FATAL - {result['fatal']}")
             total_errors += 1
             files_with_errors.append(str(rel))
             json_agent_results.append({"path": str(agent), "errors": 1, "warnings": 0})
+            if args.emit_baseline:
+                baseline_findings.append(baseline_finding_triple(str(rel), f"[fatal] {result['fatal']}"))
             continue
 
         err_count = len(result["errors"])
@@ -5912,15 +6162,19 @@ def main() -> int:
         json_agent_results.append({"path": str(agent), "errors": err_count, "warnings": warn_count})
 
         if result["errors"]:
-            print(f"❌ {rel} (agent):")
-            for error in result["errors"]:
-                print(f"   ERROR: {error}")
+            if not machine_output:
+                print(f"❌ {rel} (agent):")
+                for error in result["errors"]:
+                    print(f"   ERROR: {error}")
             total_errors += len(result["errors"])
             files_with_errors.append(str(rel))
+            if args.emit_baseline:
+                baseline_findings.extend(baseline_finding_triple(str(rel), error) for error in result["errors"])
         elif result["warnings"]:
-            print(f"⚠️  {rel} (agent):")
-            for warning in result["warnings"]:
-                print(f"   WARN: {warning}")
+            if not machine_output:
+                print(f"⚠️  {rel} (agent):")
+                for warning in result["warnings"]:
+                    print(f"   WARN: {warning}")
             total_warnings += len(result["warnings"])
             files_with_warnings.append(str(rel))
         else:
@@ -5930,28 +6184,45 @@ def main() -> int:
 
     # Validate plugin.json files (batch mode)
     plugin_jsons = find_plugin_json_files(repo_root)
-    if plugin_jsons and not args.json:
+    if plugin_jsons and not machine_output:
         print(f"\nFound {len(plugin_jsons)} plugin.json files")
     for pj_file in plugin_jsons:
         rel = pj_file.relative_to(repo_root)
         result = validate_plugin_json(pj_file, strict=args.strict)
 
         if result["errors"]:
-            print(f"❌ {rel} (plugin.json):")
-            for error in result["errors"]:
-                print(f"   ERROR: {error}")
+            if not machine_output:
+                print(f"❌ {rel} (plugin.json):")
+                for error in result["errors"]:
+                    print(f"   ERROR: {error}")
             total_errors += len(result["errors"])
             files_with_errors.append(str(rel))
+            if args.emit_baseline:
+                baseline_findings.extend(baseline_finding_triple(str(rel), error) for error in result["errors"])
         elif result["warnings"]:
-            print(f"⚠️  {rel} (plugin.json):")
-            for warning in result["warnings"]:
-                print(f"   WARN: {warning}")
+            if not machine_output:
+                print(f"⚠️  {rel} (plugin.json):")
+                for warning in result["warnings"]:
+                    print(f"   WARN: {warning}")
             total_warnings += len(result["warnings"])
             files_with_warnings.append(str(rel))
         else:
             files_compliant.append(str(rel))
             if verbose:
                 print(f"✅ {rel} (plugin.json) - OK")
+
+    if args.emit_baseline:
+        baseline = marketplace_baseline_payload(
+            findings=baseline_findings,
+            skill_files=len(skills),
+            command_files=len(commands),
+            plugin_dirs=len(plugin_jsons),
+            agent_files=len(agents),
+            grade_a_plus_b=grade_counts["A"] + grade_counts["B"],
+            repo_root=repo_root,
+        )
+        print(json_module.dumps(baseline, indent=2, sort_keys=True))
+        return 0
 
     # Populate compliance database if requested (after all validations complete).
     # A failure here must NOT be swallowed: the freshie cycle's next step

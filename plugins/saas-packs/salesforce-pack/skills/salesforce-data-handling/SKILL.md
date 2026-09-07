@@ -223,6 +223,12 @@ Limitations of encrypted fields:
 | Encrypted field in WHERE | Shield encryption limitation | Use deterministic encryption or query differently |
 | PII in logs | Missing redaction | Wrap all SF logging with redactSfRecord |
 
+## Examples
+
+### Fulfill a data-subject request with an auditable minimum disclosure
+
+Verify the requester through the approved identity process, locate related records using the Individual relationship in a sandbox-tested workflow, and produce only the authorized export through an encrypted delivery channel. Redact PII from operational logs and retain the request ID, disposition, and retention exception rather than the exported data. For deletion, stage the dependency analysis first and have a second reviewer confirm the reversible path before committing any irreversible record removal.
+
 ## Resources
 
 - [Salesforce Data Protection & Privacy](https://help.salesforce.com/s/articleView?id=sf.data_protection_and_privacy.htm)

@@ -1,7 +1,7 @@
 {
   "name": "@intentsolutionsio/together-pack",
-  "version": "1.0.2",
-  "description": "Claude Code skill pack for Together AI - 18 skills covering open-source model inference, fine-tuning, and GPU clusters",
+  "version": "1.0.3",
+  "description": "Claude Code skill pack for Together AI - 16 skills covering open-source model inference, fine-tuning, and GPU clusters",
   "main": "README.md",
   "type": "module",
   "files": [
@@ -26,7 +26,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "url": "git+https://github.com/jeremylongshore/tons-of-skills-marketplace.git",
     "directory": "plugins/saas-packs/together-pack"
   },
   "homepage": "https://tonsofskills.com/learn/together/",

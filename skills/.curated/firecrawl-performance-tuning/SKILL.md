@@ -29,6 +29,16 @@ compatibility: Designed for Claude Code
 
 Optimize Firecrawl API performance by choosing efficient scraping modes, caching results, using batch endpoints, and minimizing unnecessary rendering. Key levers: format selection (markdown vs HTML vs screenshot), `waitFor` tuning, `onlyMainContent`, and batch vs individual scraping.
 
+## Prerequisites
+
+- A redacted baseline for latency, success rate, queue age, and budget consumption.
+- Explicit freshness, retention, target-policy, and capacity requirements for each workflow.
+- Synthetic or approved staging targets and a rollback switch for concurrency or cache changes.
+
+## Output
+
+Produce a performance receipt with baseline and post-change aggregate metrics, selected format, concurrency/cache settings, target policy version, owner, and rollback result. Exclude scraped content and credentials.
+
 ## Latency Benchmarks
 
 | Operation | Typical | With JS Wait | With Screenshot |

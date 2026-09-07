@@ -244,6 +244,22 @@ After full migration and 2-week monitoring:
 | Data format mismatch | Different date/number formats | Add transformation in webhook handler |
 | CRM duplicates during parallel | Both systems writing | Deduplicate on email in CRM |
 
+## Output
+
+Create a migration receipt with source/target systems, data and consent mapping,
+field transformations, traffic percentage, comparison metrics, deduplication
+strategy, owners, approval points, rollback status, and legacy-retirement
+decision. Do not cancel the old path or delete its evidence until the defined
+monitoring window proves that the new path satisfies the approved contract.
+
+## Examples
+
+Shift a staging-compatible source from 10 to 25 percent only after comparing
+coverage, quality, credit use, and CRM idempotency for the prior cohort. If a
+field mapping or duplicate error appears, return traffic to the last stable
+percentage, reconcile the affected records, and correct the transform before
+advancing the rollout.
+
 ## Resources
 
 - [Clay Integrations Directory](https://www.clay.com/integrations)

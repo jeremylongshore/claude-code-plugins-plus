@@ -72,3 +72,18 @@ Skill: configures clerkMiddleware publicRoutes / matcher and verifies unauth red
 User: Put plan_tier on the session JWT for feature flags.
 Skill: configures session token template and validates claim size + read path.
 ```
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Route is accidentally public | Fail the verification gate and narrow the matcher before release. |
+| Session claim is absent or stale | Treat the request as unauthorized for the dependent feature and refresh through the supported path. |
+| JWT exceeds consumer limits | Remove nonessential claims; retrieve server-side attributes through an authorized backend. |
+| Organization context is missing | Deny the org-scoped operation and require explicit selection/role validation. |
+
+## Resources
+
+- [Clerk middleware reference](https://clerk.com/docs/references/nextjs/clerk-middleware)
+- [Session tokens and custom claims](https://clerk.com/docs/guides/sessions/session-tokens)
+- [Clerk organization roles](https://clerk.com/docs/guides/organizations/roles-and-permissions)

@@ -26,6 +26,11 @@ compatibility: Designed for Claude Code
 ---
 # Exa Data Handling
 
+## Output
+
+- A policy-bound search/research data flow with classification, retention, access, redaction, and owner decisions.
+- A verified boundary that keeps private queries, results, identifiers, and credentials out of unsafe logs, fixtures, and exports.
+
 ## Overview
 
 Manage search result data from Exa's neural search API. Covers content extraction scope control (text vs highlights vs summary), result caching with TTL, citation deduplication, token budget management for LLM context windows, and structured summary extraction.

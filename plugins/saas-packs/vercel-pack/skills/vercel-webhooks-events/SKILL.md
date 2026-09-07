@@ -263,6 +263,12 @@ curl -X POST http://localhost:3000/api/webhooks/vercel \
 | `504 timeout` on webhook endpoint | Handler takes too long | Return 200 immediately, process async in background |
 | Missing `x-vercel-signature` | Not a real Vercel webhook | Reject requests without the signature header |
 
+## Examples
+
+### Process a deployment webhook exactly once
+
+Verify the raw-body HMAC signature before parsing the event, reject absent or invalid signatures with a generic response, and persist the event ID in an idempotency store before any side effect. Acknowledge quickly and hand longer work to a controlled background queue. Test duplicate delivery and an invalid signature with synthetic events in preview, and keep notification payloads free of tokens, environment values, and customer request data.
+
 ## Resources
 
 - [Vercel Webhooks API](https://vercel.com/docs/webhooks/webhooks-api)

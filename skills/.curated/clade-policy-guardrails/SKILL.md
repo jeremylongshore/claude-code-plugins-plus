@@ -109,6 +109,13 @@ You **don't** need to replicate this — focus your guardrails on application-sp
 |-------|-------|----------|
 | API Error | Check error type and status code | See `clade-common-errors` |
 
+## Output
+
+Record the applicable policy, input/output decision, safe refusal or escalation
+path, test case identifier, and owner of any approved exception. Do not retain
+unnecessary prompt content, credentials, or personal data in guardrail logs;
+use redacted correlation data with the shortest compatible retention period.
+
 ## Examples
 
 See System Prompt Guardrails, Input Validation function, Output Validation function, and Anthropic Built-In Safety section above.

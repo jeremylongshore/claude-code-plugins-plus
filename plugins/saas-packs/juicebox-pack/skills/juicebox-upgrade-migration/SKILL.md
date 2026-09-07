@@ -140,6 +140,25 @@ class JuiceboxClient {
 | Analysis format changed | AI analysis output missing expected sections | Update parser for new structured analysis response |
 | Rate limit reduced | `429 Too Many Requests` on previously working batch sizes | Reduce batch size and implement request queuing |
 
+## Prerequisites
+
+- An approved change record, version inventory, synthetic sandbox dataset, source/destination allowlists, suppression controls, compatibility test plan, and tested rollback release.
+
+## Instructions
+
+1. Back up configuration metadata without copying records, then run the migration against synthetic fixtures in staging.
+2. Validate schema, authorization, redaction, suppression, retention, and `contacts_exported=0`; reject unapproved sources or destinations.
+3. Promote through a bounded canary only after owner approval; halt on drift and restore the prior version/configuration immediately.
+4. Retain only a redacted migration receipt and delete staged fixtures and temporary access at completion.
+
+## Output
+
+Produce a migration receipt with versions, environment, fixture classification, compatibility results, suppression/no-export checks, canary outcome, approver, retention/deletion proof, and rollback reference. Exclude records, contacts, and secrets.
+
+## Examples
+
+`from=v2; to=v3; env=staging; fixture=synthetic; compatibility=pass; suppression=pass; contacts_exported=0; rollback=v2` supports a controlled promotion.
+
 ## Resources
 
 - Juicebox Changelog

@@ -184,6 +184,12 @@ To configure in the Vercel dashboard:
 | Preview not updating | Cached old deployment | Force rebuild: `vercel --force` |
 | `DEPLOYMENT_BLOCKED` | Deployment protection active | Use `x-vercel-protection-bypass` header |
 
+## Examples
+
+### Verify a protected preview without leaking the bypass secret
+
+Create a preview for a pull request, use a CI-held deployment-protection bypass token only in the automated smoke job, and request a harmless `/health` endpoint. Publish the preview URL and the commit SHA in the pull request, but never print the bypass header or token. Confirm the same URL is inaccessible without approved access, then expire the preview or retain it under the repository’s documented review window.
+
 ## Resources
 
 - [Preview Deployments](https://vercel.com/docs/deployments/preview-deployments)

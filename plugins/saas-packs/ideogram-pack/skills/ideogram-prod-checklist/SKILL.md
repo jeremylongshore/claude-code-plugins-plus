@@ -191,6 +191,17 @@ kubectl rollout restart deployment/app
 - Alerting rules deployed
 - Rollback procedure tested
 
+## Instructions
+
+1. Confirm environment, secret reference, source/right-to-use record, destination, artifact revision, and owner approval before generation.
+2. Run a bounded synthetic canary and verify health, content-policy, destination, and output-retention assertions.
+3. Monitor aggregate metrics through the observation window; halt on scope, rights, destination, or retention drift.
+4. Promote in stages or disable/revert to the prior revision and record the verified rollback.
+
+## Examples
+
+`revision=r44; canary=sandbox-gallery; health=pass; rights=test-owned; destination=approved; output_retention=none; outcome=promote` is a complete canary decision.
+
 ## Resources
 
 - [Ideogram API Overview](https://developer.ideogram.ai/ideogram-api/api-overview)

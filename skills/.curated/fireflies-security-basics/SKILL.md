@@ -29,6 +29,10 @@ compatibility: Designed for Claude Code
 
 Security essentials for Fireflies.ai: API key management, webhook HMAC-SHA256 signature verification, transcript access controls, and audit practices.
 
+## Examples
+
+Use a scoped staging key and a synthetic signed webhook event. Confirm invalid signatures are rejected without logging the body, access is limited to the approved test channel, and revoking the key immediately blocks further requests. Record only redacted control evidence.
+
 ## Prerequisites
 
 - Fireflies.ai API key

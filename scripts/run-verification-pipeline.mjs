@@ -17,11 +17,12 @@
  * Usage:
  *   node scripts/run-verification-pipeline.mjs
  *   node scripts/run-verification-pipeline.mjs --dry-run    # Preview without writing
+ *   node scripts/run-verification-pipeline.mjs --plugin snowflake-pack
  */
 
 import { execSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -33,6 +34,13 @@ const syncScript = join(repoRoot, 'scripts', 'sync-marketplace.cjs');
 const validatorScript = join(repoRoot, 'scripts', 'validate-skills-schema.py');
 
 const dryRun = process.argv.includes('--dry-run');
+const pluginFlagIndex = process.argv.indexOf('--plugin');
+const targetPlugin = pluginFlagIndex >= 0 ? process.argv[pluginFlagIndex + 1] : null;
+
+if (pluginFlagIndex >= 0 && (!targetPlugin || targetPlugin.startsWith('--'))) {
+  console.error('--plugin requires a plugin name or ./plugins/category/name source path');
+  process.exit(2);
+}
 
 // === Badge tier mapping ===
 
@@ -114,11 +122,13 @@ function aggregateByPlugin(skillResults) {
     // Skip the trailing kernel_shadow advisory element (DR-049 shadow block).
     if (result.kernel_shadow || typeof result.path !== 'string') continue;
 
-    const parts = result.path.split('/');
-    // Expected: plugins / category / plugin-name / skills / skill-name / SKILL.md
-    if (parts.length < 4 || parts[0] !== 'plugins') continue;
+    const parts = result.path.split(/[\\/]+/);
+    // Validator output may be repository-relative or absolute. Anchor on the
+    // plugins directory instead of assuming it is the first path component.
+    const pluginsIndex = parts.indexOf('plugins');
+    if (pluginsIndex < 0 || parts.length < pluginsIndex + 4) continue;
 
-    const pluginSource = `./${parts[0]}/${parts[1]}/${parts[2]}`;
+    const pluginSource = `./plugins/${parts[pluginsIndex + 1]}/${parts[pluginsIndex + 2]}`;
 
     if (!pluginScores.has(pluginSource)) {
       pluginScores.set(pluginSource, []);
@@ -144,6 +154,28 @@ function aggregateByPlugin(skillResults) {
   return pluginVerifications;
 }
 
+function applyVerifications(catalog, pluginVerifications, requestedPlugin, validatedAt) {
+  let updated = 0;
+  for (const plugin of catalog.plugins) {
+    if (!plugin || !plugin.source) continue;
+    if (requestedPlugin && plugin.name !== requestedPlugin && plugin.source !== requestedPlugin) {
+      continue;
+    }
+
+    const verification = pluginVerifications.get(plugin.source);
+    if (!verification) continue;
+
+    plugin.verification = {
+      score: verification.score,
+      grade: verification.grade,
+      badge: verification.badge,
+      lastValidated: validatedAt,
+    };
+    updated++;
+  }
+  return updated;
+}
+
 // === Step 3: Update marketplace.extended.json ===
 
 function updateCatalog(pluginVerifications) {
@@ -164,22 +196,7 @@ function updateCatalog(pluginVerifications) {
   }
 
   const now = new Date().toISOString().replace(/T.*/, 'T00:00:00.000Z');
-  let updated = 0;
-
-  for (const plugin of catalog.plugins) {
-    if (!plugin || !plugin.source) continue;
-
-    const verification = pluginVerifications.get(plugin.source);
-    if (!verification) continue;
-
-    plugin.verification = {
-      score: verification.score,
-      grade: verification.grade,
-      badge: verification.badge,
-      lastValidated: now,
-    };
-    updated++;
-  }
+  const updated = applyVerifications(catalog, pluginVerifications, targetPlugin, now);
 
   if (!dryRun) {
     writeFileSync(extendedPath, JSON.stringify(catalog, null, 2) + '\n');
@@ -221,6 +238,7 @@ function printSummary(pluginVerifications, catalogStats) {
   console.log(sep);
 
   console.log(`\nPlugins scored:    ${pluginVerifications.size}`);
+  if (targetPlugin) console.log(`Target plugin:     ${targetPlugin}`);
   console.log(`Catalog updated:   ${catalogStats.updated} / ${catalogStats.total} plugins`);
 
   // Grade distribution
@@ -292,4 +310,8 @@ function sep(title) {
   return `${line}\n ${title}\n${line}`;
 }
 
-main();
+export { aggregateByPlugin, applyVerifications, scoreToBadge, scoreToGrade };
+
+if (process.argv[1] && resolve(process.argv[1]) === __filename) {
+  main();
+}

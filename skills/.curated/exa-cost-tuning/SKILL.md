@@ -25,6 +25,19 @@ compatibility: Designed for Claude Code
 ---
 # Exa Cost Tuning
 
+## Prerequisites
+
+- An aggregate usage/cost baseline, budget owner, approved data policy, and quality/latency SLO.
+- Sanitized evaluation queries and a reversible change record.
+
+## Output
+
+- A measured cost optimization with owner, policy/quality guardrails, and rollback threshold.
+
+## Examples
+
+Compare aggregate request volume, model/search options, latency, quality, and error data in staging, change one approved caching or request-shaping parameter, and observe the result. Revert on quality, policy, or reliability regression; do not reduce privacy, citation, or source-validation safeguards merely to lower spend.
+
 ## Overview
 
 Reduce Exa API costs through strategic search type selection, result caching, query deduplication, and usage monitoring. Exa charges per search request with costs varying by search type and content retrieval options.

@@ -1,0 +1,404 @@
+{
+  "schema_version": "freshie-run-delta/v3",
+  "run_id": 27,
+  "from_tag": "run-26",
+  "to_tag": "run-27",
+  "dolt_commit": "tscs1lq3ch4r4ijk87shs8ufumnu1tfv",
+  "run_coherence": {
+    "discovery_run_id": 27,
+    "header_total_skills": 2967,
+    "skill_rows": 2967,
+    "skill_row_delta": 0,
+    "skill_compliance_rows": 3545
+  },
+  "grade_export": {
+    "row_count": 3545,
+    "csv_sha256": "dadd11f876ae8ab8af3de4612b55f687c0691a0b83566a5e136ff582f087764d",
+    "grade_counts": {
+      "A": 1885,
+      "B": 1087,
+      "C": 411,
+      "D": 157,
+      "F": 5
+    }
+  },
+  "forge_proofs": {
+    "row_count": 0,
+    "records_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "class_counts": {
+      "E0": 0,
+      "E1": 0,
+      "E2": 0,
+      "E3": 0
+    },
+    "retained_e2_e3": 0,
+    "total_e2_e3": 0,
+    "records": []
+  },
+  "tables_changed": 38,
+  "schema_changes": [],
+  "rows_added": 81019,
+  "rows_deleted": 0,
+  "rows_modified": 0,
+  "tables": [
+    {
+      "table": "agent_compliance",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 358,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "agent_files",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 347,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "anomalies",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 160,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "ci_workflows",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 35,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "command_files",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 373,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "content_signals",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 3045,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "cross_references",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 2679,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "discovery_runs",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 1,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "docs",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 18118,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "duplicate_files",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 13,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "field_registry",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 23,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "frontmatter_fields",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 23,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "frontmatter_shapes",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 31,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "frontmatter_values",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 24002,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "marketplace_catalog",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 442,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "pack_aggregates",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 123,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "pack_metadata",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 19,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "packs",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 19,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "plugin_companions",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 434,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "plugin_compliance",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 405,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "plugin_fields",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 19,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "plugin_shapes",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 18,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "plugin_templates",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 27,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "plugin_values",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 4235,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "plugins",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 434,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "root_files",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 42,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "root_skills_files",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 7387,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "scripts",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 232,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "skill_compliance",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 3545,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "skill_database_vendors",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 10,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "skill_files",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 8698,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "skill_structure_shapes",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 29,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "skills",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 2967,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "unique_extensions",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 28,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "unique_filenames",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 2175,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "unique_subdirs",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 18,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "validator_checks",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 339,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "validators",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 166,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    }
+  ],
+  "grade_regressions": [
+    {
+      "skill_path": "plugins/saas-packs/replit-pack/skills/replit-common-errors",
+      "from_grade": "A",
+      "to_grade": "B"
+    },
+    {
+      "skill_path": "plugins/saas-packs/replit-pack/skills/replit-known-pitfalls",
+      "from_grade": "A",
+      "to_grade": "C"
+    },
+    {
+      "skill_path": "plugins/saas-packs/replit-pack/skills/replit-reference-architecture",
+      "from_grade": "B",
+      "to_grade": "C"
+    }
+  ]
+}

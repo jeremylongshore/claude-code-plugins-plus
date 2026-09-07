@@ -1,7 +1,7 @@
 {
   "name": "snowflake-pack",
-  "version": "1.5.0",
-  "description": "Claude Code skill pack for Snowflake data platform — snowflake-sdk, SQL, Snowpark (30 skills)",
+  "version": "3.16.0",
+  "description": "Ten model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, access, governance, data quality, failover, and Native Apps",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"

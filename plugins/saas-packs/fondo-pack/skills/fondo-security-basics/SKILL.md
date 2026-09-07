@@ -20,6 +20,22 @@ compatibility: Designed for Claude Code
 ---
 # Fondo Security Basics
 
+## Prerequisites
+
+A security owner, scoped secret manager, financial-data access policy, review cadence, and synthetic fixtures.
+
+## Instructions
+
+Use least-privilege credentials per environment; verify signed events and idempotency; restrict financial and tax data to approved systems; redact diagnostics; rotate credentials on suspected exposure.
+
+## Output
+
+Maintain a security receipt with scope, secret reference, access-review date, control result, owner, and redacted incident state. Do not include financial data or secrets.
+
+## Examples
+
+Verify a fictional signed event is processed once, an invalid signature is rejected without payload logging, and revoking a staging credential blocks future requests.
+
 ## Overview
 
 Fondo handles startup tax preparation, bookkeeping, and R&D tax credits containing SSNs, EINs, bank account details, revenue figures, and complete tax returns. A breach exposes founder personal tax data, company financials, and IRS filing details. Protect OAuth connections to banking/payroll systems, exported financial documents, and team access controls with the same rigor as a CPA firm.

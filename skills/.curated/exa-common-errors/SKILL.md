@@ -24,6 +24,27 @@ compatibility: Designed for Claude Code
 ---
 # Exa Common Errors
 
+## Prerequisites
+
+- A bounded non-sensitive reproduction, environment/version, expected behavior, and redaction rule for diagnostics.
+
+## Output
+
+- A classified Exa failure with redacted evidence and a verified bounded remediation or escalation.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Authentication fails | Verify the scoped secret reference/environment; revoke/rotate if exposure is suspected. |
+| Result is unexpected | Inspect supported sources, date, options, and citations with a sanitized query before changing policy. |
+| Throttling occurs | Apply documented backoff and reduce concurrency; do not bulk retry. |
+| Request includes sensitive data | Stop, sanitize/use an approved path, and follow exposure policy. |
+
+## Examples
+
+For a failing request, record correlation ID, environment, status class, latency, and sanitized request category, then validate credentials and options against a non-sensitive fixture. Escalate with redacted evidence rather than full query/result content.
+
 ## Overview
 
 Quick reference for Exa API errors by HTTP status code and error tag. All error responses include a `requestId` field — include it when contacting Exa support at hello@exa.ai.

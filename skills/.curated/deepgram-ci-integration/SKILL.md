@@ -25,6 +25,10 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram CI Integration
 
+## Examples
+
+Run unit/schema tests on every pull request with mocked Deepgram responses. Execute one trusted protected-branch integration test against a development project using a short licensed fixture and a scoped secret; retain redacted status/metrics on failure and never inject the key into forked or untrusted CI workflows.
+
 ## Overview
 
 Set up CI/CD pipelines for Deepgram integrations with GitHub Actions. Includes unit tests with mocked SDK, integration tests against the real API, smoke tests, automated key rotation, and deployment gates.

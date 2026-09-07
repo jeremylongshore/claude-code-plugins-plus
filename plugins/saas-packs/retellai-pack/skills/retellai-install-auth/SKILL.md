@@ -85,6 +85,17 @@ print(f"Connected! {len(agents)} agent(s) configured.")
 | `ModuleNotFoundError` | SDK not installed | `npm install retell-sdk` |
 | Connection timeout | Network issue | Check firewall allows HTTPS |
 
+## Examples
+
+### Configure a least-privilege development credential
+
+Store a non-production API key in the local secret manager or CI secret store,
+not in source control or a command history. Verify it by listing development
+agents and record only the account, environment, and verification time. If the
+test returns an authorization error, revoke the invalid credential rather than
+trying alternate keys in logs; use a separate production credential only in a
+protected deployment environment.
+
 ## Resources
 
 - [Retell AI SDKs](https://docs.retellai.com/get-started/sdk)

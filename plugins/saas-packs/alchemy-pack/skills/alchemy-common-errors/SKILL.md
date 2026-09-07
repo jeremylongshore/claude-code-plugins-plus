@@ -29,6 +29,27 @@ compatibility: Designed for Claude Code
 
 Troubleshooting guide for Alchemy SDK errors covering rate limits, RPC failures, invalid parameters, and network-specific issues.
 
+## Prerequisites
+
+- A reproducible failing request that records its network, method, sanitized
+  parameters, timestamp, response code, and request/correlation ID where
+  available—never the API key or private key.
+- Access to the appropriate Alchemy dashboard and a non-production key when
+  testing a fix.
+- A defined retry budget and an application fallback for requests that cannot
+  safely be retried.
+
+## Instructions
+
+1. Classify the failure with the error reference and confirm the intended
+   network, RPC method, and parameter shape.
+2. Reproduce it with a scoped development key or a public test fixture, then
+   inspect account limits and service status without exposing credentials.
+3. Apply the smallest appropriate repair: correct parameters, back off for
+   `429`, paginate a large query, or switch to the documented supported API.
+4. Verify the corrected request and record the sanitized outcome; escalate
+   persistent provider failures with the correlation or request ID.
+
 ## Error Reference
 
 ### Authentication & Rate Limits
@@ -153,6 +174,25 @@ curl -s "https://dashboard.alchemy.com/api/stats" \
 - Error classified by type (auth, rate limit, RPC, network)
 - Root cause identified with specific fix
 - Diagnostic function for automated troubleshooting
+
+## Examples
+
+When a testnet `getAssetTransfers` call returns `429`, retain the sanitized
+method, network, response headers, and request ID, then make the retry helper
+honor `Retry-After` within the configured budget. Confirm the retry succeeds
+against the expected testnet or produces a controlled unavailable result when
+the budget is exhausted. If the dashboard shows a disabled key or depleted
+quota, stop retries and correct the account configuration; do not substitute a
+production credential or place it in a curl command committed to the project.
+
+## Error Handling
+
+| Failure class | Safe handling |
+|---------------|---------------|
+| `401` or `403` | Stop the request, verify the scoped key’s application and network, and rotate a suspected exposure. |
+| `429` or transient `5xx` | Use bounded backoff and surface an operator-visible unavailable state after the retry budget. |
+| Invalid RPC parameters | Validate address, chain, and block inputs before retrying; a retry cannot repair malformed input. |
+| Unknown provider failure | Preserve only sanitized request metadata and escalate with the request/correlation ID. |
 
 ## Resources
 

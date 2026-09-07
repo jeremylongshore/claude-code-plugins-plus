@@ -141,6 +141,21 @@ spec:
 | Kvisor high resource use | `kubectl top pods -n castai-agent` | Adjust scan intervals |
 | Network policy blocks agent | Agent goes offline | Allow egress to 443 |
 
+## Output
+
+Produce a security review record listing the environment-specific key owner,
+rotation date, approved service accounts, observed RBAC exceptions, Kvisor
+health, and network-policy test result. Treat a leaked or over-privileged key
+as an incident: revoke it, issue a scoped replacement, and preserve only
+redacted evidence of the response.
+
+## Examples
+
+For a production key rotation, create the new key in the approved secret store,
+roll the agent, verify authenticated health and least-privilege access, then
+revoke the old key. If the post-rotation check fails, restore the last known
+working secret through the change-control path and investigate before retrying.
+
 ## Resources
 
 - [CAST AI Security](https://docs.cast.ai/docs/kvisor)

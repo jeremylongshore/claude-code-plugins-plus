@@ -218,6 +218,30 @@ describe.skipIf(!hasApiKey)('Cohere Integration', () => {
 | Integration timeout | Slow API response | Set `timeout-minutes: 5` |
 | Flaky tests | API latency variance | Add retry in test setup |
 
+## Output
+
+- A pull-request lane that runs deterministic mocked tests without a Cohere credential.
+- A protected-main integration lane that uses the repository secret without printing it,
+  and reports pass/fail, coverage, and the failed test name in GitHub Actions.
+- A cost-bounded live check: the job has a five-minute ceiling, uses minimal prompts,
+  and is not triggered by untrusted pull-request code.
+
+## Examples
+
+For a release candidate, run the low-cost integration suite from a trusted local
+environment after setting `CO_API_KEY` in the shell (never in a command line, log,
+or committed file):
+
+```bash
+npm test
+npm run test:integration
+```
+
+If the integration job returns a 429, keep the unit-test result as the merge signal,
+record the rate-limit response in the incident log with secrets redacted, and retry
+the protected-main job after the documented backoff window. Do not add the key to a
+pull-request workflow or weaken the branch protection to work around a transient API failure.
+
 ## Resources
 
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)

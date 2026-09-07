@@ -10,7 +10,7 @@ description: 'Generates custom non-disclosure agreements with plain English anno
 
   '
 allowed-tools: Read, Write, Glob, Grep
-version: 1.0.0
+version: 1.1.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
 tags:

@@ -35,6 +35,16 @@ Production-grade architecture for managing CAST AI across multiple Kubernetes cl
 - Centralized secrets management
 - Monitoring stack (Prometheus, Grafana, or Datadog)
 
+## Instructions
+
+Define every environment as an independent security and state boundary, then
+pin the module and provider versions, declare capacity and interruption
+guardrails, and review the Terraform plan before applying. Roll out one
+non-production environment at a time, verify agent health and monitoring, and
+promote only the configuration that has matching approvals and evidence. Keep
+all secret references environment-scoped and use the documented rollback path
+when the observed behavior differs from the approved design.
+
 ## Terraform Module Structure
 
 ```
@@ -195,6 +205,23 @@ groups:
 | Module version mismatch | Independent env upgrades | Pin module versions |
 | Cross-env key leak | Shared tfvars | Separate state and secrets per env |
 | Monitoring gaps | Missing scrape config | Add castai-agent namespace to Prometheus |
+
+## Output
+
+Publish an environment-separated architecture decision that identifies each
+cluster’s ownership, state backend, module/provider pins, capacity limits,
+spot and hibernation policy, monitoring coverage, and secret boundary. The
+diagram is a design aid, not a deployment authority: actual configuration must
+be validated from the reviewed Terraform plan and environment-specific health
+checks.
+
+## Examples
+
+Model development, staging, and production as separate states with separate
+credentials and change approvals. Test a staging policy change and alert rule
+first, verify that it cannot access production state, then promote only the
+reviewed equivalent configuration; if credentials or state cross boundaries,
+stop and rotate or isolate them before proceeding.
 
 ## Resources
 

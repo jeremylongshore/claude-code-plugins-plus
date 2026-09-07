@@ -24,6 +24,21 @@ compatibility: Designed for Claude Code
 
 Claude Code has a plugin system with 4 extension points: **skills** (auto-activating knowledge), **commands** (slash commands), **agents** (specialized sub-agents), and **MCP servers** (tool providers). This skill covers building all four.
 
+## Prerequisites
+
+- A supported Claude Code environment and an isolated plugin workspace
+- A declared ownership boundary for filesystem, network, and credential access
+- Validation tooling for manifests, skill metadata, commands, agents, and MCP
+- A rollback plan that can disable a plugin without deleting user state
+
+## Instructions
+
+Start with the smallest extension point that meets the requirement, declare
+only the tools and permissions it needs, and validate it locally before adding
+it to a marketplace or shared environment. Test discovery, activation, failure,
+and rollback paths; do not expose secrets through examples, environment files,
+logs, or MCP response payloads.
+
 ## Plugin Structure
 
 ```
@@ -182,6 +197,22 @@ await server.connect(transport);
 | `${CLAUDE_PLUGIN_ROOT}` | Hooks | Plugin root directory |
 | `${CLAUDE_PLUGIN_DATA}` | Persistent state | Survives updates |
 | `$ARGUMENTS` | Commands | User-provided args |
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Manifest or metadata validation fails | Stop installation, correct the declared contract, and rerun validation. |
+| Plugin requests unapproved capability | Remove or narrowly justify the capability before release. |
+| MCP server fails or returns malformed data | Fail closed, redact diagnostic output, and preserve a correlation ID. |
+| Upgrade changes plugin behavior | Disable or pin the new version and restore the last tested release. |
+
+## Output
+
+Produce a plugin architecture record identifying the chosen extension point,
+manifest version, declared tools/permissions, test evidence, release owner,
+and rollback procedure. Treat a rendered example as illustrative only; the
+validated manifest and runtime behavior are the operative contract.
 
 ## Examples
 

@@ -216,6 +216,22 @@ native_crm_action:
 | Slow table processing | Too many enrichment columns | Add conditional runs, order by speed |
 | Stale enrichment data | No re-enrichment schedule | Re-run quarterly on existing contacts |
 
+## Output
+
+Document the approved lead-enrichment architecture: data sources and purposes,
+provider and CRM boundaries, deduplication key, qualification policy, retention
+and access controls, monitoring, cost guardrails, and incident/rollback owner.
+Treat a table or CRM sync as production-ready only after its observed records,
+permissions, and failure behavior match the reviewed design.
+
+## Examples
+
+Build a staging table with synthetic leads, require a valid email and approved
+ICP threshold before any CRM action, and prove that repeated events update the
+same CRM record rather than creating duplicates. If enrichment quality or the
+consent basis is unclear, suppress sync and resolve the data-policy decision
+before importing the source to production.
+
 ## Resources
 
 - [Clay University -- Sources](https://university.clay.com/docs/sources)

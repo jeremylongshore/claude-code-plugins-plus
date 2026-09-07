@@ -177,6 +177,12 @@ If you need just data sync:
 | Storage limit | Too many records/files | Archive old data, delete test data |
 | License overspend | Unused integration licenses | Audit active users quarterly |
 
+## Examples
+
+### Reduce API consumption with a measured batch migration
+
+Measure current API calls for one integration in a sandbox-equivalent window, replace its record-at-a-time loop with a bounded Bulk API or collection operation, and compare call count, error rate, and processing time. Configure an alert below the organization limit and preserve a feature flag or prior integration schedule for rollback. Do not reduce polling frequency until downstream freshness requirements have been agreed with the system owner.
+
 ## Resources
 
 - Salesforce Editions & Pricing

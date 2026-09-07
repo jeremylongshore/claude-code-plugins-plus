@@ -218,6 +218,17 @@ async function handleP3() {
 - Graceful degradation procedures per severity level
 - Post-incident review template
 
+## Examples
+
+During a suspected provider outage, the on-call engineer opens an incident,
+captures the status-page result and redacted diagnostic status codes, and
+switches the affected read path to its documented cache fallback. Enrichment
+and sequence writes stay paused while the circuit is open so unknown outcomes
+are not replayed. After Apollo recovers, allow the circuit breaker’s half-open
+probes to succeed before restoring normal traffic, then reconcile the queued
+work with idempotency keys or operator review. Close the incident only after
+the timeline, customer impact, and a tested corrective action are recorded.
+
 ## Error Handling
 
 | Issue | Escalation |

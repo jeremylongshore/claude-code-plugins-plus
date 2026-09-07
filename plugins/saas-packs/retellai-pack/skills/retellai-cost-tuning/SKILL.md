@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Reduce cost without degrading a required human handoff
+
+Measure average call duration, transfer rate, and failed-call retries for a
+representative non-production sample before changing prompt length or model
+settings. Trial the lower-cost configuration on a small canary, retaining the
+existing agent version as rollback. Keep the human-handoff trigger unchanged
+unless the service owner approves a new threshold; a shorter call is not a
+saving if it silently increases unresolved customer requests.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

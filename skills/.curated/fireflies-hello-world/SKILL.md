@@ -28,6 +28,10 @@ compatibility: Designed for Claude Code
 
 Minimal working examples demonstrating core Fireflies.ai GraphQL queries: list users, fetch transcripts, and read a meeting summary.
 
+## Examples
+
+Start with a synthetic meeting that has invented speakers and a minimal summary. Query only an opaque ID and schema result, verify logs redact headers and content, and delete the test record after confirming retention behavior. Never use a real meeting as a quick-start fixture.
+
 ## Prerequisites
 
 - Completed `fireflies-install-auth` setup

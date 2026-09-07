@@ -6,8 +6,9 @@
  *
  * WHAT THIS IS
  * ------------
- * Runs the kernel's published machine-spec — the authoring/v1 `skill-frontmatter`
- * JSON Schema from @intentsolutions/core@0.9.0 — over the SAME SKILL.md corpus the
+ * Runs the kernel's published machine-specs — the authoring/v1 and strict
+ * authoring/v2 `skill-frontmatter` JSON Schemas from @intentsolutions/core@0.10.0 —
+ * over the SAME SKILL.md corpus the
  * existing prose-spec validator (scripts/validate-skills-schema.py) already grades,
  * and reports the per-file AGREE / DISAGREE rate between the two.
  *
@@ -16,9 +17,9 @@
  *
  *   - prose-spec  : the 5,100-line validate-skills-schema.py, MARKETPLACE tier
  *                   (the IS 8-field required set is an ERROR-on-missing there).
- *   - machine-spec: @intentsolutions/core schemas/authoring/v1/skill-frontmatter.schema.json
- *                   (pure allOf composition of upstream-base + universalFolds + is-overlay;
- *                    encodes the SAME IS 8-field required set).
+ *   - machine-spec: @intentsolutions/core schemas/authoring/v1 and v2
+ *                   skill-frontmatter.schema.json compositions. v1 is the published
+ *                   baseline; v2 is the strict, decision-relevant cutover candidate.
  *
  * The two are deliberately tier-matched: both require the 8-field marketplace set
  * {name, description, allowed-tools, version, author, license, compatibility, tags}.
@@ -59,19 +60,16 @@
  *   existing-PASS-raw  := validate-skills-schema.py --marketplace reports errors == 0
  *                         (a `fatal` entry counts as existing-FAIL).
  *   existing-PASS-fm   := the file has ZERO non-`[body]` errors (frontmatter-scoped PASS).
- *                         Computed by fetching the file's full error STRING list (single-file
- *                         `--marketplace --json`, which emits the strings the batch run omits)
- *                         and filtering out every error message starting with `[body]`.
+ *                         Computed from the batch `error_details` error strings and filtering
+ *                         out every error message starting with `[body]`.
  *   RAW DISAGREE       := existing-PASS-raw !== kernel-PASS (conflates frontmatter + body).
  *   FRONTMATTER DISAGREE := existing-PASS-fm !== kernel-PASS (the cutover-relevant deviation;
  *                         a remaining one here would be a REAL kernel gap to surface).
  *   BODY-SCOPE-ONLY    := existing-FAIL-raw && kernel-PASS && every error is `[body]` (a scope
  *                         difference, NOT a deviation).
  *
- * The single-file `--json` invocation emits the full `errors` array of message strings;
- * the batch `--json` run emits only per-file error COUNTS. So the shadow runs the batch
- * once to enumerate the corpus + raw verdict, then re-fetches error STRINGS per-file ONLY
- * for the (small) raw-disagreement set to scope it — never for the whole corpus.
+ * The batch `--json` run includes `error_details`, the full error-string array per file.
+ * The single-file form is retained only as a compatibility fallback for older output.
  *
  * OUTPUT
  * ------
@@ -86,7 +84,7 @@
  *   and even then the calling workflow uses continue-on-error so it can NEVER fail
  *   the build. The deviation rate itself is REPORTED, never enforced.
  *
- * KERNEL PIN: @intentsolutions/core is pinned EXACTLY to 0.9.0 in package.json
+ * KERNEL PIN: @intentsolutions/core is pinned EXACTLY to 0.10.0 in package.json
  * (no ^/~). This shadow reads the schema straight out of node_modules so the
  * comparison is always against the pinned, published contract.
  *
@@ -104,30 +102,37 @@ import yaml from 'js-yaml';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, '..');
-const KERNEL_PIN = '0.9.0';
+const KERNEL_PIN = '0.10.0';
 
-const SCHEMA_DIR = join(
-  REPO_ROOT,
-  'node_modules',
-  '@intentsolutions',
-  'core',
-  'schemas',
-  'authoring',
-  'v1',
-);
-
-// The composed skill-frontmatter contract is a pure allOf of three $ref'd layers.
+// Each composed skill-frontmatter contract is a pure allOf of three $ref'd layers.
 // ajv resolves $ref by $id, so every layer must be registered. marketplace-tier
 // supplies the universalFolds $def the composition references.
-const SCHEMA_FILES = [
-  'upstream-base/skill-frontmatter.v1.json',
-  'is-overlay/skill-frontmatter.v1.json',
-  'marketplace-tier.schema.json',
-  'skill-frontmatter.schema.json', // the composition (validated against)
+const LANES = [
+  {
+    id: 'authoring/v1',
+    strict: false,
+    files: [
+      'upstream-base/skill-frontmatter.v1.json',
+      'is-overlay/skill-frontmatter.v1.json',
+      'marketplace-tier.schema.json',
+      'skill-frontmatter.schema.json',
+    ],
+    schemaId:
+      'https://github.com/jeremylongshore/intent-eval-core/schemas/authoring/v1/skill-frontmatter.schema.json',
+  },
+  {
+    id: 'authoring/v2',
+    strict: true,
+    files: [
+      'upstream-base/skill-frontmatter.v1.json',
+      'is-overlay/skill-frontmatter.v2.json',
+      'marketplace-tier.schema.json',
+      'skill-frontmatter.schema.json',
+    ],
+    schemaId:
+      'https://github.com/jeremylongshore/intent-eval-core/schemas/authoring/v2/skill-frontmatter.schema.json',
+  },
 ];
-
-const COMPOSED_SCHEMA_ID =
-  'https://github.com/jeremylongshore/intent-eval-core/schemas/authoring/v1/skill-frontmatter.schema.json';
 
 const FRONTMATTER_RE = /^---\s*\n([\s\S]*?)\n---\s*\n/;
 
@@ -153,19 +158,30 @@ function loadKernelVersion() {
   return v;
 }
 
-function buildKernelValidator() {
+function buildKernelValidator(lane) {
   const ajv = new Ajv2020({ allErrors: true, strict: false });
   addFormats(ajv);
-  for (const rel of SCHEMA_FILES) {
-    const p = join(SCHEMA_DIR, rel);
+  const schemaDir = join(
+    REPO_ROOT,
+    'node_modules',
+    '@intentsolutions',
+    'core',
+    'schemas',
+    'authoring',
+    lane.id.slice('authoring/'.length),
+  );
+  for (const rel of lane.files) {
+    const p = join(schemaDir, rel);
     if (!existsSync(p)) {
-      die(`kernel schema layer missing: ${p}. Is @intentsolutions/core@${KERNEL_PIN} intact?`);
+      die(
+        `${lane.id} kernel schema layer missing: ${p}. Is @intentsolutions/core@${KERNEL_PIN} intact?`,
+      );
     }
     ajv.addSchema(JSON.parse(readFileSync(p, 'utf8')));
   }
-  const validate = ajv.getSchema(COMPOSED_SCHEMA_ID);
+  const validate = ajv.getSchema(lane.schemaId);
   if (!validate) {
-    die(`could not resolve composed schema by $id ${COMPOSED_SCHEMA_ID}`);
+    die(`could not resolve ${lane.id} composed schema by $id ${lane.schemaId}`);
   }
   return validate;
 }
@@ -186,9 +202,9 @@ function resolvePythonContext() {
 
 /**
  * Drive the existing prose-spec validator (batch mode) to get its per-file MARKETPLACE
- * verdict. The batch `--json` run emits per-file error COUNTS (not strings), which is all
- * the RAW verdict needs; frontmatter scoping re-fetches strings per-file in main().
- * Returns Map<absPath, { pass: boolean, errors: number, fatal: boolean }>.
+ * verdict and batch error strings.
+ * Returns Map<absPath, { pass: boolean, errors: number, errorStrings: string[] | null,
+ * fatal: boolean }>.
  */
 function loadExistingVerdicts(py, script) {
   const res = spawnSync(py, [script, '--marketplace', '--json'], {
@@ -215,10 +231,13 @@ function loadExistingVerdicts(py, script) {
     if (entry.kernel_shadow || typeof entry.path !== 'string') continue;
     const abs = resolve(REPO_ROOT, entry.path);
     if ('fatal' in entry) {
-      map.set(abs, { pass: false, errors: 0, fatal: true });
+      map.set(abs, { pass: false, errors: 0, errorStrings: null, fatal: true });
     } else {
       const errors = entry.errors ?? 0;
-      map.set(abs, { pass: errors === 0, errors, fatal: false });
+      const errorStrings = Array.isArray(entry.error_details)
+        ? entry.error_details.map(String)
+        : null;
+      map.set(abs, { pass: errors === 0, errors, errorStrings, fatal: false });
     }
   }
   return map;
@@ -243,10 +262,8 @@ function nonBodyErrorCount(errorStrings) {
 /**
  * Fetch the full per-file error STRING list from the existing validator.
  *
- * The batch `--json` run emits only per-file error COUNTS, which cannot be scoped to
- * frontmatter. The SINGLE-FILE `--json` invocation emits the `errors` array of message
- * strings (each `[body]` / `[frontmatter]` / `[stub-section]` / … prefixed). We call this
- * ONLY for the (small) raw-disagreement set, never the whole corpus, to scope it.
+ * Older validator output may omit batch `error_details`; the SINGLE-FILE `--json`
+ * invocation supplies the same strings as a backward-compatible fallback.
  *
  * Returns { ok: true, errors: string[] } or { ok: false, reason } on a harness hiccup
  * (the caller degrades gracefully — an unscopable file stays a raw disagreement).
@@ -307,7 +324,8 @@ function relTo(absPath) {
 
 function main() {
   const kernelVersion = loadKernelVersion();
-  const validateKernel = buildKernelValidator();
+  const validateKernel = buildKernelValidator(LANES[0]);
+  const validateStrictKernel = buildKernelValidator(LANES[1]);
   const { py, script } = resolvePythonContext();
   const existing = loadExistingVerdicts(py, script);
 
@@ -315,7 +333,13 @@ function main() {
   let agree = 0;
   // RAW disagreements (conflate frontmatter + body scope).
   const rawDisagreements = [];
+  // The strict v2 lane deliberately gets its own raw comparison. Its
+  // existing-PASS / kernel-FAIL count is the only decision-relevant number for
+  // a future authority flip: it identifies files the current required validator
+  // accepts but the strict candidate would newly reject.
+  const strictDisagreements = [];
   let kernelParseFailures = 0;
+  let strictKernelParseFailures = 0;
 
   for (const [absPath, ex] of existing.entries()) {
     total += 1;
@@ -323,16 +347,29 @@ function main() {
 
     let kernelPass;
     let kernelErrors = [];
+    let strictKernelPass;
+    let strictKernelErrors = [];
     if (!fm.ok) {
       // The kernel schema cannot validate a file with no parseable frontmatter
       // mapping; treat as kernel-FAIL (matches the prose-spec's fatal handling).
       kernelPass = false;
       kernelErrors = [{ instancePath: '', message: fm.reason }];
+      strictKernelPass = false;
+      strictKernelErrors = [{ instancePath: '', message: fm.reason }];
       kernelParseFailures += 1;
+      strictKernelParseFailures += 1;
     } else {
       kernelPass = validateKernel(fm.data) === true;
       if (!kernelPass) {
         kernelErrors = (validateKernel.errors || []).map((e) => ({
+          instancePath: e.instancePath,
+          message: e.message,
+          params: e.params,
+        }));
+      }
+      strictKernelPass = validateStrictKernel(fm.data) === true;
+      if (!strictKernelPass) {
+        strictKernelErrors = (validateStrictKernel.errors || []).map((e) => ({
           instancePath: e.instancePath,
           message: e.message,
           params: e.params,
@@ -348,9 +385,20 @@ function main() {
         path: relTo(absPath),
         existing: ex.pass ? 'PASS' : ex.fatal ? 'FATAL' : 'FAIL',
         existingErrorCount: ex.errors,
+        errorStrings: ex.errorStrings,
         kernel: kernelPass ? 'PASS' : 'FAIL',
         kernelPass,
         kernelErrors: kernelErrors.slice(0, 6),
+        direction: ex.pass ? 'existing-PASS / kernel-FAIL' : 'existing-FAIL / kernel-PASS',
+      });
+    }
+    if (ex.pass !== strictKernelPass) {
+      strictDisagreements.push({
+        path: relTo(absPath),
+        existing: ex.pass ? 'PASS' : ex.fatal ? 'FATAL' : 'FAIL',
+        existingErrorCount: ex.errors,
+        kernel: strictKernelPass ? 'PASS' : 'FAIL',
+        kernelErrors: strictKernelErrors.slice(0, 6),
         direction: ex.pass ? 'existing-PASS / kernel-FAIL' : 'existing-FAIL / kernel-PASS',
       });
     }
@@ -364,16 +412,19 @@ function main() {
   // ---- FRONTMATTER-SCOPED deviation ----
   // The kernel is a FRONTMATTER contract; the prose-spec also lints the BODY. A raw
   // existing-FAIL / kernel-PASS file is a frontmatter deviation ONLY if the prose-spec
-  // failure is NOT body-only. Re-fetch error STRINGS per file (single-file --json) for
-  // the raw-disagreement set and filter out `[body]`-prefixed errors before counting.
+  // failure is NOT body-only. Use batch error strings and fall back to a single-file
+  // lookup only when an older validator omits them.
   let bodyScopeOnlyCount = 0; // kernel-PASS, existing-FAIL on BODY sections only (a scope diff, not a deviation)
   const bodyScopeOnlyFiles = [];
   const frontmatterDisagreements = []; // the cutover-relevant set (REAL kernel gaps if any remain)
 
   for (const d of rawDisagreements) {
     if (d.direction === 'existing-FAIL / kernel-PASS') {
-      // Could be a pure body-scope difference. Fetch strings to decide.
-      const fetched = fetchFileErrorStrings(py, script, d.absPath);
+      // Could be a pure body-scope difference. Prefer the batch strings.
+      const fetched =
+        d.errorStrings !== null
+          ? { ok: true, errors: d.errorStrings }
+          : fetchFileErrorStrings(py, script, d.absPath);
       if (fetched.ok) {
         const bodyOnly = allErrorsAreBodyScope(fetched.errors);
         const fmErrCount = nonBodyErrorCount(fetched.errors);
@@ -441,6 +492,11 @@ function main() {
   const existingFailKernelPass = rawDisagreements.filter(
     (d) => d.direction === 'existing-FAIL / kernel-PASS',
   ).length;
+  const strictExistingPassKernelFail = strictDisagreements.filter(
+    (d) => d.direction === 'existing-PASS / kernel-FAIL',
+  ).length;
+  const strictExistingFailKernelPass = strictDisagreements.length - strictExistingPassKernelFail;
+  const strictDecisionRate = total === 0 ? 0 : (strictExistingPassKernelFail / total) * 100;
 
   const report = {
     mode: 'shadow-advisory',
@@ -449,7 +505,24 @@ function main() {
     kernelVersion,
     kernelPin: KERNEL_PIN,
     comparedAgainst: 'scripts/validate-skills-schema.py --marketplace --json',
-    composedSchema: COMPOSED_SCHEMA_ID,
+    composedSchema: LANES[0].schemaId,
+    lanes: {
+      'authoring/v1': {
+        composedSchema: LANES[0].schemaId,
+        strict: false,
+      },
+      'authoring/v2': {
+        composedSchema: LANES[1].schemaId,
+        strict: true,
+        decisionRelevantMetric: 'existing-PASS / kernel-FAIL',
+        existingPassKernelFail: strictExistingPassKernelFail,
+        existingPassKernelFailPct: Number(strictDecisionRate.toFixed(2)),
+        existingFailKernelPass: strictExistingFailKernelPass,
+        rawDisagree: strictDisagreements.length,
+        kernelUnparseableFrontmatter: strictKernelParseFailures,
+        disagreements: strictDisagreements,
+      },
+    },
     scopeNote:
       'The kernel skill-frontmatter schema is a FRONTMATTER contract; the prose-spec ' +
       'validator lints frontmatter AND markdown body sections (errors prefixed `[body]`). ' +
@@ -479,9 +552,10 @@ function main() {
     // Informational: kernel-PASS / existing-FAIL-on-body-only files (scope difference):
     bodyScopeOnlyFiles,
     // Raw scope-conflated disagreements (transparency):
-    rawDisagreements: rawDisagreements.map(({ absPath, kernelPass, ...rest }) => {
+    rawDisagreements: rawDisagreements.map(({ absPath, kernelPass, errorStrings, ...rest }) => {
       void absPath;
       void kernelPass;
+      void errorStrings;
       return rest;
     }),
     generatedAt: new Date().toISOString(),
@@ -499,10 +573,16 @@ function main() {
   console.log('═══════════════════════════════════════════════════════════════');
   console.log(`  kernel        : @intentsolutions/core@${kernelVersion} (pinned ${KERNEL_PIN})`);
   console.log('  prose-spec    : validate-skills-schema.py --marketplace --json');
-  console.log('  machine-spec  : authoring/v1 skill-frontmatter.schema.json (composed)');
+  console.log('  machine-spec  : authoring/v1 baseline + authoring/v2 strict (composed)');
   console.log('  scope         : kernel = FRONTMATTER contract; prose-spec also lints BODY');
   console.log('  ───────────────────────────────────────────────────────────');
   console.log(`  corpus files                 : ${total}`);
+  console.log('  ── STRICT authoring/v2 — DECISION-RELEVANT ──');
+  console.log(
+    `  existing-PASS / kernel-FAIL  : ${strictExistingPassKernelFail} (${strictDecisionRate.toFixed(2)}%)`,
+  );
+  console.log(`  existing-FAIL / kernel-PASS  : ${strictExistingFailKernelPass}`);
+  console.log(`  strict raw DISAGREE          : ${strictDisagreements.length}`);
   console.log('  ── FRONTMATTER-SCOPED (the cutover-relevant signal) ──');
   console.log(`  FRONTMATTER AGREE            : ${total - frontmatterDisagree}`);
   console.log(`  FRONTMATTER DISAGREE         : ${frontmatterDisagree}`);
@@ -579,6 +659,11 @@ function main() {
     lines.push('| metric | value |');
     lines.push('| --- | --- |');
     lines.push(`| corpus files | ${total} |`);
+    lines.push(
+      `| **strict v2 existing-PASS / kernel-FAIL (decision-relevant)** | **${strictExistingPassKernelFail} (${strictDecisionRate.toFixed(2)}%)** |`,
+    );
+    lines.push(`| strict v2 existing-FAIL / kernel-PASS | ${strictExistingFailKernelPass} |`);
+    lines.push(`| strict v2 raw DISAGREE | ${strictDisagreements.length} |`);
     lines.push(`| frontmatter AGREE | ${total - frontmatterDisagree} |`);
     lines.push(`| frontmatter DISAGREE | ${frontmatterDisagree} |`);
     lines.push(`| **frontmatter deviation rate** | **${frontmatterRateStr}%** |`);

@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Fathom Install & Auth
 
+## Output
+
+- A scoped Fathom credential/integration reference for the intended environment, with a verified low-impact connection test.
+- A credential ownership, rotation, and revocation path that protects meeting content and contacts.
+
+## Examples
+
+Configure a development credential from the approved secret manager and verify access against a synthetic meeting/test account, recording only environment and result. If a token appears in code, logs, or support material, revoke it immediately and issue a replacement before further diagnosis.
+
 ## Overview
 
 Set up Fathom AI API access for retrieving meeting transcripts, summaries, and action items. The API at `api.fathom.ai/external/v1` uses `X-Api-Key` header authentication with per-user API keys.

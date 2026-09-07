@@ -187,6 +187,10 @@ curl -X POST "https://api.brightdata.com/datasets/v3/trigger?dataset_id=YOUR_ID&
 - Notification endpoint for status updates
 - Deduplication by snapshot_id
 
+## Examples
+
+Verify the raw delivery signature or shared secret before parsing, persist a redacted receipt and idempotency key before acknowledging, then enqueue a worker that rechecks target/data policy. Do not expose a callback that automatically expands collection or forwards raw results; failed deliveries remain pending for safe replay.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

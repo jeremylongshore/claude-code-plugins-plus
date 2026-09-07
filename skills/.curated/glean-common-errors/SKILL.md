@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Glean provides enterprise search across connected data sources with AI-powered results. API integrations involve two distinct token types (indexing vs. client) and a custom datasource model for pushing content. Common errors stem from token type mismatches, permission misconfiguration that silently hides documents from search results, and bulk indexing failures caused by duplicate upload IDs or oversized documents. Stale results are a frequent complaint -- Glean indexes asynchronously, so newly pushed documents may take 1-5 minutes to appear in search. This reference covers authentication, indexing pipeline, and search-time issues.
 
+## Prerequisites
+
+- A redacted correlation ID, UTC timestamp, endpoint class, and HTTP status; omit headers, real queries, and indexed bodies.
+- A scoped read-only diagnostic credential, a named owner for any connector or ACL change, and a known-good synthetic probe.
+
+## Instructions
+
+1. Classify the symptom by status code and operation before changing configuration.
+2. Reproduce once with the synthetic probe and capture only status, latency band, and correlation ID.
+3. Check token scope, rate-limit budget, request shape, connector freshness, and ACL watermark in that order.
+4. Make one reversible fix at a time; access-scope changes require owner approval and allow/deny probes.
+5. Escalate a redacted diagnostic bundle if the correlation class persists after rollback.
+
 ## Error Reference
 
 | Code | Message | Cause | Fix |
@@ -94,6 +107,14 @@ curl -s -o /dev/null -w "%{http_code}" \
   -H "X-Glean-Auth-Type: BEARER" \
   https://your-domain.glean.com/api/v1/search
 ```
+
+## Output
+
+Return error class, correlation ID, datasource, probe outcome, remediation attempted, and next owner. Never include credentials, query text, result snippets, or membership data.
+
+## Examples
+
+`status=429; source=sandbox-guides; correlation=req-opaque-17; action=backoff; retry_after=60s; synthetic_probe=recovered` is sufficient for a safe rate-limit handoff.
 
 ## Resources
 

@@ -10,10 +10,10 @@ const entry = (policy, extra = {}) => ({
   ...extra,
 });
 
-test('tracked dirs excludes untracked build-output plugins', () => {
+test('tracked dirs includes the source-backed a2a-client plugin', () => {
   const dirs = trackedPluginDirs();
   ok(dirs.has('dolt-mcp-vcs'));
-  ok(!dirs.has('a2a-client'), 'a2a-client is untracked dist-only output');
+  ok(dirs.has('a2a-client'), 'a2a-client is a tracked source-backed plugin');
 });
 
 test('an undeclared tracked plugin fails', () => {

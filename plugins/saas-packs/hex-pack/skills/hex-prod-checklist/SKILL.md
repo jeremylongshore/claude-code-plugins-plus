@@ -100,6 +100,27 @@ checkHexReadiness();
 | Run duration regression | Slow pipelines delay downstream reports | P2 |
 | Project version pinning | Unexpected notebook changes break output | P3 |
 
+## Prerequisites
+
+- Protected production approval, named incident/rollback owners, and a pinned project/configuration revision proven in sandbox and staging.
+- Baselines for run health, latency, quota, output shape, and authorized access plus a canary project.
+
+## Instructions
+
+1. Confirm environment, secret reference, project scope, artifact revision, and approval before enabling production execution.
+2. Run bounded canary parameters and verify health, aggregate output assertions, and least-privilege access without exporting results.
+3. Monitor errors, latency, quota, and cancellation signals through the observation window; halt on a scope or output regression.
+4. Promote in stages or cancel and restore the previous revision, recording the decision and verified rollback.
+5. Close only after the owner accepts the redacted receipt and temporary access is revoked.
+
+## Output
+
+Create a readiness receipt with revision, canary project, health/latency/quota outcomes, aggregate assertion, approvals, outcome, and rollback reference. Exclude SQL, output, credentials, and identities.
+
+## Examples
+
+`revision=r44; canary=proj-sandbox-12; health=pass; quota=within-budget; assertions=pass; outcome=promote; rollback=r43` is a complete canary decision.
+
 ## Resources
 
 - [Hex API Overview](https://learn.hex.tech/docs/api/api-overview)

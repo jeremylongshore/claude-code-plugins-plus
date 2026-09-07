@@ -28,6 +28,10 @@ compatibility: Designed for Claude Code
 
 Handle Fireflies.ai webhook events for real-time transcript notifications. Fireflies fires a webhook when a transcript finishes processing. The payload is signed with HMAC-SHA256 for verification.
 
+## Examples
+
+Deliver the same synthetic signed transcript-ready event twice. The handler verifies the raw-body signature, stores an opaque event ID, processes only the first event, and emits a duplicate receipt for the second. An invalid signature must be rejected without logging the transcript identifier or payload.
+
 ## Prerequisites
 
 - Fireflies.ai Business or Enterprise plan

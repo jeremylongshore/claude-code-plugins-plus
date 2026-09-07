@@ -8,12 +8,16 @@ import DetailCta from '../../components/DetailCta.astro';
 import PluginCard from '../../components/PluginCard.astro';
 import skillsCatalog from '../../data/skills-catalog.json';
 import readmeSections from '../../data/readme-sections.json';
+import { truncateHtml } from '../../../scripts/truncate-html.mjs';
 
 export async function getStaticPaths() {
   const catalogPath = join(process.cwd(), '../.claude-plugin/marketplace.extended.json');
   const catalog = JSON.parse(readFileSync(catalogPath, 'utf-8'));
+  const installCatalogPath = join(process.cwd(), '../.claude-plugin/marketplace.json');
+  const installCatalog = JSON.parse(readFileSync(installCatalogPath, 'utf-8'));
+  const installableNames = new Set(installCatalog.plugins.map((plugin: any) => plugin.name));
 
-  return catalog.plugins.map((plugin: any) => ({
+  return catalog.plugins.filter((plugin: any) => installableNames.has(plugin.name)).map((plugin: any) => ({
     params: { name: plugin.name },
     props: { plugin },
   }));
@@ -40,8 +44,11 @@ const componentList = formatComponents(plugin.components);
 const relatedPlugins = await (async () => {
   const catalogPath = join(process.cwd(), '../.claude-plugin/marketplace.extended.json');
   const catalog = JSON.parse(readFileSync(catalogPath, 'utf-8'));
+  const installCatalogPath = join(process.cwd(), '../.claude-plugin/marketplace.json');
+  const installCatalog = JSON.parse(readFileSync(installCatalogPath, 'utf-8'));
+  const installableNames = new Set(installCatalog.plugins.map((candidate: any) => candidate.name));
   return catalog.plugins
-    .filter((p: any) => p.category === plugin.category && p.name !== plugin.name)
+    .filter((p: any) => installableNames.has(p.name) && p.category === plugin.category && p.name !== plugin.name)
     .slice(0, 6);
 })();
 
@@ -200,9 +207,7 @@ statsItems.push({
                 </div>
                 <div class="gist-content" style="display: none;">
                   <div class="gist-content-inner" set:html={
-                    skill.content
-                      ? skill.content.slice(0, 3000)
-                      : ''
+                    skill.content ? truncateHtml(skill.content, 3000) : ''
                   } />
                 </div>
               </div>

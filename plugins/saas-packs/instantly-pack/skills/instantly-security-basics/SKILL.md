@@ -246,6 +246,14 @@ async function removeMember(memberId: string) {
 | Webhook `401` | Secret mismatch | Check `headers` field in webhook config |
 | Audit log empty | Plan doesn't include audit logs | Upgrade plan or check workspace settings |
 
+## Output
+
+Return a security receipt with environment, sender/campaign scope, secret-reference version, consent/suppression validation, rotation/revocation state, correlation ID, and rollback action. Never include tokens, addresses, or email copy.
+
+## Examples
+
+`env=staging; campaign=sandbox-only; secret_ref=sender-v12; consent=pass; suppression=pass; sends=0; rollback=scheduler-disabled` is an auditable control result.
+
 ## Resources
 
 - Instantly API Key Management

@@ -164,6 +164,32 @@ while any(t.status in ("submitted", "processing") for t in tracker.tasks.values(
     detect_stuck(tracker)
 ```
 
+## Prerequisites
+
+- An approved job queue, synthetic or rights-cleared briefs, an authorized workspace and credit cap, draft-only destination, policy review, and cancellation/removal owner.
+
+## Instructions
+
+1. Monitor only approved sandbox or production-canary tasks; store task references and aggregate state counts, not prompts, asset URLs, or identities.
+2. Verify task ownership, policy/rights status, credit consumption, retention, and draft-only routing before any downstream publication step.
+3. Pause and cancel queued tasks on stuck jobs, unexpected cost, policy, rights, scope, or retention drift; remove associated temporary drafts.
+4. Keep a redacted monitoring receipt for the approved window and ensure a named owner can restore the prior queue configuration.
+
+## Output
+
+Produce a monitoring receipt with environment, aggregate task states, queue limits, credit use, policy/rights/draft-only checks, cancellation outcome, owner, retention/removal proof, and rollback reference. Exclude prompts, assets, and credentials.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Stuck or duplicate task | Pause the queue, cancel or deduplicate the task, and investigate using redacted metadata only. |
+| Policy, rights, budget, or retention drift | Cancel affected drafts, remove temporary assets, and require owner review before resuming. |
+
+## Examples
+
+`env=staging; queued=3; completed=2; cancelled=1; budget=within-cap; policy=pass; destination=draft-only; cleanup=verified` is a safe queue receipt.
+
 ## Resources
 
 - [Task Query API](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)

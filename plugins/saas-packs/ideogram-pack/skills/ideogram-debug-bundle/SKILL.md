@@ -193,6 +193,10 @@ async function debuggableRequest(url: string, init: RequestInit) {
   - `api-response-sample.json` -- truncated API response
   - `env-redacted.txt` -- configuration with values masked
 
+## Examples
+
+`incident=inc-opaque-21; window=15m; generator=sandbox; latency=p95-420ms; destination=restricted-support; prompt_fields=excluded; image_fields=excluded; retention=7d` is a useful debug summary.
+
 ## Resources
 
 - [Ideogram API Overview](https://developer.ideogram.ai/ideogram-api/api-overview)

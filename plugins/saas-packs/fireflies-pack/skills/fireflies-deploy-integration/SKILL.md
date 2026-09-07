@@ -28,6 +28,10 @@ compatibility: Designed for Claude Code
 
 Deploy Fireflies.ai integrations across platforms. Covers GraphQL client setup, webhook receiver deployment, and secret management for Vercel, Docker, and Google Cloud Run.
 
+## Examples
+
+Deploy a staging receiver using platform-injected scoped secrets and a synthetic signed event. Verify that health responses contain no transcript data, a bad signature is rejected, and a failed canary can be rolled back before any production transcript destination is enabled.
+
 ## Prerequisites
 
 - Fireflies.ai Business+ plan for API access

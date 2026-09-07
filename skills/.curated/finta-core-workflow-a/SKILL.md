@@ -28,6 +28,12 @@ compatibility: Designed for Claude Code
 
 End-to-end fundraise management with Finta: prospect investors, manage outreach, track meetings, handle due diligence, and close commitments.
 
+## Prerequisites
+
+- A reviewed fundraising plan, authorized team roles, and a current recipient/intro consent policy.
+- Verified source documents and metrics, with access limited per investor and stage.
+- An internal owner for approvals of outreach, deal-room content, and any payment or commitment workflow.
+
 ## Instructions
 
 ### Step 1: Investor Prospecting with Aurora AI
@@ -94,6 +100,14 @@ Track in Finta or export for custom analysis:
 | Deal room views not logging | Browser blocking | Share via direct email |
 | Payment link expired | Stripe session timeout | Generate new link |
 | Aurora suggestions poor | Incomplete profile | Complete all company fields |
+
+## Output
+
+Maintain a controlled pipeline record with the stage owner, permitted materials, last approved communication, and next action. Keep investor-level contact details, deal-room analytics, cap-table data, and commitment terms in approved systems only.
+
+## Examples
+
+Create a test round using fictitious organizations and staged documents. Have the owner review the audience and document permissions before sending a test outreach. Confirm a stage update is auditable and that removing a test participant immediately removes access to restricted material.
 
 ## Resources
 

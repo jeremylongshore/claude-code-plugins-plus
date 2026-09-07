@@ -24,6 +24,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Hello World
 
+## Output
+
+Return an opaque test ID, schema/publish result, owner, and redacted failure reference. Keep presentation content, credentials, and viewer data out of output.
+
+## Examples
+
+Create a disposable staging presentation with fictional content, verify it is visible only to the approved test audience, then delete or unpublish it through the documented cleanup path.
+
 ## Overview
 
 Generate your first presentation using Gamma's async Generate API. The workflow is: POST to create a generation, poll for status, then retrieve results (gammaUrl + exportUrl).

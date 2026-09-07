@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Approve a limited production launch
+
+Before routing a live number, verify the exact agent version, environment
+secret references, consent and disclosure text, fallback transfer destination,
+and on-call owner. Run a final synthetic call through the production-like
+preview route and record the result without retaining audio. Start with a
+small traffic percentage and a defined rollback trigger, then expand only when
+completion, escalation, and error metrics remain within the release bounds.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

@@ -284,6 +284,20 @@ def embed(texts: list[str], input_type: str = "search_document") -> list[list[fl
 | `CohereError` (status 5xx) | Server error | Retry with backoff |
 | `CohereTimeoutError` | Network timeout | Retry with backoff |
 
+## Output
+
+Return validated domain results or classified retryable/terminal errors with
+safe correlation data, model/version, and operation context. The client boundary
+must not log API keys, complete prompts, retrieved documents, embeddings, or
+personal data beyond the caller’s approved need.
+
+## Examples
+
+Use a staging client with a scoped key to embed a synthetic document, validate
+the expected embedding type and dimensions, then assert a malformed response
+becomes a contract error without caching it. On a 429, reschedule the same
+bounded job; on 401, stop and repair the secret reference through its owner.
+
 ## Resources
 
 - [Cohere TypeScript SDK](https://github.com/cohere-ai/cohere-typescript)

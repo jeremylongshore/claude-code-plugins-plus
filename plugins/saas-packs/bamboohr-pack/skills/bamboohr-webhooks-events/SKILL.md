@@ -293,6 +293,10 @@ curl -X POST http://localhost:3000/webhooks/bamboohr \
 - Deduplication via Redis
 - Local testing workflow with ngrok
 
+## Examples
+
+Verify the raw request signature and timestamp before JSON parsing, persist a redacted event receipt plus idempotency key before acknowledgement, and enqueue downstream HR actions only after authorization checks. Never log employee fields or execute provisioning/deprovisioning directly in the webhook request path; workers must be retry-safe and require explicit policy approval for access changes.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

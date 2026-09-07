@@ -116,6 +116,24 @@ export function mockMessage(text: string): Message {
 }
 ```
 
+## Output
+
+The development loop produces a repeatable local project layout, a single
+configured client, mock-backed tests, and a request log that records model and
+token usage. A change can then be exercised with no API spend in the normal
+test suite or with deliberately enabled live traffic when investigating a
+prompt or integration behavior.
+
+## Examples
+
+While editing a prompt, run the default `vitest` command against a saved mock
+response and confirm the application handles the expected text and stop reason.
+When a real API check is needed, set `LIVE_API=1` only for that invocation,
+choose the lower-cost development model, and inspect the logger for token use.
+If the live response changes the contract, first update the fixture and its
+assertions, then rerun the mock suite so later local iterations remain fast and
+deterministic.
+
 ## Environment Management
 
 ```bash

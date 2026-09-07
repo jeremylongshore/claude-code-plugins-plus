@@ -12,7 +12,7 @@ description: 'Manage incident response for Documenso integration issues.
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(kubectl:*), Grep
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,6 +22,21 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Incident Runbook
+
+## Instructions
+
+1. Declare the incident scope, commander, affected documents/signers/environment, and safe communication channel.
+2. Stabilize with the approved pause, access-revocation, or rollback action before deep diagnosis.
+3. Collect only redacted correlation/state/audit evidence; preserve document/signature integrity and chain of custody.
+4. Verify recovery, notify owners, and create follow-up work for root cause and prevention.
+
+## Output
+
+- A time-stamped incident record with scope, owner, mitigation, redacted evidence, and verified recovery or escalation.
+
+## Examples
+
+For unauthorized document access, restrict affected credentials or sharing immediately, capture opaque document/correlation IDs and redacted audit state, and verify access is restored only to the intended role. Escalate according to policy; do not share documents, signing links, or signer PII in incident chat.
 
 ## Overview
 

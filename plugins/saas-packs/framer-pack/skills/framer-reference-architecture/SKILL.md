@@ -22,6 +22,26 @@ compatibility: Designed for Claude Code
 ---
 # Framer Reference Architecture
 
+## Prerequisites
+
+Documented site owners, publishing/domain access policy, approved integrations, visitor-data boundaries, synthetic staging site, and rollback owner.
+
+## Instructions
+
+Separate editing, publishing, domain/DNS, forms, analytics, and downstream integrations by least privilege. Validate changes in staging, use redacted telemetry, promote a canary, and retain a tested rollback path.
+
+## Output
+
+Maintain an architecture record with trust boundaries, approved destinations, access/retention controls, owners, canary result, and rollback mechanism. Exclude credentials and visitor submissions.
+
+## Error Handling
+
+Quarantine unknown integration destinations and stop publishing on domain, access, or privacy-policy failures. Restore the prior configuration before retrying.
+
+## Examples
+
+Publish a fictional staging page, deny an unapproved analytics consumer, and verify rollback restores the prior site without leaking form data.
+
 ## Overview
 
 Production architecture for Framer integrations covering plugins, Server API CMS sync, code components, and automated publishing pipelines.

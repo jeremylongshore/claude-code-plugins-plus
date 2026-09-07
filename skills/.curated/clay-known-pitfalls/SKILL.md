@@ -206,6 +206,30 @@ This ensures expensive operations only run on qualified prospects.
 | No conditional run rules | Expensive columns run on all | Easy (add conditions) |
 | Webhook 50K limit hit | Data loss | Medium (rotation) |
 
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| A documented anti-pattern is present in production | Contain the automation, record scope and impact, then correct it through reviewed change control. |
+| Credit or data-quality impact cannot be measured | Pause expansion and establish a baseline before modifying the table. |
+| A fix requires broader data or permissions | Obtain data-owner/security approval; do not bypass existing controls. |
+| A change causes downstream CRM errors | Restore the last verified configuration and reconcile affected records. |
+
+## Output
+
+Create a remediation decision for each found anti-pattern with table scope,
+baseline evidence, expected cost/quality effect, owner, approved change,
+verification metric, and rollback trigger. Guidance is not a blanket
+authorization to re-enrich data or expand CRM sync.
+
+## Examples
+
+For a table without conditional runs, first quantify affected rows and credit
+use, then add a qualification rule in staging and compare hit rate and CRM
+outcomes. Promote only after the owner accepts the result; if the rule excludes
+needed leads or triggers duplicates, restore the prior configuration and review
+the decision.
+
 ## Resources
 
 - [Clay University -- Table Management Settings](https://university.clay.com/docs/table-management-settings)

@@ -17,14 +17,24 @@
 
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+// `URL.pathname` is platform-independent and keeps a leading slash before a
+// Windows drive letter, so `/C:/repo/scripts/x.mjs` makes `resolve()` read the
+// path as drive-relative and prepend the current drive -- ROOT becomes
+// `C:\C:\repo`. `fileURLToPath` answers correctly on every platform.
+// See issue #1436.
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PLUGINS_DIR = join(ROOT, 'plugins');
 // Must be the canonical repo slug (not the legacy `/claude-code-plugins`
 // redirect). npm provenance rejects the publish if this doesn't match the
 // actual repository GitHub Actions is running in.
-const REPO_URL = 'https://github.com/jeremylongshore/claude-code-plugins-plus-skills';
+const REPO_URL = 'https://github.com/jeremylongshore/tons-of-skills-marketplace';
 const SCOPE = '@intentsolutionsio';
+const LEGACY_REPO_URLS = [
+  'https://github.com/jeremylongshore/claude-code-plugins-plus-skills',
+  'https://github.com/jeremylongshore/claude-code-plugins',
+];
 
 // FS-only / personal-prefix dirs and known duplicates — skip entirely.
 const EXCLUDE_PREFIXES = [
@@ -177,6 +187,31 @@ function buildPackageJson(pluginDir, pluginJson) {
   return pkg;
 }
 
+export function reconcileGeneratedPackageMetadata(pkg, relDir, { sourceOwned = false } = {}) {
+  if (sourceOwned) return { changed: false, pkg };
+  const repositoryUrl = typeof pkg?.repository === 'object' ? pkg.repository?.url : null;
+  const managedByRepositoryPolicy =
+    pkg?.name?.startsWith(`${SCOPE}/`) ||
+    (pkg?.repository?.directory === relDir &&
+      /^git\+https:\/\/github\.com\/jeremylongshore\/(?:claude-code-plugins(?:-plus-skills)?|tons-of-skills-marketplace)\.git$/.test(
+        repositoryUrl ?? '',
+      ));
+  if (!managedByRepositoryPolicy) return { changed: false, pkg };
+  const rewritten = rewriteLegacyRepositoryUrls(JSON.stringify(pkg));
+  if (rewritten === JSON.stringify(pkg)) return { changed: false, pkg };
+  return {
+    changed: true,
+    pkg: JSON.parse(rewritten),
+  };
+}
+
+export function rewriteLegacyRepositoryUrls(source) {
+  return LEGACY_REPO_URLS.reduce(
+    (current, legacyUrl) => current.replaceAll(legacyUrl, REPO_URL),
+    source,
+  );
+}
+
 async function probeNpmRegistry(name) {
   try {
     const res = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name)}`, {
@@ -206,15 +241,58 @@ async function collisionCheck(names, { concurrency = 10 } = {}) {
   return hits;
 }
 
+/**
+ * Refuse to report success on an empty discovery.
+ *
+ * This script's failure mode is silence: `walkPluginDirs` swallows a
+ * `readdirSync` error and returns `[]`, so a ROOT pointing at nothing globs
+ * nothing, prints `Wrote 0 package.json files.` and exits 0. That is what made
+ * issue #1436's first half invisible -- the doubled-drive-letter ROOT produced
+ * `Plugins with package.json already: 0` on a tree holding 440, and only the
+ * TOC generator further down the `sync-marketplace` chain failed loudly.
+ *
+ * A run that discovers no plugins in this repository has not done its job, so
+ * it exits non-zero rather than letting a green step stand for a completed one.
+ * The message names the resolved ROOT, because when this fires the resolved
+ * path is the whole diagnosis.
+ */
+function assertDiscoveryNonEmpty(pluginDirs) {
+  if (!existsSync(PLUGINS_DIR)) {
+    console.error(
+      `No plugins directory at ${PLUGINS_DIR}.
+` +
+        `Resolved ROOT: ${ROOT}
+` +
+        'A doubled drive letter here means ROOT was derived from URL.pathname; ' +
+        'see issue #1436.',
+    );
+    process.exit(1);
+  }
+  if (pluginDirs.length === 0) {
+    console.error(
+      `Discovered 0 plugins under ${PLUGINS_DIR}.
+` +
+        `Resolved ROOT: ${ROOT}
+` +
+        'Refusing to report success on an empty discovery: this repository has ' +
+        'plugins, so zero means the walk looked in the wrong place or could not ' +
+        'read it.',
+    );
+    process.exit(1);
+  }
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const dryRun = args.includes('--dry-run') || args.includes('--probe');
   const probe = args.includes('--probe');
 
   const pluginDirs = walkPluginDirs(PLUGINS_DIR);
+  assertDiscoveryNonEmpty(pluginDirs);
   const needsScaffold = [];
   const skipped = [];
   const existing = [];
+  const metadataUpdates = [];
 
   for (const pluginDir of pluginDirs) {
     if (isExcluded(pluginDir)) {
@@ -222,7 +300,16 @@ async function main() {
       continue;
     }
     if (existsSync(join(pluginDir, 'package.json'))) {
+      const packagePath = join(pluginDir, 'package.json');
+      const source = readFileSync(packagePath, 'utf-8');
+      const pkg = JSON.parse(source);
+      const reconciled = reconcileGeneratedPackageMetadata(pkg, relative(ROOT, pluginDir), {
+        sourceOwned: existsSync(join(pluginDir, '.source.json')),
+      });
       existing.push(pluginDir);
+      if (reconciled.changed) {
+        metadataUpdates.push({ packagePath, source: rewriteLegacyRepositoryUrls(source) });
+      }
       continue;
     }
     const pluginJson = readPluginJson(pluginDir);
@@ -236,6 +323,7 @@ async function main() {
   }
 
   console.log(`Plugins with package.json already: ${existing.length}`);
+  console.log(`Generated metadata to reconcile:   ${metadataUpdates.length}`);
   console.log(`Plugins to scaffold:                ${needsScaffold.length}`);
   console.log(`Skipped (excluded/invalid):         ${skipped.length}`);
   if (skipped.length) {
@@ -282,10 +370,16 @@ async function main() {
     writeFileSync(join(pluginDir, 'package.json'), out);
     written++;
   }
+  for (const { packagePath, source } of metadataUpdates) {
+    writeFileSync(packagePath, source);
+  }
   console.log(`\nWrote ${written} package.json files.`);
+  console.log(`Reconciled ${metadataUpdates.length} generated package.json files.`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}

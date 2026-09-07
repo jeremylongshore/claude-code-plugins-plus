@@ -25,6 +25,26 @@ compatibility: Designed for Claude Code
 
 Flexport manages global freight logistics containing shipping manifests, customs declarations, commercial invoices, and supply chain partner data. A breach exposes trade routes, commodity values, importer/exporter identities, and customs brokerage details. Secure API credentials, webhook endpoints, and any pipeline that processes shipment tracking or purchase order data.
 
+## Prerequisites
+
+- A named security owner, scoped secret-manager integration, access-review cadence, and approved destinations for logistics data.
+- Synthetic shipment fixtures and a defined incident/revocation path.
+
+## Instructions
+
+1. Issue least-privilege credentials per environment and integration; never put keys or secrets in source, tickets, shell history, or support bundles.
+2. Verify webhook signatures using raw bodies, record opaque event identifiers only, and enforce idempotency before downstream processing.
+3. Restrict access to shipping, customs, invoice, and partner data; review connected systems and remove access when the business need ends.
+4. Redact diagnostics, encrypt approved exports, and rotate/revoke credentials immediately after suspected exposure.
+
+## Output
+
+Maintain a security receipt with access owner, secret reference, approved integration, review date, rotation/revocation outcome, and redacted incident status. Never include data, documents, or keys.
+
+## Examples
+
+Use a fictional booking event and scoped staging credential to verify that an invalid signature is rejected, a duplicate is suppressed, and revoking the credential blocks future requests. Keep only the opaque event ID and control outcome in the evidence.
+
 ## API Key Management
 
 ```typescript

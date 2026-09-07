@@ -19,6 +19,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Rules Config
 
+## Overview
+
+Manage Cursor rules as versioned engineering policy that shapes AI context and behavior; rules must be specific, scoped, reviewed, and consistent with repository source of truth.
+
+## Prerequisites
+
+- Repository owner approval, existing engineering/security standards, and a test workspace.
+- A reviewed ignore strategy for secrets, generated files, and sensitive data.
+
+## Instructions
+
+1. Write one clear rule per concern with scope, priority, and concrete acceptance behavior.
+2. Keep shared rules in source control and use path-scoped rules for local conventions.
+3. Test new rules on a non-sensitive fixture, inspect resulting behavior, and merge via normal review.
+4. Periodically remove stale/conflicting rules and document any intentional exceptions.
+
+## Output
+
+- A reviewed, versioned rule set with clear scope and a tested behavior example.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Rules conflict | Resolve to one authority and test the revised rule before rollout. |
+| Rule exposes sensitive content | Remove it, repair ignore controls, and assess the exposure. |
+| Rule is too broad | Scope it by path/task rather than disabling all shared governance. |
+
+## Examples
+
+Add a path-scoped API rule that requires existing validation and tests, then test it on a sanitized fixture. Open a PR for the rule and verify it does not apply to unrelated frontend files before merging.
+
 Configure project-specific AI behavior through Cursor's rules system. The modern approach uses `.cursor/rules/*.mdc` files; the legacy `.cursorrules` file is still supported but deprecated.
 
 ## Rules System Architecture

@@ -82,7 +82,7 @@ const configs: Record<string, ApolloEnvConfig> = {
     rateLimit: { maxPerMinute: 20, concurrency: 2 },
     features: { enrichment: true, sequences: false, deals: false, bulkEnrichment: false },
     credits: { dailyBudget: 10, alertThreshold: 80 },
-    logging: { level: 'debug', redactPII: false },
+    logging: { level: 'debug', redactPII: true },
   },
   staging: {
     environment: 'staging',
@@ -181,16 +181,16 @@ stringData:
 
 ```typescript
 // src/scripts/verify-envs.ts
-async function verifyAllEnvironments() {
-  for (const [env, config] of Object.entries(configs)) {
-    try {
-      const client = createEnvClient(config);
-      const { data } = await client.get('/auth/health');
-      const isMaster = await testMasterAccess(client);
-      console.log(`${env}: ${data.is_logged_in ? 'OK' : 'FAIL'} (${isMaster ? 'master' : 'standard'} key, sandbox: ${config.isSandbox})`);
-    } catch (err: any) {
-      console.error(`${env}: FAIL — ${err.message}`);
-    }
+async function verifyCurrentEnvironment() {
+  const env = process.env.NODE_ENV ?? 'development';
+  const config = configs[env] ?? configs.development;
+  try {
+    const client = createEnvClient(config);
+    const { data } = await client.get('/auth/health');
+    const isMaster = await testMasterAccess(client);
+    console.log(`${env}: ${data.is_logged_in ? 'OK' : 'FAIL'} (${isMaster ? 'master' : 'standard'} key, sandbox: ${config.isSandbox})`);
+  } catch (err: any) {
+    console.error(`${env}: FAIL — ${err.message}`);
   }
 }
 
@@ -206,7 +206,19 @@ async function testMasterAccess(client: AxiosInstance): Promise<boolean> {
 - Three environment configs (dev with sandbox, staging, production)
 - Client factory with feature gating and debug logging
 - Kubernetes secrets per namespace
-- Environment verification script testing all configs
+- Environment verification script testing only the active config
+
+## Examples
+
+For a feature that adds bulk enrichment, keep the capability disabled in
+development and enable it first in staging with a separately injected staging
+credential and a low daily budget. Run the active-environment verifier from
+that staging deployment, confirm that disabled production-only operations are
+rejected in lower environments, and inspect only redacted logs. Promote the
+feature flag after staging telemetry is healthy. If `NODE_ENV` is unexpected,
+the active secret is missing, or a lower environment can invoke an unapproved
+write path, stop the release and correct the configuration rather than falling
+back to a production key.
 
 ## Error Handling
 

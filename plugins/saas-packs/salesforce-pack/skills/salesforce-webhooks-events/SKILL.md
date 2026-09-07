@@ -214,6 +214,12 @@ async function processEvent(message: any): Promise<void> {
 | Duplicate processing | No idempotency check | Track processed `replayId` values in Redis |
 | Outbound Message retry | Ack not sent | Return `<Ack>true</Ack>` XML response |
 
+## Examples
+
+### Resume Change Data Capture after a disconnected consumer
+
+Persist the last successfully committed replay ID only after the downstream transaction completes, then reconnect from that position using a sandbox event stream. Deduplicate by replay ID or source event key before triggering side effects, and send unprocessable events to a monitored queue with redacted diagnostics. Test disconnect, replay, duplicate, and malformed-event paths with synthetic records; do not treat acknowledgement as proof of business processing.
+
 ## Resources
 
 - [Change Data Capture Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/)

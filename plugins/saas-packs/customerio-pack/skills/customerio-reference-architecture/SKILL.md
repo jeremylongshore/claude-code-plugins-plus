@@ -24,6 +24,20 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Reference Architecture
 
+## Prerequisites
+
+- A data-flow owner, approved workspace/environment boundaries, event contract, consent model, and incident/support route.
+- Repository/configuration review for any change to credentials, webhooks, message templates, or customer-data processing.
+
+## Output
+
+- A documented architecture mapping event producers, identity/consent, Customer.io workspaces, observability, ownership, and failure handling.
+- Clear trust boundaries and reversible integration points for delivery, replay, and incident response.
+
+## Examples
+
+Document a producer that validates and idempotently emits a versioned event to the development workspace, with a consent gate before campaign entry and redacted metrics by environment. Promote the same contract through staging before production, retain a dead-letter/replay owner, and keep recipient identifiers and tokens outside logs and diagrams.
+
 ## Overview
 
 Enterprise-grade reference architecture for Customer.io: a service layer separating Track and App API concerns, event-driven processing with message queues, repository pattern for user-to-CIO sync, webhook event bus, and infrastructure as code.

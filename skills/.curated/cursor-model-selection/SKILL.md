@@ -19,6 +19,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Model Selection
 
+## Overview
+
+Choose models by task risk, reasoning needs, data-handling policy, latency, and approved spend—not by apparent confidence in a single response.
+
+## Prerequisites
+
+- The organization's approved model/provider list and data-routing constraints.
+- A defined task, budget/latency expectation, and normal human review/test path.
+
+## Instructions
+
+1. Use an approved economical model for simple explanations or edits; escalate only for a defined complex task.
+2. Confirm the model's data-handling route before attaching proprietary or regulated content.
+3. Record material model decisions for high-risk work and independently validate all generated output.
+4. Reassess model choice when quality, cost, privacy, or latency exceeds the agreed threshold.
+
+## Output
+
+- A model selection tied to task requirements, policy, and a validation plan.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Model is not approved for the data class | Stop and use an approved route or seek formal approval. |
+| Cost/latency exceeds budget | Downgrade or narrow the task; do not bypass spending controls. |
+| Output quality is inadequate | Use a better-suited approved model and retain independent review. |
+
+## Examples
+
+Use an approved fast model for a localized type annotation with its focused test. For a high-impact architecture proposal, use the approved reasoning model, attach only necessary design documents, and require human reviewers to validate alternatives and rollback implications.
+
 Configure AI models for Chat, Composer, and Agent mode. Cursor supports models from OpenAI, Anthropic, Google, and its own proprietary models. Choosing the right model per task is a major productivity lever.
 
 ## Available Models

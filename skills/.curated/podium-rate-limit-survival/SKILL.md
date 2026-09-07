@@ -1,14 +1,14 @@
 ---
 name: podium-rate-limit-survival
 description: Survive the rate-limit failure modes that crater production Podium integrations —
-  cascading 429s that burn the daily quota by lunch, ignored `Retry-After` hints, silent daily-quota
+  cascading 429s that burn the daily quota by lunch, ignored Retry-After hints, silent daily-quota
   breaches, per-endpoint budget exhaustion, end-of-day review-request bursts, and webhook-driven
   outbound amplification. Use when building the outbound API layer, instrumenting quota monitoring,
   smoothing end-of-day review-request bursts, or recovering from a 429 cascade. Trigger with
   "podium rate limit", "podium 429", "podium token bucket", "podium quota monitor", "podium burst
   smoothing", "podium retry-after".
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Bash(python3:*), Bash(redis-cli:*), Grep
-version: 2.8.0
+version: 2.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code

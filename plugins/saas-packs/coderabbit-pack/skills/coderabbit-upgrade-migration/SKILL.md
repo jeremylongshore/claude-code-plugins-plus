@@ -267,6 +267,14 @@ echo "the new configuration is active."
 | Feature not available | Requires `early_access: true` | Enable early access in config |
 | Finishing touches not working | Not on Pro plan | Upgrade to Pro for finishing touches |
 
+## Examples
+
+Pin the current configuration in a pilot repository, apply one schema change on
+a non-critical pull request, validate YAML and the active configuration, then
+compare review behavior to the prior baseline. If a feature or field is ignored
+or changes blocking behavior, restore the pinned configuration and defer the
+upgrade until the plan/schema requirement is verified.
+
 ## Resources
 
 - [CodeRabbit Changelog](https://docs.coderabbit.ai/changelog)

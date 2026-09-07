@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Local Dev Loop
 
+## Output
+
+- A small, test-backed local change using a non-production workspace and synthetic recipient data.
+- A reviewed deployment/revert path that preserves production campaigns, consent, and contact data.
+
+## Examples
+
+Use a development workspace and a synthetic profile such as `test-user-001`; validate the event schema locally, run the focused test, and inspect the resulting campaign behavior before committing. Never point local experiments at production segments or use real recipient data to debug a template.
+
 ## Overview
 
 Set up an efficient local development workflow for Customer.io: environment isolation via separate workspaces, a dry-run client for safe development, test mocks for unit tests, and prefixed events that never pollute production data.

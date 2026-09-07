@@ -22,6 +22,20 @@ compatibility: Designed for Claude Code
 
 Finta manages fundraising pipelines containing investor contact information, term sheet details, valuation data, cap table snapshots, and deal room documents. A breach exposes confidential fundraising strategy, investor relationships, and financial terms that could damage competitive positioning. Protect API credentials, deal room access controls, and any integration that syncs investor data to external CRMs or spreadsheets.
 
+## Prerequisites
+
+- A named owner for the fundraising workspace and a current access-review cadence.
+- Secrets held in an approved secret manager; use synthetic records for development and documentation.
+- A written list of approved destinations before exporting or syncing investor data.
+
+## Instructions
+
+1. Grant the smallest practical role to each team member and deal-room participant; remove access when a round, engagement, or contractor relationship ends.
+2. Keep credentials out of source control, shell history, tickets, and support attachments. Rotate a credential immediately after suspected exposure.
+3. Classify contact, valuation, term, cap-table, and document data as sensitive. Export only the fields required for a specific purpose and encrypt approved exports at rest.
+4. Verify webhook authenticity before processing an event, record only a redacted event identifier for diagnostics, and make downstream processing idempotent.
+5. Review connected CRM, email, and automation permissions before enabling a sync; disable a sync that cannot limit fields or recipients.
+
 ## API Key Management
 
 ```typescript
@@ -107,6 +121,14 @@ function redactFintaLog(record: Record<string, unknown>): Record<string, unknown
 | Unencrypted pipeline exports | Financial strategy leaked via CSV files | GPG encryption + `.gitignore` |
 | Stale investor access | Former prospects retain document access | Post-round access review |
 | CRM sync without redaction | Valuation data leaks to third-party CRM | Field-level redaction before sync |
+
+## Output
+
+Produce a short security record containing the system owner, approved integrations, role-review date, credential location reference (never the secret), and any access removals or rotations performed. Logs and incident reports should use redacted identifiers and aggregate counts only.
+
+## Examples
+
+For a sandbox workflow, create two fictitious investor records, export only stage and anonymized amount ranges, and confirm that the destination receives neither emails nor document links. If the webhook signature check fails, acknowledge nothing downstream, retain a redacted failure receipt, and investigate the source before retrying.
 
 ## Resources
 

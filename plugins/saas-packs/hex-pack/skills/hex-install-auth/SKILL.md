@@ -98,6 +98,14 @@ curl -s -H "Authorization: Bearer $HEX_API_TOKEN" \
 | `403 Forbidden` | Missing scope | Create token with "Run projects" scope |
 | `404 Not Found` | Wrong workspace URL | Verify HEX_WORKSPACE_URL |
 
+## Output
+
+Return an authentication setup receipt with environment, secret reference rather than value, token-scope class, approved project/destination result, synthetic connectivity status, and rotation/cleanup owner. Never print an access token, SQL, or output.
+
+## Examples
+
+`env=sandbox; secret_ref=hex-client-v4; scope=project-run; destination=approved; synthetic_probe=200; rotation_owner=platform-ops` proves setup without exposing a credential.
+
 ## Resources
 
 - [Hex API Overview](https://learn.hex.tech/docs/api/api-overview)

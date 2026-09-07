@@ -51,7 +51,7 @@ jobs:
             echo "should_run=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         if: steps.check.outputs.should_run == 'true'
 
       - name: Install mcp-publisher
@@ -86,3 +86,51 @@ jobs:
           sleep 3
           echo "Verifying ${{ matrix.server }}..."
           curl -s "https://registry.modelcontextprotocol.io/v0/servers?search=io.github.jeremylongshore/${{ matrix.server }}" | head -20
+
+  prepare-publication-evidence:
+    name: Record exactly the completed MCP publication selection
+    needs: publish
+    if: ${{ inputs.dry_run != true }}
+    runs-on: ubuntu-latest
+    outputs:
+      publication_report: ${{ steps.report.outputs.publication_report }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - id: report
+        env:
+          SELECTION: ${{ inputs.server || 'all' }}
+        run: |
+          set -euo pipefail
+          case "$SELECTION" in
+            all)
+              servers='["project-health-auditor","conversational-api-debugger","domain-memory-agent","ai-experiment-logger","design-to-code","lumera-agent-memory","workflow-orchestrator"]'
+              ;;
+            project-health-auditor|conversational-api-debugger|domain-memory-agent|ai-experiment-logger|design-to-code|lumera-agent-memory|workflow-orchestrator)
+              servers=$(jq -cn --arg server "$SELECTION" '[$server]')
+              ;;
+            *) echo "::error::unknown MCP publication selection: $SELECTION"; exit 1 ;;
+          esac
+          jq -cn --argjson servers "$servers" \
+            '$servers | map({channel:"mcp-registry", name:., package_path:("plugins/mcp/" + .)})' > /tmp/completed-publications.json
+          node scripts/build-publication-report.mjs --completed /tmp/completed-publications.json --out /tmp/publication-report.json --sbom-dir /tmp/publication-sboms
+          echo "publication_report=$(jq -c . /tmp/publication-report.json)" >> "$GITHUB_OUTPUT"
+
+  emit-publication-evidence:
+    name: Emit signed evidence for every completed MCP publication
+    needs: prepare-publication-evidence
+    if: ${{ needs.prepare-publication-evidence.result == 'success' }}
+    uses: ./.github/workflows/emit-publication-evidence.yml
+    permissions:
+      actions: read
+      checks: read
+      contents: write
+      id-token: write
+    with:
+      source_sha: ${{ github.sha }}
+      publication_report: ${{ needs.prepare-publication-evidence.outputs.publication_report }}

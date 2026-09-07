@@ -192,6 +192,10 @@ Configure each step as a separate Zapier action in a single multi-step Zap, or u
 | Zapier | "Trigger not firing" | Reconnect Granola in Zapier; check folder name matches exactly |
 | All | "Authorization expired" | Disconnect and reconnect the integration in Settings |
 
+## Examples
+
+`artifact=sha256:opaque; env=staging; canary=synthetic-calendar; health=pass; delivery=pass; retention=none; rollback=release-r31` supports a controlled rollout.
+
 ## Resources
 
 - [Integrations Overview](https://docs.granola.ai/help-center/sharing/integrations/integrations-with-granola)

@@ -13,7 +13,7 @@ description: 'Implement Mistral AI reference architecture with best-practice pro
 
   '
 allowed-tools: Read, Grep
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -303,6 +303,12 @@ export const PROMPTS: Record<string, PromptTemplate> = {
 | Rate limit (429) | RPM/TPM exceeded | MistralServiceError has `retryable: true` |
 | Auth error (401) | Invalid API key | Not retryable, check credentials |
 | Cache ineffective | High temperature | Only cache temperature=0 requests |
+
+## Examples
+
+### Wire a deterministic summarization service
+
+Validate the environment at process start, route summarization through the singleton client with temperature zero and the bounded `summarize` template, and cache only the normalized input plus model version. On a retryable provider failure, surface a typed service error to the caller; on a 401, stop retrying and alert the credential owner.
 
 ## Resources
 

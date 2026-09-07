@@ -10,7 +10,7 @@ description: 'Install Together AI SDK and configure API key for inference and fi
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

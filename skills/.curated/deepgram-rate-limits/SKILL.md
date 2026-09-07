@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Rate Limits
 
+## Prerequisites
+
+- Current provider-limit knowledge, measured baseline, concurrency budget, and stable request/job identifiers.
+- Synthetic audio fixtures and alerts for throttling, queue age, failures, and duplicate processing.
+
+## Examples
+
+Run a development load test using short non-sensitive fixtures, increment concurrency gradually, and record aggregate latency, 429s, and completion rate. Apply exponential backoff with jitter and preserve the request ID; reduce load on throttling instead of immediate bulk retries or sending customer recordings as test traffic.
+
 ## Overview
 
 Implement rate limiting, exponential backoff, and circuit breaker patterns for Deepgram API. Deepgram limits by **concurrent connections** (not requests per second). Understanding this model is key to building reliable integrations.

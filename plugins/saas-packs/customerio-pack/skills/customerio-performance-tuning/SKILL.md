@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Performance Tuning
 
+## Output
+
+- A measured delivery/API performance baseline with a scoped optimization, owner, and rollback trigger.
+- A capacity decision that preserves consent, message correctness, rate limits, and provider reliability.
+
+## Examples
+
+Measure event throughput, response latency, error rate, and queue depth in a development workspace using synthetic payloads. Change one batch/concurrency parameter, compare against the baseline, and revert if errors, rate limits, or message ordering regress. Do not increase concurrency by replaying production recipient data.
+
 ## Overview
 
 Optimize Customer.io API performance for high-volume integrations: HTTP connection pooling, identify deduplication caching, event batching with flush control, fire-and-forget async tracking, and regional routing.

@@ -14,7 +14,7 @@ description: 'Configure Adobe local development with App Builder CLI, Runtime ac
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -204,6 +204,10 @@ describe.skipIf(!process.env.ADOBE_CLIENT_ID)('Firefly Integration', () => {
 | `Module not found: @adobe/pdfservices-node-sdk` | Missing install | Run `npm install @adobe/pdfservices-node-sdk` |
 | Test timeout on integration | Slow API or rate limit | Increase vitest timeout; check `Retry-After` header |
 | `ADOBE_CLIENT_ID undefined` | Missing `.env.local` | Copy `.env.example` to `.env.local` and fill in values |
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

@@ -1,0 +1,312 @@
+---
+name: snowflake-cost-leak-hunter
+description: >-
+  Audit and analyze Snowflake warehouse, serverless, Adaptive, storage, transfer, and AI cost
+  evidence with a typed ledger that prevents double counting and exposes freshness,
+  attribution, control, and invoice boundaries. Use when a Snowflake bill increased,
+  a team needs chargeback/showback evidence, credits appear unexplained, or an
+  operator asks which usage merits investigation. Trigger with "Snowflake bill
+  increased", "find idle Snowflake credits", "Snowflake cost attribution", or
+  "untagged Snowflake spend". Do not use to mutate cost controls or claim savings.
+allowed-tools: Read, Write, Bash(python3:*)
+argument-hint: "[evidence-json-or-output-directory]"
+model: inherit
+effort: high
+version: 3.16.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+  - saas
+  - data-warehouse
+  - analytics
+  - snowflake
+  - finops
+compatibility: Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection
+---
+
+# Snowflake Cost Leak Hunter
+
+## Overview
+
+Produce a read-only, evidence-first Snowflake cost investigation. The deterministic
+analyzer emits a typed ledger whose `total`, `attribution`, `context`, `estimate`, and
+`invoice-only` roles cannot silently collapse into one savings claim.
+
+**Problem:** Cost views answer different questions, arrive at different times, and do
+not equal invoice truth. Generic advice easily turns observed credits into unsupported
+prices or promised savings.
+
+**Outcome:** A reproducible review packet that identifies what the supplied evidence
+confirms, what was estimated from an approved rate, what remains at risk, and what is
+unknown.
+
+## Prerequisites
+
+- An exact account and UTC analysis window.
+- Sanitized output collected by an operator through an approved read-only Snowflake
+  session, or an equivalent exported evidence bundle.
+- A role already authorized to read the required `SNOWFLAKE.ACCOUNT_USAGE` surfaces.
+- A writable local working directory for report artifacts. Use `Write` only to create
+  new local evidence/report files; never use it to alter Snowflake configuration.
+- A customer-supplied rate-card record if currency estimates are requested.
+
+## Safety and evidence contract
+
+- **Read-only Snowflake work only.** Do not execute DDL/DML, change warehouse state or
+  size, alter auto-suspend, assign monitors, create budgets, change tags, or cancel
+  queries. Emit proposed changes for a named owner to review.
+- **Do not invoke Snowflake authentication from this skill.** The operator runs the
+  bounded collection queries through an approved read-only session and supplies only
+  sanitized results. Never request connection files, private keys, tokens, passwords,
+  or environment values.
+- **Do not require `ACCOUNTADMIN`.** Use a role already authorized to read the needed
+  `SNOWFLAKE.ACCOUNT_USAGE` views. Visibility differs by database role and account
+  configuration; report missing access rather than escalating privileges.
+- **Bind every history query to an explicit UTC half-open start and end time.** Record
+  session UTC offset, account/organization identity, role, query IDs, collection time,
+  SQL and result hashes, row cap state, and the maximum activity timestamp returned.
+  A single bundle may cover at most seven days; partition longer audits.
+- **Use the fixed official latency matrix.** Apply the reviewed per-view and per-field
+  cutoffs in
+  [references/cost-ledger-and-surfaces.md](references/cost-ledger-and-surfaces.md);
+  caller-supplied latency or maximum activity time cannot make a recent window settled.
+  Compute each cutoff from the same-statement `execution_context.observed_at`, never
+  the later CLI completion timestamp. A quiet source with no recent activity is not
+  thereby stale.
+- **Credits are not invoice truth.** Keep hourly operational credits, daily
+  cloud-adjusted billed credits, and organization-currency/usage-statement evidence as
+  three distinct levels. Resource monitors cover warehouses, including Adaptive
+  Warehouses, but do not cover serverless features or AI services. The issued invoice
+  remains authoritative. See Snowflake's
+  [billing reconciliation guide](https://docs.snowflake.com/en/user-guide/billing-reconcile).
+- **No public price assumptions.** Convert credits to currency only when the user
+  supplies an applicable contract/rate-card record. Such conversion remains
+  `estimated` until reconciled to the billing statement.
+
+Read [references/attribution-and-staleness.md](references/attribution-and-staleness.md)
+before collecting evidence. Read
+[references/warehouse-and-idle-evidence.md](references/warehouse-and-idle-evidence.md)
+for the bounded SQL surfaces. If controls are requested, read
+[references/controls-boundaries.md](references/controls-boundaries.md), but return a
+review packet only.
+For Adaptive, storage, transfer, AI, surface-denominator, and typed-ledger rules, read
+[references/cost-ledger-and-surfaces.md](references/cost-ledger-and-surfaces.md).
+
+For a live, model-neutral collection, use the shared read-only collector with an
+existing Snowflake CLI profile:
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/scripts/collect_snowflake_evidence.py" \
+  --surface cost --connection <approved-readonly-profile> \
+  --window-start <YYYY-MM-DDTHH:MM:SSZ> \
+  --window-end <YYYY-MM-DDTHH:MM:SSZ> \
+  --output /tmp/snowflake-cost-collector.json
+```
+
+Map the baseline receipt's warehouse, query, load, and generic metering datasets into
+the analyzer schema. The legacy input key `serverless_usage` means generic
+`METERING_HISTORY`; public labels use `metering:<SERVICE_TYPE>`. Preserve every receipt
+field and reject out-of-window rows, cap uncertainty, missing integrity fields, and
+unscoped fingerprints. A self-checksum proves local consistency, not Snowflake origin.
+
+Collect needed supplemental `cost-*` surfaces with the same bounded collector and put
+each complete receipt under `supplemental_receipts.<surface_inventory_name>`. Follow
+[the surface contract](references/cost-ledger-and-surfaces.md) for the exact dataset
+keys, hashes, latency cutoffs, privacy rules, and unavailable-surface behavior.
+
+## Instructions
+
+### 1. Fix scope before querying
+
+Capture:
+
+- account and role;
+- half-open UTC window `[window_start, window_end)`;
+- requested attribution dimension, such as warehouse, user, query tag, or service;
+- whether an approved contract rate card is available;
+- whether Adaptive Warehouses or serverless features are in scope.
+- the complete expected-surface denominator, including storage, transfer, AI,
+  resource-monitor, and budget evidence when those domains are in scope.
+
+If the user supplies only an invoice total, state that the audit can explain usage but
+cannot reconcile the invoice without the corresponding usage statement and contract
+rates.
+
+### 2. Verify access without changing grants
+
+Have the operator run the smallest read probes with the approved connection and
+provide the sanitized results. This skill does not expose the Snowflake CLI namespace.
+A representative probe is:
+
+```sql
+SELECT MAX(end_time) AS max_end_time
+FROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY
+WHERE start_time >= :window_start
+  AND start_time < :window_end;
+```
+
+Probe `QUERY_ATTRIBUTION_HISTORY` separately because its availability, latency, and
+coverage differ. If either probe fails, preserve the exact sanitized error, name the
+missing surface, and stop that branch. Do not propose granting broad imported
+privileges automatically.
+
+### 3. Collect normalized evidence
+
+Use the queries and field definitions in
+[references/warehouse-and-idle-evidence.md](references/warehouse-and-idle-evidence.md).
+Export only the normalized fields accepted by
+`scripts/analyze_cost_evidence.py`; exclude raw SQL text and credentials.
+
+The input accepts baseline warehouse/query/load/metering arrays; supplemental
+Adaptive, storage, transfer, AI, monitor, and budget evidence; optional invoice rows;
+and user-supplied credit rates. Read
+[the surface contract](references/cost-ledger-and-surfaces.md) for the exact keys and
+overlap rules. Inventory assertions without matching receipts block completeness.
+
+Record each source's maximum activity timestamp only as descriptive context; it does
+not prove freshness, and an absent source is not zero usage. Apply the reference's
+identity-disclosure contract. Never export raw users, tags, query text, notification
+addresses, contract numbers, credentials, or connection values.
+
+### 4. Run deterministic analysis
+
+Print the canonical bundle digest in a trusted local terminal and record it separately
+from the bundle. Never trust a digest copied from inside the evidence itself:
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/scripts/analyze_cost_evidence.py" \
+  --input cost-evidence.json --print-input-sha256
+```
+
+Then pass that separately recorded value back to the analyzer. Live receipts older
+than one hour are rejected as stale transport evidence; recollect rather than relaxing
+the bound.
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/scripts/analyze_cost_evidence.py" \
+  --input cost-evidence.json \
+  --trusted-input-sha256 <recorded-sha256:hex-digest> \
+  --json-out cost-analysis.json \
+  --markdown-out cost-analysis.md
+```
+
+The script validates non-negative numeric evidence, sums with decimal arithmetic, and
+keeps `total`, `attribution`, `context`, `estimate`, and `invoice-only` ledger roles
+separate. Their additive and overlap rules are defined in the surface contract.
+
+It does not apply magnitude thresholds, infer a price, or recommend a warehouse size.
+Daily average storage snapshots must remain per day or use an explicitly labeled
+average/byte-day calculation; summing multiple daily snapshots and labeling the result
+`bytes` is invalid.
+When query fingerprints have both attributed credits and elapsed time, it also emits
+a non-dominance cost/latency Pareto view. A Pareto point is a comparison aid, not a
+proof that a workload should move warehouses. Right-sizing is only a bounded review
+proposal when the operator supplies the current size, explicit candidate sizes,
+maximum size steps, measurement window, success criteria, and approver; never infer a
+target size from credits or queue time.
+
+### 5. Corroborate before recommending
+
+For each ranked opportunity, record:
+
+1. the exact source rows and time window;
+2. the observed source age;
+3. coverage exclusions or NULL fields;
+4. a competing explanation;
+5. a read-only next measurement;
+6. the owner who would approve any later change.
+
+Examples of competing explanations include intentionally warm warehouses, SLA-driven
+capacity, untagged shared-service queries, or usage outside the attribution view's
+coverage. Do not label those cases waste without workload-owner confirmation.
+
+### 6. Deliver the review packet
+
+Follow [references/output-contract.md](references/output-contract.md). Lead with the
+window and coverage, not a sensational savings number. A valid packet contains:
+
+- confirmed credits by evidence surface;
+- the typed ledger with parent IDs, overlap keys, aggregation eligibility, freshness,
+  availability, and invoice-reconciliation status;
+- attribution completeness by warehouse, including unknown boundaries for NULL
+  attribution and query coverage gaps;
+- cost/latency Pareto points by query fingerprint and warehouse-load correlation;
+- estimated currency in a separate table, if and only if a rate card was supplied;
+- at-risk opportunities ranked by observed credits, each labeled `review required`;
+- missing/late-source warnings;
+- read-only verification queries;
+- proposed changes in an approval queue, with no execution performed.
+
+## Output
+
+Return `cost-analysis.json` and `cost-analysis.md` in the user's chosen working
+directory, plus the exact analyzer command used. The JSON is the machine-readable
+receipt; Markdown is the human review packet. Both must contain the analysis window,
+source freshness, confirmed observations, estimated amounts, at-risk opportunities,
+warnings, and non-claims. Do not write runtime output into the skill directory.
+
+## Stop conditions
+
+Stop and return a bounded partial result when:
+
+- authentication or the approved role fails;
+- the requested window is newer than the available source timestamps;
+- account and organization usage are mixed without aligned account identifiers and UTC
+  boundaries;
+- Adaptive Warehouse rows make warehouse attribution columns NULL;
+- a required cost surface is unavailable, outside its fixed official settled window,
+  truncated, region-limited, or hidden by the approved role;
+- a currency request has no applicable contract rate;
+- evidence contains negative credits, malformed timestamps, or incompatible currencies;
+- the only proposed next step would mutate production.
+
+## Error Handling
+
+| Condition | Meaning | Required response |
+|---|---|---|
+| Approved role cannot read a required view | Coverage unavailable | Preserve the sanitized error, name the missing surface, and stop that branch without changing grants. |
+| Requested end exceeds the fixed source-specific settled cutoff | Recent evidence may be incomplete | Return a partial result; do not enlarge the cutoff from a caller-supplied latency or maximum activity timestamp. |
+| Attributed-query credits are NULL | Idle/unattributed calculation is unsupported for that row | Emit `COST_ADAPTIVE_ATTRIBUTION_GAP`; exclude the row from that calculation and do not substitute zero. |
+| Generic AI or warehouse total and detailed attribution both exist | The evidence can overlap by design | Retain one additive total and attach AI Functions detail only beneath an account/window-aligned `AI_SERVICES` row from `METERING_HISTORY`; do not assert equality because that parent also covers Cortex Analyst. Otherwise keep the relationship unknown. |
+| Storage or transfer evidence has bytes but no contract billing model | Operational context is present without price evidence | Keep bytes as `context`; do not infer currency or invoice amounts. |
+| No applicable contract rate | Currency cannot be defended | Report credits only; do not substitute a public price. |
+| Analyzer rejects evidence | Malformed timestamp, negative/non-finite number, or incompatible shape | Correct the input from source evidence; never coerce it into a plausible value. |
+| User requests mutation | New authority and impact review are required | Return a proposed change packet and stop before execution. |
+
+## Examples
+
+### “Why did warehouse credits jump last week?”
+
+Collect the two warehouse surfaces over the same UTC window. The analyzer may report
+`42.5 confirmed warehouse compute credits` and `11.2 credits at risk for idle-time
+review`. It must not call all 11.2 credits waste or convert them to dollars without a
+supplied rate.
+
+### “Show costs by team from QUERY_TAG”
+
+Aggregate `QUERY_ATTRIBUTION_HISTORY` by the existing tag. Report tagged and untagged
+credits, the view's maximum timestamp, and exclusions such as idle, serverless, storage,
+and cloud-services cost. Missing tags are an at-risk attribution gap, not proof of
+unowned spend.
+
+### “Create a monitor to shut down expensive warehouses”
+
+Do not create or alter a monitor. Audit current warehouse evidence, explain the
+warehouse-only coverage and suspension caveats from
+[references/controls-boundaries.md](references/controls-boundaries.md), and return a
+reviewable control proposal requiring explicit authorization.
+
+## Resources
+
+- [Attribution and staleness](references/attribution-and-staleness.md) — view coverage,
+  latency, privilege, and invoice-reconciliation boundaries.
+- [Warehouse and idle evidence](references/warehouse-and-idle-evidence.md) — bounded
+  collection queries and normalization schema.
+- [Controls boundaries](references/controls-boundaries.md) — resource-monitor and budget
+  semantics, including uncovered serverless usage.
+- [Pareto and right-sizing](references/pareto-and-right-sizing.md) — cost/latency
+  frontier and bounded, one-variable resize review.
+- [Output contract](references/output-contract.md) — evidence labels and review-packet
+  format.
+- [`scripts/analyze_cost_evidence.py`](scripts/analyze_cost_evidence.py) — deterministic
+  validator, classifier, and renderer.

@@ -29,6 +29,10 @@ compatibility: Designed for Claude Code
 
 Primary workflow for Fireflies.ai: fetch meeting transcripts via GraphQL, process speaker-diarized sentences, extract action items and summaries, and route meeting intelligence downstream.
 
+## Examples
+
+In staging, process a synthetic transcript with fictional speakers and route only approved action-item fields to a test destination. Confirm that raw transcript text stays in the authorized system, downstream delivery is idempotent, and deleting the test record removes access according to the retention policy.
+
 ## Prerequisites
 
 - Completed `fireflies-install-auth` setup

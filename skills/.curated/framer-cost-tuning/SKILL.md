@@ -22,6 +22,26 @@ compatibility: Designed for Claude Code
 ---
 # Framer Cost Tuning
 
+## Prerequisites
+
+Current plan/billing information, aggregate usage, a cost owner, required availability/features, and a staging site for changes.
+
+## Instructions
+
+Measure aggregate usage, evaluate plan or asset changes against current terms, obtain owner approval, and test any performance/publishing effect before production.
+
+## Output
+
+Record the measurement period, approved change, expected effect, owner, verification date, and rollback state. Do not include visitor data or billing credentials.
+
+## Error Handling
+
+Revert changes that reduce required publishing, domain, privacy, or performance behavior; quarantine unexpected usage or access changes for review.
+
+## Examples
+
+Test an asset optimization on a fictional staging page, compare aggregate performance, and promote only after the site owner approves the evidence.
+
 ## Overview
 
 Optimize Framer costs across plans and features. The Server API is free during beta. Main costs are Framer site plans, custom domains, and team seats.

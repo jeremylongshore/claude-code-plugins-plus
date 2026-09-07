@@ -21,6 +21,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Local Dev Loop
 
+## Overview
+
+Use Cursor inside the normal local development loop: small scoped change, inspect diff, run focused checks, commit reviewed work, and retain a rollback path.
+
+## Prerequisites
+
+- A clean or recoverable branch, repository instructions, and required local test/format commands.
+- Approved privacy settings and exclusion of secrets, production exports, and unrelated repositories.
+
+## Instructions
+
+1. Start with a narrow issue and affected-file list, then use Chat/Inline Edit/Composer only for that scope.
+2. Inspect every proposed diff and run the narrowest relevant formatter, test, and static check.
+3. Commit one reviewed change at a time and use normal pull-request/branch rules for integration.
+4. Revert rather than patching around an AI-generated regression when a focused check fails.
+
+## Output
+
+- A small reviewed local change with validation evidence and an ordinary git rollback path.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Generated change is broad | Reject/split it before applying. |
+| Test fails | Diagnose and revert or fix within scope; do not disable the test. |
+| Working tree is mixed | Stash or commit unrelated user work before continuing. |
+
+## Examples
+
+Ask Inline Edit to update one function, inspect the diff, run that function's focused test, and commit it separately. If the test fails or unrelated files change, reject/revert and restate the task with tighter constraints.
+
 Establish a productive daily development workflow using Cursor's AI features at each stage of the code-write-test-commit cycle.
 
 ## The AI-Augmented Development Loop

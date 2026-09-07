@@ -12,7 +12,7 @@ description: 'Configure CI/CD pipelines for Adobe integrations with GitHub Actio
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -202,6 +202,10 @@ jobs:
 | Integration test 429 | Rate limited | Accept 429 as valid CI result |
 | Secret scan false positive | Test fixture data | Exclude test directories from scan |
 | Timeout on Firefly test | API latency | Increase vitest timeout to 30s |
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

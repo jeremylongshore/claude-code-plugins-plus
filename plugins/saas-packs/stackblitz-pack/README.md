@@ -1,6 +1,6 @@
 # StackBlitz Skill Pack
 
-> 18 production-ready Claude Code skills for StackBlitz WebContainers -- real browser-based Node.js runtime code.
+> 10 production-ready Claude Code skills for StackBlitz WebContainers -- real browser-based Node.js runtime code.
 
 ## What This Is
 
@@ -14,7 +14,7 @@ A complete skill pack for building browser-based development environments with S
 
 ## Skills
 
-### Standard Skills (S01-S12)
+### Skills (S01-S10)
 
 | # | Skill | What It Does |
 |---|-------|-------------|
@@ -28,19 +28,6 @@ A complete skill pack for building browser-based development environments with S
 | S08 | `stackblitz-debug-bundle` | Diagnose boot state, FS health, Node.js version, browser support |
 | S09 | `stackblitz-rate-limits` | Memory limits, FS size, process count, native addon restrictions |
 | S10 | `stackblitz-security-basics` | Browser sandbox model, input validation, CSP headers |
-| S11 | `stackblitz-prod-checklist` | Headers, browser support matrix, fallback strategies |
-| S12 | `stackblitz-upgrade-migration` | WebContainer API version changes, SDK updates |
-
-### Pro Skills (P13-P18)
-
-| # | Skill | What It Does |
-|---|-------|-------------|
-| P13 | `stackblitz-ci-integration` | Playwright tests for WebContainer apps in CI |
-| P14 | `stackblitz-deploy-integration` | Deploy to Vercel/Netlify with proper COOP/COEP headers |
-| P15 | `stackblitz-webhooks-events` | WebContainer lifecycle events: server-ready, port, error |
-| P16 | `stackblitz-performance-tuning` | Optimize boot time, mount size, process spawning |
-| P17 | `stackblitz-cost-tuning` | Free tier vs commercial licensing for WebContainer API |
-| P18 | `stackblitz-reference-architecture` | Browser IDE architecture: editor + terminal + preview + FS |
 
 ## Key Concepts Covered
 

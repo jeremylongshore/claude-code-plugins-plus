@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Migrate one agent while preserving a rollback path
+
+Export the current agent configuration and record its version, routing rule,
+and supported handoff behavior before making schema or prompt changes. Import
+the candidate into a preview environment, replay synthetic scenarios, and
+compare the redacted outcomes with the old version. Move a small canary route
+only after those checks pass; leave the previous configuration intact until
+the canary completion and escalation rates remain within the agreed bounds.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

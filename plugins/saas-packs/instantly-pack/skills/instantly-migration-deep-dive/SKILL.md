@@ -342,6 +342,18 @@ Week 4: Cutover
 | Custom fields lost | No matching Instantly field | Map to `custom_variables` object |
 | Performance worse than old platform | Accounts not warmed up | Wait 14+ days, check inbox rates |
 
+## Prerequisites
+
+- Signed migration plan with sender/campaign owners, consent/suppression authority, synthetic recipients, and cutover/rollback owner.
+
+## Output
+
+Create a migration receipt with cohort, baseline/target counts, consent/suppression results, checkpoint, owner approval, cutover status, and rollback reference. Never attach addresses, copy, or credentials.
+
+## Examples
+
+`cohort=synthetic-recipients-01; baseline=420; migrated=420; consent=pass; suppression=pass; sends=0; cutover=held; rollback=old-client-r8` documents a safe rehearsal.
+
 ## Resources
 
 - [Instantly API v2 Docs](https://developer.instantly.ai/)

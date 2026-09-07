@@ -64,6 +64,18 @@ plugins/community/skills-janitor/scripts/compare.sh:secret-exfil-cooccur  GITHUB
 plugins/mcp/governed-second-brain/plugin-runtime/governed-brain.cjs:secret-exfil-cooccur  team-mode TEAMKB_API_TOKEN is sent only to its configured TEAMKB_API_URL service; reviewed upstream bundle 967fb70f
 plugins/mcp/governed-second-brain/plugin-runtime/governed-brain.cjs:dynamic-exec  AJV schema compiler in the generated bundle compiles fixed plugin schemas, not user-provided source text; reviewed upstream bundle 967fb70f
 
+# ── a2a-client cancellation guard — reviewed 2026-09-01 @ d359d70d. ──
+# The only hook is a blocking PreToolUse confirmation for the exact cancel_task
+# namespaces. It invokes a fixed in-plugin script, has no network or credential
+# access, and complements the server-side default-off and task-bound phrase gates.
+plugins/mcp/a2a-client/hooks/hooks.json:hook-definition  fixed blocking PreToolUse confirmation for cancel_task only; no network, credential access, or dynamic command construction — reviewed 2026-09-01
+plugins/mcp/a2a-client/dist/index.js:secret-exfil-cooccur  A2A reads only its explicitly named credential variables and sends them solely to the operator-requested HTTPS origin after exact host authorization; SSRF, redirect, and credential-scope tests reviewed 2026-09-01
+plugins/mcp/a2a-client/dist/index.js:dynamic-exec  generated AJV schema compiler code from fixed MCP SDK schemas; no untrusted source text reaches the constructor; reviewed bundle and 126-test lane 2026-09-01
+plugins/mcp/a2a-client/dist/index.js:long-base64-blob  bundled dependency WASM payload from the pinned A2A and MCP dependency graph; npm provenance, audit, deterministic bundle, and package smoke reviewed 2026-09-01
+
+# ── agent-systems-toolkit — offline evidence-manifest validation. ──
+plugins/skill-enhancers/agent-systems-toolkit/skills/production-upgrade/scripts/audit_evidence.py:outbound-network  imports urllib.parse.urlsplit solely for offline HTTPS URL validation; contains no request client, socket use, or command execution — reviewed 2026-09-05
+
 # ── sources-change-unscanned is a ONE-SHOT waiver (enforced in code by
 # honoredWaivers, blocker 62ye.3 / #985 defect 3): a line is honored ONLY in the
 # PR whose diff adds it, so it can never persistently waive future source-list
@@ -73,6 +85,8 @@ plugins/mcp/governed-second-brain/plugin-runtime/governed-brain.cjs:dynamic-exec
 # (The spent one-shot lines for skills-janitor / walkie-talkie / localplugins /
 # quit-sponsor were removed 2026-07-14 per this rule — their vet evidence lives
 # in git history and the intake PRs #1020/#1030 that added them.)
+sources.yaml:sources-change-unscanned  reviewed quarantine/delist of walkie-talkie: removes the active registry and matching lock approval without introducing any mirrored content
+sources.lock.json:sources-change-unscanned  reviewed quarantine/delist of walkie-talkie: removes the matching lock approval after the active registry was removed, without introducing any mirrored content
 
 # ── hyperflow orchestrator skill: upstream web-research feature. ──
 plugins/ai-agency/hyperflow/skills/hyperflow/SKILL.md:allowed-tools-network  upstream v5.8.x added WebFetch/WebSearch to the orchestrator skill for its web-research feature (skills/hyperflow/web-research.md); mirror content hand-reviewed 2026-07-10 (evidence gate on #1008 + the be6ae2d3->eae6e34c5 delta review) — external mirror, upstream's design, no credential surface
@@ -102,6 +116,20 @@ plugins/productivity/j-rig/**:hook-definition  the sinker/line/hook 3-layer arch
 
 # ── Reviewed defensive scanner signatures. ──
 plugins/security/agent-safety-preflight/scripts/agent_preflight_lite.py:outbound-network  defensive scanner regex detects curl/wget install chains; it does not perform network calls
+plugins/saas-packs/snowflake-pack/skills/snowflake-cost-leak-hunter/scripts/analyze_cost_evidence.py:outbound-network  Reviewer Jeremy Longshore; expires 2027-08-31; Python stdlib urlsplit validates local strings only and performs no network I/O
+plugins/saas-packs/snowflake-pack/skills/snowflake-failover-readiness-drill/scripts/test_analyze_failover_readiness.py:outbound-network  negative AST isolation test names urllib only to assert the analyzer cannot import network/process modules; reviewed exact implementation SHA b6ffdad68d5c
+
+# ── Grammarly v2 operator client — reviewed 2026-09-05 on PR #1449. ──
+# OAuth credentials go only to the exact Grammarly token endpoint. Bearer tokens
+# go only to exact, fixed api.grammarly.com document contracts and are never sent
+# to the presigned upload destination. Uploads accept only HTTPS S3-shaped hosts,
+# globally routable DNS results, an exact approved origin, and a pinned address
+# while TLS still verifies the approved hostname. The manifest auditor parses an
+# origin string offline and performs no network I/O.
+plugins/saas-packs/grammarly-pack/skills/grammarly-document-evaluator/scripts/grammarly_api.py:secret-exfil-cooccur  bundled standalone evaluator runtime: OAuth client credentials are form-posted only to auth.grammarly.com; bearer tokens are sent only to fixed api.grammarly.com contracts and never to upload URLs
+plugins/saas-packs/grammarly-pack/skills/grammarly-document-evaluator/scripts/grammarly_api.py:outbound-network  bundled standalone evaluator runtime: documented Grammarly control-plane calls plus origin-approved S3 upload with public-address validation, address pinning, and hostname-verified TLS
+plugins/saas-packs/grammarly-pack/skills/grammarly-data-safety-guardian/scripts/audit_submission_manifest.py:outbound-network  false positive: urllib.parse.urlsplit validates an origin string offline; the script contains no socket or request operation
+plugins/saas-packs/grammarly-pack/skills/grammarly-document-evaluator/scripts/audit_submission_manifest.py:outbound-network  bundled standalone evaluator runtime; false positive: urllib.parse.urlsplit validates an origin string offline and performs no network I/O
 
 # ── databricks-streaming-guardian: the PreToolUse guard IS the skill's purpose. ──
 # The pack's only blocking hook. It intercepts Bash and BLOCKS a DROP/CREATE-OR-
@@ -173,6 +201,8 @@ plugins/saas-packs/miro-pack/skills/miro-core-workflow-a/SKILL.md:secret-exfil-c
 plugins/saas-packs/miro-pack/skills/miro-deploy-integration/SKILL.md:secret-exfil-cooccur  documented deployment example sends its Miro credential only to Miro's API
 plugins/saas-packs/miro-pack/skills/miro-hello-world/SKILL.md:secret-exfil-cooccur  documented starter API request sends its Miro token only to api.miro.com
 plugins/saas-packs/miro-pack/skills/miro-install-auth/SKILL.md:secret-exfil-cooccur  documented OAuth example sends Miro credentials only to Miro's token endpoint
+plugins/saas-packs/langfuse-pack/skills/langfuse-common-errors/SKILL.md:secret-exfil-cooccur  diagnostic curl uses Langfuse project credentials only with the configured Langfuse base URL; output redacts credentials and no foreign sink is present — reviewed 2026-08-27
+plugins/saas-packs/langfuse-pack/skills/langfuse-incident-runbook/SKILL.md:secret-exfil-cooccur  post-incident trace verification sends Langfuse project credentials only to the configured LANGFUSE_BASE_URL; output reports a count and does not print credentials or payloads — reviewed 2026-08-28
 plugins/saas-packs/miro-pack/skills/miro-local-dev-loop/SKILL.md:secret-exfil-cooccur  documented local development example sends its Miro token only to api.miro.com
 plugins/saas-packs/miro-pack/skills/miro-multi-env-setup/SKILL.md:secret-exfil-cooccur  documented environment example sends its Miro credential only to Miro's API
 plugins/saas-packs/miro-pack/skills/miro-observability/SKILL.md:secret-exfil-cooccur  documented telemetry example sends its Miro token only to api.miro.com
@@ -317,10 +347,32 @@ plugins/productivity/intent-labs-pack/skills/audit-tests/shared-refs/security-te
 plugins/productivity/intent-labs-pack/skills/validate-skillmd/SKILL.md:hook-definition  skill body discusses hooks as a validation surface; no hooks.json shipped
 plugins/productivity/intent-labs-pack/skills/validate-skillmd/SKILL.md:allowed-tools-network  documentation of how to detect over-broad allowed-tools (mentions WebFetch as a pattern to flag), not granting network tools
 plugins/productivity/intent-labs-pack/skills/validate-skillmd/references/schema-reminder-frontmatter.md:hook-definition  extracted schema field docs mentioning hooks as a frontmatter topic — not an executable hooks.json
-sources.yaml:sources-change-unscanned  tonone excludes '.claude-plugin/CLAUDE.md' — a mirroring-scope narrowing that drops upstream's auto-generated claude-mem activity table. No new source, no repo/ref change; tonone stays curated: true (frozen) and pinned in sources.lock.json, so advancing it still requires a --relock review.
+sources.yaml:sources-change-unscanned  2026-08-23 census-deadline enforcement PR: removes the still-failing census clusters (numman-ali/n-skills, wondelai/skills) per the 2026-07-08 fix-or-removed policy — every notified skill re-validated at upstream default-branch HEAD by census-watch --enforce before removal; entries removed only, no source added or repointed
+sources.lock.json:sources-change-unscanned  2026-08-23 census-deadline enforcement PR: removes the stale lock entries for the same delisted census clusters after their sources were removed; no source is added or repointed
 plugins/testing/kobiton-automate/README.md:secret-exfil-cooccur  Reviewed 2026-08-19 (E3.6 relock): the co-occurrence is Kobiton's documented API-key auth alongside a curl fetch of their own repo's AGENTS.md (raw.githubusercontent.com/kobiton/automate) — verified sponsor source, product install docs, not exfil.
 plugins/testing/kobiton-automate/README.md:mcp-remote  Reviewed 2026-08-19 (E3.6 relock): https://api.kobiton.com/mcp is the product's own remote MCP endpoint on the vendor's domain — the plugin's entire purpose; verified source.
 plugins/mcp/servicegraph/hooks/hooks.json:hook-definition  E4.10 curated hardening reviewed 2026-08-19: a PreToolUse gate matching ONLY mcp__servicegraph__unlock_rows that runs the plugin's own confirm-unlock.sh to emit permissionDecision "ask" — it ADDS a confirmation before paid credit spends and executes nothing else; this is the enforcing artifact for the destructive-policy declaration (790 § 6, AAR 800).
+
+# ── Adobe internal pack remediation (2026-08-23). ──
+# Each reviewed example sends an Adobe IMS or Firefly credential only to Adobe's
+# documented IMS / Firefly endpoints; no example forwards that credential to a third-party host or logs it.
+plugins/saas-packs/adobe-pack/skills/adobe-advanced-troubleshooting/SKILL.md:secret-exfil-cooccur  diagnostic OAuth and job-status calls use only Adobe IMS or firefly-api.adobe.io endpoints
+plugins/saas-packs/adobe-pack/skills/adobe-architecture-variants/SKILL.md:secret-exfil-cooccur  documented architecture example sends Adobe token only to firefly-api.adobe.io
+plugins/saas-packs/adobe-pack/skills/adobe-ci-integration/SKILL.md:secret-exfil-cooccur  documented CI example sends Adobe token only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-core-workflow-a/SKILL.md:secret-exfil-cooccur  documented Adobe workflow sends its token only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-data-handling/SKILL.md:secret-exfil-cooccur  documented data-handling example sends its Adobe token only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-deploy-integration/SKILL.md:secret-exfil-cooccur  documented deployment example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-enterprise-rbac/SKILL.md:secret-exfil-cooccur  documented RBAC example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-hello-world/SKILL.md:secret-exfil-cooccur  documented starter example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-known-pitfalls/SKILL.md:secret-exfil-cooccur  documented troubleshooting example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-local-dev-loop/SKILL.md:secret-exfil-cooccur  documented local development example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-migration-deep-dive/SKILL.md:secret-exfil-cooccur  documented migration example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-multi-env-setup/SKILL.md:secret-exfil-cooccur  documented environment example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-performance-tuning/SKILL.md:secret-exfil-cooccur  documented performance example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-reliability-patterns/SKILL.md:secret-exfil-cooccur  documented reliability example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-sdk-patterns/SKILL.md:secret-exfil-cooccur  documented SDK example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-upgrade-migration/SKILL.md:secret-exfil-cooccur  documented upgrade example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-webhooks-events/SKILL.md:secret-exfil-cooccur  documented webhook example sends Adobe credential only to Adobe's API
 
 # ── Attio internal pack remediation (2026-08-23). ──
 # Each reviewed example sends an Attio API credential only to Attio's documented
@@ -334,3 +386,11 @@ plugins/saas-packs/attio-pack/skills/attio-sdk-patterns/SKILL.md:secret-exfil-co
 plugins/saas-packs/attio-pack/skills/attio-security-basics/SKILL.md:secret-exfil-cooccur  documented security example sends its Attio credential only to Attio's API
 plugins/saas-packs/attio-pack/skills/attio-upgrade-migration/SKILL.md:secret-exfil-cooccur  documented upgrade request sends its Attio credential only to api.attio.com
 plugins/saas-packs/attio-pack/skills/attio-webhooks-events/SKILL.md:secret-exfil-cooccur  documented webhook management example sends its Attio credential only to api.attio.com
+plugins/saas-packs/langfuse-pack/skills/langfuse-webhooks-events/SKILL.md:secret-exfil-cooccur  reviewed webhook tutorial: the Langfuse signing secret is used only for local HMAC verification; separately configured Slack and GitHub credentials are sent only to their respective notification and dispatch APIs, never forwarded with the Langfuse secret
+plugins/saas-packs/lindy-pack/skills/lindy-ci-integration/SKILL.md:secret-exfil-cooccur  reviewed CI documentation: the Lindy API key is sent only to public.lindy.ai, and the configured webhook secret is sent only to the configured Lindy webhook endpoint; the local test secret is not forwarded
+plugins/saas-packs/lindy-pack/skills/lindy-deploy-integration/SKILL.md:secret-exfil-cooccur  reviewed deployment documentation: LINDY_CALLBACK_SECRET is sent only to the operator's configured callback endpoint, while LINDY_TRIGGER_SECRET is sent only to public.lindy.ai; the two credentials are intentionally distinct and never forwarded to a third-party host
+plugins/saas-packs/lindy-pack/skills/lindy-local-dev-loop/SKILL.md:secret-exfil-cooccur  reviewed local-development flow: LINDY_TRIGGER_SECRET is sent only to the Lindy-hosted trigger URL, while the distinct LINDY_CALLBACK_SECRET authenticates Lindy's HTTP Request action to the local receiver; result and customer-payload logging are prohibited, with only taskId and status logged for correlation
+plugins/saas-packs/lindy-pack/skills/lindy-webhooks-events/references/implementation-guide.md:secret-exfil-cooccur  reviewed webhook reference: LINDY_TRIGGER_SECRET is loaded only after exact HTTPS public.lindy.ai webhook URL validation and sent only to that Lindy endpoint; the distinct LINDY_CALLBACK_SECRET is receiver-owned and used only for constant-time inbound callback authentication, never attached to the outbound fetch
+plugins/saas-packs/hootsuite-pack/skills/hootsuite-security-basics/SKILL.md:secret-exfil-cooccur  reviewed OAuth refresh example: HOOTSUITE_CLIENT_ID and HOOTSUITE_CLIENT_SECRET are combined only for Basic authentication to Hootsuite's own exact HTTPS token endpoint at platform.hootsuite.com/oauth2/token; no third-party or caller-controlled sink
+plugins/saas-packs/mistral-pack/skills/mistral-common-errors/SKILL.md:secret-exfil-cooccur  reviewed diagnostic examples send MISTRAL_API_KEY only to the fixed HTTPS host api.mistral.ai; status, documentation, and Discord links never receive the credential, and the behavioral probe tests suppress error bodies
+sources.yaml:sources-change-unscanned  E8.4 changes only fail-closed publication dispositions for existing Skyvern and Hyperflow mirrors; both remain pinned by exact resolved_ref and per-file sha256 entries in sources.lock.json, with no mirrored content changed

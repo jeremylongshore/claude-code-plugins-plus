@@ -197,6 +197,14 @@ jobs:
 | Bot login doesn't match | Different app slug | Check with `coderabbitai[bot]` (includes `[bot]` suffix) |
 | Rate limited by GitHub | Too many API calls | Use pagination and caching for bulk queries |
 
+## Examples
+
+Use a scoped GitHub token in a staging workflow to retrieve CodeRabbit’s review
+state for one disposable pull request, then verify that a requested-changes
+state fails the intended gate. If the bot review is missing, return a pending
+result and use bounded polling; do not treat an unknown state as approval or
+expand token access to bypass the check.
+
 ## Resources
 
 - [CodeRabbit Review Commands](https://docs.coderabbit.ai/reference/review-commands)

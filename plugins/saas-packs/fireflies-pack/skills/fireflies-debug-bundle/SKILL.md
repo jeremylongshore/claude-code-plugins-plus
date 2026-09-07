@@ -32,6 +32,10 @@ compatibility: Designed for Claude Code
 
 Collect all diagnostic information needed to resolve Fireflies.ai integration issues. Generates a redacted bundle safe for sharing with support.
 
+## Examples
+
+For a synthetic authentication failure, collect runtime versions, an opaque request ID, and the configured scope reference—not a transcript, email, token, or raw response. Review and encrypt the bundle in the approved evidence location, share it only with the incident owner, and retire it at the documented retention date.
+
 ## Prerequisites
 
 - `FIREFLIES_API_KEY` environment variable set

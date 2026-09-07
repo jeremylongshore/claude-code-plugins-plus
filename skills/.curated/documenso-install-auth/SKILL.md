@@ -12,7 +12,7 @@ description: 'Install and configure Documenso SDK/API authentication.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(pnpm:*), Grep
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -23,6 +23,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Install & Auth
+
+## Output
+
+- A scoped Documenso credential/reference for the intended environment, with a verified low-impact authorization check.
+- A secret-ownership and revocation path that keeps tokens and signing material out of repositories and logs.
+
+## Examples
+
+Inject a development credential from the approved secret manager, create or read a synthetic document through a least-privilege role, and record only environment/result. If a key or signing URL is exposed, revoke it first and reissue after investigation; do not reuse it while attempting cleanup.
 
 ## Overview
 

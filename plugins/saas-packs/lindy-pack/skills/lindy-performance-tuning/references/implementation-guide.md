@@ -1,125 +1,92 @@
-# Lindy Performance Tuning - Implementation Guide
+# Lindy Performance Tuning - Experiment Guide
 
-# Lindy AI Performance Tuning
+## Measurement Sources
 
-## Overview
+Use the Lindy UI surfaces that expose the actual workspace behavior:
 
-Optimize Lindy AI agent execution speed and reliability. Lindy agents run as multi-step automations where each step (LLM call, tool execution, API call) adds latency. A typical 5-step agent takes 10-30 seconds total. The biggest performance levers are: reducing step count (combine LLM calls), using faster tool configurations, implementing parallel step execution where possible, and caching frequently-accessed data in agent memory.
+- **Tasks** for run history, status, step order, inputs/outputs, and timestamps;
+- **Get Task Details** for block-level analysis in a monitoring workflow;
+- **Evals** for repeatable offline quality scoring on selected historical tasks;
+- **Test Panel** for controlled testing, remembering that actions execute for real;
+- **Version History** for a known-good rollback point; and
+- the workspace billing/usage view for current cost evidence.
 
-## Prerequisites
+Do not poll an assumed run-history REST endpoint or request a generic workspace API
+key. That surface is not the documented tuning path used here.
 
-- Lindy workspace with active agents
-- Access to agent configuration and run history
-- Understanding of agent step execution flow
+## Experiment Worksheet
 
-## Instructions
+Complete this record before making a change:
 
-### Step 1: Identify Slow Steps
+| Field | Entry |
+|---|---|
+| Workflow and class | Stable internal names |
+| Sanitized fixture/eval cohort | IDs stored only in approved system |
+| Baseline window and sample count | Same definition for candidate |
+| Median / p95 duration | Measured from Tasks/Get Task Details |
+| Outcome ratio and eval score | Measured from Tasks and offline evals |
+| Usage/cost | Current workspace-reported value and unit |
+| One changed variable | Prompt, model/config, result count, filter, or concurrency |
+| Hypothesis | Why this variable targets the measured bottleneck |
+| Acceptance / rollback criteria | Values chosen before candidate run |
+| Known-good version | Version History receipt |
+| Locked invariants | Confirmation, access, redaction, retention, audit, fallbacks |
 
-```bash
-# Analyze step-level timing for recent agent runs
-curl "https://api.lindy.ai/v1/runs?limit=20&expand=steps" \
-  -H "Authorization: Bearer $LINDY_API_KEY" | \
-  jq '.runs[] | {agent: .agent_name, total_ms: .duration_ms, steps: [.steps[] | {name: .step_name, duration_ms: .duration_ms, status}]} | {agent, total_ms, slowest_step: (.steps | max_by(.duration_ms))}'
+## Controlled Sequence
+
+1. Freeze the fixture cohort and metric definitions.
+2. Save or identify the known-good version.
+3. Change one variable only.
+4. Keep outbound communication in draft/confirmation mode and use test integrations.
+5. Run offline evals on the same cohort.
+6. Use the Test Panel only with synthetic or redacted inputs; real actions execute.
+7. Collect candidate Tasks using the baseline definitions.
+8. Compare all gates. A latency win cannot compensate for quality or safety failure.
+9. Roll out gradually or restore the known-good version.
+
+## Data-Minimized Fixture
+
+```json
+{
+  "fixtureId": "routing-technical-001",
+  "message": "[SYNTHETIC] User cannot access PRODUCT-A after a routine change.",
+  "expected": {
+    "queue": "support-triage",
+    "issueType": "access",
+    "requiresApproval": true
+  }
+}
 ```
 
-### Step 2: Consolidate LLM Steps
+Do not place real names, addresses, account numbers, credentials, contracts, or full
+customer conversations in the worksheet. If the source task contains sensitive data,
+create an equivalent sanitized fixture and retain only aggregate measurements.
 
-```yaml
-# Before: 3 separate LLM calls (3 * 2-5s = 6-15s total)
-steps_before:
-  - name: "Classify email"
-    type: llm_call
-    prompt: "Classify this email as sales/support/spam"
-  - name: "Extract entities"
-    type: llm_call
-    prompt: "Extract company name and person from email"
-  - name: "Draft response"
-    type: llm_call
-    prompt: "Draft a response to this email"
+## Change Patterns
 
-# After: 1 LLM call with structured output (2-5s total)
-steps_after:
-  - name: "Process email"
-    type: llm_call
-    prompt: |
-      Analyze this email and return JSON:
-      {"classification": "sales|support|spam", "company": "", "person": "", "draft_response": ""}
-# Saves: 4-10 seconds per run
-```
+| Candidate change | Hold constant | Reject when |
+|---|---|---|
+| Compare another available model/config | Prompt, skills, cohort, approvals | Eval/reliability/safety gate fails |
+| Consolidate repeated reasoning | Output schema and validations | Required check disappears |
+| Reduce retrieval results | Query, cohort, answer criteria | Grounding/quality regresses |
+| Add trigger filter | Downstream workflow | Required fixture no longer triggers |
+| Raise loop concurrency | Items and downstream system | Errors, rate limiting, or ordering defects rise |
 
-### Step 3: Cache Agent Context Data
+Model names, availability, pricing, and runtime behavior change. Record what the
+workspace offered at experiment time instead of embedding a permanent recommendation.
 
-```yaml
-# Instead of fetching reference data every run:
-# Store frequently-accessed data as agent memory
-agent_memory:
-  team_directory:
-    refresh: daily
-    data: "List of team members, roles, and email addresses"
-  product_catalog:
-    refresh: weekly
-    data: "Current product names, prices, and descriptions"
-  faq_responses:
-    refresh: weekly
-    data: "Common customer questions and approved responses"
-# Eliminates 1-3 API calls per run
-```
+## Decision Receipt
 
-### Step 4: Parallelize Independent Steps
+The completed receipt must show baseline and candidate values side by side, the exact
+single change, unchanged invariants, eval evidence, task evidence, workspace cost
+evidence, decision, owner, and rollback version. Mark the result `insufficient
+evidence` when the cohort is too small or measurements are not comparable.
 
-```yaml
-# Steps that don't depend on each other should run in parallel
-parallel_execution:
-  step_group_1:
-    parallel: true
-    steps:
-      - "Fetch CRM data"       # API call: 500ms
-      - "Fetch calendar data"   # API call: 300ms
-      - "Fetch email thread"    # API call: 400ms
-    # Parallel: 500ms total (max of 3)
-    # Sequential: 1200ms total (sum of 3)
+## Official References
 
-  step_group_2:
-    depends_on: step_group_1
-    steps:
-      - "Analyze combined data"  # LLM call: 2-5s
-```
-
-### Step 5: Optimize Trigger Configuration
-
-```yaml
-# Reduce unnecessary agent invocations
-trigger_optimization:
-  email_trigger:
-    bad: "Trigger on every email received"
-    good: "Trigger only on emails from known contacts, skip newsletters"
-    filter: "from != *@newsletter.* AND from != *@noreply.*"
-
-  schedule_trigger:
-    bad: "Run every 5 minutes"
-    good: "Run every 30 minutes (batch process)"
-    impact: "6x fewer runs, same total throughput"
-```
-
-## Error Handling
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Agent timeout (>60s) | Too many sequential steps | Consolidate steps, add parallel execution |
-| Step retry loop | Transient API failure | Set max retries to 2, add fallback step |
-| Slow LLM step | Prompt too long or complex | Shorten prompt, use focused instructions |
-| High run frequency | Trigger firing too often | Add filters to trigger configuration |
-
-## Examples
-
-```bash
-# Benchmark: average agent run time over last 50 runs
-curl -s "https://api.lindy.ai/v1/runs?limit=50" \
-  -H "Authorization: Bearer $LINDY_API_KEY" | \
-  jq '{
-    avg_duration_ms: ([.runs[].duration_ms] | add / length),
-    p95_duration_ms: ([.runs[].duration_ms] | sort | .[47]),
-    slowest_agent: (.runs | max_by(.duration_ms) | {agent: .agent_name, ms: .duration_ms})
-  }'
-```
+- [Monitor Your Agents](https://docs.lindy.ai/testing/monitoring-your-agents)
+- [Test Panel](https://docs.lindy.ai/testing/test-panel)
+- [Evals](https://docs.lindy.ai/fundamentals/lindy-101/evals)
+- [Human in Loop](https://docs.lindy.ai/testing/human-in-the-loop)
+- [Version History](https://docs.lindy.ai/testing/version-history)
+- [Looping](https://docs.lindy.ai/fundamentals/lindy-101/looping)

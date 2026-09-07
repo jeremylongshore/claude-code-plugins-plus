@@ -146,9 +146,19 @@ print("Record sent to Clay — check your table for enriched data.")
 
 ## Output
 
-- New row(s) visible in your Clay table
-- Enrichment columns auto-populated with company/person data
-- Console confirmation of successful webhook delivery
+The first run confirms receipt of a controlled test row and returns only a
+redacted status/correlation value. A successful webhook acknowledgement does
+not confirm enrichment quality, lawful data use, or CRM publication; inspect
+the authorized staging table and configured conditions before taking the next
+step.
+
+## Examples
+
+Send a synthetic or explicitly approved test record to a staging webhook, log
+the response status without the webhook URL or personal data, and verify that
+the resulting row is subject to the intended enrichment conditions. If the
+endpoint returns 4xx/5xx, stop instead of creating new webhooks or resending
+the record until the configuration is corrected.
 
 ## Resources
 

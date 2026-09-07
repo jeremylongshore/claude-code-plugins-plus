@@ -46,13 +46,15 @@ What one sync does:
      history queries against Dolt are `WHERE run_id = N` / `AS OF 'run-N'`.
   7. Commits (`--skip-empty`), tags run-<N> (N = MAX(discovery_runs.id))
      only when the tag would sit on a commit that actually carries run N.
-  8. Runs the NON-FATAL post-commit step (same loud-skip discipline as gc —
-     the commit already succeeded): stamps the Dolt commit hash into
+  8. Runs the fail-closed post-commit receipt step before any remote push:
+     stamps the Dolt commit hash and exact grades.csv digest into
      grade-histogram.json (artifact → immutable-revision traceability) and
      emits freshie/reports/run-delta-<N>.json via run-delta.py
      (DOLT_DIFF_SUMMARY/DOLT_DIFF_STAT schema-vs-data classification per
-     table + run-over-run grade regressions), printing a one-line summary
-     a GitHub-Actions step can consume. Default inert beyond the report;
+     table + run-over-run grade regressions + immutable export/evidence
+     snapshots), printing a one-line summary a GitHub-Actions step can
+     consume. Receipt failure blocks publication; the local Dolt commit
+     remains recoverable. Default inert beyond the report;
      --alert-on-regression makes an otherwise-successful sync exit 4 when
      grades regressed.
   9. Pushes main AND the tag (tags do not ride along on a branch push)
@@ -115,6 +117,7 @@ import json
 import math
 import os
 import shutil
+import socket
 import sqlite3
 import subprocess
 import sys
@@ -521,6 +524,23 @@ def refuse_if_server_running(repo: Path) -> None:
             f"a dolt sql-server holds {server_lock} — stop it before syncing "
             "(concurrent server + CLI writes corrupt the working set)"
         )
+    # Dolt 2.x does not consistently materialize sql-server.lock. Its default
+    # integration port is nevertheless the documented single-writer boundary:
+    # a live server makes the repository read-only and a CLI exporter otherwise
+    # gets partway through its import before failing. Refuse before any snapshot
+    # or DDL work when the port is accepting connections.
+    try:
+        with socket.create_connection(("127.0.0.1", 3308), timeout=0.2):
+            raise SyncError(
+                "a dolt sql-server holds port 3308 — stop it before syncing "
+                "(concurrent server + CLI writes corrupt the working set)"
+            )
+    except ConnectionRefusedError:
+        return
+    except TimeoutError:
+        # A non-responsive listener cannot prove it is Dolt; preserve the
+        # existing lock-file behavior rather than refusing on an unknown host.
+        return
 
 
 # ---------------------------------------------------------------------------
@@ -713,6 +733,53 @@ def gate_export_allowlist(tables) -> None:
     raise SyncError(" ".join(parts))
 
 
+def demote_unretained_forge_proofs(conn: sqlite3.Connection) -> list[tuple[int, str]]:
+    """Downgrade ledger claims whose primary artifact is absent or hash-invalid.
+
+    This runs against the writable local ledger before the exporter snapshots it.
+    An E2/E3 claim without retrievable primary bytes is E0 by definition; keeping
+    it at a stronger class until a later run would republish a false claim.
+    """
+    tables = {
+        row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
+    }
+    if "forge_proofs" not in tables:
+        return []
+    columns = {row[1] for row in conn.execute("PRAGMA table_info(forge_proofs)")}
+    required = {"id", "evidence_class", "artifact_uri", "artifact_sha256"}
+    missing = sorted(required - columns)
+    if missing:
+        raise SyncError(
+            "forge_proofs evidence schema is too old for safe export; run the "
+            f"validator migration first (missing: {', '.join(missing)})"
+        )
+
+    demoted: list[tuple[int, str]] = []
+    rows = conn.execute(
+        "SELECT id, evidence_class, artifact_uri, artifact_sha256 FROM forge_proofs"
+    ).fetchall()
+    for row_id, evidence_class, uri, expected_hash in rows:
+        reason = None
+        if not isinstance(uri, str) or not uri:
+            reason = "E0-PRIMARY-ARTIFACT-UNRETAINED"
+        elif not isinstance(expected_hash, str):
+            reason = "E0-PRIMARY-ARTIFACT-HASH-MISSING"
+        elif len(expected_hash) != 64 or any(ch not in "0123456789abcdef" for ch in expected_hash.lower()):
+            reason = "E0-PRIMARY-ARTIFACT-HASH-MISSING"
+        else:
+            try:
+                artifact = Path(uri)
+                actual_hash = hashlib.sha256(artifact.read_bytes()).hexdigest()
+                if actual_hash != expected_hash.lower():
+                    reason = "E0-PRIMARY-ARTIFACT-HASH-MISMATCH"
+            except OSError:
+                reason = "E0-PRIMARY-ARTIFACT-UNRETAINED"
+        if reason and evidence_class != "E0":
+            conn.execute("UPDATE forge_proofs SET evidence_class = 'E0' WHERE id = ?", (row_id,))
+            demoted.append((int(row_id), reason))
+    return demoted
+
+
 def gate_row_counts(conn: sqlite3.Connection, repo: Path, tables: list[str]) -> None:
     for t in tables:
         want = conn.execute(f'SELECT COUNT(*) FROM "{t}"').fetchone()[0]
@@ -813,6 +880,24 @@ def gate_run_completeness(conn: sqlite3.Connection, run_id: int) -> None:
             f"freshie/scripts/rebuild-inventory.py (it purges the newest phantom "
             f"and rescans) before syncing to Dolt."
         )
+    if row is None:
+        raise SyncError(f"discovery run {run_id} is missing from discovery_runs")
+    try:
+        actual_skills = conn.execute(
+            "SELECT COUNT(*) FROM skills WHERE run_id=?", (run_id,)
+        ).fetchone()[0]
+    except sqlite3.OperationalError as exc:
+        raise SyncError(
+            "cannot verify discovery run coherence: skills.run_id is required "
+            "to compare discovery_runs.total_skills"
+        ) from exc
+    declared_skills = row[0]
+    if declared_skills != actual_skills:
+        raise SyncError(
+            f"discovery run {run_id} skill-count mismatch: header total_skills="
+            f"{declared_skills}, skills rows={actual_skills}. Re-run "
+            "freshie/scripts/rebuild-inventory.py before syncing to Dolt."
+        )
 
 
 def gate_varchar_lengths(conn: sqlite3.Connection, guards: list[tuple[str, str]]) -> None:
@@ -832,9 +917,26 @@ def gate_varchar_lengths(conn: sqlite3.Connection, guards: list[tuple[str, str]]
 # ---------------------------------------------------------------------------
 
 
+def normalize_grade_export_path(skill_path: str, repo_root: Path = REPO_ROOT) -> str:
+    """Return the portable repository-relative form required by grades.csv."""
+    candidate = Path(skill_path)
+    if candidate.is_absolute():
+        try:
+            candidate = candidate.relative_to(repo_root.resolve())
+        except ValueError as exc:
+            raise SyncError(
+                f"skill_compliance path escapes repository and cannot be exported: {skill_path}"
+            ) from exc
+    normalized = candidate.as_posix()
+    if not normalized or normalized == "." or normalized.startswith("../"):
+        raise SyncError(f"invalid skill_compliance export path: {skill_path}")
+    return normalized
+
+
 def write_grades_export(conn: sqlite3.Connection, run_id: int,
                         csv_path: Path = GRADES_CSV,
-                        histogram_path: Path = GRADE_HISTOGRAM) -> None:
+                        histogram_path: Path = GRADE_HISTOGRAM,
+                        repo_root: Path = REPO_ROOT) -> None:
     # No run_id column in the CSV rows on purpose: it would change on every
     # row every sync, drowning the grade-movement diff this file exists to
     # tell. The current run_id lives in grade-histogram.json.
@@ -844,7 +946,7 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
     # rows (102 of them by run 9 — e.g. hyperflow's skills/amplify, gone from
     # disk since run 7, still counted in the public histogram). grades.csv
     # claims to be "current corpus grades"; only the current run's rows are.
-    rows = conn.execute(
+    db_rows = conn.execute(
         """
         SELECT skill_path, grade, score
         FROM skill_compliance
@@ -853,7 +955,7 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
         """,
         (run_id,),
     ).fetchall()
-    if not rows:
+    if not db_rows:
         total = conn.execute("SELECT COUNT(*) FROM skill_compliance").fetchone()[0]
         if total:
             raise SyncError(
@@ -862,6 +964,18 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
                 f"export. Run the validator --populate-db step for run {run_id} "
                 f"before syncing."
             )
+    rows = [
+        (normalize_grade_export_path(skill_path, repo_root), grade, score)
+        for skill_path, grade, score in db_rows
+    ]
+    if len({skill_path for skill_path, _, _ in rows}) != len(rows):
+        raise SyncError(
+            f"skill_compliance has duplicate repository-relative paths for run {run_id}; "
+            "refusing ambiguous grade export"
+        )
+    rows.sort(key=lambda row: row[0])
+    csv_path.parent.mkdir(parents=True, exist_ok=True)
+    histogram_path.parent.mkdir(parents=True, exist_ok=True)
     with open(csv_path, "w", newline="") as fh:
         writer = csv.writer(fh, lineterminator="\n")
         writer.writerow(["skill_path", "grade", "score"])
@@ -878,6 +992,95 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
     }
     histogram_path.write_text(json.dumps(payload, indent=2) + "\n")
     log(f"wrote {csv_path.name} ({len(rows)} skills) + {histogram_path.name}")
+
+
+def gate_tracked_grade_exports(conn: sqlite3.Connection, csv_path: Path,
+                               histogram_path: Path,
+                               repo_root: Path = REPO_ROOT) -> None:
+    """Refuse a grade-export pair that does not describe the latest run.
+
+    ``grades.csv`` deliberately omits a per-row run id so its git diff exposes
+    grade movement.  ``grade-histogram.json`` is consequently the provenance
+    stamp for the pair.  Keep that convenience from becoming a stale-public-
+    artifact hazard by checking both the stamp and the CSV cardinality against
+    the source inventory before a sync can call the export current.
+    """
+    row = conn.execute("SELECT MAX(id) FROM discovery_runs").fetchone()
+    latest_run_id = int(row[0] or 0)
+    if not latest_run_id:
+        raise SyncError("cannot verify tracked grade exports: discovery_runs has no run")
+
+    try:
+        payload = json.loads(histogram_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise SyncError(
+            f"cannot read tracked grade histogram {histogram_path}: {exc}"
+        ) from exc
+    if not isinstance(payload, dict):
+        raise SyncError(f"tracked grade histogram {histogram_path} must be a JSON object")
+
+    histogram_run_id = payload.get("run_id")
+    if isinstance(histogram_run_id, bool) or not isinstance(histogram_run_id, int):
+        raise SyncError(
+            f"tracked grade histogram {histogram_path} has invalid run_id "
+            f"{histogram_run_id!r}"
+        )
+    if histogram_run_id != latest_run_id:
+        raise SyncError(
+            "tracked grade exports are stale: "
+            f"grade-histogram.json.run_id={histogram_run_id} but "
+            f"MAX(discovery_runs.id)={latest_run_id}"
+        )
+
+    source_rows = conn.execute(
+        "SELECT skill_path, grade, score FROM skill_compliance WHERE run_id = ?",
+        (latest_run_id,),
+    ).fetchall()
+    expected_rows = sorted(
+        (normalize_grade_export_path(path, repo_root), grade, score)
+        for path, grade, score in source_rows
+    )
+    if len({row[0] for row in expected_rows}) != len(expected_rows):
+        raise SyncError("cannot verify tracked grade exports: source paths are not unique")
+    expected_csv = io.StringIO(newline="")
+    writer = csv.writer(expected_csv, lineterminator="\n")
+    writer.writerow(["skill_path", "grade", "score"])
+    writer.writerows(expected_rows)
+    try:
+        actual_csv = csv_path.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise SyncError(f"cannot read tracked grades CSV {csv_path}: {exc}") from exc
+    if actual_csv != expected_csv.getvalue():
+        raise SyncError(
+            "tracked grades CSV content does not match the latest skill_compliance run"
+        )
+    row_count = len(expected_rows)
+
+    histogram_total = payload.get("total")
+    if isinstance(histogram_total, bool) or not isinstance(histogram_total, int):
+        raise SyncError(
+            f"tracked grade histogram {histogram_path} has invalid total {histogram_total!r}"
+        )
+    if row_count != histogram_total:
+        raise SyncError(
+            "tracked grade export row-count mismatch: "
+            f"grades.csv has {row_count} data rows but "
+            f"grade-histogram.json.total={histogram_total}"
+        )
+    expected_grades: dict[str, int] = {}
+    for _, grade, _ in expected_rows:
+        key = grade if grade else "ungraded"
+        expected_grades[key] = expected_grades.get(key, 0) + 1
+    if payload.get("grades") != {
+        key: expected_grades[key] for key in sorted(expected_grades)
+    }:
+        raise SyncError(
+            "tracked grade histogram buckets do not match the latest skill_compliance run"
+        )
+    log(
+        "gate: tracked grade exports current "
+        f"(run_id={latest_run_id}, rows={row_count})"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -945,11 +1148,12 @@ def commit_and_tag(repo: Path, run_id: int, source_sha: str) -> tuple[bool, str 
 
 
 # ---------------------------------------------------------------------------
-# Post-commit structured output (NON-FATAL — the commit already succeeded)
+# Post-commit structured output (FAIL-CLOSED before remote publication)
 # ---------------------------------------------------------------------------
 
 
-def stamp_dolt_commit(histogram_path: Path, commit_hash: str) -> None:
+def stamp_dolt_commit(histogram_path: Path, commit_hash: str,
+                      grades_csv_path: Path = GRADES_CSV) -> None:
     """Add the Dolt commit hash to the already-written grade histogram.
 
     Stamped AFTER commit_and_tag because the hash does not exist when
@@ -959,6 +1163,7 @@ def stamp_dolt_commit(histogram_path: Path, commit_hash: str) -> None:
     """
     payload = json.loads(histogram_path.read_text())
     payload["dolt_commit"] = commit_hash
+    payload["grades_csv_sha256"] = hashlib.sha256(grades_csv_path.read_bytes()).hexdigest()
     histogram_path.write_text(json.dumps(payload, indent=2) + "\n")
 
 
@@ -973,13 +1178,14 @@ def load_run_delta():
 
 
 def post_commit_outputs(repo: Path, run_id: int, tag: str | None,
-                        head_hash: str) -> bool:
+                        head_hash: str, grades_csv_path: Path = GRADES_CSV,
+                        histogram_path: Path = GRADE_HISTOGRAM,
+                        reports_dir: Path | None = None) -> bool:
     """Stamp the histogram + emit the run-delta report. Returns True when
     grade regressions were found (the --alert-on-regression signal).
 
-    Never raises: a failure here must not fail a sync whose commit (and, by
-    exit-code contract, whose push) is the actual product — same loud-skip
-    discipline as maybe_gc.
+    The outputs are part of the publication contract. A failure raises
+    SyncError before any remote push; the local commit remains recoverable.
     """
     regressions_found = False
     if tag is None:
@@ -992,20 +1198,23 @@ def post_commit_outputs(repo: Path, run_id: int, tag: str | None,
             "and run-delta report")
         return regressions_found
     try:
-        stamp_dolt_commit(GRADE_HISTOGRAM, head_hash)
-        log(f"stamped dolt_commit {head_hash} into {GRADE_HISTOGRAM.name}")
+        stamp_dolt_commit(histogram_path, head_hash, grades_csv_path)
+        log(f"stamped dolt_commit {head_hash} into {histogram_path.name}")
     except (OSError, json.JSONDecodeError) as exc:
-        log(f"WARNING: could not stamp dolt_commit into "
-            f"{GRADE_HISTOGRAM.name} ({exc}) — the sync itself succeeded")
+        raise SyncError(
+            f"post-commit grade-export receipt failed before push: {exc}"
+        ) from exc
     try:
         run_delta = load_run_delta()
-        out_path, report = run_delta.emit(repo, run_id, head_hash, tag)
+        kwargs = {"reports_dir": reports_dir} if reports_dir is not None else {}
+        out_path, report = run_delta.emit(repo, run_id, head_hash, tag, **kwargs)
         log(run_delta.summary_line(report, out_path))
         regressions_found = bool(report["grade_regressions"])
-    except Exception as exc:  # noqa: BLE001 — deliberately non-fatal
-        log(f"WARNING: run-delta report failed ({exc}) — the sync itself "
-            f"succeeded; regenerate with: python3 "
-            f"freshie/scripts/run-delta.py --run-id {run_id}")
+    except Exception as exc:  # noqa: BLE001 — normalize sibling-module errors
+        raise SyncError(
+            f"post-commit run receipt failed before push: {exc}; regenerate with "
+            f"python3 freshie/scripts/run-delta.py --run-id {run_id}"
+        ) from exc
     return regressions_found
 
 
@@ -1191,15 +1400,26 @@ def maybe_gc(repo: Path, state_path: Path, force: bool) -> None:
 # ---------------------------------------------------------------------------
 
 
-def source_git_sha() -> str:
-    proc = run(["git", "-C", str(REPO_ROOT), "rev-parse", "--short", "HEAD"], check=False)
+def source_git_sha(repo_root: Path = REPO_ROOT) -> str:
+    proc = run(["git", "-C", str(repo_root), "rev-parse", "--short", "HEAD"], check=False)
     return proc.stdout.strip() if proc.returncode == 0 else "unknown"
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[1])
     parser.add_argument("--db", type=Path, default=DB_DEFAULT)
+    parser.add_argument("--repo-root", type=Path, default=REPO_ROOT,
+                        help="repository root used to normalize absolute skill paths "
+                             "and stamp the source Git SHA")
     parser.add_argument("--dolt-dir", type=Path, default=DOLT_PARENT / DOLT_DB_NAME)
+    parser.add_argument("--grades-csv", type=Path, default=GRADES_CSV,
+                        help="write the current-run grades CSV here (default: freshie/grades.csv)")
+    parser.add_argument("--grade-histogram", type=Path, default=GRADE_HISTOGRAM,
+                        help="write the current-run grade histogram here (default: freshie/grade-histogram.json)")
+    parser.add_argument("--verify-grade-exports", action="store_true",
+                        help="read-only: fail unless tracked grade exports match the latest inventory run")
+    parser.add_argument("--reports-dir", type=Path, default=None,
+                        help="write run-delta reports here (default: freshie/reports)")
     parser.add_argument("--org", default=DEFAULT_ORG)
     parser.add_argument("--repo", default=DEFAULT_REPO)
     parser.add_argument("--no-push", action="store_true",
@@ -1218,6 +1438,20 @@ def main() -> int:
         log(f"source DB not found: {args.db}")
         return 1
 
+    if args.verify_grade_exports:
+        conn = sqlite3.connect(f"file:{args.db}?mode=ro", uri=True)
+        try:
+            try:
+                gate_tracked_grade_exports(
+                    conn, args.grades_csv, args.grade_histogram, args.repo_root
+                )
+            except SyncError as exc:
+                log(f"FAILED: {exc}")
+                return 1
+        finally:
+            conn.close()
+        return 0
+
     repo: Path = args.dolt_dir
     lock_fd = None
     tmpdir = None
@@ -1226,7 +1460,17 @@ def main() -> int:
             lock_fd = acquire_lock(repo.parent / ".sync.lock")
             if (repo / ".dolt").is_dir():
                 refuse_if_server_running(repo)
-            ensure_dolt_identity()
+            # This is intentionally before VACUUM INTO: the snapshot is the
+            # public-export input and must carry the demoted class, not merely
+            # diagnose it after the fact.
+            writable = sqlite3.connect(args.db)
+            try:
+                demoted = demote_unretained_forge_proofs(writable)
+                writable.commit()
+            finally:
+                writable.close()
+            if demoted:
+                log(f"evidence gate: demoted {len(demoted)} forge_proofs row(s) to E0")
 
         # Snapshot for read consistency across the whole export.
         shm = Path("/dev/shm")
@@ -1244,6 +1488,12 @@ def main() -> int:
         # Membership gate FIRST (also in --dry-run): an unknown table must
         # hard-fail before any DDL/plan output normalizes its presence.
         gate_export_allowlist(tables)
+        # A source that cannot be exported must fail before environment-
+        # dependent publication setup can mask the security refusal.  Once it
+        # is known publishable, a real export still requires a configured Dolt
+        # identity before it can create or update the destination repository.
+        if not args.dry_run:
+            ensure_dolt_identity()
         violations = scan_type_violations(conn, schema)
         widen = frozenset(violations)
         for (t, c), n in sorted(violations.items()):
@@ -1263,6 +1513,12 @@ def main() -> int:
         run_id_row = conn.execute("SELECT MAX(id) FROM discovery_runs").fetchone()
         run_id = int(run_id_row[0] or 0)
 
+        # A dry run is a publish preflight, not merely a DDL preview.  It must
+        # reject the same phantom/internally inconsistent inventory runs that
+        # a real export rejects, before printing a plan that could be mistaken
+        # for approval to publish.
+        gate_run_completeness(conn, run_id)
+
         if args.dry_run:
             for t in tables:
                 print(ddls[t] + "\n")
@@ -1272,7 +1528,6 @@ def main() -> int:
                 f"JSON checks on {[f'{t}.{c}' for t, c in JSON_CHECKSUM_COLUMNS]}")
             return 0
 
-        gate_run_completeness(conn, run_id)
         gate_varchar_lengths(conn, guards)
         ensure_repo(repo)
 
@@ -1329,15 +1584,25 @@ def main() -> int:
         gate_real_checksums(conn, repo, reals)
         gate_json_checksums(conn, repo, schema)
 
-        write_grades_export(conn, run_id)
+        write_grades_export(
+            conn, run_id, args.grades_csv, args.grade_histogram, args.repo_root
+        )
+        gate_tracked_grade_exports(
+            conn, args.grades_csv, args.grade_histogram, args.repo_root
+        )
         conn.close()
 
-        committed, tag, head_hash = commit_and_tag(repo, run_id, source_git_sha())
+        committed, tag, head_hash = commit_and_tag(
+            repo, run_id, source_git_sha(args.repo_root)
+        )
         log(f"commit created: {committed}; tag: {tag or '(none)'}")
 
-        # Non-fatal by contract; runs BEFORE push so the report exists even
-        # when a push fails (exit 3) — the local commit it describes does.
-        regressions_found = post_commit_outputs(repo, run_id, tag, head_hash)
+        # Fail closed before push: the immutable receipt is part of the
+        # publication product, not optional observability.
+        regressions_found = post_commit_outputs(
+            repo, run_id, tag, head_hash, args.grades_csv,
+            args.grade_histogram, args.reports_dir
+        )
 
         if args.no_push:
             log("--no-push: skipping DoltHub push (history is LOCAL-ONLY until pushed)")

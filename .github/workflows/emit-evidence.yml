@@ -15,11 +15,11 @@
 #       instead — prerelease so it never becomes the repo's `latest`.
 #
 # What it does (fail-closed at every step):
-#   1. re-runs two of the repo's REAL blocking CI gates (both are steps of the
-#      `validate` job that `ci-required` needs): catalog-invariants +
-#      unicode-hygiene;
+#   1. re-runs two deterministic validation steps and records the exact
+#      completed protected-branch contexts for this source SHA:
+#      `ci-required`, `gitleaks`, and `skill-conform`;
 #   2. shapes each outcome into a kernel gate-result/v1 row wrapped in a kernel
-#      EvidenceBundle, validated against @intentsolutions/core@0.9.0 — the
+#      EvidenceBundle, validated against @intentsolutions/core@0.10.0 — the
 #      EXACT version the dashboard verifies with (ci/emit-evidence/);
 #   3. keyless-signs each bundle's canonical bytes with cosign (Fulcio OIDC +
 #      production Rekor), then verifies every signature back in-repo;
@@ -30,8 +30,8 @@
 #   releases/download/evidence-latest/report-manifest.json
 # and pins these OIDC claims for the `ccp` row:
 #   issuer      https://token.actions.githubusercontent.com
-#   subject     repo:jeremylongshore/claude-code-plugins-plus-skills:ref:refs/heads/main
-#   workflowRef jeremylongshore/claude-code-plugins-plus-skills/.github/workflows/emit-evidence.yml@refs/heads/main
+#   subject     repo:jeremylongshore/tons-of-skills-marketplace:ref:refs/heads/main
+#   workflowRef jeremylongshore/tons-of-skills-marketplace/.github/workflows/emit-evidence.yml@refs/heads/main
 name: Emit signed evidence manifest
 
 on:
@@ -52,27 +52,28 @@ jobs:
     # produce an unverifiable manifest, so guard instead of emitting one.
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     permissions:
+      checks: read # read the three exact protected-branch contexts at this SHA
       contents: write # create/upload the rolling evidence-latest release
       id-token: write # cosign keyless (Fulcio OIDC)
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           # Node >= 22.6 — the emit scripts run under --experimental-strip-types
           # (TS without a build step), which Node 20 does NOT support.
           node-version: 22
 
       - name: Install cosign
-        uses: sigstore/cosign-installer@v3
+        uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac # v3
 
       # Standalone install (NOT a workspace member): pins the kernel validators
       # to the exact version the dashboard verifies with, via the committed
@@ -85,11 +86,34 @@ jobs:
       - name: Emit-evidence self-check (kernel-valid + canonical-stable)
         run: node --experimental-strip-types ci/emit-evidence/emit-evidence.ts --self-check
 
-      # Runs the two real gates (python3 stdlib only), builds + kernel-validates
-      # the gate-result/v1 rows and EvidenceBundles. Fail-closed: a failing
-      # gate emits a FAIL row (honest evidence); a malformed artifact aborts.
+      - name: Await completed protected-branch contexts for this SHA
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 30); do
+            gh api --paginate "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/check-runs?per_page=100" > /tmp/required-checks.json
+            missing=$(jq -r '
+              .check_runs as $runs |
+              ["ci-required", "gitleaks", "skill-conform"] |
+              map(. as $name | ($runs | map(select(.name == $name and .status == "completed")) | length) as $n | select($n != 1) | $name) |
+              join(",")
+            ' /tmp/required-checks.json)
+            if [ -z "$missing" ]; then
+              echo "all three required contexts completed"
+              exit 0
+            fi
+            echo "waiting for required contexts: $missing (attempt $attempt/30)"
+            sleep 20
+          done
+          echo "::error::required contexts did not complete for ${GITHUB_SHA}"
+          exit 1
+
+      # Runs the two deterministic validation steps and attaches all three
+      # protected-branch contexts. Missing/in-progress/duplicate contexts abort
+      # rather than being represented as a pass.
       - name: Emit gate-result/v1 EvidenceBundle(s)
-        run: node --experimental-strip-types ci/emit-evidence/emit-evidence.ts --out build/evidence --ref "${GITHUB_REF}"
+        run: node --experimental-strip-types ci/emit-evidence/emit-evidence.ts --out build/evidence --ref "${GITHUB_REF}" --workflow-ref "${GITHUB_WORKFLOW_REF}" --required-checks-report /tmp/required-checks.json
 
       - name: Sign each EvidenceBundle (cosign keyless -> production Rekor)
         run: |

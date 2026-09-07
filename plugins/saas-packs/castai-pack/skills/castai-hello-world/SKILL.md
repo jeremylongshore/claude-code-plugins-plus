@@ -101,10 +101,17 @@ curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
 
 ## Output
 
-- List of connected clusters with IDs and status
-- Monthly savings report with before/after cost
-- Node inventory with instance types and lifecycle (spot vs on-demand)
-- Autoscaler policy status
+The first read-only run returns a list of connected clusters, a monthly-savings
+snapshot, node inventory, and autoscaler-policy state. Save only the fields
+needed for the onboarding record; cluster names, account metadata, and spend
+data should be treated as environment-sensitive operational information.
+
+## Examples
+
+Run the cluster-list command against a non-production key, select one expected
+cluster ID, then request its node inventory and policy state. A successful
+onboarding result shows the expected cluster name and an online agent; a 401 or
+offline agent is a stop condition, not a reason to retry with a broader key.
 
 ## Error Handling
 

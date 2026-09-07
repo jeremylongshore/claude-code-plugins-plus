@@ -199,6 +199,30 @@ kubectl rollout status deployment/app
 curl -sf https://api.example.com/api/health | jq '.cohere'
 ```
 
+## Instructions
+
+Complete the production checklist in sequence: verify scoped secret and model
+configuration, run a bounded health request, test circuit-breaker, budget, and
+alert behavior, then obtain the documented approval before enabling user
+traffic. Capture evidence for rollback and data/safety controls; an available
+endpoint alone is not production acceptance.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Authentication or secret failure | Keep traffic disabled, rotate/repair the scoped secret, then revalidate. |
+| Provider outage/timeout | Trip the approved circuit breaker or fallback and preserve idempotent work. |
+| Budget or rate threshold breached | Stop expansion, apply the budget control, and notify the owner. |
+| Unsafe or ungrounded output | Disable the affected feature path and engage the safety owner. |
+
+## Examples
+
+Before release, send a synthetic staging request through the deployed path,
+verify health, alerts, circuit breaker, and rollback, and attach redacted
+evidence to the change record. If any control fails, retain the prior certified
+release and correct it before promotion.
+
 ## Output
 
 - Production-ready Cohere integration with health checks

@@ -12,7 +12,7 @@ description: 'Implement monitoring, logging, and tracing for Documenso integrati
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -24,6 +24,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Observability
+
+## Output
+
+- Redacted, bounded metrics/traces for document lifecycle, signing state, errors, latency, and rate headroom.
+- An owned alert/runbook path that protects signer identity, document content, and credentials.
+
+## Examples
+
+Emit aggregate counts by environment, document state, and status class while excluding document bodies, signer email, signing URLs, IP addresses, tokens, and audit payloads. Trigger a development signing-state alert with a synthetic document, verify the on-call route, then retain only the redacted receipt.
 
 ## Overview
 

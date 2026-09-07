@@ -308,6 +308,12 @@ async function* paginateDeployments(
 | `team_not_found` | 404 | Verify `teamId` parameter matches your team |
 | `bad_request` | 400 | Validate request body matches API schema |
 
+## Examples
+
+### Use a scoped API token for a read-only deployment audit
+
+Create a token limited to the required team and read operations, store it only in the approved CI secret store, and call the deployment listing endpoint with an explicit team ID. Paginate results, redact IDs from public logs when they are not needed, and stop retries on 403 or malformed requests rather than masking a permission error. Revoke the token after the short audit window or rotate it according to the organization’s policy.
+
 ## Resources
 
 - [Vercel REST API Reference](https://vercel.com/docs/rest-api)

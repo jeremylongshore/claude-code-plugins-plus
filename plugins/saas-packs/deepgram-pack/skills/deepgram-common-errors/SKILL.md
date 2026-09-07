@@ -25,6 +25,10 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Common Errors
 
+## Examples
+
+For a failed transcription request, record its opaque correlation ID, environment, model, status class, and redacted timing. Check media format, credentials, timeout, and rate-limit state with a non-sensitive fixture; if the condition remains, escalate with the minimal redacted bundle rather than attaching customer audio or transcript text.
+
 ## Overview
 
 Comprehensive error reference for Deepgram API integration. Covers HTTP error codes, WebSocket errors, transcription quality issues, SDK-specific problems, and audio format debugging with real diagnostic commands.

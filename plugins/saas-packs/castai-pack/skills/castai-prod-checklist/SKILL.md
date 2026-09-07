@@ -34,6 +34,15 @@ Complete checklist for enabling CAST AI cost optimization on a production Kubern
 - Production API key (Full Access)
 - Change management approval for node lifecycle changes
 
+## Instructions
+
+Complete the phases in order and preserve evidence for every checked item.
+Start in monitoring-only mode, verify the production cluster identity and
+baseline metrics, then request the approved change window before enabling
+automation. Use a two-person review for capacity limits, disruption budgets,
+and the emergency-disable procedure; do not copy staging keys, policies, or
+test evidence into the production record without revalidation.
+
 ## Phase 1: Monitoring Only
 
 - [ ] Agent installed with read-only key
@@ -94,6 +103,15 @@ helm uninstall cluster-controller -n castai-agent
 # Keep the agent for monitoring if desired
 ```
 
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Agent offline or API authentication fails | Keep automation disabled; verify secret reference, RBAC, and egress before retrying. |
+| Policy response differs from the approved limits | Stop rollout, restore the prior policy, and reopen change review. |
+| Eviction or latency alert fires | Disable autoscaling using the tested path and engage the workload owner. |
+| Rollback command cannot be exercised safely | Do not proceed to go-live; repair the runbook and test it in staging. |
+
 ## Validation Commands
 
 ```bash
@@ -116,6 +134,21 @@ curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
   "https://api.cast.ai/v1/kubernetes/clusters/${CASTAI_CLUSTER_ID}/savings" \
   | jq '{monthly: .monthlySavings, percent: .savingsPercentage}'
 ```
+
+## Output
+
+Create a production-readiness record that ties each checklist item to its
+evidence, accountable owner, approval, validation timestamp, and tested
+rollback. A healthy agent alone does not authorize go-live: policy limits,
+disruption controls, monitoring, and the emergency-disable path must all be
+confirmed against the intended production cluster.
+
+## Examples
+
+For a production launch, capture a redacted policy response, current Helm
+release state, agent health, alert test, and savings-baseline review in the
+change record. If an approval or rollback test is missing, leave autoscaling
+disabled and resolve that gap before enabling it for production workloads.
 
 ## Resources
 

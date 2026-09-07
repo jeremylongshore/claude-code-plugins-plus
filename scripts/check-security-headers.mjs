@@ -15,42 +15,39 @@
  * from that bug — a control is only real if you verify it at the layer that
  * enforces it.
  *
- * NOT WIRED AS A BLOCKING CI GATE YET, deliberately: the headers are set in
- * Caddy on the VPS, which is outside this repo. Promote this to a post-deploy
- * gate once that config ships, otherwise it fails for a reason no one in this
- * repo can fix — and a gate nobody can fix is a gate that gets disabled.
+ * The exact CSP is tracked in marketplace/scripts/security-policy.mjs and
+ * projected into both Astro preview and the production Caddy fragment.
  *
  * USAGE
  *   node scripts/check-security-headers.mjs
  *   node scripts/check-security-headers.mjs --url https://staging.example.com
  *   node scripts/check-security-headers.mjs --warn-only   # report, exit 0
  *
- * CADDY CONFIG THIS EXPECTS (apply on the VPS, then `caddy validate` and
- * `systemctl reload caddy` — never restart, it serves live traffic):
- *
- *   header {
- *     X-Frame-Options            "SAMEORIGIN"
- *     X-Content-Type-Options     "nosniff"
- *     Referrer-Policy            "strict-origin-when-cross-origin"
- *     Strict-Transport-Security  "max-age=31536000; includeSubDomains"
- *     Permissions-Policy         "geolocation=(), microphone=(), camera=()"
- *   }
+ * Install with marketplace/ops/install-security-headers.sh; it validates a
+ * complete candidate before changing Caddy and retains rollback backups.
  */
+
+import { securityHeadersForPath } from '../marketplace/scripts/security-policy.mjs';
 
 const args = process.argv.slice(2);
 const urlArg = args.indexOf('--url');
 const URL_ = urlArg !== -1 ? args[urlArg + 1] : 'https://tonsofskills.com/';
 const WARN_ONLY = args.includes('--warn-only');
+const EXPECTED_HEADERS = securityHeadersForPath(new URL(URL_).pathname);
 
-// `required: false` entries are reported but never fail the run — HSTS and
-// Permissions-Policy are good practice rather than a fix for an observed hole,
-// and starting strict on them would block the change that closes the real gap.
+// HSTS remains advisory for non-TLS local fixtures; every browser-enforced
+// content boundary is required.
 const EXPECT = [
+  {
+    name: 'content-security-policy',
+    match: (value) => value === EXPECTED_HEADERS['Content-Security-Policy'],
+    required: true,
+  },
   { name: 'x-frame-options', match: /^(sameorigin|deny)$/i, required: true },
   { name: 'x-content-type-options', match: /^nosniff$/i, required: true },
   { name: 'referrer-policy', match: /.+/, required: true },
   { name: 'strict-transport-security', match: /max-age=\d+/i, required: false },
-  { name: 'permissions-policy', match: /.+/, required: false },
+  { name: 'permissions-policy', match: /.+/, required: true },
 ];
 
 let res;
@@ -65,7 +62,7 @@ console.log(`security headers on ${URL_}  (HTTP ${res.status})\n`);
 let missingRequired = 0;
 for (const h of EXPECT) {
   const v = res.headers.get(h.name);
-  const ok = v != null && h.match.test(v);
+  const ok = v != null && (typeof h.match === 'function' ? h.match(v) : h.match.test(v));
   const tag = ok ? 'OK  ' : h.required ? 'FAIL' : 'warn';
   if (!ok && h.required) missingRequired++;
   console.log(`  ${tag}  ${h.name.padEnd(28)} ${v ?? '(absent)'}`);

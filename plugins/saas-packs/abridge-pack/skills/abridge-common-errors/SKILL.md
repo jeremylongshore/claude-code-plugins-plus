@@ -29,6 +29,22 @@ compatibility: Designed for Claude Code
 
 Comprehensive troubleshooting guide for Abridge clinical documentation integration. Covers authentication failures, EHR connectivity, audio streaming, note generation, and FHIR push errors.
 
+## Prerequisites
+
+Collect a timestamp, sanitized request or session ID, the affected sandbox or
+production environment, and the relevant HTTP status before investigation.
+Use a permitted support environment and redact patient names, MRNs, dates of
+birth, transcripts, and authorization values from every log or ticket.
+
+## Instructions
+
+Start with the error code or symptom table, then reproduce only with synthetic
+data where possible. Check credentials and the FHIR endpoint before retrying a
+session; validate audio format before changing transcription logic. Run the
+diagnostic script with secrets supplied by the environment, preserve only its
+status codes and request identifiers, and escalate with the smallest redacted
+reproduction when the targeted fix does not resolve the fault.
+
 ## Error Reference
 
 ### Authentication & Authorization Errors
@@ -183,6 +199,22 @@ echo "=== Diagnostics Complete ==="
 - Identified root cause from error code lookup
 - Applied targeted fix for the specific error
 - HIPAA-safe error logging verified
+
+## Error Handling
+
+Stop and rotate credentials if a secret appears in logs. Do not replay a live
+patient encounter to investigate an audio or note-generation failure; use a
+synthetic session and record the resulting request ID. Treat repeated 5xx
+responses, corrupted sessions, and persistent FHIR authorization failures as
+support escalations with redacted diagnostics rather than blind retries.
+
+## Examples
+
+If a sandbox encounter returns `422 INVALID_SPECIALTY`, compare the submitted
+specialty to the `/specialties` response, correct the code, and retry the
+synthetic session once. If a WebSocket disconnects, confirm 16 kHz mono PCM
+input and network access to port 443; attach the redacted timestamp and
+request ID to the support ticket, never the clinical transcript.
 
 ## Resources
 

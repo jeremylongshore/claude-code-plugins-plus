@@ -1,0 +1,15 @@
+{
+  "description": "Unsafe conditions independently exercised by negative tests",
+  "classification": {
+    "classification_status": "CLASSIFIED",
+    "last_classified_on": "2026-09-04T08:00:00Z",
+    "last_attempt_on": "2026-09-04T09:00:00Z",
+    "error_present": true
+  },
+  "policy_statuses": ["COLUMN_IS_MISSING_FOR_SECONDARY_ARG"],
+  "simulation_outcomes": ["MISMATCH"],
+  "visibility_complete": false,
+  "truncation_possible": true,
+  "expected_status": "GAPS_OBSERVED",
+  "pass_supported": false
+}

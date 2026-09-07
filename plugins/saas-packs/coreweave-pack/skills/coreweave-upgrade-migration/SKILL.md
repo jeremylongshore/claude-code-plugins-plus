@@ -112,6 +112,19 @@ function migrateNodeSelector(manifest: any, migration: DeploymentMigration): any
 
 ## Rollback Strategy
 
+## Prerequisites
+
+- A versioned manifest, compatible CUDA/image matrix, and capacity confirmation for the target GPU or cluster change.
+- Staging evaluation evidence, named migration owner, and a verified previous deployment revision.
+- Backup/retention approval for any PVC, checkpoint, or model-artifact move.
+
+## Instructions
+
+1. Inventory current selectors, images, API versions, volumes, quotas, and service SLOs.
+2. Update the manifest in staging, validate server-side, and run compatibility and performance checks.
+3. Promote through a bounded canary only after the readiness, quality, latency, and integrity gates pass.
+4. Use the prior immutable revision on any failed gate; do not delete old data or nodes until the observation period closes.
+
 ```typescript
 import { AppsV1Api, KubeConfig } from "@kubernetes/client-node";
 
@@ -142,6 +155,24 @@ async function rollbackDeployment(namespace: string, name: string): Promise<void
 | Namespace quota exceeded | `Forbidden: exceeded quota` on deployment | Request quota increase for new instance type via CoreWeave dashboard |
 | PVC migration failure | `VolumeAttachment` timeout on new node | Detach old PVC, recreate in target availability zone |
 | API version deprecated | `no matches for kind "Deployment" in version "extensions/v1beta1"` | Update manifest to `apps/v1` and adjust spec fields |
+
+## Output
+
+- A reviewed migration plan with compatibility results, capacity decision, owner, and rollback revision.
+- A staged/canary receipt proving readiness, SLO, and artifact-integrity checks.
+- A reversible fallback that preserves the old workload and approved data until sign-off.
+
+## Examples
+
+Test the target manifest in staging before moving a production selector:
+
+```bash
+kubectl -n inference-staging apply --dry-run=server -f migration.yaml
+kubectl -n inference-staging apply -f migration.yaml
+kubectl -n inference-staging rollout status deployment/inference --timeout=15m
+```
+
+If CUDA compatibility, scheduling, or the evaluation gate fails, undo the staging revision and stop promotion. Do not change production affinity or delete the old PVC to make a migration appear complete.
 
 ## Resources
 

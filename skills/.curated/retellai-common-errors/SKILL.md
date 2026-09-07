@@ -121,6 +121,17 @@ Agent voice sounds robotic/choppy
 | 429 | Rate limited | Yes — backoff |
 | 500+ | Server error | Yes — retry |
 
+## Examples
+
+### Triage a failed outbound call request
+
+When an outbound request returns an error, record the HTTP status, request
+correlation ID, and the target environment without storing the phone number in
+the shared incident log. Retry only idempotent requests with bounded backoff;
+do not retry an ambiguous call-creation response until the provider state is
+checked. If the error is credential-related, rotate the affected test secret
+and confirm the replacement against a sandbox agent before resuming traffic.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

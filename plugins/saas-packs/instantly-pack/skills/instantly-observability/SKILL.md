@@ -315,6 +315,14 @@ cron.schedule("*/15 * * * *", async () => {
 | Slack alert not delivered | Invalid webhook URL | Verify `SLACK_WEBHOOK_URL` |
 | Stale analytics data | Instantly updates delay | Allow 1-hour data lag |
 
+## Output
+
+Produce an observability receipt with dashboard/alert revisions, synthetic results, owner, destination, retention, correlation ID, and rollback status. Recipient addresses, email copy, and credentials are prohibited.
+
+## Examples
+
+`dashboard=outreach-r6; alert=delivery-lag; probe=pass; destination=restricted-ops; recipients=excluded; retention=14d; rollback=alert-r5` is a safe alert-test result.
+
 ## Resources
 
 - Instantly Analytics API

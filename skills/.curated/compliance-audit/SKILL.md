@@ -11,7 +11,7 @@ description: 'Performs regulatory gap analysis across 7 compliance frameworks wi
 
   '
 allowed-tools: Read, Glob, Grep, WebFetch
-version: 1.0.0
+version: 1.1.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
 tags:

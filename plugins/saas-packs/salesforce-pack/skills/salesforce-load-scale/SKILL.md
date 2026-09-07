@@ -213,6 +213,12 @@ console.log({
 | Low throughput | Validation rules, workflows | Test with rules disabled, then enabled |
 | Inconsistent results | Concurrent jobs contending | Run one test at a time |
 
+## Examples
+
+### Benchmark Bulk API capacity without stressing production
+
+Run a load test only in a designated sandbox with anonymized or generated records, a single test owner, and an agreed request and concurrency ceiling. Measure API consumption, Bulk API throughput, trigger execution time, and error rate in successive bounded rounds. Stop on the defined governor-limit or error threshold, preserve aggregate measurements, and return sandbox automation settings to their normal state before publishing the capacity recommendation.
+
 ## Resources
 
 - [API Limits by Edition](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm)

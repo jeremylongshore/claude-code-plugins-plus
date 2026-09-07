@@ -28,6 +28,12 @@ compatibility: Designed for Claude Code
 
 Finta is primarily UI-driven without a public API. For local automation, use CSV exports from Finta combined with Python scripts for analysis, reporting, and integration with other tools.
 
+## Prerequisites
+
+- An approved, minimal CSV export; use a sandbox or de-identified copy for development.
+- Python with the required analysis packages installed in an isolated project environment.
+- A local directory excluded from version control for raw exports and generated reports.
+
 ## Instructions
 
 ### Export Pipeline Data
@@ -80,6 +86,21 @@ Term sheets: {term_sheets}
 Closed: {closed}
 """
 ```
+
+## Output
+
+Generate a local, access-controlled summary containing aggregate stage counts, conversion rates, and an explicit export timestamp. Keep the original CSV separate from the report and avoid including investor names, email addresses, document links, or exact financial terms unless the approved audience requires them.
+
+## Error Handling
+
+- Stop if the export is missing the expected columns; inspect the header and map fields deliberately rather than guessing.
+- Treat malformed dates and blank stage values as review items, not zero values. Emit their row count without copying source records into logs.
+- If a report is unexpectedly empty or unusually large, compare the export time and filter criteria before sharing it.
+- Delete local raw copies using the organization’s approved retention process after the analysis purpose ends.
+
+## Examples
+
+Run the analysis on a synthetic CSV with three invented rows first. Confirm that the report contains only aggregate counts, then repeat with the approved export in a protected local directory. Share the generated summary through the authorized workspace rather than committing either file to the repository.
 
 ## Resources
 

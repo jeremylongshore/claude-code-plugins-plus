@@ -5,6 +5,14 @@ import os
 import sys
 import csv
 
+
+# These vendors have replaced the legacy fixed-taxonomy database with a curated,
+# outcome-focused pack. Refuse regeneration so deleted filler cannot silently
+# reappear through an old release command.
+RETIRED_SKILL_DATABASES = {
+    "snowflake": "Snowflake v2 uses the curated snowflake-pack operator skills",
+}
+
 # Skill templates for flagship tier (24 skills)
 FLAGSHIP_SKILLS = [
     # Onboarding (6)
@@ -81,11 +89,11 @@ def generate_csv(vendor: str, display: str, skills: list, output_dir: str):
             if category == "onboarding":
                 tools = "Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep"
             elif category == "operations":
-                tools = "Read, Grep, Bash(curl:*)"
+                tools = "Read, Grep"
             elif category == "cicd":
-                tools = "Read, Write, Edit, Bash(gh:*), Bash(curl:*)"
+                tools = "Read, Write, Edit, Bash(gh:*)"
             else:  # enterprise
-                tools = "Read, Write, Edit, Bash(kubectl:*), Bash(curl:*)"
+                tools = "Read, Write, Edit, Bash(kubectl:*)"
 
             writer.writerow(
                 [
@@ -144,6 +152,11 @@ This skill helps developers {what.lower()}. It provides step-by-step guidance fo
 
 def generate_skill_database(vendor: str, display: str, tier: str):
     """Generate complete skill database for a vendor."""
+    normalized_vendor = vendor.strip().casefold()
+    if normalized_vendor in RETIRED_SKILL_DATABASES:
+        reason = RETIRED_SKILL_DATABASES[normalized_vendor]
+        raise ValueError(f"skill database generation is retired for {vendor!r}: {reason}")
+
     output_dir = f"plugins/saas-packs/skill-databases/{vendor}"
     os.makedirs(output_dir, exist_ok=True)
 
@@ -187,5 +200,9 @@ if __name__ == "__main__":
     display = sys.argv[2]
     tier = sys.argv[3]
 
-    count = generate_skill_database(vendor, display, tier)
+    try:
+        count = generate_skill_database(vendor, display, tier)
+    except ValueError as error:
+        print(f"Error: {error}", file=sys.stderr)
+        sys.exit(2)
     print(f"\nGenerated {count} skills for {display}")

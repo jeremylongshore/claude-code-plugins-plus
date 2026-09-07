@@ -29,6 +29,10 @@ compatibility: Designed for Claude Code
 
 Optimize Fireflies.ai GraphQL API performance. The biggest wins: request only needed fields (transcripts with sentences can be very large), cache immutable transcripts, and batch operations within rate limits.
 
+## Examples
+
+Benchmark a synthetic transcript query using only an opaque ID and aggregate field counts, then enable a short-lived cache in staging. Verify the cache respects access and retention rules, an unauthorized consumer is denied, and metrics do not contain transcript text or speaker names.
+
 ## Prerequisites
 
 - `FIREFLIES_API_KEY` configured

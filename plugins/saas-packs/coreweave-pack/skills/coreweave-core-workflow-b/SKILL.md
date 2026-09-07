@@ -138,6 +138,30 @@ kubectl exec -it $(kubectl get pod -l job-name=llm-finetune -o name) -- \
 | Checkpoint save failed | PVC full | Increase storage or prune old checkpoints |
 | Job evicted | Preemption | Use on-demand nodes for training |
 
+## Output
+
+- A GPU training Job bound to explicitly selected node, storage, and checkpoint resources.
+- A repeatable monitoring trail: pod state, GPU utilization, and training metrics are
+  available to the authorized operator without exposing model inputs or credentials.
+- Durable checkpoints on the approved PVC so a failed or preempted job can resume
+  from a known state rather than silently restarting training.
+
+## Examples
+
+Before scheduling a costly multi-GPU run, submit a small trusted smoke job to the
+same namespace and inspect its scheduling event and GPU allocation:
+
+```bash
+kubectl apply -f training-job.yaml
+kubectl get job llm-finetune --watch
+kubectl get pods -l job-name=llm-finetune -o wide
+kubectl logs job/llm-finetune --tail=100
+```
+
+If the job cannot schedule, stop before increasing quota or changing node selectors.
+Confirm the namespace quota, approved GPU class, and PVC binding with the platform
+owner; preserve the failed event output with secrets and customer data redacted.
+
 ## Resources
 
 - [CoreWeave CKS](https://docs.coreweave.com/docs/products/cks)

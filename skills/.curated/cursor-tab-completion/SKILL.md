@@ -19,6 +19,37 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Tab Completion
 
+## Overview
+
+Use Tab for small, local code completions; it predicts text and does not establish correctness, security, or repository policy compliance.
+
+## Prerequisites
+
+- An approved Cursor privacy setting and a workspace that excludes secrets and sensitive paths from context.
+- Existing project rules, formatter, and focused tests for the code being changed.
+
+## Instructions
+
+1. Write the function signature, types, and a concise intent comment before considering a suggestion.
+2. Accept only the scoped portion you understand, then inspect the diff and run the focused check.
+3. Reject suggestions that add unrelated behavior, dependencies, credentials, or policy exceptions.
+
+## Output
+
+- A small reviewed completion with source-control visibility and test evidence.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Completion is incorrect or insecure | Reject it and implement or request a narrower change. |
+| Multiple completion providers conflict | Disable the duplicate provider using approved editor configuration. |
+| Sensitive file is in context | Stop, update ignore rules, and follow the data-handling procedure. |
+
+## Examples
+
+For a CSV parser, write the return type and validation constraints first. Accept only the parser body, inspect the resulting diff, and run its unit test. If Tab adds filesystem access or changes another file, reject it rather than editing around the suggestion.
+
 Master Cursor's AI-powered Tab completion system. Tab uses a specialized Cursor model trained for inline code prediction -- it learns from your accept/reject behavior to improve over time.
 
 ## How Tab Works

@@ -131,6 +131,10 @@ print(transcript.text)
 - API key stored in environment variable or `.env` file
 - Client initialized and connection verified with a test transcription
 
+## Examples
+
+For local setup, create a dedicated development credential in the provider dashboard, store it only in the approved secret manager or ignored local environment file, and run a minimal authenticated status check that does not submit audio. For deployment, inject a separately scoped credential at runtime and confirm logs redact all authorization material.
+
 ## Error Handling
 
 | Error | Cause | Solution |

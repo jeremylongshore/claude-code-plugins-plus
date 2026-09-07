@@ -182,6 +182,10 @@ async function findFailedTranscripts(limit = 50) {
 - Programmatic transcript diagnosis report
 - List of recently failed transcripts
 
+## Examples
+
+For a single failed job, collect the opaque transcript ID, timestamp, SDK version, redacted status code, and selected feature flags into an access-restricted archive. Inspect and redact it before sharing with support, encrypt it in transit, then delete it according to the incident retention policy. Do not include audio URLs, raw transcript text, request headers, or API-key length metadata.
+
 ## Error Handling
 
 | Item | Purpose | Check |

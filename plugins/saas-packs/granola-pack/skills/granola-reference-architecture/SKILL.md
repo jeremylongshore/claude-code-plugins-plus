@@ -223,6 +223,10 @@ Recovery Procedures:
 | Missing CRM updates for new contacts | Native integration doesn't auto-create | Add Zapier "Find or Create" step |
 | Audit log gaps | Logging not enabled on workspace | Enable in Workspace Settings > Security |
 
+## Examples
+
+`source=synthetic-calendar; event=meeting-completed; consent=test-only; destination=staging-actions; retention=none; allowlist=pass; rollback=arch-r17` is a reviewable integration receipt.
+
 ## Resources
 
 - [Granola Enterprise](https://www.granola.ai/security)

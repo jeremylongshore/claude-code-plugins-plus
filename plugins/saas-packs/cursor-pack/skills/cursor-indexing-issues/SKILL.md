@@ -21,6 +21,37 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Indexing Issues
 
+## Overview
+
+Diagnose missing, stale, slow, or over-broad codebase indexing while keeping sensitive and generated files excluded from AI context.
+
+## Prerequisites
+
+- The affected workspace, expected file/path, current ignore configuration, and a non-sensitive reproduction.
+- Authority to inspect repository indexing settings without weakening data-exclusion rules.
+
+## Instructions
+
+1. Confirm the file is inside an approved workspace root and not intentionally excluded by ignore configuration.
+2. Check index status, refresh only the affected workspace, and compare the result against a known expected file.
+3. Change ignore/rule configuration through normal review, then verify both inclusion of required files and exclusion of sensitive paths.
+
+## Output
+
+- A scoped indexing diagnosis with a verified inclusion/exclusion result.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Sensitive file is indexed | Stop sharing context, add/repair the exclusion, and follow exposure policy. |
+| Index remains stale | Capture redacted diagnostics and escalate; do not remove all ignore controls. |
+| Large repository is slow | Narrow workspace roots and generated-file scope before resyncing. |
+
+## Examples
+
+When `src/service.ts` is absent, verify its root and ignore rules, resync indexing, then ask a minimal chat to reference only that file. If a `.env` file becomes visible during testing, stop and correct the exclusion before continuing.
+
 Diagnose and fix codebase indexing problems. Covers stuck indexing, empty search results, stale results, and performance optimization for large codebases.
 
 ## Quick Diagnosis

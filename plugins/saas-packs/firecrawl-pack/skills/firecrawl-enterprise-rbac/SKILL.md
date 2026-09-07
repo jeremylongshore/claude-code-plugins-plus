@@ -28,6 +28,10 @@ compatibility: Designed for Claude Code
 
 Control access to Firecrawl scraping resources through API key management, domain allowlists, and credit budgets per team. Firecrawl's credit-based pricing means access control is primarily about limiting credit consumption and restricting scrape targets per consumer.
 
+## Output
+
+Maintain an access-control receipt containing team owner, approved target domains, credential reference, credit budget, review date, and revocation result. Keep keys and captured page content out of the receipt; investigate and revoke access if a key is used outside its approved boundary.
+
 ## Prerequisites
 
 - Firecrawl Team or Scale plan

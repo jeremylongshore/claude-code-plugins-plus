@@ -24,6 +24,18 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Upgrade & Migration
 
+## Output
+
+Maintain an upgrade receipt with versions reviewed, affected integrations, compatibility/canary outcome, owner approval, and rollback state. Exclude content, viewer data, and credentials.
+
+## Error Handling
+
+Stop promotion on schema, publishing, sharing, access, or destination mismatches; restore the prior configuration and quarantine opaque failures for review.
+
+## Examples
+
+Test an upgrade with a fictional staging deck, verify a protected sharing setting remains intact, and roll back on a synthetic integration failure.
+
 ## Current State
 
 !`npm list 2>/dev/null | head -20`

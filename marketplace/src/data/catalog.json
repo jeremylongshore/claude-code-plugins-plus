@@ -5,30 +5,30 @@
     "generator": "marketplace/scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 471,
-    "totalSkills": 3114,
+    "totalPlugins": 440,
+    "totalSkills": 2940,
     "totalCommands": 85,
-    "pluginsWithSkills": 439,
+    "pluginsWithSkills": 407,
     "byCategory": {
-      "productivity": 32,
+      "productivity": 29,
       "security": 27,
       "testing": 28,
-      "ai-agency": 10,
-      "ai-ml": 36,
-      "mcp": 16,
+      "ai-agency": 9,
+      "ai-ml": 37,
+      "mcp": 17,
       "packages": 5,
       "performance": 25,
       "devops": 36,
       "api-development": 26,
       "crypto": 27,
-      "skill-enhancers": 9,
+      "skill-enhancers": 10,
       "database": 26,
-      "business-tools": 22,
-      "community": 24,
+      "business-tools": 6,
+      "community": 20,
       "examples": 5,
-      "saas-packs": 107,
-      "design": 9,
-      "analytics": 1
+      "saas-packs": 104,
+      "analytics": 1,
+      "design": 2
     },
     "featured": 40
   },
@@ -1421,6 +1421,33 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "cad-dxf-agent",
+      "name": "cad-dxf-agent",
+      "displayName": "cad dxf agent",
+      "description": "Deterministic DXF drawing analysis for compliance, drawing QA, quantity takeoff, summaries, RFIs, and room/zone detection — no LLM or API key required.",
+      "version": "0.1.0",
+      "category": "ai-ml",
+      "keywords": [
+        "dxf",
+        "cad",
+        "compliance",
+        "takeoff",
+        "drawing-intelligence",
+        "aec"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install cad-dxf-agent",
+      "sourcePath": "./plugins/ai-ml/cad-dxf-agent",
+      "isFeatured": false,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
       },
       "type": "instruction-plugin"
     },
@@ -7124,6 +7151,35 @@
       "type": "instruction-plugin"
     },
     {
+      "slug": "agent-systems-toolkit",
+      "name": "agent-systems-toolkit",
+      "displayName": "agent systems toolkit",
+      "description": "Model-neutral workflows for creating, validating, and production-upgrading Agent Skills, agents, plugins, MCP integrations, hooks, and marketplaces with Beads-backed evidence and specialist review roles.",
+      "version": "1.0.0",
+      "category": "skill-enhancers",
+      "keywords": [
+        "agent-skills",
+        "skill-creation",
+        "plugin-development",
+        "agents",
+        "mcp",
+        "validation",
+        "production-upgrade",
+        "beads"
+      ],
+      "hasSkills": true,
+      "skillCount": 3,
+      "commandCount": 0,
+      "installCommand": "/plugin install agent-systems-toolkit",
+      "sourcePath": "./plugins/skill-enhancers/agent-systems-toolkit",
+      "isFeatured": false,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
       "slug": "claude-never-forgets",
       "name": "claude-never-forgets",
       "displayName": "claude never forgets",
@@ -7365,7 +7421,7 @@
       "name": "supabase-pack",
       "displayName": "supabase pack",
       "description": "Complete Supabase integration skill pack with 30 skills covering authentication, database, storage, realtime, edge functions, and production operations. Flagship+ tier vendor pack.",
-      "version": "1.53.0",
+      "version": "1.54.0",
       "category": "saas-packs",
       "keywords": [
         "supabase",
@@ -7600,40 +7656,11 @@
       "type": "instruction-plugin"
     },
     {
-      "slug": "perplexity-pack",
-      "name": "perplexity-pack",
-      "displayName": "perplexity pack",
-      "description": "Complete Perplexity integration skill pack with 30 skills covering AI search, real-time answers, citations, and research workflows. Flagship+ tier vendor pack.",
-      "version": "1.12.0",
-      "category": "saas-packs",
-      "keywords": [
-        "perplexity",
-        "ai-search",
-        "research",
-        "citations",
-        "real-time",
-        "knowledge",
-        "answers"
-      ],
-      "hasSkills": true,
-      "skillCount": 30,
-      "commandCount": 0,
-      "installCommand": "/plugin install perplexity-pack",
-      "sourcePath": "./plugins/saas-packs/perplexity-pack",
-      "isFeatured": false,
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io",
-        "url": "https://github.com/jeremylongshore"
-      },
-      "type": "instruction-plugin"
-    },
-    {
       "slug": "replit-pack",
       "name": "replit-pack",
       "displayName": "replit pack",
       "description": "Complete Replit integration skill pack with 30 skills covering cloud IDE, deployments, AI assistance, and collaborative coding. Flagship+ tier vendor pack.",
-      "version": "1.12.0",
+      "version": "1.14.0",
       "category": "saas-packs",
       "keywords": [
         "replit",
@@ -8065,8 +8092,8 @@
       "slug": "langchain-py-pack",
       "name": "langchain-py-pack",
       "displayName": "langchain py pack",
-      "description": "LangChain 1.0 + LangGraph 1.0 skill pack for Python. Pain-first skills anchored to a 68-entry pain catalog covering content blocks, streaming token accounting, structured-output, vector stores, checkpointing, HITL, middleware, Deep Agents, and native OTEL. Expanding toward 34 skills across four epics.",
-      "version": "2.5.0",
+      "description": "LangChain 1.0 + LangGraph 1.0 skill pack for Python. Pain-first skills anchored to a 68-entry pain catalog covering content blocks, streaming token accounting, structured-output, vector stores, checkpointing, HITL, middleware, Deep Agents, and native OTEL. Includes 33 skills across four epics.",
+      "version": "2.6.0",
       "category": "saas-packs",
       "keywords": [
         "langchain",
@@ -8098,7 +8125,7 @@
       "name": "lindy-pack",
       "displayName": "lindy pack",
       "description": "Complete Lindy integration skill pack with 24 skills covering AI assistants, task automation, workflows, and intelligent automation. Flagship tier vendor pack.",
-      "version": "1.15.0",
+      "version": "1.20.0",
       "category": "saas-packs",
       "keywords": [
         "lindy",
@@ -8303,7 +8330,7 @@
       "name": "mistral-pack",
       "displayName": "mistral pack",
       "description": "Complete Mistral AI integration skill pack with 24 skills covering model inference, embeddings, fine-tuning, and production deployments. Flagship tier vendor pack.",
-      "version": "1.12.0",
+      "version": "1.13.0",
       "category": "saas-packs",
       "keywords": [
         "mistral",
@@ -8332,7 +8359,7 @@
       "name": "langfuse-pack",
       "displayName": "langfuse pack",
       "description": "Complete Langfuse integration skill pack with 24 skills covering LLM observability, tracing, prompt management, and evaluation. Flagship tier vendor pack.",
-      "version": "1.12.0",
+      "version": "1.17.0",
       "category": "saas-packs",
       "keywords": [
         "langfuse",
@@ -8390,7 +8417,7 @@
       "name": "documenso-pack",
       "displayName": "documenso pack",
       "description": "Complete Documenso integration skill pack with 24 skills covering document signing, templates, workflows, and e-signature automation. Flagship tier vendor pack.",
-      "version": "1.13.0",
+      "version": "1.14.0",
       "category": "saas-packs",
       "keywords": [
         "documenso",
@@ -8447,8 +8474,8 @@
       "slug": "guidewire-pack",
       "name": "guidewire-pack",
       "displayName": "guidewire pack",
-      "description": "Complete Guidewire integration skill pack with 24 skills covering InsuranceSuite, PolicyCenter, ClaimCenter, and insurance platform development. Flagship tier vendor pack.",
-      "version": "1.25.0",
+      "description": "Complete Guidewire integration skill pack with 10 skills covering InsuranceSuite, PolicyCenter, ClaimCenter, and insurance platform development. Flagship tier vendor pack.",
+      "version": "1.26.0",
       "category": "saas-packs",
       "keywords": [
         "guidewire",
@@ -8618,70 +8645,6 @@
       "type": "instruction-plugin"
     },
     {
-      "slug": "gastown",
-      "name": "gastown",
-      "displayName": "gastown",
-      "description": "Multi-agent orchestrator for Claude Code. Track work with convoys, sling to polecats. The Cognition Engine for AI-powered software factories.",
-      "version": "1.0.0",
-      "category": "community",
-      "keywords": [
-        "multi-agent",
-        "orchestration",
-        "automation",
-        "polecats",
-        "convoys",
-        "beads",
-        "work-tracking",
-        "ai-factory",
-        "gastown",
-        "claude-code"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install gastown",
-      "sourcePath": "./plugins/community/gastown",
-      "isFeatured": false,
-      "author": {
-        "name": "Numman Ali",
-        "email": "numman.ali@gmail.com",
-        "url": "https://github.com/numman-ali"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "zai-cli",
-      "name": "zai-cli",
-      "displayName": "zai cli",
-      "description": "Z.AI vision, search, reader, and GitHub exploration via CLI and MCP. Analyze images, search the web, read pages as markdown, explore repos.",
-      "version": "1.0.0",
-      "category": "community",
-      "keywords": [
-        "vision",
-        "image-analysis",
-        "ocr",
-        "web-search",
-        "web-reader",
-        "github",
-        "mcp",
-        "z-ai",
-        "glm-4",
-        "multimodal"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install zai-cli",
-      "sourcePath": "./plugins/community/zai-cli",
-      "isFeatured": false,
-      "author": {
-        "name": "Numman Ali",
-        "email": "numman.ali@gmail.com",
-        "url": "https://github.com/numman-ali"
-      },
-      "type": "instruction-plugin"
-    },
-    {
       "slug": "claude-reflect",
       "name": "claude-reflect",
       "displayName": "claude reflect",
@@ -8714,8 +8677,8 @@
       "slug": "contributing-clanker",
       "name": "contributing-clanker",
       "displayName": "contributing clanker",
-      "description": "Local-only OSS contribution command center with 41 deterministic gates against AI-slop failure modes. Helps maintainers triage contributor PRs, check for typical AI-generated patterns (over-engineering, false claims, fabricated tests, license violations), and approve / request-changes from a single dashboard.",
-      "version": "0.8.0",
+      "description": "Portable OSS contribution workflow with separate read-only audit, explicitly scoped local preparation, and human-approved publishing skills.",
+      "version": "0.9.0",
       "category": "community",
       "keywords": [
         "oss",
@@ -8726,7 +8689,7 @@
         "open-source"
       ],
       "hasSkills": true,
-      "skillCount": 1,
+      "skillCount": 3,
       "commandCount": 0,
       "installCommand": "/plugin install contributing-clanker",
       "sourcePath": "./plugins/community/contributing-clanker",
@@ -8852,383 +8815,6 @@
       "type": "instruction-plugin"
     },
     {
-      "slug": "wondelai-blue-ocean-strategy",
-      "name": "wondelai-blue-ocean-strategy",
-      "displayName": "wondelai blue ocean strategy",
-      "description": "Blue Ocean Strategy framework for creating uncontested market space. Use the Strategy Canvas, Four Actions Framework (ERRC), and value innovation to break the value-cost trade-off.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "strategy",
-        "blue-ocean",
-        "value-innovation",
-        "market-creation",
-        "errc",
-        "strategy-canvas",
-        "competition",
-        "positioning"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-blue-ocean-strategy",
-      "sourcePath": "./plugins/business-tools/wondelai-blue-ocean-strategy",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-contagious",
-      "name": "wondelai-contagious",
-      "displayName": "wondelai contagious",
-      "description": "Word-of-mouth and virality framework using the STEPPS model (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Engineer products and content that people naturally share.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "virality",
-        "word-of-mouth",
-        "stepps",
-        "social-currency",
-        "marketing",
-        "content-strategy",
-        "sharing",
-        "growth"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-contagious",
-      "sourcePath": "./plugins/business-tools/wondelai-contagious",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-cro-methodology",
-      "name": "wondelai-cro-methodology",
-      "displayName": "wondelai cro methodology",
-      "description": "Customer-centric conversion rate optimization methodology. Audit landing pages, identify conversion blockers, write persuasive copy, design A/B tests, and optimize funnels.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "cro",
-        "conversion",
-        "optimization",
-        "landing-pages",
-        "ab-testing",
-        "copywriting",
-        "persuasion",
-        "funnels"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-cro-methodology",
-      "sourcePath": "./plugins/business-tools/wondelai-cro-methodology",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-crossing-the-chasm",
-      "name": "wondelai-crossing-the-chasm",
-      "displayName": "wondelai crossing the chasm",
-      "description": "Technology adoption and go-to-market strategy for crossing from early adopters to mainstream market. Choose beachhead segments, build whole products, and position against incumbents.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "go-to-market",
-        "technology-adoption",
-        "chasm",
-        "beachhead",
-        "b2b",
-        "saas",
-        "market-strategy",
-        "positioning"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-crossing-the-chasm",
-      "sourcePath": "./plugins/business-tools/wondelai-crossing-the-chasm",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-design-everyday-things",
-      "name": "wondelai-design-everyday-things",
-      "displayName": "wondelai design everyday things",
-      "description": "Fundamental design principles from Don Norman. Design affordances, signifiers, constraints, and feedback mechanisms. Apply human-centered design and fault-tolerant systems.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "design",
-        "ux",
-        "affordances",
-        "signifiers",
-        "human-centered-design",
-        "usability",
-        "don-norman",
-        "hcd"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-design-everyday-things",
-      "sourcePath": "./plugins/design/wondelai-design-everyday-things",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-design-sprint",
-      "name": "wondelai-design-sprint",
-      "displayName": "wondelai design sprint",
-      "description": "Google Ventures Design Sprint methodology. Validate product ideas in 5 days with rapid prototyping, user testing, and structured decision-making.",
-      "version": "1.0.0",
-      "category": "productivity",
-      "keywords": [
-        "design-sprint",
-        "prototyping",
-        "user-testing",
-        "validation",
-        "gv",
-        "product-design",
-        "rapid-iteration",
-        "mvp"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-design-sprint",
-      "sourcePath": "./plugins/productivity/wondelai-design-sprint",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-drive-motivation",
-      "name": "wondelai-drive-motivation",
-      "displayName": "wondelai drive motivation",
-      "description": "Intrinsic motivation science framework (Autonomy, Mastery, Purpose). Design features that leverage intrinsic motivation, create progress systems, and craft purpose-driven messaging.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "motivation",
-        "autonomy",
-        "mastery",
-        "purpose",
-        "engagement",
-        "gamification",
-        "intrinsic-motivation",
-        "team-management"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-drive-motivation",
-      "sourcePath": "./plugins/business-tools/wondelai-drive-motivation",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-hooked-ux",
-      "name": "wondelai-hooked-ux",
-      "displayName": "wondelai hooked ux",
-      "description": "Hook Model framework for building habit-forming products. Design trigger-action-reward-investment loops, increase retention, and optimize onboarding for habit formation.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "habits",
-        "engagement",
-        "retention",
-        "hook-model",
-        "triggers",
-        "rewards",
-        "onboarding",
-        "ux"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-hooked-ux",
-      "sourcePath": "./plugins/design/wondelai-hooked-ux",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-hundred-million-offers",
-      "name": "wondelai-hundred-million-offers",
-      "displayName": "wondelai hundred million offers",
-      "description": "Grand Slam Offer creation framework. Create irresistible offers using the Value Equation, stack bonuses, design risk-reversing guarantees, and apply ethical scarcity.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "offers",
-        "pricing",
-        "value-equation",
-        "guarantees",
-        "bonuses",
-        "scarcity",
-        "sales",
-        "hormozi"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-hundred-million-offers",
-      "sourcePath": "./plugins/business-tools/wondelai-hundred-million-offers",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-influence-psychology",
-      "name": "wondelai-influence-psychology",
-      "displayName": "wondelai influence psychology",
-      "description": "Persuasion science framework based on Cialdini's six principles (Reciprocity, Commitment, Social Proof, Authority, Liking, Scarcity). Apply ethical persuasion to product design and marketing.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "persuasion",
-        "influence",
-        "cialdini",
-        "social-proof",
-        "reciprocity",
-        "scarcity",
-        "psychology",
-        "marketing"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-influence-psychology",
-      "sourcePath": "./plugins/business-tools/wondelai-influence-psychology",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-ios-hig-design",
-      "name": "wondelai-ios-hig-design",
-      "displayName": "wondelai ios hig design",
-      "description": "Native iOS app design following Apple Human Interface Guidelines. Design SwiftUI/UIKit components, implement navigation patterns, and ensure accessibility compliance.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "ios",
-        "apple",
-        "hig",
-        "swiftui",
-        "uikit",
-        "mobile-design",
-        "accessibility",
-        "interface-guidelines"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-ios-hig-design",
-      "sourcePath": "./plugins/design/wondelai-ios-hig-design",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-jobs-to-be-done",
-      "name": "wondelai-jobs-to-be-done",
-      "displayName": "wondelai jobs to be done",
-      "description": "Strategic product innovation framework using Clayton Christensen's JTBD theory. Discover customer motivations, conduct discovery interviews, and design products around the jobs customers hire them for.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "jtbd",
-        "jobs-to-be-done",
-        "product-strategy",
-        "customer-discovery",
-        "innovation",
-        "christensen",
-        "product-market-fit",
-        "interviews"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-jobs-to-be-done",
-      "sourcePath": "./plugins/business-tools/wondelai-jobs-to-be-done",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-lean-startup",
-      "name": "wondelai-lean-startup",
-      "displayName": "wondelai lean startup",
-      "description": "Lean Startup methodology for validated learning, MVPs, and innovation accounting. Design experiments, decide when to pivot vs. persevere, and reduce development waste.",
-      "version": "1.0.0",
-      "category": "productivity",
-      "keywords": [
-        "lean-startup",
-        "mvp",
-        "validated-learning",
-        "pivot",
-        "metrics",
-        "innovation-accounting",
-        "experimentation",
-        "build-measure-learn"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-lean-startup",
-      "sourcePath": "./plugins/productivity/wondelai-lean-startup",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
       "slug": "navigating-github",
       "name": "navigating-github",
       "displayName": "navigating github",
@@ -9257,355 +8843,6 @@
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
         "url": "https://github.com/jeremylongshore"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-made-to-stick",
-      "name": "wondelai-made-to-stick",
-      "displayName": "wondelai made to stick",
-      "description": "Sticky messaging framework using the SUCCESs model (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Make product messaging memorable and create compelling presentations.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "messaging",
-        "storytelling",
-        "success",
-        "sticky",
-        "communication",
-        "presentations",
-        "copywriting",
-        "branding"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-made-to-stick",
-      "sourcePath": "./plugins/business-tools/wondelai-made-to-stick",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-negotiation",
-      "name": "wondelai-negotiation",
-      "displayName": "wondelai negotiation",
-      "description": "Tactical negotiation framework based on Chris Voss's techniques. Use mirroring, labeling, calibrated questions, the Ackerman method, and accusation audits for business and salary negotiations.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "negotiation",
-        "chris-voss",
-        "mirroring",
-        "labeling",
-        "ackerman",
-        "salary",
-        "deals",
-        "conflict-resolution"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-negotiation",
-      "sourcePath": "./plugins/business-tools/wondelai-negotiation",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-obviously-awesome",
-      "name": "wondelai-obviously-awesome",
-      "displayName": "wondelai obviously awesome",
-      "description": "Product positioning framework for competitive differentiation. Define competitive alternatives, identify unique attributes, map value themes, and choose the right market category.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "positioning",
-        "differentiation",
-        "competitive-analysis",
-        "market-category",
-        "value-proposition",
-        "april-dunford",
-        "go-to-market",
-        "branding"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-obviously-awesome",
-      "sourcePath": "./plugins/business-tools/wondelai-obviously-awesome",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-one-page-marketing",
-      "name": "wondelai-one-page-marketing",
-      "displayName": "wondelai one page marketing",
-      "description": "End-to-end marketing plan framework. Define target market, craft USP, choose channels, design lead capture and nurture sequences, optimize conversion, and build referral systems.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "marketing-plan",
-        "usp",
-        "lead-generation",
-        "nurture",
-        "referral",
-        "advertising",
-        "customer-lifetime-value",
-        "marketing-strategy"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-one-page-marketing",
-      "sourcePath": "./plugins/business-tools/wondelai-one-page-marketing",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-predictable-revenue",
-      "name": "wondelai-predictable-revenue",
-      "displayName": "wondelai predictable revenue",
-      "description": "Outbound sales methodology for scalable B2B pipeline. Implement Cold Calling 2.0, structure SDR/AE/CSM roles, design prospecting sequences, and build predictable revenue engines.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "sales",
-        "outbound",
-        "sdr",
-        "pipeline",
-        "b2b",
-        "saas",
-        "prospecting",
-        "cold-calling",
-        "revenue"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-predictable-revenue",
-      "sourcePath": "./plugins/business-tools/wondelai-predictable-revenue",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-refactoring-ui",
-      "name": "wondelai-refactoring-ui",
-      "displayName": "wondelai refactoring ui",
-      "description": "Practical UI design system for professional interfaces. Fix visual hierarchy, choose typography and color scales, add depth with shadows, and style components in Tailwind CSS.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "ui-design",
-        "visual-hierarchy",
-        "typography",
-        "color-palette",
-        "tailwind",
-        "shadows",
-        "spacing",
-        "refactoring-ui"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-refactoring-ui",
-      "sourcePath": "./plugins/design/wondelai-refactoring-ui",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-scorecard-marketing",
-      "name": "wondelai-scorecard-marketing",
-      "displayName": "wondelai scorecard marketing",
-      "description": "Lead generation framework using quiz and assessment funnels. Create lead magnets that convert 30-50%, design qualifying questions, and segment automated follow-up sequences.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "lead-generation",
-        "quiz-funnel",
-        "assessment",
-        "scorecard",
-        "conversion",
-        "segmentation",
-        "lead-magnet",
-        "marketing-automation"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-scorecard-marketing",
-      "sourcePath": "./plugins/business-tools/wondelai-scorecard-marketing",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-storybrand-messaging",
-      "name": "wondelai-storybrand-messaging",
-      "displayName": "wondelai storybrand messaging",
-      "description": "StoryBrand messaging framework that positions customer as hero. Create brand scripts, write website copy that converts, craft one-liners, and build narrative-driven landing pages.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "storybrand",
-        "messaging",
-        "brand-script",
-        "copywriting",
-        "narrative",
-        "website-copy",
-        "one-liner",
-        "donald-miller"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-storybrand-messaging",
-      "sourcePath": "./plugins/business-tools/wondelai-storybrand-messaging",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-top-design",
-      "name": "wondelai-top-design",
-      "displayName": "wondelai top design",
-      "description": "Award-winning web design framework for premium brand experiences. Build immersive websites with custom animations, dramatic typography, and scroll-based compositions.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "web-design",
-        "awwwards",
-        "animations",
-        "typography",
-        "scroll-effects",
-        "brand-website",
-        "premium-design",
-        "motion"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-top-design",
-      "sourcePath": "./plugins/design/wondelai-top-design",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-traction-eos",
-      "name": "wondelai-traction-eos",
-      "displayName": "wondelai traction eos",
-      "description": "Entrepreneurial Operating System (EOS) for business execution. Create V/TO, set quarterly rocks, run Level 10 meetings, build accountability charts, and solve issues with IDS.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "eos",
-        "traction",
-        "operating-system",
-        "rocks",
-        "l10-meetings",
-        "accountability",
-        "vision",
-        "execution"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-traction-eos",
-      "sourcePath": "./plugins/business-tools/wondelai-traction-eos",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-ux-heuristics",
-      "name": "wondelai-ux-heuristics",
-      "displayName": "wondelai ux heuristics",
-      "description": "Usability heuristics and UX audit framework based on Nielsen and Krug. Conduct heuristic evaluations, identify usability problems, and prioritize fixes by severity.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "ux",
-        "usability",
-        "heuristics",
-        "nielsen",
-        "krug",
-        "ux-audit",
-        "evaluation",
-        "accessibility"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-ux-heuristics",
-      "sourcePath": "./plugins/design/wondelai-ux-heuristics",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wondelai-web-typography",
-      "name": "wondelai-web-typography",
-      "displayName": "wondelai web typography",
-      "description": "Web typography framework for readable, beautiful type. Select and pair typefaces, set optimal line length and height, implement responsive typography, and optimize web font loading.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "typography",
-        "web-fonts",
-        "typeface",
-        "font-pairing",
-        "readability",
-        "responsive-typography",
-        "css",
-        "type-hierarchy"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install wondelai-web-typography",
-      "sourcePath": "./plugins/design/wondelai-web-typography",
-      "isFeatured": false,
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
       },
       "type": "instruction-plugin"
     },
@@ -9640,7 +8877,7 @@
       "name": "adobe-pack",
       "displayName": "adobe pack",
       "description": "Claude Code skill pack for Adobe (30 skills)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": [
         "adobe",
@@ -10267,7 +9504,7 @@
       "name": "flyio-pack",
       "displayName": "flyio pack",
       "description": "Claude Code skill pack for Fly.io (18 skills)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": [
         "flyio",
@@ -10371,17 +9608,18 @@
       "slug": "grammarly-pack",
       "name": "grammarly-pack",
       "displayName": "grammarly pack",
-      "description": "Claude Code skill pack for Grammarly (24 skills)",
-      "version": "1.8.0",
+      "description": "Five model-agnostic Grammarly operator skills for secure access, document evaluation, API reliability, data safety, and license governance.",
+      "version": "2.0.0",
       "category": "saas-packs",
       "keywords": [
         "grammarly",
         "saas",
-        "sdk",
-        "integration"
+        "agent-skills",
+        "security",
+        "operations"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 5,
       "commandCount": 0,
       "installCommand": "/plugin install grammarly-pack",
       "sourcePath": "./plugins/saas-packs/grammarly-pack",
@@ -10424,7 +9662,7 @@
       "name": "hootsuite-pack",
       "displayName": "hootsuite pack",
       "description": "Claude Code skill pack for Hootsuite (18 skills)",
-      "version": "1.5.0",
+      "version": "1.6.0",
       "category": "saas-packs",
       "keywords": [
         "hootsuite",
@@ -10631,8 +9869,8 @@
       "slug": "navan-pack",
       "name": "navan-pack",
       "displayName": "navan pack",
-      "description": "Claude Code skill pack for Navan (24 skills)",
-      "version": "1.7.0",
+      "description": "Claude Code skill pack for Navan (26 skills)",
+      "version": "1.8.0",
       "category": "saas-packs",
       "keywords": [
         "navan",
@@ -10657,8 +9895,8 @@
       "slug": "notion-pack",
       "name": "notion-pack",
       "displayName": "notion pack",
-      "description": "Claude Code skill pack for Notion (30 skills)",
-      "version": "1.38.0",
+      "description": "Claude Code skill pack for Notion (32 skills)",
+      "version": "1.39.0",
       "category": "saas-packs",
       "keywords": [
         "notion",
@@ -10709,8 +9947,8 @@
       "slug": "oraclecloud-pack",
       "name": "oraclecloud-pack",
       "displayName": "oraclecloud pack",
-      "description": "Claude Code skill pack for Oracle Cloud (24 skills)",
-      "version": "1.7.0",
+      "description": "Claude Code skill pack for Oracle Cloud (26 skills)",
+      "version": "1.8.0",
       "category": "saas-packs",
       "keywords": [
         "oraclecloud",
@@ -10789,7 +10027,7 @@
       "name": "podium-pack",
       "displayName": "podium pack",
       "description": "Claude Code skill pack for Podium (10 production-engineer skills covering OAuth, webhook reliability, rate-limit survival, call transcripts, webchat, review automation, history export, RAG context, multi-location routing, contact dedup)",
-      "version": "2.8.0",
+      "version": "2.9.0",
       "category": "saas-packs",
       "keywords": [
         "podium",
@@ -11055,8 +10293,8 @@
       "slug": "snowflake-pack",
       "name": "snowflake-pack",
       "displayName": "snowflake pack",
-      "description": "Claude Code skill pack for Snowflake (30 skills)",
-      "version": "1.5.0",
+      "description": "Ten model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, access, governance, data quality, failover, and Native Apps",
+      "version": "3.16.0",
       "category": "saas-packs",
       "keywords": [
         "snowflake",
@@ -11065,7 +10303,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 10,
       "commandCount": 0,
       "installCommand": "/plugin install snowflake-pack",
       "sourcePath": "./plugins/saas-packs/snowflake-pack",
@@ -11081,8 +10319,8 @@
       "slug": "stackblitz-pack",
       "name": "stackblitz-pack",
       "displayName": "stackblitz pack",
-      "description": "Claude Code skill pack for StackBlitz (18 skills)",
-      "version": "1.5.0",
+      "description": "Claude Code skill pack for StackBlitz (10 skills)",
+      "version": "1.6.0",
       "category": "saas-packs",
       "keywords": [
         "stackblitz",
@@ -11091,7 +10329,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 10,
       "commandCount": 0,
       "installCommand": "/plugin install stackblitz-pack",
       "sourcePath": "./plugins/saas-packs/stackblitz-pack",
@@ -11133,8 +10371,8 @@
       "slug": "together-pack",
       "name": "together-pack",
       "displayName": "together pack",
-      "description": "Claude Code skill pack for Together AI (18 skills)",
-      "version": "1.6.0",
+      "description": "Claude Code skill pack for Together AI (16 skills)",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": [
         "together",
@@ -11144,36 +10382,10 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 16,
       "commandCount": 0,
       "installCommand": "/plugin install together-pack",
       "sourcePath": "./plugins/saas-packs/together-pack",
-      "isFeatured": false,
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io",
-        "url": "https://github.com/jeremylongshore"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "veeva-pack",
-      "name": "veeva-pack",
-      "displayName": "veeva pack",
-      "description": "Claude Code skill pack for Veeva (24 skills)",
-      "version": "1.3.0",
-      "category": "saas-packs",
-      "keywords": [
-        "veeva",
-        "saas",
-        "sdk",
-        "integration"
-      ],
-      "hasSkills": true,
-      "skillCount": 24,
-      "commandCount": 0,
-      "installCommand": "/plugin install veeva-pack",
-      "sourcePath": "./plugins/saas-packs/veeva-pack",
       "isFeatured": false,
       "author": {
         "name": "Jeremy Longshore",
@@ -11200,32 +10412,6 @@
       "commandCount": 0,
       "installCommand": "/plugin install webflow-pack",
       "sourcePath": "./plugins/saas-packs/webflow-pack",
-      "isFeatured": false,
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io",
-        "url": "https://github.com/jeremylongshore"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "wispr-pack",
-      "name": "wispr-pack",
-      "displayName": "wispr pack",
-      "description": "Claude Code skill pack for Wispr (18 skills)",
-      "version": "1.3.0",
-      "category": "saas-packs",
-      "keywords": [
-        "wispr",
-        "saas",
-        "sdk",
-        "integration"
-      ],
-      "hasSkills": true,
-      "skillCount": 18,
-      "commandCount": 0,
-      "installCommand": "/plugin install wispr-pack",
-      "sourcePath": "./plugins/saas-packs/wispr-pack",
       "isFeatured": false,
       "author": {
         "name": "Jeremy Longshore",
@@ -11392,6 +10578,32 @@
       "installCommand": "/plugin install box-cloud-filesystem",
       "sourcePath": "./plugins/productivity/box-cloud-filesystem",
       "isFeatured": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "a2a-client",
+      "name": "a2a-client",
+      "displayName": "a2a client",
+      "description": "Security-hardened MCP client for Agent2Agent card discovery, messaging, streaming, and confirmation-gated task control",
+      "version": "0.1.0",
+      "category": "mcp",
+      "keywords": [
+        "a2a",
+        "agent2agent",
+        "agent-card",
+        "multi-agent",
+        "mcp"
+      ],
+      "hasSkills": false,
+      "skillCount": 0,
+      "commandCount": 0,
+      "installCommand": "/plugin install a2a-client",
+      "sourcePath": "./plugins/mcp/a2a-client",
+      "isFeatured": false,
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
@@ -11829,26 +11041,6 @@
       "type": "instruction-plugin"
     },
     {
-      "slug": "skyvern",
-      "name": "skyvern",
-      "displayName": "skyvern",
-      "description": "AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins",
-      "version": "0.1.0",
-      "category": "productivity",
-      "keywords": [],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install skyvern",
-      "sourcePath": "./plugins/productivity/skyvern",
-      "isFeatured": false,
-      "author": {
-        "name": "Skyvern-AI",
-        "url": "https://github.com/Skyvern-AI"
-      },
-      "type": "instruction-plugin"
-    },
-    {
       "slug": "tonone",
       "name": "tonone",
       "displayName": "tonone",
@@ -11916,37 +11108,6 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "hyperflow",
-      "name": "hyperflow",
-      "displayName": "hyperflow",
-      "description": "Advanced multi-agent orchestration with persistent cross-session memory, per-step multi-level review, persona stitching, and adaptive flow profiles",
-      "version": "4.26.1",
-      "category": "ai-agency",
-      "keywords": [
-        "claude-code-plugin",
-        "multi-agent",
-        "dynamic-workflows",
-        "workflow-chain",
-        "triageflow",
-        "personas",
-        "flow-profiles",
-        "code-review",
-        "project-memory",
-        "multi-tool"
-      ],
-      "hasSkills": true,
-      "skillCount": 28,
-      "commandCount": 0,
-      "installCommand": "/plugin install hyperflow",
-      "sourcePath": "./plugins/ai-agency/hyperflow",
-      "isFeatured": false,
-      "author": {
-        "name": "Mohammed Abdelhady",
-        "url": "https://github.com/Mohammed-Abdelhady"
       },
       "type": "instruction-plugin"
     },
@@ -12458,34 +11619,6 @@
       "type": "instruction-plugin"
     },
     {
-      "slug": "llm-box",
-      "name": "llm-box",
-      "displayName": "llm box",
-      "description": "Terminal-first workflow automation engine. Generate and execute YAML workflows from plain English with 20+ nodes and 15+ LLM providers.",
-      "version": "0.3.0",
-      "category": "community",
-      "keywords": [
-        "workflow",
-        "automation",
-        "terminal",
-        "cli",
-        "yaml",
-        "llm",
-        "mcp"
-      ],
-      "hasSkills": true,
-      "skillCount": 2,
-      "commandCount": 0,
-      "installCommand": "/plugin install llm-box",
-      "sourcePath": "./plugins/community/llm-box",
-      "isFeatured": false,
-      "author": {
-        "name": "alib8b8",
-        "url": "https://github.com/alib8b8"
-      },
-      "type": "instruction-plugin"
-    },
-    {
       "slug": "j-rig",
       "name": "j-rig",
       "displayName": "j rig",
@@ -12516,7 +11649,7 @@
       "name": "intent-labs-pack",
       "displayName": "intent labs pack",
       "description": "Labs skills for Intent Eval Platform dogfood: audit-tests (7-layer test auditor) and validate-skillmd (four-tier SKILL.md grader). Public checkout path for the nightly signed roster.",
-      "version": "0.1.0",
+      "version": "7.2.0",
       "category": "productivity",
       "keywords": [
         "audit-tests",
@@ -12543,7 +11676,7 @@
       "name": "agent-safety-preflight",
       "displayName": "agent safety preflight",
       "description": "Local Claude Code command that generates a repo-risk receipt before AI-agent edits.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "security",
       "keywords": [
         "security",
@@ -12592,26 +11725,6 @@
         "name": "Krzysztof Hendzel",
         "url": "https://github.com/khendzel",
         "email": "krzysztoff.hendzel@gmail.com"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "walkie-talkie",
-      "name": "walkie-talkie",
-      "displayName": "walkie talkie",
-      "description": "Cross-platform agent-to-agent comms via an append-only in-repo mailbox, with a GRILL protocol for interrogating handoffs",
-      "version": "0.1.0",
-      "category": "community",
-      "keywords": [],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install walkie-talkie",
-      "sourcePath": "./plugins/community/walkie-talkie",
-      "isFeatured": false,
-      "author": {
-        "name": "Walkie-Talkie Maintainers",
-        "url": "https://github.com/walkie-talkie-skill"
       },
       "type": "instruction-plugin"
     },
@@ -12722,7 +11835,7 @@
       "name": "general-legal-assistant",
       "displayName": "general legal assistant",
       "description": "AI-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "business-tools",
       "keywords": [
         "legal",
@@ -12752,7 +11865,7 @@
       "name": "claude-memory-kit",
       "displayName": "claude memory kit",
       "description": "Context-management workflows for saving, loading, updating, sharing, and auditing Claude Code session memory.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "productivity",
       "keywords": [
         "memory",

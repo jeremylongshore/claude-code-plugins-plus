@@ -20,12 +20,13 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Get started with the AppFolio Property Manager API by authenticating with your client credentials and making your first API calls. This skill walks through connecting to the REST API, fetching a property listing, retrieving tenant details, and creating a basic work order — the essential operations for any AppFolio integration.
+Get started with the AppFolio Property Manager API through a verified provider-issued client configuration. This skill walks through safe first reads for a property listing and a tenant count; create or update operations belong only in a separately approved synthetic sandbox workflow.
 
 ## Prerequisites
 
 - AppFolio Stack Partner account with API access
-- `APPFOLIO_CLIENT_ID` and `APPFOLIO_CLIENT_SECRET` environment variables set
+- A managed, provider-issued base URL and authentication client confirmed for
+  the target portfolio; do not use a guessed hostname or credential scheme
 - Node.js 18+ and TypeScript
 
 ## Instructions
@@ -33,17 +34,10 @@ Get started with the AppFolio Property Manager API by authenticating with your c
 ### Step 1: Configure the Client
 
 ```typescript
-const APPFOLIO_BASE = process.env.APPFOLIO_BASE_URL || "https://yourcompany.appfolio.com/api/v1";
-
 async function appfolioFetch(path: string) {
-  const credentials = Buffer.from(
-    `${process.env.APPFOLIO_CLIENT_ID}:${process.env.APPFOLIO_CLIENT_SECRET}`
-  ).toString("base64");
-  const res = await fetch(`${APPFOLIO_BASE}${path}`, {
-    headers: { Authorization: `Basic ${credentials}`, Accept: "application/json" },
-  });
-  if (!res.ok) throw new Error(`AppFolio ${res.status}: ${await res.text()}`);
-  return res.json();
+  const res = await createVerifiedAppFolioClient().get(path);
+  if (res.status < 200 || res.status >= 300) throw new Error(`AppFolio ${res.status}`);
+  return res.data;
 }
 ```
 
@@ -52,37 +46,35 @@ async function appfolioFetch(path: string) {
 ```typescript
 const properties = await appfolioFetch("/properties?page_size=10");
 console.log(`Found ${properties.length} properties`);
-properties.forEach((p: any) => console.log(`  ${p.id}: ${p.address_line1}, ${p.city}`));
+properties.forEach((p: any) => console.log(`  property ID: ${p.id}`));
 ```
 
 ### Step 3: Get Tenant Details
 
 ```typescript
 const tenants = await appfolioFetch(`/tenants?property_id=${properties[0].id}`);
-tenants.forEach((t: any) => console.log(`  ${t.name} — Unit ${t.unit_number}`));
+console.log(`Retrieved ${tenants.length} tenant records for the approved fixture`);
 ```
 
-### Step 4: Create a Work Order
+### Step 4: Stop Before Writes
 
 ```typescript
-const workOrder = await fetch(`${APPFOLIO_BASE}/work_orders`, {
-  method: "POST",
-  headers: {
-    Authorization: `Basic ${Buffer.from(`${process.env.APPFOLIO_CLIENT_ID}:${process.env.APPFOLIO_CLIENT_SECRET}`).toString("base64")}`,
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    property_id: properties[0].id,
-    description: "Leaky faucet in kitchen",
-    priority: "normal",
-  }),
-});
-console.log("Work order created:", (await workOrder.json()).id);
+// Do not create a work order as a quickstart test. Continue only with the
+// synthetic, idempotent workflow in appfolio-core-workflow-b.
 ```
 
 ## Output
 
-A successful run produces authenticated API responses: a list of properties with addresses, tenant details for the first property, and a new work order ID confirming write access.
+A successful run proves the managed client and an approved safe-read endpoint work, returning only property IDs and a tenant-record count in its local output.
+
+## Examples
+
+For a first integration check, configure the verified sandbox client, query one
+approved synthetic property page, and confirm its status, property IDs, and
+tenant count without recording addresses, names, unit numbers, or credentials.
+Do not create a work order merely to test access. If the portfolio contract,
+safe-read fixture, or response authorization is not verified, stop the run and
+use the credential owner’s staging process before attempting any mutation.
 
 ## Error Handling
 

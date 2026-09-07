@@ -1,6 +1,5 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import {
   BEAD_ID,
   MODEL_FAMILY,
@@ -8,15 +7,31 @@ import {
   claudeTokensOnLine,
   loadExclusions,
 } from './lib/model-id-classifier.mjs';
-import { unpinnedTrackedHandles } from './classify-model-ids.mjs';
+import {
+  diffHandleRoots,
+  issueRowsToHandleRoots,
+  liveBeadRootHandles,
+  unpinnedTrackedHandles,
+} from './classify-model-ids.mjs';
 
-test('the committed exclusion list pins every live bead handle', () => {
+test('the committed exclusion list pins known programme and regression handles', () => {
   const excl = loadExclusions();
   assert.ok(Array.isArray(excl.protected_handles));
   assert.ok(excl.protected_handles.length >= 300, 'the live handle census is in the hundreds');
   // the handles this program itself created must be present
   for (const h of ['claude-hz8f', 'claude-hedb', 'claude-t9s9', 'claude-4laa', 'claude-s03q']) {
     assert.ok(excl.protected_handles.includes(h), `${h} must be pinned`);
+  }
+  for (const h of [
+    'claude-13rn',
+    'claude-67o3',
+    'claude-e1mk',
+    'claude-gz4k',
+    'claude-iqlt',
+    'claude-l839',
+    'claude-sb8j',
+  ]) {
+    assert.ok(excl.protected_handles.includes(h), `regression handle ${h} must be pinned`);
   }
   // and disjoint from model families by shape
   for (const h of excl.protected_handles) {
@@ -82,31 +97,35 @@ test('the three sets are disjoint by construction', () => {
   );
 });
 
-test('the exclusion list stays regenerable from the live beads export', (t) => {
-  // The beads workspace is deliberately untracked in this repo (local Dolt is
-  // the authority; the JSONL is a machine-local export). CI checkouts have no
-  // .beads/, so this leg is the LOCAL-workspace check: absent file → skip.
-  // It is no longer the ONLY drift detector — the tracked-tree census above
-  // runs everywhere, CI included.
-  let raw;
-  try {
-    raw = readFileSync(new URL('../.beads/issues.jsonl', import.meta.url), 'utf-8');
-  } catch {
-    t.skip('no local beads export (CI checkout) — census verified at generation time');
+test('authoritative issue rows normalize to sorted roots and reject adjacent namespaces', () => {
+  assert.deepEqual(
+    issueRowsToHandleRoots([
+      { id: 'claude-sb8j.2' },
+      { id: 'claude-13rn' },
+      { id: 'claude-sb8j' },
+      { id: 'claude-code-plugins-02hy' },
+      { id: 'claude-sonnet-4' },
+      { id: null },
+    ]),
+    ['claude-13rn', 'claude-sb8j'],
+  );
+});
+
+test('live-root diff reports the planted missing handle', () => {
+  assert.deepEqual(diffHandleRoots(['claude-13rn', 'claude-sb8j'], ['claude-13rn']), {
+    missing: ['claude-sb8j'],
+    extra: [],
+  });
+});
+
+test('the exclusion list matches the authoritative local Beads/Dolt census', (t) => {
+  // CI has no Beads database. Local primary and linked worktrees query the
+  // canonical Dolt state directly through bd --readonly; passive JSONL is
+  // deliberately not an authority or fallback.
+  const live = liveBeadRootHandles();
+  if (live === null) {
+    t.skip('no local authoritative Beads/Dolt database');
     return;
   }
-  const ids = new Set();
-  for (const line of raw.split('\n')) {
-    if (!line.trim()) continue;
-    try {
-      const id = JSON.parse(line).id ?? '';
-      if (BEAD_ID.test(id)) ids.add(id.split('.')[0]);
-    } catch {
-      /* not a bead row */
-    }
-  }
-  const pinned = new Set(loadExclusions().protected_handles);
-  for (const id of ids) {
-    assert.ok(pinned.has(id), `live handle ${id} missing from the committed exclusion list`);
-  }
+  assert.deepEqual(diffHandleRoots(live), { missing: [], extra: [] });
 });

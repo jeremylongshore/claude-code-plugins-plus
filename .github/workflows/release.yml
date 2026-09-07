@@ -11,11 +11,6 @@ on:
           - patch
           - minor
           - major
-      skip_tests:
-        description: 'Skip validation tests'
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: write
@@ -25,20 +20,24 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.new_version.outputs.version }}
+      release_sha: ${{ steps.release_commit.outputs.sha }}
+      publication_report: ${{ steps.publication_report.outputs.publication_report }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: '20'
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.12'
 
@@ -47,7 +46,6 @@ jobs:
           pip install pyyaml
 
       - name: Run validation tests
-        if: ${{ !inputs.skip_tests }}
         run: |
           # scripts/validate-all.sh + test-installation.sh were removed; the full
           # gate now runs in CI (the ci-required aggregate on every PR + on push
@@ -112,6 +110,7 @@ jobs:
           echo "Updated README.md version references"
 
       - name: Commit version bump
+        id: release_commit
         run: |
           NEW_VERSION="${{ steps.new_version.outputs.version }}"
           git config user.name "github-actions[bot]"
@@ -119,6 +118,7 @@ jobs:
 
           git add .claude-plugin/marketplace.json README.md
           git commit -m "chore: bump version to v$NEW_VERSION"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Create Git tag
         run: |
@@ -156,6 +156,17 @@ jobs:
             --notes-file release-notes.txt \
             --latest
 
+      - name: Build marketplace release SBOM and signed-evidence input
+        id: publication_report
+        run: |
+          set -euo pipefail
+          corepack enable
+          pnpm install --frozen-lockfile
+          jq -cn --arg version "${{ steps.new_version.outputs.version }}" \
+            '[{channel:"github-release", name:"tons-of-skills-marketplace", version:$version, release_tag:("v" + $version), package_path:"."}]' > /tmp/completed-publications.json
+          node scripts/build-publication-report.mjs --completed /tmp/completed-publications.json --out /tmp/publication-report.json --sbom-dir /tmp/publication-sboms
+          echo "publication_report=$(jq -c . /tmp/publication-report.json)" >> "$GITHUB_OUTPUT"
+
       - name: Create release announcement issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -191,3 +202,16 @@ jobs:
             echo ""
             echo "[View Release](https://github.com/${{ github.repository }}/releases/tag/v$NEW_VERSION)"
           } >> "$GITHUB_STEP_SUMMARY"
+
+  emit-publication-evidence:
+    name: Emit signed evidence for the completed marketplace release
+    needs: release
+    uses: ./.github/workflows/emit-publication-evidence.yml
+    permissions:
+      actions: read
+      checks: read
+      contents: write
+      id-token: write
+    with:
+      source_sha: ${{ needs.release.outputs.release_sha }}
+      publication_report: ${{ needs.release.outputs.publication_report }}

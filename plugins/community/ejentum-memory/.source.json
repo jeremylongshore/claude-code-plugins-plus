@@ -4,15 +4,16 @@
     "path": "skills/memory",
     "branch": "main"
   },
-  "last_sync": "2026-07-13T17:27:06.806Z",
+  "last_sync": "2026-08-26T16:40:02.553Z",
   "author": {
     "name": "Ejentum",
     "github": "ejentum",
     "email": "info@ejentum.com"
   },
   "license": "MIT",
-  "files_synced": 1,
+  "files_synced": 2,
   "files": [
+    "LICENSE",
     "SKILL.md"
   ]
 }

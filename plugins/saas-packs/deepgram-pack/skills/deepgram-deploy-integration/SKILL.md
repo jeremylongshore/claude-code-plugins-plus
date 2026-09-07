@@ -26,6 +26,10 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Deploy Integration
 
+## Examples
+
+Deploy a versioned integration to staging with a scoped secret reference and a short licensed fixture, then verify health, timeout/retry behavior, redacted metrics, and the rollback command. Promote through a controlled production canary only after data/consent and quality checks pass; do not deploy a key or audio fixture in the manifest.
+
 ## Overview
 
 Deploy Deepgram transcription services to Docker, Kubernetes, AWS Lambda, and Google Cloud Run. Includes production Dockerfile, K8s manifests with secret management, serverless handlers for event-driven transcription, and health check patterns.

@@ -308,6 +308,14 @@ async function deleteWebhook(webhookId: string) {
 | 30s timeout | Handler takes too long | Return 200 immediately, process async |
 | Missing event_type | Using custom label events | Check `custom_interest_value` field |
 
+## Output
+
+Return an event receipt with type, opaque event ID, signature/timestamp result, idempotency outcome, campaign scope, consent/suppression state, sent-count assertion, and rollback reference. Exclude payload copy, recipient addresses, and signatures.
+
+## Examples
+
+`type=campaign.updated; event=evt-opaque-9; signature=pass; replay=absent; campaign=sandbox-only; consent=pass; suppression=pass; sends=0; rollback=consumer-disabled` proves the event boundary.
+
 ## Resources
 
 - Instantly Webhook API

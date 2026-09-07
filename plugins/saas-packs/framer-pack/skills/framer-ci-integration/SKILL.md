@@ -22,6 +22,18 @@ compatibility: Designed for Claude Code
 ---
 # Framer CI Integration
 
+## Prerequisites
+
+Protected CI environments, scoped credentials available only to trusted jobs, synthetic site/CMS fixtures, and a deployment owner.
+
+## Error Handling
+
+Stop promotion on failed build, publish, domain, integration, or privacy checks; roll back the canary and preserve redacted evidence for review.
+
+## Examples
+
+Run fixture-based tests with no secrets on a pull request, then use a protected staging job to publish a fictional canary. Block production promotion when a route, integration, or access check differs from the approved result.
+
 ## Overview
 
 Set up CI/CD for Framer plugins and Server API integrations. Plugin builds are tested with Vite + vitest. Server API CMS sync can be triggered from CI for automated content publishing.

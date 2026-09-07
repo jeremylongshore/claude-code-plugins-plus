@@ -21,6 +21,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Performance Tuning
 
+## Overview
+
+Improve Cursor responsiveness by measuring indexing scope, resource use, extension load, and network conditions while preserving required workspace and data controls.
+
+## Prerequisites
+
+- A reproducible performance symptom, baseline measurement, and approved local settings backup.
+- A reviewed `.cursorignore` strategy; do not expose excluded files to gain speed.
+
+## Instructions
+
+1. Measure startup, indexing, memory, and request latency for the affected workspace.
+2. Reduce unnecessary roots, extensions, and generated-file indexing before clearing caches.
+3. Make one reversible change, compare against baseline, and retain the setting only when it improves the agreed metric.
+4. Back up settings before cache maintenance and test the restored workspace afterward.
+
+## Output
+
+- A measured, reversible performance change with before/after evidence.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Cache clear does not help | Restore settings and investigate extension/indexing scope rather than repeating deletion. |
+| Performance requires policy exception | Keep policy intact and escalate for a documented decision. |
+| Network latency is the cause | Use approved network troubleshooting; do not route code through an unapproved service. |
+
+## Examples
+
+For a slow monorepo, measure indexing time, add generated artifacts to the existing reviewed ignore rules, close inactive workspace roots, and measure again. Keep the change only if it improves the baseline without hiding required source or documentation.
+
 Diagnose and fix Cursor IDE performance issues. Covers editor optimization, indexing tuning, extension auditing, AI feature configuration, and strategies for large codebases.
 
 ## Performance Diagnostic Workflow

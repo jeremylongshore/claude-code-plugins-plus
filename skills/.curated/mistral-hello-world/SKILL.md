@@ -12,7 +12,7 @@ description: 'Create a minimal working Mistral AI chat completion example.
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -208,6 +208,12 @@ const response = await client.chat.complete({
 | `codestral-latest` | Code generation, FIM | 256k |
 | `mistral-embed` | Text/code embeddings | 8k |
 | `pixtral-large-latest` | Vision + text (multimodal) | 128k |
+
+## Examples
+
+### Verify a new local API key
+
+Set `MISTRAL_API_KEY` in a local, uncommitted environment file, run the first chat-completion example with a low token cap, and confirm the response is non-empty. If it returns 401, stop and correct the secret rather than retrying the request with a hard-coded key.
 
 ## Resources
 

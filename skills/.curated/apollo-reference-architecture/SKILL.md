@@ -189,14 +189,9 @@ new Worker('apollo-enrichment', async (job: Job) => {
 // model Contact {
 //   id             String   @id @default(cuid())
 //   apolloId       String   @unique
-//   email          String   @unique
-//   name           String
-//   title          String?
-//   seniority      String?
-//   phone          String?
-//   linkedinUrl    String?
+//   emailHash      String   @unique // keyed/blind index; not the email itself
+//   contactCiphertext Bytes  // application-encrypted, minimized contact fields
 //   organizationId String?
-//   rawApolloData  Json?
 //   enrichedAt     DateTime?
 //   createdAt      DateTime @default(now())
 //   updatedAt      DateTime @updatedAt
@@ -208,13 +203,9 @@ import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn } fro
 @Entity('contacts')
 export class Contact {
   @PrimaryColumn() apolloId: string;
-  @Column({ unique: true }) email: string;
-  @Column() name: string;
-  @Column({ nullable: true }) title: string;
-  @Column({ nullable: true }) seniority: string;
-  @Column({ nullable: true }) phone: string;
-  @Column({ nullable: true }) linkedinUrl: string;
-  @Column({ type: 'jsonb', nullable: true }) rawApolloData: Record<string, any>;
+  @Column({ unique: true }) emailHash: string; // keyed hash for deduplication
+  @Column({ type: 'bytea' }) contactCiphertext: Buffer; // app-encrypted fields only
+  @Column({ nullable: true }) organizationId: string;
   @Column({ nullable: true }) enrichedAt: Date;
   @CreateDateColumn() createdAt: Date;
   @UpdateDateColumn() updatedAt: Date;
@@ -269,6 +260,19 @@ export { router };
 - BullMQ background jobs for async enrichment
 - Database model (Prisma + TypeORM)
 - Express API routes for search, enrichment, and deals
+
+## Examples
+
+For an initial architecture rollout, begin with free search behind an
+authenticated service boundary, retain only the organization and lead fields
+the approved use case needs, and encrypt contact data before it enters the
+database. Store a keyed hash only for deduplication; never persist raw Apollo
+responses or expose enrichment routes directly without authorization, budget,
+and audit controls. Run a small staging queue with an explicit dead-letter
+review path and validate that retrying a job cannot create duplicate contacts
+or deals. If encryption, authorization, budget enforcement, or idempotency is
+not demonstrably active, stop the rollout and keep the workflow in the
+non-production environment.
 
 ## Error Handling
 

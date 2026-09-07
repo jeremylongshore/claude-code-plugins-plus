@@ -223,6 +223,14 @@ echo "Review for sensitive data before sharing with support."
 | YAML validation fails | Syntax error in config | Fix YAML syntax, validate before committing |
 | Webhook deliveries empty | App was uninstalled/reinstalled | Check webhook exists in repo settings |
 
+## Examples
+
+For a missing review, collect the sanitized app/configuration state and recent
+review metadata into a local bundle, inspect it for repository secrets or
+private diffs, then attach only the approved version to a support case. If the
+bundle contains sensitive material, regenerate it with a narrower collection
+scope instead of editing or transmitting the original archive.
+
 ## Resources
 
 - [CodeRabbit FAQ](https://docs.coderabbit.ai/faq)

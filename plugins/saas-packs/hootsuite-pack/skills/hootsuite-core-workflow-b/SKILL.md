@@ -12,7 +12,7 @@ description: 'Execute Hootsuite secondary workflow: Core Workflow B.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -131,6 +131,10 @@ async function getProfileDetails(profileId: string) {
 | `404` on message | Message deleted or wrong ID | Verify message ID |
 | No analytics data | Post too recent | Wait for engagement data (24-48h) |
 | Ow.ly rate limited | Too many shortening requests | Batch and throttle |
+
+## Examples
+
+For a draft workflow, record `profile=sandbox-brand; action=queue-draft; approval=pending; audience=test-only; idempotency=once; public_posts=0; rollback=workflow-r6` rather than preserving post copy or media.
 
 ## Resources
 

@@ -33,7 +33,7 @@
 import { execSync } from 'child_process';
 
 const REPO_OWNER = 'jeremylongshore';
-const REPO_NAME = 'claude-code-plugins-plus-skills';
+const REPO_NAME = 'tons-of-skills-marketplace';
 const REPO_SLUG = `${REPO_OWNER}/${REPO_NAME}`;
 
 const args = process.argv.slice(2);

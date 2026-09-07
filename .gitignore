@@ -70,6 +70,18 @@
 # was explicitly NOT done). No inherent secrets risk; transparency is the point.
 **/*/000-docs/
 **/*/000-docs/**
+# EXCEPTION: Grammarly v2 public contract research, architecture decisions,
+# and release evidence ship with the operator pack.
+!plugins/saas-packs/grammarly-pack/000-docs/
+!plugins/saas-packs/grammarly-pack/000-docs/**
+# EXCEPTION: Agent Systems Toolkit public research, architecture, threat model,
+# and implementation evidence ship with the repository-owned toolkit.
+!plugins/skill-enhancers/agent-systems-toolkit/000-docs/
+!plugins/skill-enhancers/agent-systems-toolkit/000-docs/**
+# EXCEPTION: Snowflake operator research and architecture records are published
+# with the curated pack, like the Databricks benchmark corpus.
+!plugins/saas-packs/snowflake-pack/000-docs/
+!plugins/saas-packs/snowflake-pack/000-docs/**
 # EXCEPTION: the consistency-validator golden fixtures deliberately ship
 # miniature 000-docs/ trees — they ARE the test corpus for the
 # index-vs-filesystem and dead-reference checks (GH #991 Phase 1).
@@ -151,6 +163,11 @@ coverage/
 .coverage
 .coverage.*
 dist/
+# a2a-client is distributed as a self-contained marketplace/npm runtime. Its
+# deterministic bundle is intentionally tracked so a plugin install has a real
+# entrypoint before any package-manager lifecycle runs.
+!plugins/mcp/a2a-client/dist/
+!plugins/mcp/a2a-client/dist/index.js
 ehthumbs.db
 google-adk-reference/
 logs/
@@ -162,11 +179,10 @@ marketplace/public/downloads/
 # Tracking it duplicated ~28.5MB and gave a second, silently-divergeable claimant
 # to a fact src/data/ already owns. Enforced by scripts/check-generated-artifacts.mjs.
 marketplace/public/data/*.json
-# Epic 1.7: these build-only projections have no supported checkout-level
-# consumer. The marketplace build regenerates both; `npm run dev` regenerates
-# readme-sections before Astro starts. Tracking is rejected by
+# Epic 1.7: this build-only projection has no supported checkout-level
+# consumer. `npm run dev` regenerates readme-sections before Astro starts.
+# Tracking is rejected by
 # scripts/check-generated-artifacts.mjs.
-marketplace/src/data/jrig-data.json
 marketplace/src/data/readme-sections.json
 marketplace/src/data/cowork-manifest.json
 node_modules/
@@ -207,6 +223,9 @@ freshie/inventory.sqlite
 freshie/inventory.sqlite-shm
 freshie/inventory.sqlite-wal
 freshie/dolt/
+# Primary j-rig eval JSON is retained locally or in the configured artifact
+# store; its digest and URI are recorded in forge_proofs, not the payload.
+freshie/eval-artifacts/
 # Archived inventory snapshots are local runtime evidence, not source
 # (Mission 01 baseline, 2026-08: 42M untracked with zero consumers)
 freshie/archives/*.sqlite

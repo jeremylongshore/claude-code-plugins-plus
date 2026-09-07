@@ -12,7 +12,7 @@ description: 'Configure CI/CD pipelines for Documenso integrations.
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -24,6 +24,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso CI Integration
+
+## Output
+
+- A credential-free pull-request lane for schema/template/unit checks and a trusted, scoped development integration lane.
+- A redacted CI receipt with validation outcome and a safe failure/retry procedure.
+
+## Examples
+
+Run template/schema/unit checks on every pull request using synthetic documents and signers, then execute one protected-branch development integration check with a scoped secret. If it fails, retain redacted correlation/status evidence; never expose signing credentials, document payloads, or production workspace access to forked CI code.
 
 ## Overview
 

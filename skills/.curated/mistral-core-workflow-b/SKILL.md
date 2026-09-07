@@ -12,7 +12,7 @@ description: 'Execute Mistral AI embeddings, function calling, and RAG pipelines
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -275,6 +275,12 @@ async function ragChat(
 | Infinite tool loop | Model keeps calling tools | Add max iteration count (e.g., 10) |
 | RAG hallucination | Insufficient context | Add more documents, increase topK |
 | `400 Bad Request` | Missing `toolCallId` | Each tool result must include the matching `toolCallId` |
+
+## Examples
+
+### Answer from a small document set
+
+Embed the current policy documents, retrieve the three closest passages for a question, and pass only those passages to `ragChat`. Return the answer with its source identifiers; when retrieval returns no relevant passage, return an explicit insufficient-context response instead of guessing.
 
 ## Resources
 

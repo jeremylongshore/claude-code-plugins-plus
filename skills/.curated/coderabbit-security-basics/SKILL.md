@@ -285,6 +285,14 @@ fi
 | Too many security comments | Overly broad instructions | Focus instructions on specific paths |
 | Secret in reviewed diff | File not in exclusion list | Add pattern to path_filters |
 
+## Examples
+
+Apply a security instruction to a staging repository’s authentication and
+infrastructure paths, open a test pull request with a non-live synthetic
+credential pattern, and verify that the expected policy response is visible.
+If a real secret is detected, revoke/rotate it through the incident process;
+do not use an exclusion to silence a true finding without documented approval.
+
 ## Resources
 
 - [CodeRabbit Configuration](https://docs.coderabbit.ai/reference/configuration)

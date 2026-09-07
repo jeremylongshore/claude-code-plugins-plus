@@ -12,7 +12,7 @@ description: 'Translates every clause of a contract into plain language at an 8t
 
   '
 allowed-tools: Read, Glob, Grep
-version: 1.0.0
+version: 1.1.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
 tags:

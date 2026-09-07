@@ -146,6 +146,14 @@ CodeRabbit charges per seat (developer who creates PRs). To manage seats:
 4. Only users who open PRs need seats; reviewers do not
 ```
 
+## Examples
+
+Install CodeRabbit on one staging or pilot repository, add the minimal
+`.coderabbit.yaml`, open a harmless test pull request, and verify the review is
+posted without exposing repository secrets or private diff content in logs. If
+the app has unexpected repository access or a token scope is broader than
+approved, remove access and correct the installation before rollout.
+
 ## Resources
 
 - [CodeRabbit Getting Started](https://docs.coderabbit.ai/getting-started/yaml-configuration)

@@ -201,7 +201,13 @@ function logCohereCall(
   status: 'success' | 'error',
   meta?: Record<string, unknown>
 ) {
-  loggerstatus === 'error' ? 'error' : 'info';
+  logger[status === 'error' ? 'error' : 'info']({
+    endpoint,
+    model,
+    durationMs,
+    status,
+    ...meta,
+  }, 'Cohere API call');
 }
 
 // Combined instrumentation
@@ -323,6 +329,29 @@ app.get('/metrics', async (req, res) => {
 | High cardinality | Too many model labels | Use model family, not exact version |
 | Alert storm | Threshold too low | Tune thresholds for your traffic |
 | Trace gaps | Missing context propagation | Ensure OTel context flows through async |
+
+## Examples
+
+Treat client inputs and model responses as sensitive by default. This example emits
+only an operation name, model, duration, and token counts; it does not attach prompt
+text, retrieved documents, API keys, or full response bodies to metrics, logs, or spans.
+
+```typescript
+const result = await observedCall('rerank', 'rerank-v3.5', () =>
+  cohere.rerank({
+    model: 'rerank-v3.5',
+    query: userQuery,
+    documents: candidateIds.map(id => lookupDocument(id).title),
+    topN: 5,
+  }),
+);
+
+logger.info({ returned: result.results.length }, 'rerank completed');
+```
+
+Route the `CohereAuthFailure` alert to the credential owner. Rotate or revoke the
+affected credential through the approved secret manager, then verify recovery with a
+single minimal request; do not paste the key into dashboards, tickets, or chat.
 
 ## Resources
 

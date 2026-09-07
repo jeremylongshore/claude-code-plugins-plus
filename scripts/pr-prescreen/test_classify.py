@@ -103,6 +103,20 @@ class ClassifyTests(unittest.TestCase):
         out = classify([_r("a", 90, "A"), _r("b", 80, "B")])
         self.assertIn("85", out["summary"])
 
+    def test_summary_names_structural_plugin_record_as_component(self):
+        record = {
+            "path": "plugins/mcp/a2a",
+            "score": None,
+            "grade": None,
+            "errors": 0,
+            "warnings": 0,
+            "component_type": "plugin-structure",
+        }
+        out = classify([record])
+        self.assertEqual(out["verdict"], "PASS")
+        self.assertIn("1 component(s) inspected", out["summary"])
+        self.assertNotIn("avg score", out["summary"])
+
     def test_main_reads_stdin(self):
         payload = json.dumps([_r("plugins/x/SKILL.md", 95, "A")])
         with patch("sys.stdin", StringIO(payload)), patch("sys.stdout", new_callable=StringIO) as out:

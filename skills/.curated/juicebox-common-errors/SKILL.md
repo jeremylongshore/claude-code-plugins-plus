@@ -90,6 +90,25 @@ curl -s -o /dev/null -w "%{http_code}" \
   https://api.juicebox.ai/v1/health
 ```
 
+## Prerequisites
+
+- A sandbox workspace, synthetic fixture, approved diagnostic scope, secret references, source/destination allowlists, suppression controls, and a designated incident owner.
+
+## Instructions
+
+1. Reproduce failures with synthetic inputs only; reject live-record export, unapproved sources/destinations, and literal credentials in commands or logs.
+2. Capture aggregate status, error class, and quota evidence, then verify redaction, suppression, retention, and `contacts_exported=0`.
+3. Stop the canary on scope, policy, quota, or retention drift; revoke temporary access and restore the known-good configuration.
+4. Preserve a redacted diagnostic receipt only for the approved window, then delete staged artifacts.
+
+## Output
+
+Produce an error-triage receipt with environment, synthetic fixture classification, error class, aggregate status/quota signal, suppression/no-export/redaction checks, incident owner, cleanup proof, and rollback reference. Exclude request payloads, contacts, and credentials.
+
+## Examples
+
+`env=ci-synthetic; error=429; retries=backoff; quota=within-budget; suppression=pass; contacts_exported=0; cleanup=verified` is a valid triage record.
+
 ## Resources
 
 - [Juicebox Documentation](https://docs.juicebox.work)

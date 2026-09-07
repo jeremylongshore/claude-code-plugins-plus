@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/guidewire-pack",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Claude Code skill pack for Guidewire InsuranceSuite — 10 production-engineer skills covering Cloud API auth, SDK patterns, local dev loop, PolicyCenter and ClaimCenter workflows, security/RBAC, observability, CI/CD, event integrations, and migration/upgrade. Each skill addresses real production failure modes.",
   "main": "README.md",
   "type": "module",
@@ -27,7 +27,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "url": "git+https://github.com/jeremylongshore/tons-of-skills-marketplace.git",
     "directory": "plugins/saas-packs/guidewire-pack"
   },
   "homepage": "https://tonsofskills.com/learn/guidewire/",

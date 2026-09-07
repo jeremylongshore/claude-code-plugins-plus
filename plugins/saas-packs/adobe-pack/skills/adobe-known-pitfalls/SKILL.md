@@ -13,7 +13,7 @@ description: 'Identify and avoid Adobe-specific anti-patterns: using deprecated 
 
   '
 allowed-tools: Read, Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -320,6 +320,18 @@ grep -rn "webhooks/adobe" --include="*.ts" src/ | grep -v "digital-signature\|ve
 | No quota tracking | Silent failures | No counter | Track per-month usage |
 | Old PS endpoint | 404 errors | `/sensei/cutout` | `/v2/remove-background` |
 | No webhook verify | Security hole | No signature check | RSA-SHA256 verification |
+
+## Output
+
+Following this guide produces the Adobe integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+
+## Error Handling
+
+If a step fails, stop before applying follow-on changes, retain sanitized diagnostic evidence, and use the troubleshooting or escalation guidance already in this skill. Treat authentication and vendor-service failures separately from local configuration errors.
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

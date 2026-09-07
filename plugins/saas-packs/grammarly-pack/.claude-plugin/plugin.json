@@ -1,17 +1,19 @@
 {
   "name": "grammarly-pack",
-  "version": "1.8.0",
-  "description": "Claude Code skill pack for Grammarly (24 skills)",
+  "version": "2.0.0",
+  "description": "Five model-agnostic Grammarly operator skills for secure access, document evaluation, API reliability, data safety, and license governance.",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
   },
+  "homepage": "https://tonsofskills.com/learn/grammarly/",
+  "repository": "https://github.com/jeremylongshore/tons-of-skills-marketplace",
   "license": "MIT",
   "keywords": [
     "grammarly",
-    "grammarly",
     "saas",
-    "sdk",
-    "integration"
+    "agent-skills",
+    "security",
+    "operations"
   ]
 }

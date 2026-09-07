@@ -148,6 +148,22 @@ curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
 | CPU throttling | CPU recommendation too aggressive | Increase `cpu-headroom` or set higher min |
 | No recommendations yet | Insufficient data | Wait 24h for usage data collection |
 
+## Output
+
+Produce an approved workload-autoscaler policy, the observed request/limit
+baseline, selected guardrails, change ticket, and before/after workload health
+evidence. Keep the policy scoped to the named workload and retain the prior
+configuration so it can be restored if latency, errors, or eviction behavior
+regresses.
+
+## Examples
+
+Apply a conservative policy to one staging deployment with a 15 percent memory
+overhead and a five-minute anti-shrink cooldown. Observe a controlled demand
+change, compare p95 latency and restart counts to the baseline, then promote
+only after service owners approve the evidence; revert the annotation if the
+workload OOMs or violates its disruption budget.
+
 ## Resources
 
 - [Workload Autoscaler Overview](https://docs.cast.ai/docs/workload-autoscaling-overview)

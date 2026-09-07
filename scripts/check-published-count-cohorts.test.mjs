@@ -1076,14 +1076,14 @@ test('live vendor-pack pages use explicit local claims for pack and category cou
     (candidate) => candidate.classification === 'vendor-pack-local',
   );
   equal(group.paths.length, 0);
-  equal(group.claims.length, 60);
-  equal(new Set(group.claims.map((claim) => claim.path)).size, 30);
-  equal(group.claims.filter((claim) => claim.expression === 'vendor.skillCount').length, 30);
-  equal(group.claims.filter((claim) => claim.expression === 'category.skills.length').length, 30);
+  equal(group.claims.length, 58);
+  equal(new Set(group.claims.map((claim) => claim.path)).size, 29);
+  equal(group.claims.filter((claim) => claim.expression === 'vendor.skillCount').length, 29);
+  equal(group.claims.filter((claim) => claim.expression === 'category.skills.length').length, 29);
 
   const report = check(repositoryRoot);
   equal(report.allow, true);
-  equal(report.deferred >= 60, true);
+  equal(report.deferred >= 58, true);
   equal(report.findings.length, 0);
 });
 

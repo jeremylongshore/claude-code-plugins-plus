@@ -227,6 +227,15 @@ export function attachErrorHandler(client: AxiosInstance) {
 | 500 | Apollo server error | Retry with backoff, check [status.apollo.io](https://status.apollo.io) |
 | ECONNREFUSED | Network/firewall | Allow outbound HTTPS to `api.apollo.io:443` |
 
+## Output
+
+- A classified error record containing the HTTP status, affected endpoint, and
+  a redacted provider message suitable for the incident timeline
+- A bounded recovery decision: rotate or correct credentials, request the
+  required key type, retry within the server-provided window, or stop the job
+- A reproducible diagnostic that uses a minimal request and never writes an
+  Apollo key, raw contact data, or full request body to shared logs
+
 ## Examples
 
 ### Quick cURL Diagnostic
@@ -240,6 +249,17 @@ curl -s -H "x-api-key: $APOLLO_API_KEY" \
 curl -s -X POST -H "Content-Type: application/json" -H "x-api-key: $APOLLO_API_KEY" \
   -d '{"per_page":1}' https://api.apollo.io/api/v1/contacts/search | python3 -m json.tool
 ```
+
+## Error Handling
+
+Treat a `401` as a credential configuration failure: redact the value, verify
+the secret binding, and rotate only through the approved credential owner. A
+`403` means the workflow must stop until the correct authorized key type is
+available; do not widen a standard key's permissions in a debug branch. For a
+`429`, honor `Retry-After`, cap retries, and preserve the unfinished work for a
+later run. For `5xx` or network failures, record the redacted request context,
+check the provider status page, and fail the batch rather than replaying writes
+whose outcome is unknown.
 
 ## Resources
 

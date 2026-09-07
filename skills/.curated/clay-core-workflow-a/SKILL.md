@@ -169,10 +169,19 @@ Add an **HTTP API** column to push high-scoring leads to your CRM:
 
 ## Output
 
-- Enriched lead table with emails, titles, company data
-- ICP scores for lead prioritization
-- Qualified leads auto-pushed to CRM
-- Credit usage report for cost tracking
+Produce a controlled enrichment manifest with source consent/purpose, table
+scope, provider waterfall, qualification conditions, deduplication key,
+credit budget, CRM action decision, and quality review. The output should not
+be treated as automatically accurate or permission to contact a lead; verify
+the data and applicable outreach/CRM policy before use.
+
+## Examples
+
+Import a small staging list with synthetic or approved records, enable a
+two-provider waterfall only after a qualifying condition, and verify that a
+repeat submission updates rather than duplicates the CRM record. If quality,
+consent, or budget checks fail, stop the CRM action and retain the prior table
+configuration while the owner resolves the issue.
 
 ## Resources
 

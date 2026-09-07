@@ -102,6 +102,28 @@ function logGleanEvent(event: string, data: Record<string, any>) {
 | Indexing doc count drop | Source deletion or API pagination bug | Compare source counts, review API logs |
 | Search latency > 1s | Overloaded cluster or complex queries | Check Glean status page, review query patterns |
 
+## Prerequisites
+
+- A data-minimization policy for logs and traces, metric owners, alert routes, retention limits, and an approved restricted evidence destination.
+- Synthetic probes for availability, freshness, and both authorized and denied access outcomes.
+- Correlation IDs and configuration revisions that let responders connect signals without logging query text, titles, snippets, identities, or credentials.
+
+## Instructions
+
+1. Instrument aggregate request, error, latency, freshness, queue, and ACL-probe metrics at the connector and datasource boundary.
+2. Redact event fields before export, bound payload capture, and validate that a failed redaction fails closed.
+3. Alert on sustained failures, freshness regression, access-boundary difference, and evidence-pipeline failure with an owner and response runbook.
+4. Test alerts with synthetic events, verify the destination/retention policy, and remove test data after the exercise.
+5. Review dashboards after every connector or ACL change and retain only the minimum receipt needed for incident reconstruction.
+
+## Output
+
+Produce an observability receipt containing dashboard revision, metric/alert IDs, synthetic test results, owner, destination, retention, correlation ID, and remediation/rollback status. Raw source content and credentials are prohibited.
+
+## Examples
+
+`dashboard=search-r11; alert=freshness-lag; probe=pass; allow=pass; deny=pass; destination=restricted-ops; retention=14d; rollback=alert-r10` is a safe alert-test result.
+
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)

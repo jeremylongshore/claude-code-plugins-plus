@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io CI Integration
 
+## Output
+
+- A credential-free pull-request lane for schema/template/unit checks and a trusted scoped lane for optional integration tests.
+- A redacted CI receipt with validation results and a safe failure/retry procedure.
+
+## Examples
+
+Run event-schema and template tests on every pull request using fixtures, then execute a single synthetic integration event only from a protected branch with a development workspace secret. If a live check fails, retain redacted status and back off; never expose workspace credentials to forked code or bypass protected checks.
+
 ## Overview
 
 Set up CI/CD pipelines for Customer.io integrations: GitHub Actions workflow with unit + integration tests, test fixtures with automatic cleanup, pre-commit hooks, and environment-specific credential management.

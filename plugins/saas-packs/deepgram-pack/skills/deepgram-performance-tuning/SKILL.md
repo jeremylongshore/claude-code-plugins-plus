@@ -26,6 +26,15 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Performance Tuning
 
+## Prerequisites
+
+- A baseline for latency, throughput, quality, error/throttle rate, and a named service owner.
+- Licensed non-sensitive fixtures, approved load window, and a rollback threshold.
+
+## Examples
+
+Measure the development/staging transcription baseline with short fixtures, change one concurrency, streaming, or model parameter, and compare aggregate quality/latency/error results. Keep the change only within the signed threshold; revert on regression and never use customer recordings as performance fixtures.
+
 ## Overview
 
 Optimize Deepgram transcription performance through audio preprocessing with ffmpeg, model selection for speed vs accuracy, streaming for large files, parallel processing, result caching, and connection reuse. Targets: <2s latency for short files, 100+ files/minute batch throughput.

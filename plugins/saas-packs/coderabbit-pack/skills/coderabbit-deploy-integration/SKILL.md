@@ -229,6 +229,14 @@ CodeRabbit automatically reviews your PRs. No action needed on your part.
 - Add "WIP" to PR title to skip review on work-in-progress
 ```
 
+## Examples
+
+Roll out an organization configuration to one pilot repository with a named
+owner, verify the active configuration using the review command, and measure
+comment quality before expanding. Keep merge blocking scoped to reviewed
+security policy and require a rollback path; if the configuration creates
+unexpected blocking or noise, revert to the last approved profile.
+
 ## Output
 
 - Organization-level CodeRabbit configuration deployed

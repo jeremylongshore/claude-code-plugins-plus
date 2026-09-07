@@ -170,6 +170,10 @@ class BrightDataUsageTracker {
 - Budget monitoring and alerting
 - Projected monthly cost estimates
 
+## Examples
+
+Verify current product pricing and account limits with Bright Data before using any estimate, model a small approved pilot, and set spend/egress alerts below the hard budget. Report aggregate workload metrics only and require owner approval before changing target coverage, zone type, or collection frequency.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

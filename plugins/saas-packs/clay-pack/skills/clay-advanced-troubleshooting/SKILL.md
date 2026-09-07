@@ -255,6 +255,21 @@ Submit at: https://community.clay.com or support@clay.com
 | HTTP API column timeout | Target API slow | Increase timeout or process async |
 | Claygent blocked by website | Bot protection | Use Navigator mode or different data source |
 
+## Output
+
+Produce a redacted escalation packet with environment, table/column scope,
+symptom, safe correlation IDs, impact metrics, reproducer, containment action,
+and case owner. Remove webhook URLs, API keys, raw lead/CRM data, and any
+unapproved screenshots or samples before sharing the packet externally.
+
+## Examples
+
+For a provider-wide failure, first reduce or pause affected automation, compare
+a synthetic input against the failing job, and collect the sanitized status and
+time window for support. If the issue only occurs for personal data or a
+restricted source, do not attach those rows; use a permitted representative or
+escalate through the data owner.
+
 ## Resources
 
 - [Clay Community Support](https://community.clay.com)

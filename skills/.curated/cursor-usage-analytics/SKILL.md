@@ -21,6 +21,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Usage Analytics
 
+## Overview
+
+Use tenant analytics to improve enablement, capacity, and policy compliance with aggregated, purpose-limited data—not to inspect individual prompts or create unapproved employee surveillance.
+
+## Prerequisites
+
+- An approved analytics purpose, access role, retention rule, and privacy/HR review where applicable.
+- Aggregated reports and a named owner for any action taken from the data.
+
+## Instructions
+
+1. Define the decision the metric supports and collect the minimum aggregation needed.
+2. Review adoption, spend, model use, and policy signals against an agreed baseline.
+3. Share only authorized aggregate findings and document remediation/enablement actions.
+4. Reassess access and retention regularly; do not repurpose analytics without approval.
+
+## Output
+
+- A purpose-bound aggregate report with owner, time range, access boundary, and action items.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Report exposes individual sensitive behavior | Restrict access, aggregate/redact further, and consult privacy/HR owners. |
+| Metric is incomplete | Mark it as directional; do not make performance or spending decisions as if it were complete. |
+| Spend anomaly appears | Verify authorized usage and tighten approved limits rather than inspecting prompt content. |
+
+## Examples
+
+Review monthly aggregate model spend by team against budget, publish the variance and owner, and adjust approved caps after review. Do not export individual chat content or infer productivity from request counts.
+
 Track and analyze Cursor usage metrics for Business and Enterprise plans. Covers dashboard metrics, cost optimization, adoption tracking, and ROI measurement.
 
 ## Admin Dashboard Overview

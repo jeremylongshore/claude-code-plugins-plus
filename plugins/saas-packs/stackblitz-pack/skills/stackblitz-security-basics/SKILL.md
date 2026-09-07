@@ -9,7 +9,7 @@ description: 'Secure WebContainer deployments: CSP headers, sandbox isolation, i
 
   '
 allowed-tools: Read, Write, Grep
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -76,4 +76,4 @@ Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval
 
 ## Next Steps
 
-For production, see `stackblitz-prod-checklist`.
+For production hardening, pair this checklist with `stackblitz-rate-limits` and `stackblitz-debug-bundle`.

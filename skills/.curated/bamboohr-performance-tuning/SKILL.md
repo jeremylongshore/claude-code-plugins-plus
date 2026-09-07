@@ -293,6 +293,10 @@ class BambooHRMetrics {
 | Directory caching (5 min) | Every request | 1/5 min | 50x |
 | Connection pooling | New conn/request | Reused | 2-3x latency |
 
+## Examples
+
+Benchmark a sandbox or synthetic workload using the minimum approved fields, establish a latency and freshness baseline, and alter one cache, queue, or batch variable behind a rollback flag. Encrypt cached HR data, expire it under policy, and disable the optimization if reconciliation or authorization evidence diverges.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

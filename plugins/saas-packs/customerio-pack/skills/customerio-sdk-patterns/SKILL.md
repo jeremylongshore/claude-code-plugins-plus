@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io SDK Patterns
 
+## Output
+
+- A reusable SDK integration pattern with scoped configuration, schema validation, idempotency, observability, and error classification.
+- A test-backed client boundary that keeps credentials and recipient data out of logs and source control.
+
+## Examples
+
+Instantiate the client from an environment-specific secret reference, validate a synthetic event against the contract, attach a stable idempotency key, and assert the SDK call in a mocked unit test. For a development integration test, use a synthetic profile and record only result status/correlation ID; never log the client token or full event payload.
+
 ## Overview
 
 Production-ready patterns for `customerio-node`: type-safe wrappers with enum-constrained events, retry with exponential backoff, event batching for high-volume scenarios, and singleton lifecycle management.

@@ -89,17 +89,6 @@ export const GENERATED_ARTIFACT_REGISTRY = [
     why: 'hand-authored marketplace collections, packs, partners, and policy data with no executable writer',
   },
   {
-    id: 'marketplace-jrig-build-data',
-    kind: 'generated_projection',
-    tracking: 'untracked',
-    pattern: /^marketplace\/src\/data\/jrig-data\.json$/,
-    pathspec: ':(top)marketplace/src/data/jrig-data.json',
-    glob: 'marketplace/src/data/jrig-data.json',
-    canonical: 'freshie/inventory.sqlite forge_proofs',
-    regenerate: 'cd marketplace && node scripts/enrich-jrig-data.mjs',
-    why: 'temporary legacy JRig inspection projection with no live page or supported non-build consumer after PR #1046; E9.2 owns deleting the projection and build step',
-  },
-  {
     id: 'marketplace-readme-sections-build-data',
     kind: 'generated_projection',
     tracking: 'untracked',
@@ -140,6 +129,27 @@ export const GENERATED_ARTIFACT_REGISTRY = [
     why: 'curated skills.sh projection',
   },
   {
+    id: 'disposition-ledger',
+    kind: 'generated_projection',
+    tracking: 'tracked',
+    pattern: /^freshie\/disposition-ledger\.json$/,
+    canonical: 'freshie/grades.csv and scripts/validate-skills-schema.py',
+    regenerate: 'pnpm run generate:disposition-ledger',
+    postprocess: 'pnpm run normalize:dead-domain-projections',
+    why: 'Blueprint 727 §8 first-match-wins disposition for every Freshie-graded artifact',
+  },
+  {
+    id: 'saas-tutorial-lattice',
+    kind: 'generated_projection',
+    tracking: 'tracked',
+    pattern:
+      /^(?:freshie\/saas-tutorial-lattice\.json|000-docs\/813-RA-AUDT-saas-tutorial-lattice\.md)$/,
+    canonical: '.claude-plugin/marketplace.extended.json and tracked SaaS pack skill sources',
+    regenerate: 'pnpm run generate:saas-lattice',
+    postprocess: 'pnpm run normalize:dead-domain-projections',
+    why: 'Bead claude-juoz.3.11 deterministic denominator and WIP-limited pack review queue',
+  },
+  {
     id: 'marketplace-public-data',
     kind: 'generated_projection',
     tracking: 'untracked',
@@ -169,6 +179,16 @@ export const GENERATED_ARTIFACT_REGISTRY = [
     canonical: 'freshie/exports/run-N/csv-exports/INDEX.md and its recorded commit',
     regenerate: null,
     why: 'point-in-time discovery evidence; preserve observed values byte-for-byte',
+  },
+  {
+    id: 'epic-9-boundary-evidence',
+    kind: 'historical_snapshot',
+    tracking: 'tracked',
+    pattern: /^000-docs\/810-RA-DATA-epic-9-boundary-evidence\.json$/,
+    canonical:
+      'the exact-head npm registry, package graph, kernel-shadow, and DR-049 observations recorded for Epic 9 closure',
+    regenerate: null,
+    why: 'retained point-in-time evidence for the Epic 9 authority boundary and scorecard read-back',
   },
   {
     id: 'frozen-prose-anchor-manifest',

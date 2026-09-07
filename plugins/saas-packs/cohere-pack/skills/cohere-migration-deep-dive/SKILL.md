@@ -319,6 +319,31 @@ curl -X POST https://flagservice/flags/cohere_migration_pct -d '{"value": 0}'
 | Higher latency on Cohere | Different model size | Try command-r7b for speed |
 | Quality difference | Different model strengths | Tune system prompts per provider |
 
+## Examples
+
+Start with a bounded, reversible canary rather than switching all traffic at once.
+Keep the legacy collection read-only during the comparison, record aggregate quality
+and latency measures without logging customer prompts, and make the rollback owner
+explicit before increasing exposure.
+
+```typescript
+await setFeatureFlag('cohere_migration_pct', 5);
+const report = await compareEvaluationSet({
+  dataset: 'migration-eval-v1',
+  redactInputs: true,
+  metrics: ['task_success', 'p95_latency_ms', 'error_rate'],
+});
+
+if (report.errorRate > 0.01 || report.taskSuccessDelta < -0.03) {
+  await setFeatureFlag('cohere_migration_pct', 0);
+  await notifyOnCall('Cohere canary rolled back; review redacted evaluation report');
+}
+```
+
+Promote from 5% only after the evaluation threshold is met for the agreed observation
+window. A failed canary is a rollback event, not a reason to delete the old index or
+raise the percentage manually.
+
 ## Resources
 
 - [Cohere OpenAI Compatibility](https://docs.cohere.com/docs/compatibility-api)

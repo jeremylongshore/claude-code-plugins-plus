@@ -21,6 +21,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Context Management
 
+## Overview
+
+Control what Cursor sees so each conversation has the minimum relevant, policy-permitted context required for a reliable answer or edit.
+
+## Prerequisites
+
+- A task scope, approved privacy setting, data classification, and working ignore configuration.
+- Relevant files/interfaces that can be shared without credentials, customer data, or unrelated repositories.
+
+## Instructions
+
+1. Start with the exact files, symbols, and constraints needed; avoid indiscriminate `@Codebase` use.
+2. Inspect context pills/attachments before submitting and remove stale or sensitive material.
+3. Start a new chat when topic or repository boundary changes.
+4. Verify generated output against the source and tests; context relevance never replaces validation.
+
+## Output
+
+- A minimal documented context set and a scoped result that can be independently reviewed.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Context is stale or contradictory | Start a new topic-scoped chat with current files. |
+| Sensitive path appears | Stop, remove it, repair exclusions, and follow exposure procedure. |
+| Model misses key fact | Attach the authoritative file/interface rather than expanding the whole codebase. |
+
+## Examples
+
+For a bug in one service, attach its handler, interface, and focused test, state the failing behavior, and ask for a minimal fix. If the conversation starts discussing a different service, open a new chat instead of piling on more context.
+
 Optimize how Cursor AI uses context to produce accurate, relevant responses. Context is everything the model sees when generating a response -- managing it well is the single biggest lever for output quality.
 
 ## Context Sources

@@ -21,6 +21,37 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Known Pitfalls
 
+## Overview
+
+Use these pitfalls as preflight checks for AI-assisted work: context leakage, over-broad edits, stale rules, unsupported assumptions, and misplaced trust in generated output.
+
+## Prerequisites
+
+- Project rules, data classification, and a normal review/test path for the work.
+- A non-sensitive reproduction or sample when evaluating a Cursor behavior.
+
+## Instructions
+
+1. Identify the relevant pitfall before accepting a suggestion or changing configuration.
+2. Narrow context and task scope, then verify the resulting diff and tests.
+3. Record recurring failures in reviewed rules or team guidance rather than relying on memory.
+
+## Output
+
+- A documented prevention or remediation action tied to a specific Cursor failure mode.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| AI output is plausible but unverified | Treat it as a proposal and run normal review/tests. |
+| Context contains excluded material | Stop, remove it, and follow exposure policy. |
+| Rule causes repeated wrong output | Revise it through review and test on a fixture. |
+
+## Examples
+
+Before accepting a multi-file refactor, check that it has an explicit file list, does not include secret/generated paths, and has tests. Reject broad changes and split the request when any of those checks fail.
+
 Common Cursor IDE pitfalls and their solutions. Organized by category: AI behavior, security, configuration, performance, and team collaboration.
 
 ## AI Feature Pitfalls

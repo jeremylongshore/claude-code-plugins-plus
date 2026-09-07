@@ -2,14 +2,14 @@
 name: detecting-exposed-secrets-files
 description: |
   Probe a target for accidentally-served secret-bearing files in the web root
-  — `.git/`, `.env`, `.DS_Store`, backup files, database dumps, key files,
+  — .git/, .env, .DS_Store, backup files, database dumps, key files,
   CI configs, IDE configs.
   Use when: post-deploy verification on a new release, or SOC2 auditor asked
   "what's reachable in the web root that shouldn't be," or a bug-bounty
   report hints at a leaked file.
   Threshold: any of the canonical 40+ paths returns 200 OR returns a body
-  matching the expected fingerprint of the file type (e.g., `.git/HEAD`
-  returns content starting with `ref:` or a 40-char hex SHA).
+  matching the expected fingerprint of the file type (e.g., .git/HEAD
+  returns content starting with ref: or a 40-char hex SHA).
   Trigger with: "check exposed files", "git directory exposure",
   "env file leak", "backup file scan".
 allowed-tools:

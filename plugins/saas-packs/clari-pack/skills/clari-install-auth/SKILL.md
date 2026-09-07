@@ -114,6 +114,21 @@ curl -X POST https://api.copilot.clari.com/oauth/token \
 | `404 Not Found` | Wrong API version or endpoint | Use `/v4/` prefix |
 | Connection refused | IP allowlist | Check with IT for API access from your network |
 
+## Output
+
+Record the environment, authorized account or service principal, secret-store
+reference, enabled API scope, verification timestamp, and first read-only
+result. Never put an API token, OAuth client secret, raw export, or temporary
+download URL into source control, shell history, or onboarding documentation.
+
+## Examples
+
+Create a staging service token in the approved secret manager, invoke the
+forecast-list request with the runtime identity, and verify the expected
+forecast names without writing their contents to logs. If the request is 401 or
+403, stop and have the account owner repair scope or rotation rather than
+reusing an individual employee token.
+
 ## Resources
 
 - [Clari Developer Portal](https://developer.clari.com)

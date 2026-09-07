@@ -1,4 +1,4 @@
-# Xquik TypeScript Types: X Accounts (Connected)
+# Xquik TypeScript types: connected X accounts
 
 ```typescript
 
@@ -10,7 +10,7 @@ interface ConnectedXAccount {
   createdAt: string;          // ISO 8601 timestamp
 }
 
-// Connecting an X account is done by the user in the Xquik dashboard,
-// not through this skill. The skill never handles X login material.
+// Users connect X accounts in the Xquik dashboard.
+// This Skill never handles X login material.
 
 ```

@@ -173,6 +173,10 @@ Track these monthly. If accuracy drops below target:
 | Slow processing (>5 min) | Long meeting or server load | Normal for 2+ hour meetings; check status.granola.ai |
 | Hallucinated decisions | AI filling template sections | Review before sharing; remove decisions that didn't happen |
 
+## Examples
+
+`env=sandbox; p95=420ms->310ms; concurrency=2; queue=healthy; delivery=pass; retention=none; rollback=perf-r3` documents a safe canary without retaining notes.
+
 ## Resources
 
 - [Get the Best from Granola](https://www.granola.ai/blog/get-the-best-from-granola)

@@ -2,12 +2,30 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
+import { securityHeadersForPath } from './scripts/security-policy.mjs';
+
+function marketplaceSecurityHeaders() {
+  const installMiddleware = (server) => {
+    server.middlewares.use((request, response, next) => {
+      for (const [name, value] of Object.entries(securityHeadersForPath(request.url ?? '/'))) {
+        response.setHeader(name, value);
+      }
+      next();
+    });
+  };
+
+  return {
+    name: 'marketplace-security-headers',
+    configureServer: installMiddleware,
+  };
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://tonsofskills.com',
   base: '/',
   // NO Astro `redirects` here — deliberately. See /etc/caddy/tonsofskills-redirects.caddy
-  // on the VPS, which serves all 84 as real HTTP 301s.
+  // on the VPS, which serves the generated redirect inventory as real HTTP 301s.
   //
   // Astro's redirects config emits one thin HTML page per entry containing
   // <meta http-equiv="refresh" content="0;url=...">. Adding 81 of them on
@@ -19,7 +37,7 @@ export default defineConfig({
   // Causation was never proven — Google Safe Browsing reported the domain clean
   // throughout — but meta-refresh is the wrong mechanism regardless: a permanent
   // redirect belongs in the HTTP status line, not in markup a crawler has to
-  // execute. Real 301s are faster, keep 85 thin pages out of the crawl surface,
+  // execute. Real 301s are faster, keep those thin pages out of the crawl surface,
   // and pass link equity correctly.
   //
   // If you need a new redirect, add it to the Caddy file — NOT here.
@@ -36,19 +54,22 @@ export default defineConfig({
   },
   build: {
     assets: '_astro',
-    inlineStylesheets: 'auto'
+    inlineStylesheets: 'auto',
   },
   output: 'static',
-  compressHTML: false,  // Disabled: iOS Safari fails with lines > 5000 chars
+  compressHTML: false, // Disabled: iOS Safari fails with lines > 5000 chars
   vite: {
-    plugins: [tailwindcss()],
+    // Route-aware middleware keeps the development server strict while
+    // allowing user-supplied WebSocket endpoints only on /chats. The static
+    // preview server and production Caddy use the same policy module.
+    plugins: [tailwindcss(), marketplaceSecurityHeaders()],
     build: {
       cssCodeSplit: true,
       rollupOptions: {
         output: {
-          assetFileNames: '_astro/[name].[hash][extname]'
-        }
-      }
-    }
-  }
+          assetFileNames: '_astro/[name].[hash][extname]',
+        },
+      },
+    },
+  },
 });

@@ -1,0 +1,13 @@
+{
+  "observed_at": "2026-08-30T12:00:00Z",
+  "evidence_source": "sanitized pipe and dynamic-table fixture",
+  "nodes": [
+    {"id": "orders_pipe", "kind": "PIPE", "status": "ERROR", "last_error": "notification received but not forwarded: stage path mismatch"},
+    {"id": "orders_task", "kind": "TASK", "status": "OK", "upstream": ["orders_pipe"], "duplicate_rows": 4},
+    {"id": "orders_dt", "kind": "DYNAMIC_TABLE", "status": "FAILED", "upstream": ["orders_task"], "change_tracking": false, "state_message": "Base TABLE dropped; schema change prevents refresh"}
+  ],
+  "edges": [
+    {"from": "orders_pipe", "to": "orders_task"},
+    {"from": "orders_task", "to": "orders_dt"}
+  ]
+}

@@ -140,6 +140,14 @@ function validateWebhookSource(req: Request): boolean {
 - [ ] HTTPS-only for all proxy connections
 - [ ] `brd-ca.crt` downloaded (public cert, safe in repo)
 
+## Output
+
+The security review records zone ownership, credential storage decision, allowed targets/data classes, retention, and revocation owner. It must not include proxy usernames/passwords, full collection URLs, or response data.
+
+## Examples
+
+Create a dedicated zone for one approved workload, store its credential in the secret manager, enforce egress and target allowlists in the application, and rotate immediately through the owner-controlled process if exposure is suspected. Verify that audit logs retain only an opaque request identifier and policy decision.
+
 ## Error Handling
 
 | Issue | Detection | Mitigation |

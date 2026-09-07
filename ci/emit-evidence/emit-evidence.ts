@@ -15,9 +15,10 @@
  * (`plugins/**`, `packages/**`, pnpm-workspace globs), and the published npm
  * packages are all untouched. Nothing under `ci/` ships anywhere.
  *
- * This is the DETERMINISTIC half of the emit. It runs two of the repo's real,
- * blocking, deterministic CI gates (both live inside the `validate` job that
- * the `ci-required` aggregate needs), shapes each outcome into a kernel
+ * This is the deterministic artifact half of the emit. It re-runs two real
+ * blocking validation steps and, when supplied with the exact GitHub
+ * check-runs response, attests the three protected-branch contexts. It shapes
+ * each outcome into a kernel
  * `gate-result/v1` body, wraps each in a kernel `EvidenceBundle`, and writes:
  *
  *   build/evidence/bundle-<i>.json          — CANONICAL EvidenceBundle bytes
@@ -30,14 +31,18 @@
  *
  * ── Gate selection (honest, no fake evidence) ──
  *
- * Chosen (both are blocking steps of the `validate` job → `ci-required`):
+ * Deterministic local steps (both are blocking steps of `validate` →
+ * `ci-required`):
  *   - catalog-invariants  — scripts/validate-catalog-invariants.py
  *                           (plugin FS path == catalog category, entry parity)
  *   - unicode-hygiene     — scripts/validate-unicode-hygiene.py
  *                           (invisible tag chars / Trojan Source / zero-width
  *                           defense; blocks on BLOCKER findings)
  *
- * Deliberately excluded after recon (would be fake/degraded evidence):
+ * The three required contexts are separately provided by a completed
+ * check-runs response. This avoids pretending that these two local commands
+ * represent the entire aggregate. Deliberately excluded after recon
+ * (would be fake/degraded evidence):
  *   - `audit-harness verify`     — its hash-pinning surface is currently EMPTY
  *                                  in this repo (see validate-plugins.yml
  *                                  comment), so it trivially exits 0: no signal.
@@ -70,13 +75,17 @@ import {
 } from '@intentsolutions/core/validators/v1/gate-result-v1';
 import { EvidenceBundleSchema } from '@intentsolutions/core/validators/v1/evidence-bundle';
 
-const GITHUB_REPO = 'jeremylongshore/claude-code-plugins-plus-skills';
+const GITHUB_REPO = 'jeremylongshore/tons-of-skills-marketplace';
 const REPO_KEY = 'ccp';
 
-/** The two gate scripts whose bytes ARE the policy this emit attests under. */
+/** Source files whose bytes define the local and protected-context policy. */
 const POLICY_FILES = [
   'scripts/validate-catalog-invariants.py',
   'scripts/validate-unicode-hygiene.py',
+  'scripts/evaluate-certification.mjs',
+  '.github/workflows/validate-plugins.yml',
+  '.github/workflows/secret-scan.yml',
+  '.github/workflows/skill-conform.yml',
 ] as const;
 
 interface GateOutcome {
@@ -88,6 +97,8 @@ interface GateOutcome {
   readonly dimensionsSkipped: readonly string[];
   readonly advisorySeverity?: 'info' | 'warn' | 'error';
   readonly failureMode?: string;
+  readonly inputHash?: string;
+  readonly metadata?: Record<string, unknown>;
 }
 
 interface EmitContext {
@@ -152,7 +163,8 @@ export interface EmitRow {
  */
 export function buildGateResult(o: GateOutcome, ctx: EmitContext): Record<string, unknown> {
   const gateId = `${REPO_KEY}:ci:${o.gateName}`;
-  const inputHash = `sha256:${sha256Hex(`${ctx.commitSha}:${o.gateName}:${ctx.policyHash}`)}`;
+  const inputHash =
+    o.inputHash ?? `sha256:${sha256Hex(`${ctx.commitSha}:${o.gateName}:${ctx.policyHash}`)}`;
   const body: Record<string, unknown> = {
     gate_id: gateId,
     gate_name: o.gateName,
@@ -171,6 +183,7 @@ export function buildGateResult(o: GateOutcome, ctx: EmitContext): Record<string
     commit_sha: ctx.commitSha,
     ...(o.advisorySeverity !== undefined ? { advisory_severity: o.advisorySeverity } : {}),
     ...(o.failureMode !== undefined ? { failure_mode: o.failureMode } : {}),
+    ...(o.metadata !== undefined ? { metadata: o.metadata } : {}),
   };
   GateResultV1Schema.parse(body); // fail-closed
   return body;
@@ -241,19 +254,27 @@ export interface ManifestSkeleton {
  * always `refs/heads/main` in CI — these are exactly the claims the dashboard
  * pins for the `ccp` row:
  *   issuer      https://token.actions.githubusercontent.com
- *   subject     repo:jeremylongshore/claude-code-plugins-plus-skills:ref:refs/heads/main
- *   workflowRef jeremylongshore/claude-code-plugins-plus-skills/.github/workflows/emit-evidence.yml@refs/heads/main
+ *   subject     repo:jeremylongshore/tons-of-skills-marketplace:ref:refs/heads/main
+ *   workflowRef jeremylongshore/tons-of-skills-marketplace/.github/workflows/emit-evidence.yml@refs/heads/main
  */
-export function signingClaims(ref: string): ManifestSkeleton['signing'] {
+export function signingClaims(
+  ref: string,
+  workflowRef = `${GITHUB_REPO}/.github/workflows/emit-evidence.yml@${ref}`,
+): ManifestSkeleton['signing'] {
   return {
     issuer: 'https://token.actions.githubusercontent.com',
     subject: `repo:${GITHUB_REPO}:ref:${ref}`,
-    workflowRef: `${GITHUB_REPO}/.github/workflows/emit-evidence.yml@${ref}`,
+    workflowRef,
   };
 }
 
 /** Write all emit artifacts under `outDir`. Returns the skeleton written. */
-export function writeEmit(rows: readonly EmitRow[], ref: string, outDir: string): ManifestSkeleton {
+export function writeEmit(
+  rows: readonly EmitRow[],
+  ref: string,
+  outDir: string,
+  workflowRef?: string,
+): ManifestSkeleton {
   mkdirSync(outDir, { recursive: true });
   const skeletonRows = rows.map((row, i) => {
     const bundleFile = `bundle-${i}.json`;
@@ -263,7 +284,7 @@ export function writeEmit(rows: readonly EmitRow[], ref: string, outDir: string)
   });
   const skeleton: ManifestSkeleton = {
     repo: REPO_KEY,
-    signing: signingClaims(ref),
+    signing: signingClaims(ref, workflowRef),
     rows: skeletonRows,
   };
   writeFileSync(join(outDir, 'manifest-skeleton.json'), JSON.stringify(skeleton, null, 2), 'utf8');
@@ -326,6 +347,265 @@ function unicodeHygieneOutcome(): GateOutcome {
   };
 }
 
+type CertificationArtifact = {
+  readonly path: string;
+  readonly verdict: 'CERTIFIED' | 'NOT-CERTIFIED';
+  readonly evidence_class: string;
+  readonly reason_codes: readonly string[];
+};
+
+/**
+ * Immutable facts emitted by a publisher after an artifact is actually
+ * accepted by its registry.  This deliberately models completed publication,
+ * not a candidate or dry-run: a signed row must never claim a release that
+ * did not happen.
+ */
+type PublicationArtifact = {
+  readonly channel: 'npm' | 'mcp-registry' | 'github-release';
+  readonly name: string;
+  readonly version?: string;
+  readonly release_tag?: string;
+  readonly artifact_digest?: string;
+  readonly package_name?: string;
+  readonly sbom_digest?: string;
+  readonly sbom_format?: 'CycloneDX';
+};
+
+type RequiredCheck = {
+  readonly name: string;
+  readonly status: string;
+  readonly conclusion: string | null;
+  readonly html_url?: string;
+};
+
+const REQUIRED_CONTEXTS = ['ci-required', 'gitleaks', 'skill-conform'] as const;
+
+/**
+ * Convert the exact three protected-branch contexts into evidence rows.  The
+ * caller must provide a completed GitHub check-runs response for the exact
+ * source SHA; missing, duplicate, or in-progress contexts are a hard error,
+ * never an implicit pass.
+ */
+export function requiredCheckOutcomes(report: unknown): GateOutcome[] {
+  if (!report || typeof report !== 'object' || Array.isArray(report)) {
+    throw new Error('required-check report must be an object');
+  }
+  const checks = (report as Record<string, unknown>)['check_runs'];
+  if (!Array.isArray(checks)) throw new Error('required-check report must contain check_runs');
+  return REQUIRED_CONTEXTS.map((context) => {
+    const matches = checks.filter(
+      (raw): raw is RequiredCheck =>
+        Boolean(raw) &&
+        typeof raw === 'object' &&
+        !Array.isArray(raw) &&
+        (raw as Record<string, unknown>)['name'] === context,
+    );
+    if (matches.length !== 1) {
+      throw new Error(
+        `required context ${context} must appear exactly once (found ${matches.length})`,
+      );
+    }
+    const check = matches[0]!;
+    if (check.status !== 'completed' || typeof check.conclusion !== 'string') {
+      throw new Error(`required context ${context} is not completed`);
+    }
+    const passed = check.conclusion === 'success';
+    return {
+      gateName: context,
+      gateVersion: '1.0.0',
+      decision: passed ? 'pass' : 'fail',
+      reasons: [
+        passed ? `${context} completed successfully` : `${context} concluded ${check.conclusion}`,
+      ],
+      dimensionsEvaluated: ['protected-branch-required-context'],
+      dimensionsSkipped: [],
+      metadata: {
+        check_name: context,
+        conclusion: check.conclusion,
+        ...(typeof check.html_url === 'string' ? { check_url: check.html_url } : {}),
+      },
+      ...(passed ? {} : { failureMode: `required-context-${check.conclusion}` }),
+    };
+  });
+}
+
+/**
+ * Turn every evaluator verdict into its own kernel gate-result row. The input
+ * digest binds each signed row to the exact verdict facts, rather than to a
+ * mutable aggregate count. Malformed reports abort the whole emission: an
+ * incomplete certification report must never silently become signed evidence.
+ */
+export function certificationOutcomes(report: unknown): GateOutcome[] {
+  if (!report || typeof report !== 'object' || Array.isArray(report)) {
+    throw new Error('certification report must be an object');
+  }
+  const payload = report as Record<string, unknown>;
+  if (payload['schema_version'] !== 'certification-report/v1') {
+    throw new Error('certification report must use certification-report/v1');
+  }
+  if (!Array.isArray(payload['artifacts'])) {
+    throw new Error('certification report must contain an artifacts array');
+  }
+  return payload['artifacts'].map((raw, index) => {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+      throw new Error(`certification artifact ${index} must be an object`);
+    }
+    const artifact = raw as CertificationArtifact;
+    if (typeof artifact.path !== 'string' || artifact.path.length === 0) {
+      throw new Error(`certification artifact ${index} missing path`);
+    }
+    if (artifact.verdict !== 'CERTIFIED' && artifact.verdict !== 'NOT-CERTIFIED') {
+      throw new Error(`certification artifact ${artifact.path} has invalid verdict`);
+    }
+    if (typeof artifact.evidence_class !== 'string' || !Array.isArray(artifact.reason_codes)) {
+      throw new Error(`certification artifact ${artifact.path} has invalid evidence facts`);
+    }
+    if (!artifact.reason_codes.every((code) => typeof code === 'string')) {
+      throw new Error(`certification artifact ${artifact.path} has non-string reason code`);
+    }
+    const verdict = {
+      path: artifact.path,
+      verdict: artifact.verdict,
+      evidence_class: artifact.evidence_class,
+      reason_codes: [...artifact.reason_codes],
+    };
+    return {
+      gateName: `certification-verdict-${index + 1}`,
+      gateVersion: '1.0.0',
+      decision: artifact.verdict === 'CERTIFIED' ? 'pass' : 'fail',
+      reasons: artifact.verdict === 'CERTIFIED' ? [] : [...artifact.reason_codes],
+      dimensionsEvaluated: ['certification-verdict'],
+      dimensionsSkipped: [],
+      inputHash: `sha256:${sha256Hex(stableStringify(verdict))}`,
+      metadata: { artifact_path: artifact.path, evidence_class: artifact.evidence_class },
+      ...(artifact.verdict === 'CERTIFIED' ? {} : { failureMode: 'not-certified' }),
+    };
+  });
+}
+
+/** Convert every completed publication into a separate, content-bound row. */
+export function publicationOutcomes(report: unknown): GateOutcome[] {
+  if (!report || typeof report !== 'object' || Array.isArray(report)) {
+    throw new Error('publication report must be an object');
+  }
+  const payload = report as Record<string, unknown>;
+  if (payload['schema_version'] !== 'publication-report/v1') {
+    throw new Error('publication report must use publication-report/v1');
+  }
+  if (!Array.isArray(payload['publications']) || payload['publications'].length === 0) {
+    throw new Error('publication report must contain a non-empty publications array');
+  }
+  return payload['publications'].map((raw, index) => {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+      throw new Error(`publication ${index} must be an object`);
+    }
+    const publication = raw as PublicationArtifact;
+    if (!['npm', 'mcp-registry', 'github-release'].includes(publication.channel)) {
+      throw new Error(`publication ${index} has an invalid channel`);
+    }
+    if (typeof publication.name !== 'string' || publication.name.length === 0) {
+      throw new Error(`publication ${index} missing name`);
+    }
+    if (publication.package_name !== undefined && typeof publication.package_name !== 'string') {
+      throw new Error(`publication ${publication.name} has invalid package_name`);
+    }
+    if (!/^sha256:[a-f0-9]{64}$/.test(publication.sbom_digest ?? '')) {
+      throw new Error(`publication ${publication.name} missing or invalid sbom_digest`);
+    }
+    if (publication.sbom_format !== 'CycloneDX') {
+      throw new Error(`publication ${publication.name} must declare CycloneDX sbom_format`);
+    }
+    if (publication.version !== undefined && typeof publication.version !== 'string') {
+      throw new Error(`publication ${publication.name} has invalid version`);
+    }
+    if (publication.release_tag !== undefined && typeof publication.release_tag !== 'string') {
+      throw new Error(`publication ${publication.name} has invalid release_tag`);
+    }
+    if (
+      publication.artifact_digest !== undefined &&
+      !/^sha256:[a-f0-9]{64}$/.test(publication.artifact_digest)
+    ) {
+      throw new Error(`publication ${publication.name} has invalid artifact_digest`);
+    }
+    const fact = {
+      channel: publication.channel,
+      name: publication.name,
+      ...(publication.package_name === undefined ? {} : { package_name: publication.package_name }),
+      ...(publication.version === undefined ? {} : { version: publication.version }),
+      ...(publication.release_tag === undefined ? {} : { release_tag: publication.release_tag }),
+      ...(publication.artifact_digest === undefined
+        ? {}
+        : { artifact_digest: publication.artifact_digest }),
+      sbom_digest: publication.sbom_digest,
+      sbom_format: publication.sbom_format,
+    };
+    return {
+      gateName: `publication-${index + 1}`,
+      gateVersion: '1.0.0',
+      decision: 'pass',
+      reasons: [`published ${publication.channel} artifact ${publication.name}`],
+      dimensionsEvaluated: ['completed-publication'],
+      dimensionsSkipped: [],
+      inputHash: `sha256:${sha256Hex(stableStringify(fact))}`,
+      metadata: fact,
+    };
+  });
+}
+
+function readCertificationReport(reportPath: string): GateOutcome[] {
+  let raw: string;
+  try {
+    raw = readFileSync(reportPath, 'utf8');
+  } catch (error) {
+    throw new Error(
+      `unable to read certification report ${reportPath}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+  try {
+    return certificationOutcomes(JSON.parse(raw));
+  } catch (error) {
+    throw new Error(
+      `invalid certification report ${reportPath}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}
+
+function readPublicationReport(reportPath: string): GateOutcome[] {
+  let raw: string;
+  try {
+    raw = readFileSync(reportPath, 'utf8');
+  } catch (error) {
+    throw new Error(
+      `unable to read publication report ${reportPath}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+  try {
+    return publicationOutcomes(JSON.parse(raw));
+  } catch (error) {
+    throw new Error(
+      `invalid publication report ${reportPath}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}
+
+function readRequiredChecksReport(reportPath: string): GateOutcome[] {
+  let raw: string;
+  try {
+    raw = readFileSync(reportPath, 'utf8');
+  } catch (error) {
+    throw new Error(
+      `unable to read required-check report ${reportPath}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+  try {
+    return requiredCheckOutcomes(JSON.parse(raw));
+  } catch (error) {
+    throw new Error(
+      `invalid required-check report ${reportPath}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}
+
 function firstLines(s: string, n: number): string {
   return s
     .split('\n')
@@ -341,7 +621,7 @@ function gitSha(): string {
 }
 
 /**
- * policy_hash = sha256 over the raw bytes of the two gate scripts (in fixed
+ * policy_hash = sha256 over the raw bytes of the policy sources (in fixed
  * order, filename-delimited). The policy an emitted row attests under IS the
  * validator source at this commit — recomputable by any auditor from the tree.
  */
@@ -428,10 +708,28 @@ function ciCtx(): EmitContext {
   };
 }
 
-function parseArgs(argv: readonly string[]): { out: string; selfCheck: boolean; ref: string } {
+function parseArgs(argv: readonly string[]): {
+  out: string;
+  selfCheck: boolean;
+  ref: string;
+  certificationReport?: string;
+  certificationOnly: boolean;
+  publicationReport?: string;
+  publicationOnly: boolean;
+  requiredChecksReport?: string;
+  workflowRef?: string;
+  commitSha?: string;
+} {
   let out = 'build/evidence';
   let ref = process.env['GITHUB_REF'] ?? 'refs/heads/main';
   let sc = false;
+  let certificationReport: string | undefined;
+  let certificationOnly = false;
+  let publicationReport: string | undefined;
+  let publicationOnly = false;
+  let requiredChecksReport: string | undefined;
+  let workflowRef: string | undefined;
+  let commitSha: string | undefined;
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--out') {
       out = argv[i + 1] ?? out;
@@ -441,9 +739,55 @@ function parseArgs(argv: readonly string[]): { out: string; selfCheck: boolean; 
       i++;
     } else if (argv[i] === '--self-check') {
       sc = true;
+    } else if (argv[i] === '--certification-report') {
+      certificationReport = argv[i + 1];
+      if (!certificationReport) throw new Error('--certification-report requires a path');
+      i++;
+    } else if (argv[i] === '--certification-only') {
+      certificationOnly = true;
+    } else if (argv[i] === '--publication-report') {
+      publicationReport = argv[i + 1];
+      if (!publicationReport) throw new Error('--publication-report requires a path');
+      i++;
+    } else if (argv[i] === '--publication-only') {
+      publicationOnly = true;
+    } else if (argv[i] === '--required-checks-report') {
+      requiredChecksReport = argv[i + 1];
+      if (!requiredChecksReport) throw new Error('--required-checks-report requires a path');
+      i++;
+    } else if (argv[i] === '--workflow-ref') {
+      workflowRef = argv[i + 1];
+      if (!workflowRef) throw new Error('--workflow-ref requires a value');
+      i++;
+    } else if (argv[i] === '--commit-sha') {
+      commitSha = argv[i + 1];
+      if (!/^[a-f0-9]{40}$/.test(commitSha ?? '')) {
+        throw new Error('--commit-sha requires a 40-character lowercase SHA');
+      }
+      i++;
     }
   }
-  return { out, selfCheck: sc, ref };
+  if (certificationOnly && !certificationReport) {
+    throw new Error('--certification-only requires --certification-report');
+  }
+  if (publicationOnly && !publicationReport) {
+    throw new Error('--publication-only requires --publication-report');
+  }
+  if (certificationOnly && publicationOnly) {
+    throw new Error('--certification-only and --publication-only cannot be combined');
+  }
+  return {
+    out,
+    selfCheck: sc,
+    ref,
+    certificationReport,
+    certificationOnly,
+    publicationReport,
+    publicationOnly,
+    requiredChecksReport,
+    workflowRef,
+    commitSha,
+  };
 }
 
 function main(argv: readonly string[]): number {
@@ -452,11 +796,23 @@ function main(argv: readonly string[]): number {
     selfCheck();
     return 0;
   }
-  const ctx = ciCtx();
+  const ctx = {
+    ...ciCtx(),
+    ...(args.commitSha === undefined
+      ? {}
+      : { commitSha: args.commitSha, sourceSha: args.commitSha }),
+  };
   mkdirSync(args.out, { recursive: true });
-  const outcomes: GateOutcome[] = [catalogInvariantsOutcome(), unicodeHygieneOutcome()];
+  const outcomes: GateOutcome[] =
+    args.certificationOnly || args.publicationOnly
+      ? []
+      : [catalogInvariantsOutcome(), unicodeHygieneOutcome()];
+  if (args.certificationReport) outcomes.push(...readCertificationReport(args.certificationReport));
+  if (args.publicationReport) outcomes.push(...readPublicationReport(args.publicationReport));
+  if (args.requiredChecksReport)
+    outcomes.push(...readRequiredChecksReport(args.requiredChecksReport));
   const rows = buildRows(outcomes, ctx);
-  writeEmit(rows, args.ref, args.out);
+  writeEmit(rows, args.ref, args.out, args.workflowRef);
   console.log(
     `emit-evidence OK: ${rows.length} kernel-valid gate-result/v1 row(s) written to ${args.out}\n` +
       `  decisions: ${outcomes.map((o) => `${o.gateName}=${o.decision}`).join(', ')}\n` +

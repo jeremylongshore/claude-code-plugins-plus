@@ -1,0 +1,73 @@
+{
+  "schema_version": "freshie-run-delta/v3",
+  "run_id": 19,
+  "from_tag": null,
+  "to_tag": "run-19",
+  "dolt_commit": "ui4r79m97pkp5dk37a5v5rtfu355avl1",
+  "run_coherence": {
+    "discovery_run_id": 19,
+    "header_total_skills": 3031,
+    "skill_rows": 3031,
+    "skill_row_delta": 0,
+    "skill_compliance_rows": 3609
+  },
+  "grade_export": {
+    "row_count": 3609,
+    "csv_sha256": "a46de16f6347a3ec0cd9b036b6ff77349b8778292447a13e104d21ad50c30495",
+    "grade_counts": {
+      "A": 1883,
+      "B": 1112,
+      "C": 452,
+      "D": 157,
+      "F": 5
+    }
+  },
+  "forge_proofs": {
+    "row_count": 3,
+    "records_sha256": "e51e838c989df95d206994831befc7821b594d25bec9b09d699c5792456c787b",
+    "class_counts": {
+      "E0": 3,
+      "E1": 0,
+      "E2": 0,
+      "E3": 0
+    },
+    "retained_e2_e3": 0,
+    "total_e2_e3": 0,
+    "records": [
+      {
+        "plugin_name": "databricks-pack",
+        "jrig_run_id": 2,
+        "discovery_run_id": null,
+        "evidence_class": "E0",
+        "artifact_uri": null,
+        "artifact_sha256": null,
+        "baseline_delta": null
+      },
+      {
+        "plugin_name": "databricks-pack",
+        "jrig_run_id": 4,
+        "discovery_run_id": null,
+        "evidence_class": "E0",
+        "artifact_uri": null,
+        "artifact_sha256": null,
+        "baseline_delta": null
+      },
+      {
+        "plugin_name": "databricks-pack",
+        "jrig_run_id": 5,
+        "discovery_run_id": null,
+        "evidence_class": "E0",
+        "artifact_uri": null,
+        "artifact_sha256": null,
+        "baseline_delta": null
+      }
+    ]
+  },
+  "tables_changed": 0,
+  "schema_changes": [],
+  "rows_added": 0,
+  "rows_deleted": 0,
+  "rows_modified": 0,
+  "tables": [],
+  "grade_regressions": []
+}

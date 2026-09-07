@@ -17,15 +17,15 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "url": "git+https://github.com/alib8b8/llm-box.git",
     "directory": "plugins/community/llm-box"
   },
-  "homepage": "https://tonsofskills.com/plugins/llm-box",
+  "homepage": "https://github.com/alib8b8/llm-box",
   "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
-  "license": "MIT",
+  "license": "AGPL-3.0",
   "author": "alib8b8 <https://github.com/alib8b8>",
   "publishConfig": {
-    "access": "public"
+    "access": "restricted"
   },
   "files": [
     "README.md",

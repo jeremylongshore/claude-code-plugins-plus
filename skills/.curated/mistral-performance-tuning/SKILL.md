@@ -13,7 +13,7 @@ description: 'Optimize Mistral AI performance with caching, batching, and latenc
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -210,6 +210,12 @@ const response = await client.fim.complete({
 | High TTFT (>1s) | Prompt too long or large model | Trim prompt, use mistral-small |
 | Stream disconnected | Network timeout | Implement reconnection |
 | Cache thrashing | High cardinality prompts | Increase cache size or reduce TTL |
+
+## Examples
+
+### Improve an interactive code-completion path
+
+Measure time-to-first-token for the current chat request, switch the code-only completion to Codestral FIM with a fixed token cap, and compare p95 latency and output acceptance on a representative fixture set. Keep the previous path behind a feature flag until the new path meets the latency and correctness budget.
 
 ## Resources
 

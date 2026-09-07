@@ -12,7 +12,7 @@ description: 'Collect Hootsuite debug evidence for support tickets and troublesh
 
   '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -103,6 +103,30 @@ async function checkHootsuite(): Promise<void> {
 }
 checkHootsuite();
 ```
+
+## Prerequisites
+
+- An incident ID, bounded collection window, approved restricted destination, and a draft-only sandbox profile.
+- A redaction policy excluding tokens, post copy, media, handles, audience data, and account metadata before evidence leaves the runtime.
+
+## Instructions
+
+1. Collect only status, latency band, schedule state, configuration revision, quota headers, and opaque profile/post correlation IDs.
+2. Verify redaction before packaging and stop if copy, media, or account fields cannot be proven absent.
+3. Compare aggregate results to baseline, encrypt the bundle at the approved location, and grant minimum access.
+4. Record owner/deletion date, then remove temporary evidence after the incident window.
+
+## Output
+
+Create a bundle manifest with incident ID, collection window, checks run, opaque correlation IDs, aggregate metrics, revision, destination, owner, and retention. Copy, media, handles, and credentials are prohibited.
+
+## Error Handling
+
+Stop for failed redaction, unknown destination, or a command that could publish or expose account content. Record the missing evidence class and escalate; do not bypass safeguards.
+
+## Examples
+
+`incident=inc-opaque-21; window=15m; profile=sandbox-brand; schedule=failed; latency=p95-420ms; destination=restricted-support; retention=7d` is a useful redacted bundle summary.
 
 ## Resources
 

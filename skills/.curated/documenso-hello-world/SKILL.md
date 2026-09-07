@@ -12,7 +12,7 @@ description: 'Create a minimal working Documenso example.
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,6 +22,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Hello World
+
+## Output
+
+- A verified synthetic development document/signing workflow with a redacted lifecycle receipt.
+- A cleanup/disable action that leaves no real signer or production-document tutorial artifact.
+
+## Examples
+
+Create a development document using placeholder content and a synthetic signer, verify the intended role and lifecycle transition, then archive/delete it under the test policy. Record only environment and opaque correlation/state; never use a real agreement, signer, signing URL, or production workspace for a hello-world exercise.
 
 ## Overview
 

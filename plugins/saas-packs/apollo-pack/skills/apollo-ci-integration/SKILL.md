@@ -202,6 +202,18 @@ describe.skipIf(SKIP)('Apollo Live Integration', () => {
 - Apollo health check step before integration tests
 - Secret scanning to prevent API key commits
 
+## Examples
+
+For a lead-search change, open a pull request with an MSW fixture that covers
+both a successful person search and a `429` response. The pull request runs
+lint, type checking, the mock-only tests, and the secret scan without exposing
+an Apollo credential or consuming credits. After merge, the protected `main`
+workflow performs the health check and the small live integration suite with
+the repository secret. If the health check is unavailable or the live request
+returns a non-success status, keep the change deployed only after the incident
+owner has either restored the provider path or explicitly disabled the live
+lane; do not broaden PR credentials to make the check pass.
+
 ## Error Handling
 
 | Issue | Resolution |

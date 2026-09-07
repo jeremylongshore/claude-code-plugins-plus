@@ -173,6 +173,14 @@ for r in response.results:
 | `invalid api token` | Bad CO_API_KEY | Check key at dashboard.cohere.com |
 | `rate limit exceeded` | Too many trial requests | Wait 60s or upgrade key |
 
+## Examples
+
+Use a staging key and synthetic input to make one bounded chat request, inspect
+only the response status and expected shape, then repeat for embed/rerank using
+approved fixtures. If authentication, model selection, or rate checks fail,
+stop the walkthrough and repair the scoped configuration before sending user or
+production data.
+
 ## Resources
 
 - [Cohere Chat API](https://docs.cohere.com/reference/chat)

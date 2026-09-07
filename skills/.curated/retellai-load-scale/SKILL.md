@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Load-test an inbound queue without contacting real callers
+
+Use a preview number and synthetic caller identities to ramp concurrency in
+small steps. Record queue time, model latency, transfer rate, error rate, and
+the configured concurrency limit at each step. Stop the test when the agreed
+latency or error budget is crossed instead of compensating with unbounded
+retries. Use the result to set an initial production ceiling and retain the
+last known-good limit as the rollback value.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

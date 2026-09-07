@@ -24,6 +24,34 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Known Pitfalls
 
+## Prerequisites
+
+- The intended workspace, consent/data classification, event schema, and deployment owner.
+- A synthetic test profile and a redacted diagnostic process; never investigate with production recipients by default.
+
+## Instructions
+
+1. Identify the applicable pitfall before changing an event, campaign, segment, or integration setting.
+2. Validate schema, identity, consent, environment, and idempotency in development/staging.
+3. Make one reversible correction and verify its effect with synthetic data before promotion.
+4. Record recurring failures in reviewed runbooks/contracts rather than relying on ad hoc retries.
+
+## Output
+
+- A documented prevention or correction for a specific delivery, data, consent, or integration pitfall.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Wrong environment or recipient scope | Stop sends, correct configuration, and assess/notify under the incident process. |
+| Event schema changes unexpectedly | Quarantine invalid events and version the contract before replay. |
+| Consent status is uncertain | Do not message or replay until it is verified. |
+
+## Examples
+
+Before changing a campaign trigger, send a synthetic event with an idempotency key to development, verify the expected segment and message state, then promote through approved change control. Do not test trigger fixes on live recipient cohorts.
+
 ## Overview
 
 The 12 most common Customer.io integration mistakes, with the wrong pattern, the correct pattern, and why it matters. Use this as a code review checklist and developer onboarding reference.

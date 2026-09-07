@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Improve response latency with a measured canary
+
+Capture baseline end-to-end latency, model latency, transfer outcome, and
+completion rate for a synthetic test suite before changing an agent setting.
+Apply one prompt, model, or integration change to a preview version and repeat
+the same suite. Promote to a small canary only if latency improves without a
+drop in completion or an increase in handoffs; otherwise restore the prior
+version and retain the comparison as the performance decision record.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

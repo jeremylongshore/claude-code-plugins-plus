@@ -34,6 +34,25 @@ Diagnostic guide for the 10 most common CAST AI issues, covering agent connectiv
 - `CASTAI_API_KEY` configured
 - Access to CAST AI console for log correlation
 
+## Instructions
+
+Identify the affected cluster and environment first, collect the minimum
+redacted evidence needed to classify the symptom, then use the matching
+runbook below. Change one control at a time, observe health and workload impact
+over the defined window, and keep production changes behind the approved
+change process. Escalate rather than guessing when the issue involves
+credentials, unexpected node termination, data loss risk, or an unclear
+provider-side failure.
+
+## Error Handling
+
+| Failure class | Safe first action |
+|---|---|
+| Authentication or authorization | Stop retries, verify the scoped secret reference, and rotate through the owner if compromise is possible. |
+| Autoscaler or evictor disruption | Disable the affected automation path and stabilize the workload before tuning. |
+| Terraform drift or unsafe plan | Do not apply; reconcile through the declared state and review process. |
+| Provider outage or unknown behavior | Preserve redacted timestamps and correlation details, then use the escalation path. |
+
 ## Error Reference
 
 ### 1. Agent Pod CrashLoopBackOff
@@ -179,6 +198,22 @@ kubectl logs -n castai-agent deployment/castai-workload-autoscaler --tail=50
 1. Collect debug info: Helm releases, agent logs, cluster events
 2. Check https://status.cast.ai for platform issues
 3. Contact support with cluster ID and screenshots
+
+## Output
+
+Produce a redacted incident record containing the affected cluster, symptom,
+time window, observed evidence, containment action, selected runbook branch,
+and escalation owner. Do not include API keys, raw secret values, or complete
+customer workload logs; retain enough correlation information for support to
+reproduce the provider-side investigation.
+
+## Examples
+
+For repeated evictions, capture the relevant event count and PDB state, disable
+the aggressive evictor setting through the approved change path, and confirm
+workload recovery before changing another variable. If the behavior persists,
+attach the sanitized debug bundle and UTC incident window to the support case
+instead of repeatedly restarting production components.
 
 ## Resources
 

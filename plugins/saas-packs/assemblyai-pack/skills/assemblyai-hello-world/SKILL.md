@@ -142,6 +142,10 @@ async function lemurDemo() {
 - Key phrases, sentiment analysis, entity detection
 - LeMUR-powered summarization and Q&A
 
+## Examples
+
+Start with AssemblyAI's published sample audio or a consented synthetic recording. Keep the resulting transcript in memory or a restricted temporary test artifact, print only status and duration in shared logs, and delete the test transcript under the project's retention procedure after validating the integration.
+
 ## Error Handling
 
 | Error | Cause | Solution |

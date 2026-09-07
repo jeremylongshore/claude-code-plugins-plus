@@ -23,6 +23,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Core Features
 
+## Output
+
+- A scoped, consent-aware Customer.io feature configuration with a validated data contract and owner.
+- A test receipt showing intended audience, environment, event/message behavior, and safe rollback path.
+
+## Examples
+
+Configure a feature in development with a synthetic profile and a narrowly defined event. Verify attributes, segment membership, and message preview before promotion. If the audience or consent behavior differs from expectation, disable the development configuration and correct the contract before proceeding.
+
 ## Overview
 
 Implement Customer.io's key platform features: transactional emails/push (password resets, receipts), API-triggered broadcasts (one-to-many on demand), segment-driving attributes, anonymous-to-known user merging, and person suppression/deletion.

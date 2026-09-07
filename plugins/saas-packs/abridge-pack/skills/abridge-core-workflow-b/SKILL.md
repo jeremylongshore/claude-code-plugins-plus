@@ -229,6 +229,17 @@ function formatAfterVisitSummary(summary: PatientSummary): string {
 - FHIR Communication resource pushed to patient portal
 - Formatted AVS document with medications, follow-up, and next steps
 
+## Examples
+
+For a sandbox portal test, use a completed encounter containing only synthetic
+patient data to request a basic-reading-level English summary and a Spanish
+translation. Review both summaries for required medication and follow-up
+sections before formatting the English version as an AVS. Post the approved
+synthetic summary to the sandbox `Communication` endpoint and record only the
+returned resource ID. If translation or portal delivery fails, retain redacted
+error metadata, correct the test input or authorization, and never substitute
+production patient text in the retry.
+
 ## Error Handling
 
 | Error | Cause | Solution |

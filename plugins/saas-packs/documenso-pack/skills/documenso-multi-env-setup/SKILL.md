@@ -12,7 +12,7 @@ description: 'Configure Documenso across multiple environments (dev, staging, pr
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -23,6 +23,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Multi-Environment Setup
+
+## Output
+
+- Isolated development, staging, and production workspaces with separate scoped identities, templates, signer controls, and audit boundaries.
+- A promotion/rollback receipt based on synthetic validation rather than production document or signer experiments.
+
+## Examples
+
+Validate a versioned template and callback in development using synthetic recipients, promote to staging with separate credentials, and record its lifecycle/authorization/alert results. Release production through an approved canary only; if any gate differs, restore the prior configuration and do not copy production keys or signing artifacts into lower environments.
 
 ## Overview
 

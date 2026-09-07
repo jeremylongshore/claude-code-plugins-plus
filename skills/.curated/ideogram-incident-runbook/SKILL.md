@@ -231,6 +231,21 @@ Owner: @[name]
 - Stakeholders notified with template
 - Evidence collected for postmortem
 
+## Prerequisites
+
+- An incident owner, a synthetic prompt with no protected content, approved support path, and redaction policy for prompt, asset, and output fields.
+
+## Instructions
+
+1. Open a timestamped incident, classify impact, and reproduce once with the synthetic prompt.
+2. Isolate identity, endpoint, content-policy, quota, generation, storage, or destination failure using status and opaque correlation IDs only.
+3. Freeze nonessential rollout changes, apply one reversible remediation, and monitor the synthetic probe and aggregate metrics.
+4. Stop if a change expands source, destination, or output-retention scope; close only after rollback decision and owner review.
+
+## Examples
+
+`P2; integration=staging-generator; error=429; action=bounded-backoff; fixture=fictional; output_retention=none; rollback=not-needed` is a safe incident summary.
+
 ## Resources
 
 - [Ideogram API Overview](https://developer.ideogram.ai/ideogram-api/api-overview)

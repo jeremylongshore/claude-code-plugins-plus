@@ -65,19 +65,28 @@ export async function pollContactChanges(state: SyncState) {
     (c: any) => new Date(c.updated_at) > lastSync,
   );
 
+  // A full page is not a complete incremental window. Paginate before moving
+  // the watermark so newer changes cannot hide records still on later pages.
+  if (data.contacts.length >= 100) {
+    throw new Error('Incremental window reached one page; paginate before advancing sync state');
+  }
+
   if (newChanges.length > 0) {
     console.log(`Found ${newChanges.length} contact changes since ${state.lastSyncAt}`);
     for (const contact of newChanges) {
       await handleContactChange(contact);
     }
-    state.lastSyncAt = new Date().toISOString();
+    state.lastSyncAt = newChanges
+      .map((c: any) => c.updated_at)
+      .sort()
+      .at(-1) ?? state.lastSyncAt;
   }
 
   return newChanges;
 }
 
 async function handleContactChange(contact: any) {
-  console.log(`Contact updated: ${contact.name} (${contact.email}) — stage: ${contact.contact_stage_id}`);
+  console.log(`Contact updated: ${contact.id} — stage: ${contact.contact_stage_id}`);
   // Sync to your CRM, database, or notification system
 }
 ```
@@ -234,6 +243,18 @@ console.log('Apollo sync scheduler started');
 - Sequence engagement monitoring with reply/bounce/open rates
 - Task creation API for automated follow-ups
 - Cron-based scheduler for periodic sync
+
+## Examples
+
+For a contact-stage automation, run the poller with a persisted watermark and
+an idempotency record keyed by Apollo contact ID plus update timestamp. Process
+one small staging window, record only IDs, stage IDs, counts, and redacted
+failure reasons, then prove that replaying the same window creates neither a
+duplicate CRM update nor a duplicate follow-up task. Paginate any full result
+window before advancing the watermark. If a page cannot be completed, the
+idempotency store is unavailable, or a downstream write has an unknown result,
+leave the watermark unchanged and route the batch to operator review instead
+of silently skipping records.
 
 ## Error Handling
 

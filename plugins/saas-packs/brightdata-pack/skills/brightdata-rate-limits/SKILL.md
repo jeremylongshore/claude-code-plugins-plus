@@ -176,6 +176,10 @@ async function batchTrigger(urls: string[], batchSize = 100) {
 - Web Scraper API trigger rate limiter (20/min, 60/hr)
 - URL batching to minimize trigger count
 
+## Examples
+
+Start a newly approved workload below the documented account limit, persist an idempotency key before dispatch, and honor provider retry signals. On throttling, pause the scoped queue, capture a redacted receipt, and reconcile prior attempts before resuming; do not add zones or increase concurrency simply to evade a limit.
+
 ## Error Handling
 
 | Signal | Meaning | Action |

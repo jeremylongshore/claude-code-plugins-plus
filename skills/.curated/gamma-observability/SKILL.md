@@ -25,6 +25,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Observability
 
+## Output
+
+Publish a monitoring receipt with metric definitions, alert/dashboards, threshold test, owner, and review date. Logs and alerts must exclude private content, viewer identities, and tokens.
+
+## Examples
+
+Send a fictional event through staging, confirm dashboards show only aggregate outcomes and an opaque ID, and trigger a controlled alert with no presentation content in the payload.
+
 ## Overview
 
 Implement monitoring, logging, and health checks for Gamma API integrations. Since Gamma does not expose rate limit headers or internal metrics, observability is built around your API call patterns, latency, error rates, credit consumption, and generation success rates.

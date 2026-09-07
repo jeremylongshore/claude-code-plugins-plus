@@ -23,6 +23,10 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Rate Limits
 
+## Examples
+
+Simulate a throttled request against a fictional staging presentation, honor a bounded retry under an opaque operation ID, and move repeated failures to review instead of replaying publishing actions.
+
 ## Overview
 
 Understand Gamma API rate limits and implement effective strategies for high-volume usage.

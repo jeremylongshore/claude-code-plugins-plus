@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/mistral-pack",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Claude Code skill pack for Mistral AI - 24 skills covering LLM API integration with chat, embeddings, and function calling",
   "main": "README.md",
   "type": "module",
@@ -25,7 +25,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "url": "git+https://github.com/jeremylongshore/tons-of-skills-marketplace.git",
     "directory": "plugins/saas-packs/mistral-pack"
   },
   "homepage": "https://tonsofskills.com/learn/mistral/",

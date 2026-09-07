@@ -1,0 +1,14 @@
+{
+  "description": "Hash-only observations represented by the clean receipt factory",
+  "classification": {
+    "classification_status": "CLASSIFIED",
+    "last_classified_on": "2026-09-04T08:00:00Z",
+    "last_attempt_on": "2026-09-04T08:00:00Z",
+    "error_present": false
+  },
+  "tag_apply_methods": ["MANUAL", "INHERITED"],
+  "policy_statuses": ["ACTIVE"],
+  "simulation_outcomes": ["MATCHED"],
+  "expected_status": "BOUNDED_COVERAGE_OBSERVED",
+  "pass_supported": false
+}

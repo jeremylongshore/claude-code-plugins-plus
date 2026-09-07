@@ -5,7 +5,7 @@
 > **Generated — do not edit.** Stage newly filed documents, then run
 > `node scripts/generate-docs-index.mjs`.
 
-Covers the **tracked** documentation estate (243 files). Local-only working
+Covers the **tracked** documentation estate (254 files). Local-only working
 documents are counted in doc 720 but deliberately not listed here. The inventory excludes only this
 index and `000-docs/.gitignore`.
 
@@ -225,6 +225,17 @@ index and `000-docs/.gitignore`.
 - [800-AA-AACR-epic-4-mcp-destructive-policies.md](800-AA-AACR-epic-4-mcp-destructive-policies.md)
 - [801-AA-AACR-epic-4-closure.md](801-AA-AACR-epic-4-closure.md)
 - [802-AA-AACR-epics-1-4-verification-audit.md](802-AA-AACR-epics-1-4-verification-audit.md)
+- [803-AT-ADEC-model-neutral-identity-migration.md](803-AT-ADEC-model-neutral-identity-migration.md)
+- [804-RL-RSRC-harness-compatibility-matrix.md](804-RL-RSRC-harness-compatibility-matrix.md)
+- [805-DR-GUID-universal-skills-installation.md](805-DR-GUID-universal-skills-installation.md)
+- [806-AT-ARCH-cross-repo-authority-contract.md](806-AT-ARCH-cross-repo-authority-contract.md)
+- [807-DR-STND-evaluation-evidence.md](807-DR-STND-evaluation-evidence.md)
+- [808-DR-STND-certification-standard.md](808-DR-STND-certification-standard.md)
+- [809-AA-AACR-epic-5-closure.md](809-AA-AACR-epic-5-closure.md)
+- [810-RA-DATA-epic-9-boundary-evidence.json](810-RA-DATA-epic-9-boundary-evidence.json)
+- [811-AA-AACR-epic-9-closure.md](811-AA-AACR-epic-9-closure.md)
+- [812-AA-AACR-marketplace-content-projection-security.md](812-AA-AACR-marketplace-content-projection-security.md)
+- [813-RA-AUDT-saas-tutorial-lattice.md](813-RA-AUDT-saas-tutorial-lattice.md)
 - [20260131-RL-REPT-claude-code-plugins-v4.14.0.md](20260131-RL-REPT-claude-code-plugins-v4.14.0.md)
 - [6767-a-SPEC-DR-STND-claude-code-plugins-standard.md](6767-a-SPEC-DR-STND-claude-code-plugins-standard.md)
 - [6767-b-SPEC-DR-STND-claude-skills-standard.md](6767-b-SPEC-DR-STND-claude-skills-standard.md)

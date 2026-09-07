@@ -13,7 +13,7 @@ description: 'Optimize Mistral AI costs through model selection, token managemen
 
   '
 allowed-tools: Read, Grep
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -249,6 +249,12 @@ GROUP BY 1 ORDER BY 2 DESC LIMIT 10;
 | Budget exceeded | No alerts | Set alerts at 80% and 90% |
 | Wrong model | No routing logic | Use complexity-based model selection |
 | Long responses | No maxTokens | Always set maxTokens |
+
+## Examples
+
+### Put a daily cap on a low-risk summarization lane
+
+Route short summaries to `mistral-small-latest`, set `maxTokens` to the product’s response limit, and record input/output usage for each request. When the daily budget reaches the alert threshold, queue non-urgent work for the Batch API instead of silently continuing at on-demand rates.
 
 ## Resources
 

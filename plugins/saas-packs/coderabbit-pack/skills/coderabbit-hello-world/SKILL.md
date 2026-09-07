@@ -151,6 +151,13 @@ cr review src/index.ts src/utils.ts
 | Review on wrong branch | Missing base_branches filter | Add `base_branches: [main]` to config |
 | Bot not responding to commands | Typo in mention | Must use exact `@coderabbitai` mention |
 
+## Examples
+
+Install the app on one pilot repository, commit a minimal configuration, open a
+small test pull request, and verify the walkthrough and one follow-up command.
+If the expected review does not appear, inspect app access and the base-branch
+configuration before adding broader repository permissions or retrying commands.
+
 ## Resources
 
 - [YAML Configuration Guide](https://docs.coderabbit.ai/getting-started/yaml-configuration)

@@ -26,6 +26,19 @@ compatibility: Designed for Claude Code
 ---
 # Exa Performance Tuning
 
+## Prerequisites
+
+- A measured latency/throughput/quality/error baseline, sanitized evaluation set, SLO owner, and rollback threshold.
+- Approved data/policy controls that remain in effect during tests.
+
+## Output
+
+- A measured performance recommendation with policy/quality guardrails, owner, and reversible change record.
+
+## Examples
+
+Measure sanitized staging queries, change one request option, cache behavior, or concurrency limit, and compare aggregate latency, quality, and errors against baseline. Revert on regression; do not disable citation, source, privacy, or human-review controls to improve a metric.
+
 ## Overview
 
 Optimize Exa search API response times for production workloads. Key levers: search type selection (instant < fast < auto < neural < deep), result count reduction, content scope control, result caching, and parallel query execution.

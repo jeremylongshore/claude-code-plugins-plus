@@ -12,7 +12,7 @@ description: 'Create a minimal working Hootsuite example.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -132,6 +132,10 @@ curl -s -H "Authorization: Bearer $HOOTSUITE_ACCESS_TOKEN" \
 | `403 Forbidden` | Insufficient permissions | Check app scopes |
 | `422 Unprocessable` | Invalid profile ID or past date | Verify profile ID and future date |
 | No profiles returned | No social accounts connected | Connect accounts in Hootsuite dashboard |
+
+## Examples
+
+Create a fictitious draft in a sandbox profile and record `profile=hello-sandbox; content=fixture-only; approval=pending; audience=test-only; public_posts=0; cleanup=complete`. Do not use a real account or post text as tutorial data.
 
 ## Resources
 

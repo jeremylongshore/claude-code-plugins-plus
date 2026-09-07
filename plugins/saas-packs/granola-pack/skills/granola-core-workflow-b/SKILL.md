@@ -165,6 +165,10 @@ Folders support auto-posting rules: any note added to a folder can automatically
 | Notion share fails | Authorization expired | Reconnect Notion in Settings > Integrations |
 | Chat gives wrong answer | Ambiguous question | Be specific: "What did Sarah say about the timeline?" |
 
+## Examples
+
+For a fictional follow-up workflow, record `meeting=opaque-31; actions=4; owner_mapping=staged; destination=allowlisted; idempotency=once; rollback=workflow-r6`. The example never exposes a meeting title, attendee, or action text.
+
 ## Resources
 
 - [Sharing and Integrations](https://docs.granola.ai/help-center/sharing/integrations/integrations-with-granola)

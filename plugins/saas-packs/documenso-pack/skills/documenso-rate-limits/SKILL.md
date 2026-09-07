@@ -12,7 +12,7 @@ description: 'Implement Documenso rate limiting, backoff, and request throttling
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,6 +22,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Rate Limits
+
+## Output
+
+- A rate-aware document/signing integration with bounded concurrency, idempotency, backoff, monitoring, and replay ownership.
+- A safe throttle/recovery receipt that avoids duplicate invitations, duplicate signatures, or accidental document changes.
+
+## Examples
+
+Exercise a development API with synthetic documents at controlled concurrency, retain stable idempotency keys, and record aggregate 429/latency/completion results. Back off with jitter on throttling; do not retry document creation or signature actions without verifying their current state.
 
 ## Overview
 

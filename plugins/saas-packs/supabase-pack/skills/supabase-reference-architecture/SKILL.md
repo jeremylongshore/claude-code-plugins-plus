@@ -10,7 +10,7 @@ description: "Implement enterprise Supabase reference architectures \u2014 monor
   , \"supabase reference design\",\n\"how to organize supabase at scale\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(supabase:*), Grep,
   Glob
-version: 1.53.0
+version: 1.54.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

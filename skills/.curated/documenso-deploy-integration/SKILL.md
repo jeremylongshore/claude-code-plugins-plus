@@ -12,7 +12,7 @@ description: 'Deploy Documenso integrations across different platforms and envir
 
   '
 allowed-tools: Read, Write, Edit, Bash(docker:*), Bash(kubectl:*)
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -24,6 +24,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Deploy Integration
+
+## Output
+
+- A versioned, staged document/signing deployment with owner approval, validation evidence, and rollback reference.
+- A protected promotion path that prevents unreviewed configurations from affecting production documents or signers.
+
+## Examples
+
+Deploy a synthetic document workflow to staging with scoped credentials, verify authorization, signing lifecycle, webhook verification, and redacted alerts, then use an approved production canary. Stop and roll back if audience, access, or lifecycle behavior differs; do not place document data or signing links in deployment logs.
 
 ## Overview
 

@@ -1,0 +1,128 @@
+name: Emit publication evidence
+
+# Reusable, post-publication half of the release five-tuple.  It is invoked
+# only after a publisher records an artifact that its registry accepted.  This
+# workflow never turns a candidate, dry run, or skipped existing version into
+# a publication claim.
+on:
+  workflow_call:
+    inputs:
+      publication_report:
+        description: Completed publication facts using publication-report/v1.
+        required: true
+        type: string
+      source_sha:
+        description: Exact 40-character commit SHA whose required contexts are attested.
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  emit:
+    name: Sign completed publications and required contexts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      actions: read
+      checks: read
+      contents: write
+      id-token: write
+    steps:
+      - name: Check out the exact publication source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ inputs.source_sha }}
+
+      - name: Validate inputs before any signing operation
+        env:
+          SOURCE_SHA: ${{ inputs.source_sha }}
+          PUBLICATION_REPORT: ${{ inputs.publication_report }}
+        run: |
+          set -euo pipefail
+          [[ "$SOURCE_SHA" =~ ^[a-f0-9]{40}$ ]]
+          printf '%s' "$PUBLICATION_REPORT" > /tmp/publication-report.json
+          jq -e '.schema_version == "publication-report/v1" and (.publications | type == "array" and length > 0)' /tmp/publication-report.json >/dev/null
+
+      - name: Await all protected-branch contexts for the exact source SHA
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 30); do
+            gh api --paginate "repos/${GITHUB_REPOSITORY}/commits/${SOURCE_SHA}/check-runs?per_page=100" > /tmp/required-checks.json
+            missing=$(jq -r '
+              .check_runs as $runs |
+              ["ci-required", "gitleaks", "skill-conform"] |
+              map(. as $name | ($runs | map(select(.name == $name and .status == "completed")) | length) as $n | select($n != 1) | $name) |
+              join(",")
+            ' /tmp/required-checks.json)
+            if [ -z "$missing" ]; then
+              echo "all three required contexts completed"
+              exit 0
+            fi
+            echo "waiting for required contexts: $missing (attempt $attempt/30)"
+            sleep 20
+          done
+          echo "::error::required contexts did not complete for ${SOURCE_SHA}"
+          exit 1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac # v3
+
+      - name: Install pinned kernel validators
+        working-directory: ci/emit-evidence
+        run: pnpm install --frozen-lockfile --ignore-workspace
+
+      - name: Build fail-closed evidence rows
+        run: |
+          set -euo pipefail
+          node --experimental-strip-types ci/emit-evidence/emit-evidence.ts \
+            --out build/evidence \
+            --ref "${GITHUB_REF}" \
+            --workflow-ref "${GITHUB_WORKFLOW_REF}" \
+            --commit-sha "${{ inputs.source_sha }}" \
+            --publication-report /tmp/publication-report.json \
+            --publication-only \
+            --required-checks-report /tmp/required-checks.json
+
+      - name: Sign and verify every evidence bundle
+        run: |
+          set -euo pipefail
+          identity="https://github.com/${GITHUB_WORKFLOW_REF}"
+          issuer="https://token.actions.githubusercontent.com"
+          count=0
+          for bundle in build/evidence/bundle-*.json; do
+            sig="${bundle%.json}.sigstore.json"
+            cosign sign-blob --yes --new-bundle-format --bundle "$sig" "$bundle"
+            cosign verify-blob --new-bundle-format --bundle "$sig" \
+              --certificate-identity "$identity" --certificate-oidc-issuer "$issuer" "$bundle"
+            count=$((count + 1))
+          done
+          test "$count" -gt 3
+
+      - name: Assemble signed manifest
+        run: node --experimental-strip-types ci/emit-evidence/assemble-manifest.ts --dir build/evidence --out build/evidence/report-manifest.json
+
+      - name: Retain immutable publication manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
+        run: |
+          set -euo pipefail
+          if ! gh release view evidence-latest --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create evidence-latest --repo "$GITHUB_REPOSITORY" --prerelease \
+              --title "Evidence manifest (rolling)" \
+              --notes "Signed evidence retained by the release workflows."
+          fi
+          asset="publication-manifest-${SOURCE_SHA}-${GITHUB_RUN_ID}.json"
+          gh release upload evidence-latest build/evidence/report-manifest.json#"${asset}" --repo "$GITHUB_REPOSITORY"

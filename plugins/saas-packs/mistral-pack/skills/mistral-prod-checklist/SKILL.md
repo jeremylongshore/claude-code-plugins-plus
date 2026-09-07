@@ -12,7 +12,7 @@ description: 'Execute Mistral AI production deployment checklist and rollback pr
 
   '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -229,6 +229,12 @@ curl -sf https://yourapp.com/health | jq '.'
 | Health check 503 | Alert triggered | Check Mistral status, verify credentials |
 | Circuit open | Metrics alert | Investigate availability, wait for reset |
 | High error rate | Monitoring alert | Check logs, consider rollback |
+
+## Examples
+
+### Gate a canary before resuming rollout
+
+Pause the deployment, run the health and chat smoke tests against the canary revision, and inspect the error-rate and auth-failure panels for the defined observation period. Resume only when the checks hold; otherwise execute `kubectl rollout undo` and keep the incident record linked to the failed revision.
 
 ## Resources
 

@@ -14,21 +14,21 @@
     "source": "scripts/validate-skills-schema.py --marketplace --skills-only --json",
     "status": "measured",
     "values": {
-      "a_error_total": 219,
-      "a_failing": 131,
-      "ab_error_total": 2140,
-      "ab_failing": 953,
-      "b_failing": 822,
-      "error_files": 1962,
-      "error_total": 7193,
+      "a_error_total": 35,
+      "a_failing": 18,
+      "ab_error_total": 603,
+      "ab_failing": 294,
+      "b_failing": 276,
+      "error_files": 719,
+      "error_total": 3702,
       "grade_distribution": {
-        "A": 1595,
-        "B": 1007,
-        "C": 882,
-        "D": 182,
-        "F": 9
+        "A": 1884,
+        "B": 1076,
+        "C": 409,
+        "D": 157,
+        "F": 5
       },
-      "rows": 3675
+      "rows": 3531
     }
   },
   "rows": {
@@ -40,9 +40,9 @@
       "status": "measured",
       "target_status": "informational",
       "values": {
-        "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3175,
-        "tracked_files": 23157
+        "plugin_agent_files": 352,
+        "raw_tracked_plugin_skill_files": 3031,
+        "tracked_files": 23949
       }
     },
     "2": {
@@ -53,9 +53,9 @@
       "status": "measured",
       "target_status": "pass",
       "values": {
-        "distinct_names": 471,
+        "distinct_names": 443,
         "duplicate_names": [],
-        "entries": 471
+        "entries": 443
       }
     },
     "3": {
@@ -79,46 +79,46 @@
       "target_status": "informational",
       "values": {
         "agent_lane": {
-          "error_total_all_validated_surfaces": 237,
-          "fully_compliant_surfaces": 796,
+          "error_total_all_validated_surfaces": 236,
+          "fully_compliant_surfaces": 775,
           "terminal_denominator": {
-            "agents": 357,
-            "files": 979,
+            "agents": 363,
+            "files": 957,
             "label": "agents_plus_plugin_manifests",
-            "plugin_manifests": 622
+            "plugin_manifests": 594
           },
-          "validator_reported_mixed_denominator_percent": 81.3
+          "validator_reported_mixed_denominator_percent": 81
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 7431,
-          "fully_compliant_surfaces": 1163,
+          "error_total_all_validated_surfaces": 3939,
+          "fully_compliant_surfaces": 1153,
           "terminal_denominator": {
-            "agents": 357,
+            "agents": 363,
             "commands": 373,
-            "files": 5027,
+            "files": 4861,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
-            "plugin_manifests": 622,
-            "skills": 3675
+            "plugin_manifests": 594,
+            "skills": 3531
           },
-          "validated_plugin_manifests": 630,
-          "validator_reported_mixed_denominator_percent": 23.1
+          "validated_plugin_manifests": 602,
+          "validator_reported_mixed_denominator_percent": 23.7
         },
         "skill_rows": {
-          "a_error_total": 219,
-          "a_failing": 131,
-          "ab_error_total": 2140,
-          "ab_failing": 953,
-          "b_failing": 822,
-          "error_files": 1962,
-          "error_total": 7193,
+          "a_error_total": 35,
+          "a_failing": 18,
+          "ab_error_total": 603,
+          "ab_failing": 294,
+          "b_failing": 276,
+          "error_files": 719,
+          "error_total": 3702,
           "grade_distribution": {
-            "A": 1595,
-            "B": 1007,
-            "C": 882,
-            "D": 182,
-            "F": 9
+            "A": 1884,
+            "B": 1076,
+            "C": 409,
+            "D": 157,
+            "F": 5
           },
-          "rows": 3675
+          "rows": 3531
         }
       }
     },
@@ -129,22 +129,22 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "average_score": 85.2,
+        "average_score": 87.5,
         "grade_distribution": {
-          "A": 1595,
-          "B": 1007,
-          "C": 882,
-          "D": 182,
-          "F": 9
+          "A": 1884,
+          "B": 1076,
+          "C": 409,
+          "D": 157,
+          "F": 5
         },
         "grade_percentages": {
-          "A": 43.4,
-          "B": 27.4,
-          "C": 24,
-          "D": 5,
-          "F": 0.2
+          "A": 53.4,
+          "B": 30.5,
+          "C": 11.6,
+          "D": 4.4,
+          "F": 0.1
         },
-        "rows": 3675
+        "rows": 3531
       }
     },
     "6": {
@@ -154,14 +154,14 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "a_error_total": 219,
-        "a_failing": 131,
-        "ab_error_total": 2140,
-        "ab_failing": 953,
-        "b_error_total": 1921,
-        "b_failing": 822,
+        "a_error_total": 35,
+        "a_failing": 18,
+        "ab_error_total": 603,
+        "ab_failing": 294,
+        "b_error_total": 568,
+        "b_failing": 276,
         "certified_target": 0,
-        "skill_summary_rows": 3675
+        "skill_summary_rows": 3531
       }
     },
     "7": {
@@ -210,9 +210,9 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "partial",
       "values": {
-        "agent_errors": 237,
-        "agent_files": 357,
-        "reported_compliance_percent": 81.3,
+        "agent_errors": 236,
+        "agent_files": 363,
+        "reported_compliance_percent": 81,
         "target_errors": 0,
         "target_percent_max": 100
       }
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3634,
+        "declared": 3520,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
-        "missing": 41,
-        "rows": 3675,
+        "missing": 11,
+        "rows": 3531,
         "target_malformed": 0
       }
     },
@@ -286,10 +286,26 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "distinct_values": 43,
+        "distinct_values": 60,
         "invalid_or_empty": 0,
         "target_free_text_values": 0,
         "values": [
+          {
+            "count": 1,
+            "value": "Agent Skills-compatible hosts; host-specific artifacts require their native specification"
+          },
+          {
+            "count": 5,
+            "value": "Agent Skills-compatible hosts; requires Python 3.10+"
+          },
+          {
+            "count": 1,
+            "value": "Agent Skills-compatible hosts; subagents and Beads are capability-detected with fail-closed fallback"
+          },
+          {
+            "count": 1,
+            "value": "Agent Skills-compatible hosts; validation depth depends on available authoritative tooling"
+          },
           {
             "count": 1,
             "value": "Any OS, but requires a persistent local filesystem and ~/.kobiton/.credentials (written by /automate:setup) — so it cannot run where the host offers only an MCP connection. A host affordance that streams a background command's output is strongly preferred; without one the skill falls back to a foreground loop. The watch loop runs the bundled scripts/poll-test-run.js (Node 18+), which reads those credentials, polls run state over REST, and emits only on change. Uses the Kobiton MCP tools getOrgSettings (up front) and terminateTestRun (on request); requires an authenticated Kobiton MCP connection, and getOrgSettings requires the automate plugin release that ships it. The optional live-remediation window (Step 4a) reuses run-automation-suite's chromeless-launcher scripts (Chrome; resize on macOS/Windows, launch-only on Linux) — if Chrome is absent the skill falls back to printing the URL."
@@ -324,10 +340,34 @@
           },
           {
             "count": 1,
+            "value": "Compatible with AI coding agents that can read Markdown and analyze workflow measurements"
+          },
+          {
+            "count": 1,
+            "value": "Compatible with AI coding agents that can read Markdown and review application code"
+          },
+          {
+            "count": 1,
+            "value": "Compatible with AI coding agents that can read Markdown and review monitoring configurations"
+          },
+          {
+            "count": 1,
+            "value": "Compatible with AI coding agents that can read Markdown; optional verification probes require a shell with curl"
+          },
+          {
+            "count": 1,
+            "value": "Compatible with AI coding agents that can read and edit Markdown evidence records"
+          },
+          {
+            "count": 1,
+            "value": "Compatible with AI coding agents that can read and edit application code and Markdown"
+          },
+          {
+            "count": 1,
             "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18, a persistent local filesystem (the observe-decide-act loop passes state through local turn files), and ~/.kobiton/.credentials written by /automate:setup — scripts/appium.js reads that file directly and never calls the MCP getCredential tool, so it is required, not a fallback. An authenticated Kobiton MCP connection is additionally useful for device selection."
           },
           {
-            "count": 3339,
+            "count": 3197,
             "value": "Designed for Claude Code"
           },
           {
@@ -371,10 +411,6 @@
             "value": "Designed for Claude Code. The TUI itself requires an interactive terminal (the user runs it with the '!' prefix); requires bash 3.2+ and a terminal of at least 50x22."
           },
           {
-            "count": 1,
-            "value": "Designed for Claude Code; also usable from Codex/Gemini/Copilot/Cursor sessions that can read and write files"
-          },
-          {
             "count": 4,
             "value": "Designed for Claude Code; internal agent-loaded skill (not user-invocable)"
           },
@@ -385,10 +421,6 @@
           {
             "count": 1,
             "value": "Designed for Claude Code; requires Python 3, optionally JRig CLI for Tier 3"
-          },
-          {
-            "count": 1,
-            "value": "Designed for Claude Code; requires gh CLI and jq on PATH"
           },
           {
             "count": 1,
@@ -415,8 +447,40 @@
             "value": "Designed for Claude Code; the same MCP server also works in Claude Desktop, Cursor, Windsurf, and OpenAI Codex CLI. Requires the mnemos binary on PATH — run mnemos init to wire the MCP server and mnemos doctor to verify."
           },
           {
+            "count": 7,
+            "value": "Model-agnostic workflow; requires Python 3.10+; optional Snowflake CLI for live read-only evidence collection"
+          },
+          {
+            "count": 1,
+            "value": "Model-agnostic; Python 3.10+; optional Snowflake CLI for live provider-side read-only collection"
+          },
+          {
+            "count": 1,
+            "value": "Model-agnostic; requires explicit state/workspace paths, git, jq, Bash, and an authenticated GitHub CLI"
+          },
+          {
+            "count": 1,
+            "value": "Model-agnostic; requires git and an authenticated GitHub CLI with permission for the approved action"
+          },
+          {
+            "count": 1,
+            "value": "Model-agnostic; requires git, jq, and an authenticated GitHub CLI for live GitHub reads"
+          },
+          {
+            "count": 1,
+            "value": "Model-neutral; requires Python 3.10+. Optional collection requires Snowflake CLI and an existing least-privilege profile."
+          },
+          {
+            "count": 1,
+            "value": "Model-neutral; requires Python 3.10+. Optional collection requires Snowflake CLI with an existing read-only profile."
+          },
+          {
             "count": 1,
             "value": "Portable doctrine — Claude Code, Codex App/CLI, OpenCode, Antigravity, Cursor, Grok"
+          },
+          {
+            "count": 1,
+            "value": "Portable instructions for agent harnesses that can read Markdown and edit architecture documents"
           },
           {
             "count": 1,
@@ -457,6 +521,10 @@
           {
             "count": 1,
             "value": "Verified against @aomi-labs/client v0.1.42 and the current aomi-widget/packages/client TypeScript CLI. Install globally via npm install -g @aomi-labs/client@latest, or run on demand via npx @aomi-labs/client@latest. The CLI defaults to https://api.aomi.dev; pass --backend-url https://api-staging.aomi.dev when explicitly targeting staging. viem and Solana signing dependencies are bundled by the package. Designed for claude-code; also works with Cursor, Codex CLI, Gemini, and any agent runtime that supports the Anthropic skill spec."
+          },
+          {
+            "count": 1,
+            "value": "claude-code >= 0.7.0"
           },
           {
             "count": 1,
@@ -533,8 +601,8 @@
       "cohort": "literal docs.anthropic.com occurrences in tracked text-like files",
       "dimension": "docs.anthropic.com occurrences",
       "measured_proxy": {
-        "files": 173,
-        "occurrences": 487,
+        "files": 189,
+        "occurrences": 521,
         "paths": [
           "000-docs/198-DR-SOPS-03-mcp-reliability.md",
           "000-docs/688-AA-AACR-2026-06-04-wiki-audit.md",
@@ -652,17 +720,33 @@
           "scripts/measure-canonical-surface.mjs",
           "skills/.curated/agent-context-loader/SKILL.md",
           "skills/.curated/agent-safety-preflight/SKILL.md",
+          "skills/.curated/anth-advanced-troubleshooting/SKILL.md",
+          "skills/.curated/anth-architecture-variants/SKILL.md",
           "skills/.curated/anth-ci-integration/SKILL.md",
+          "skills/.curated/anth-common-errors/SKILL.md",
           "skills/.curated/anth-core-workflow-a/SKILL.md",
+          "skills/.curated/anth-core-workflow-b/SKILL.md",
           "skills/.curated/anth-cost-tuning/SKILL.md",
+          "skills/.curated/anth-debug-bundle/SKILL.md",
           "skills/.curated/anth-deploy-integration/SKILL.md",
+          "skills/.curated/anth-enterprise-rbac/SKILL.md",
           "skills/.curated/anth-hello-world/SKILL.md",
+          "skills/.curated/anth-incident-runbook/SKILL.md",
           "skills/.curated/anth-install-auth/SKILL.md",
+          "skills/.curated/anth-known-pitfalls/SKILL.md",
           "skills/.curated/anth-load-scale/SKILL.md",
           "skills/.curated/anth-local-dev-loop/SKILL.md",
+          "skills/.curated/anth-migration-deep-dive/SKILL.md",
           "skills/.curated/anth-multi-env-setup/SKILL.md",
+          "skills/.curated/anth-observability/SKILL.md",
+          "skills/.curated/anth-performance-tuning/SKILL.md",
+          "skills/.curated/anth-policy-guardrails/SKILL.md",
           "skills/.curated/anth-prod-checklist/SKILL.md",
+          "skills/.curated/anth-rate-limits/SKILL.md",
+          "skills/.curated/anth-reference-architecture/SKILL.md",
+          "skills/.curated/anth-reliability-patterns/SKILL.md",
           "skills/.curated/anth-security-basics/SKILL.md",
+          "skills/.curated/anth-upgrade-migration/SKILL.md",
           "skills/.curated/anth-webhooks-events/SKILL.md",
           "skills/.curated/clade-advanced-troubleshooting/SKILL.md",
           "skills/.curated/clade-architecture-variants/SKILL.md",
@@ -833,17 +917,33 @@
         "scripts/measure-canonical-surface.mjs",
         "skills/.curated/agent-context-loader/SKILL.md",
         "skills/.curated/agent-safety-preflight/SKILL.md",
+        "skills/.curated/anth-advanced-troubleshooting/SKILL.md",
+        "skills/.curated/anth-architecture-variants/SKILL.md",
         "skills/.curated/anth-ci-integration/SKILL.md",
+        "skills/.curated/anth-common-errors/SKILL.md",
         "skills/.curated/anth-core-workflow-a/SKILL.md",
+        "skills/.curated/anth-core-workflow-b/SKILL.md",
         "skills/.curated/anth-cost-tuning/SKILL.md",
+        "skills/.curated/anth-debug-bundle/SKILL.md",
         "skills/.curated/anth-deploy-integration/SKILL.md",
+        "skills/.curated/anth-enterprise-rbac/SKILL.md",
         "skills/.curated/anth-hello-world/SKILL.md",
+        "skills/.curated/anth-incident-runbook/SKILL.md",
         "skills/.curated/anth-install-auth/SKILL.md",
+        "skills/.curated/anth-known-pitfalls/SKILL.md",
         "skills/.curated/anth-load-scale/SKILL.md",
         "skills/.curated/anth-local-dev-loop/SKILL.md",
+        "skills/.curated/anth-migration-deep-dive/SKILL.md",
         "skills/.curated/anth-multi-env-setup/SKILL.md",
+        "skills/.curated/anth-observability/SKILL.md",
+        "skills/.curated/anth-performance-tuning/SKILL.md",
+        "skills/.curated/anth-policy-guardrails/SKILL.md",
         "skills/.curated/anth-prod-checklist/SKILL.md",
+        "skills/.curated/anth-rate-limits/SKILL.md",
+        "skills/.curated/anth-reference-architecture/SKILL.md",
+        "skills/.curated/anth-reliability-patterns/SKILL.md",
         "skills/.curated/anth-security-basics/SKILL.md",
+        "skills/.curated/anth-upgrade-migration/SKILL.md",
         "skills/.curated/anth-webhooks-events/SKILL.md",
         "skills/.curated/clade-advanced-troubleshooting/SKILL.md",
         "skills/.curated/clade-architecture-variants/SKILL.md",
@@ -1112,7 +1212,7 @@
         "answers": [
           {
             "cohort": "curated-mirror",
-            "value": 1915
+            "value": 2392
           },
           {
             "cohort": "curriculum",
@@ -1120,15 +1220,15 @@
           },
           {
             "cohort": "first-party",
-            "value": 2802
+            "value": 2687
           },
           {
             "cohort": "graded",
-            "value": 3675
+            "value": 3531
           },
           {
             "cohort": "marketplace-visible",
-            "value": 3114
+            "value": 2940
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1189,10 +1289,10 @@
       "source": ["sources.lock.json", "sources.yaml"],
       "status": "measured",
       "values": {
-        "lock_keys": 64,
+        "lock_keys": 36,
         "lock_only": [],
         "target_equal": true,
-        "yaml_keys": 64,
+        "yaml_keys": 36,
         "yaml_only": []
       }
     },
@@ -1204,45 +1304,19 @@
         "plugins/ai-agency/hyperflow/.source.json",
         "plugins/ai-agency/tonone/.source.json",
         "plugins/api-development/x-twitter-scraper/.source.json",
-        "plugins/business-tools/wondelai-blue-ocean-strategy/.source.json",
-        "plugins/business-tools/wondelai-contagious/.source.json",
-        "plugins/business-tools/wondelai-cro-methodology/.source.json",
-        "plugins/business-tools/wondelai-crossing-the-chasm/.source.json",
-        "plugins/business-tools/wondelai-drive-motivation/.source.json",
-        "plugins/business-tools/wondelai-hundred-million-offers/.source.json",
-        "plugins/business-tools/wondelai-influence-psychology/.source.json",
-        "plugins/business-tools/wondelai-jobs-to-be-done/.source.json",
-        "plugins/business-tools/wondelai-made-to-stick/.source.json",
-        "plugins/business-tools/wondelai-negotiation/.source.json",
-        "plugins/business-tools/wondelai-obviously-awesome/.source.json",
-        "plugins/business-tools/wondelai-one-page-marketing/.source.json",
-        "plugins/business-tools/wondelai-predictable-revenue/.source.json",
-        "plugins/business-tools/wondelai-scorecard-marketing/.source.json",
-        "plugins/business-tools/wondelai-storybrand-messaging/.source.json",
-        "plugins/business-tools/wondelai-traction-eos/.source.json",
         "plugins/community/ejentum-anti-deception/.source.json",
         "plugins/community/ejentum-code/.source.json",
         "plugins/community/ejentum-memory/.source.json",
         "plugins/community/ejentum-reasoning/.source.json",
-        "plugins/community/gastown/.source.json",
         "plugins/community/hermes-tweet/.source.json",
         "plugins/community/llm-box/.source.json",
         "plugins/community/mnemos/.source.json",
         "plugins/community/portaljs/.source.json",
         "plugins/community/quit-sponsor/.source.json",
         "plugins/community/skills-janitor/.source.json",
-        "plugins/community/walkie-talkie/.source.json",
-        "plugins/community/zai-cli/.source.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/design/brand-forge/.source.json",
         "plugins/design/uizze/.source.json",
-        "plugins/design/wondelai-design-everyday-things/.source.json",
-        "plugins/design/wondelai-hooked-ux/.source.json",
-        "plugins/design/wondelai-ios-hig-design/.source.json",
-        "plugins/design/wondelai-refactoring-ui/.source.json",
-        "plugins/design/wondelai-top-design/.source.json",
-        "plugins/design/wondelai-ux-heuristics/.source.json",
-        "plugins/design/wondelai-web-typography/.source.json",
         "plugins/devops/sugar/.source.json",
         "plugins/mcp/dolt-mcp-vcs/.source.json",
         "plugins/mcp/governed-second-brain/.source.json",
@@ -1261,58 +1335,22 @@
         "plugins/productivity/publishing-skills/.source.json",
         "plugins/productivity/schedule-after-usage-reset/.source.json",
         "plugins/productivity/skyvern/.source.json",
-        "plugins/productivity/wondelai-design-sprint/.source.json",
-        "plugins/productivity/wondelai-lean-startup/.source.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/kobiton-automate/.source.json"
       ],
       "status": "measured",
       "values": {
-        "mirrors_shipping_license_text": 31,
-        "missing_license_text": [
-          "plugins/api-development/x-twitter-scraper",
-          "plugins/business-tools/wondelai-blue-ocean-strategy",
-          "plugins/business-tools/wondelai-contagious",
-          "plugins/business-tools/wondelai-cro-methodology",
-          "plugins/business-tools/wondelai-crossing-the-chasm",
-          "plugins/business-tools/wondelai-drive-motivation",
-          "plugins/business-tools/wondelai-hundred-million-offers",
-          "plugins/business-tools/wondelai-influence-psychology",
-          "plugins/business-tools/wondelai-jobs-to-be-done",
-          "plugins/business-tools/wondelai-made-to-stick",
-          "plugins/business-tools/wondelai-negotiation",
-          "plugins/business-tools/wondelai-obviously-awesome",
-          "plugins/business-tools/wondelai-one-page-marketing",
-          "plugins/business-tools/wondelai-predictable-revenue",
-          "plugins/business-tools/wondelai-scorecard-marketing",
-          "plugins/business-tools/wondelai-storybrand-messaging",
-          "plugins/business-tools/wondelai-traction-eos",
-          "plugins/community/ejentum-anti-deception",
-          "plugins/community/ejentum-code",
-          "plugins/community/ejentum-memory",
-          "plugins/community/ejentum-reasoning",
-          "plugins/community/llm-box",
-          "plugins/design/wondelai-design-everyday-things",
-          "plugins/design/wondelai-hooked-ux",
-          "plugins/design/wondelai-ios-hig-design",
-          "plugins/design/wondelai-refactoring-ui",
-          "plugins/design/wondelai-top-design",
-          "plugins/design/wondelai-ux-heuristics",
-          "plugins/design/wondelai-web-typography",
-          "plugins/productivity/content-multiplier",
-          "plugins/productivity/skyvern",
-          "plugins/productivity/wondelai-design-sprint",
-          "plugins/productivity/wondelai-lean-startup"
-        ],
-        "provenance_marked_mirrors": 64,
-        "target_shipping_license_text": 64
+        "mirrors_shipping_license_text": 36,
+        "missing_license_text": [],
+        "provenance_marked_mirrors": 36,
+        "target_shipping_license_text": 36
       }
     },
     "29": {
       "cohort": "provenance-marked mirrors",
       "dimension": "Mirror SKILL.md contradicting upstream license",
       "measured_proxy": {
-        "local_source_records_with_parseable_json": 64
+        "local_source_records_with_parseable_json": 36
       },
       "reason_code": "MISSING_PINNED_UPSTREAM_LICENSE_EVIDENCE",
       "reproduce": "pnpm run measure:e1 --row=29 --stdout",
@@ -1324,45 +1362,19 @@
         "plugins/ai-agency/hyperflow/.source.json",
         "plugins/ai-agency/tonone/.source.json",
         "plugins/api-development/x-twitter-scraper/.source.json",
-        "plugins/business-tools/wondelai-blue-ocean-strategy/.source.json",
-        "plugins/business-tools/wondelai-contagious/.source.json",
-        "plugins/business-tools/wondelai-cro-methodology/.source.json",
-        "plugins/business-tools/wondelai-crossing-the-chasm/.source.json",
-        "plugins/business-tools/wondelai-drive-motivation/.source.json",
-        "plugins/business-tools/wondelai-hundred-million-offers/.source.json",
-        "plugins/business-tools/wondelai-influence-psychology/.source.json",
-        "plugins/business-tools/wondelai-jobs-to-be-done/.source.json",
-        "plugins/business-tools/wondelai-made-to-stick/.source.json",
-        "plugins/business-tools/wondelai-negotiation/.source.json",
-        "plugins/business-tools/wondelai-obviously-awesome/.source.json",
-        "plugins/business-tools/wondelai-one-page-marketing/.source.json",
-        "plugins/business-tools/wondelai-predictable-revenue/.source.json",
-        "plugins/business-tools/wondelai-scorecard-marketing/.source.json",
-        "plugins/business-tools/wondelai-storybrand-messaging/.source.json",
-        "plugins/business-tools/wondelai-traction-eos/.source.json",
         "plugins/community/ejentum-anti-deception/.source.json",
         "plugins/community/ejentum-code/.source.json",
         "plugins/community/ejentum-memory/.source.json",
         "plugins/community/ejentum-reasoning/.source.json",
-        "plugins/community/gastown/.source.json",
         "plugins/community/hermes-tweet/.source.json",
         "plugins/community/llm-box/.source.json",
         "plugins/community/mnemos/.source.json",
         "plugins/community/portaljs/.source.json",
         "plugins/community/quit-sponsor/.source.json",
         "plugins/community/skills-janitor/.source.json",
-        "plugins/community/walkie-talkie/.source.json",
-        "plugins/community/zai-cli/.source.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/design/brand-forge/.source.json",
         "plugins/design/uizze/.source.json",
-        "plugins/design/wondelai-design-everyday-things/.source.json",
-        "plugins/design/wondelai-hooked-ux/.source.json",
-        "plugins/design/wondelai-ios-hig-design/.source.json",
-        "plugins/design/wondelai-refactoring-ui/.source.json",
-        "plugins/design/wondelai-top-design/.source.json",
-        "plugins/design/wondelai-ux-heuristics/.source.json",
-        "plugins/design/wondelai-web-typography/.source.json",
         "plugins/devops/sugar/.source.json",
         "plugins/mcp/dolt-mcp-vcs/.source.json",
         "plugins/mcp/governed-second-brain/.source.json",
@@ -1381,8 +1393,6 @@
         "plugins/productivity/publishing-skills/.source.json",
         "plugins/productivity/schedule-after-usage-reset/.source.json",
         "plugins/productivity/skyvern/.source.json",
-        "plugins/productivity/wondelai-design-sprint/.source.json",
-        "plugins/productivity/wondelai-lean-startup/.source.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/kobiton-automate/.source.json"
       ],
@@ -1403,38 +1413,6 @@
         "plugins/ai-agency/tonone/package.json",
         "plugins/api-development/x-twitter-scraper/.source.json",
         "plugins/api-development/x-twitter-scraper/package.json",
-        "plugins/business-tools/wondelai-blue-ocean-strategy/.source.json",
-        "plugins/business-tools/wondelai-blue-ocean-strategy/package.json",
-        "plugins/business-tools/wondelai-contagious/.source.json",
-        "plugins/business-tools/wondelai-contagious/package.json",
-        "plugins/business-tools/wondelai-cro-methodology/.source.json",
-        "plugins/business-tools/wondelai-cro-methodology/package.json",
-        "plugins/business-tools/wondelai-crossing-the-chasm/.source.json",
-        "plugins/business-tools/wondelai-crossing-the-chasm/package.json",
-        "plugins/business-tools/wondelai-drive-motivation/.source.json",
-        "plugins/business-tools/wondelai-drive-motivation/package.json",
-        "plugins/business-tools/wondelai-hundred-million-offers/.source.json",
-        "plugins/business-tools/wondelai-hundred-million-offers/package.json",
-        "plugins/business-tools/wondelai-influence-psychology/.source.json",
-        "plugins/business-tools/wondelai-influence-psychology/package.json",
-        "plugins/business-tools/wondelai-jobs-to-be-done/.source.json",
-        "plugins/business-tools/wondelai-jobs-to-be-done/package.json",
-        "plugins/business-tools/wondelai-made-to-stick/.source.json",
-        "plugins/business-tools/wondelai-made-to-stick/package.json",
-        "plugins/business-tools/wondelai-negotiation/.source.json",
-        "plugins/business-tools/wondelai-negotiation/package.json",
-        "plugins/business-tools/wondelai-obviously-awesome/.source.json",
-        "plugins/business-tools/wondelai-obviously-awesome/package.json",
-        "plugins/business-tools/wondelai-one-page-marketing/.source.json",
-        "plugins/business-tools/wondelai-one-page-marketing/package.json",
-        "plugins/business-tools/wondelai-predictable-revenue/.source.json",
-        "plugins/business-tools/wondelai-predictable-revenue/package.json",
-        "plugins/business-tools/wondelai-scorecard-marketing/.source.json",
-        "plugins/business-tools/wondelai-scorecard-marketing/package.json",
-        "plugins/business-tools/wondelai-storybrand-messaging/.source.json",
-        "plugins/business-tools/wondelai-storybrand-messaging/package.json",
-        "plugins/business-tools/wondelai-traction-eos/.source.json",
-        "plugins/business-tools/wondelai-traction-eos/package.json",
         "plugins/community/ejentum-anti-deception/.source.json",
         "plugins/community/ejentum-anti-deception/package.json",
         "plugins/community/ejentum-code/.source.json",
@@ -1443,8 +1421,6 @@
         "plugins/community/ejentum-memory/package.json",
         "plugins/community/ejentum-reasoning/.source.json",
         "plugins/community/ejentum-reasoning/package.json",
-        "plugins/community/gastown/.source.json",
-        "plugins/community/gastown/package.json",
         "plugins/community/hermes-tweet/.source.json",
         "plugins/community/hermes-tweet/package.json",
         "plugins/community/llm-box/.source.json",
@@ -1457,30 +1433,12 @@
         "plugins/community/quit-sponsor/package.json",
         "plugins/community/skills-janitor/.source.json",
         "plugins/community/skills-janitor/package.json",
-        "plugins/community/walkie-talkie/.source.json",
-        "plugins/community/walkie-talkie/package.json",
-        "plugins/community/zai-cli/.source.json",
-        "plugins/community/zai-cli/package.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/crypto/aomi/package.json",
         "plugins/design/brand-forge/.source.json",
         "plugins/design/brand-forge/package.json",
         "plugins/design/uizze/.source.json",
         "plugins/design/uizze/package.json",
-        "plugins/design/wondelai-design-everyday-things/.source.json",
-        "plugins/design/wondelai-design-everyday-things/package.json",
-        "plugins/design/wondelai-hooked-ux/.source.json",
-        "plugins/design/wondelai-hooked-ux/package.json",
-        "plugins/design/wondelai-ios-hig-design/.source.json",
-        "plugins/design/wondelai-ios-hig-design/package.json",
-        "plugins/design/wondelai-refactoring-ui/.source.json",
-        "plugins/design/wondelai-refactoring-ui/package.json",
-        "plugins/design/wondelai-top-design/.source.json",
-        "plugins/design/wondelai-top-design/package.json",
-        "plugins/design/wondelai-ux-heuristics/.source.json",
-        "plugins/design/wondelai-ux-heuristics/package.json",
-        "plugins/design/wondelai-web-typography/.source.json",
-        "plugins/design/wondelai-web-typography/package.json",
         "plugins/devops/sugar/.source.json",
         "plugins/devops/sugar/package.json",
         "plugins/mcp/dolt-mcp-vcs/.source.json",
@@ -1517,10 +1475,6 @@
         "plugins/productivity/schedule-after-usage-reset/package.json",
         "plugins/productivity/skyvern/.source.json",
         "plugins/productivity/skyvern/package.json",
-        "plugins/productivity/wondelai-design-sprint/.source.json",
-        "plugins/productivity/wondelai-design-sprint/package.json",
-        "plugins/productivity/wondelai-lean-startup/.source.json",
-        "plugins/productivity/wondelai-lean-startup/package.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/cli-ux-tester/package.json",
         "plugins/testing/kobiton-automate/.source.json",
@@ -1529,9 +1483,9 @@
       "status": "partial",
       "values": {
         "non_private": [],
-        "private_packages": 64,
-        "repository_package_mirrors": 64,
-        "scoped_packages": 59,
+        "private_packages": 36,
+        "repository_package_mirrors": 36,
+        "scoped_packages": 31,
         "target_publishable": 0
       }
     },
@@ -1549,38 +1503,6 @@
         "plugins/ai-agency/tonone/package.json",
         "plugins/api-development/x-twitter-scraper/.source.json",
         "plugins/api-development/x-twitter-scraper/package.json",
-        "plugins/business-tools/wondelai-blue-ocean-strategy/.source.json",
-        "plugins/business-tools/wondelai-blue-ocean-strategy/package.json",
-        "plugins/business-tools/wondelai-contagious/.source.json",
-        "plugins/business-tools/wondelai-contagious/package.json",
-        "plugins/business-tools/wondelai-cro-methodology/.source.json",
-        "plugins/business-tools/wondelai-cro-methodology/package.json",
-        "plugins/business-tools/wondelai-crossing-the-chasm/.source.json",
-        "plugins/business-tools/wondelai-crossing-the-chasm/package.json",
-        "plugins/business-tools/wondelai-drive-motivation/.source.json",
-        "plugins/business-tools/wondelai-drive-motivation/package.json",
-        "plugins/business-tools/wondelai-hundred-million-offers/.source.json",
-        "plugins/business-tools/wondelai-hundred-million-offers/package.json",
-        "plugins/business-tools/wondelai-influence-psychology/.source.json",
-        "plugins/business-tools/wondelai-influence-psychology/package.json",
-        "plugins/business-tools/wondelai-jobs-to-be-done/.source.json",
-        "plugins/business-tools/wondelai-jobs-to-be-done/package.json",
-        "plugins/business-tools/wondelai-made-to-stick/.source.json",
-        "plugins/business-tools/wondelai-made-to-stick/package.json",
-        "plugins/business-tools/wondelai-negotiation/.source.json",
-        "plugins/business-tools/wondelai-negotiation/package.json",
-        "plugins/business-tools/wondelai-obviously-awesome/.source.json",
-        "plugins/business-tools/wondelai-obviously-awesome/package.json",
-        "plugins/business-tools/wondelai-one-page-marketing/.source.json",
-        "plugins/business-tools/wondelai-one-page-marketing/package.json",
-        "plugins/business-tools/wondelai-predictable-revenue/.source.json",
-        "plugins/business-tools/wondelai-predictable-revenue/package.json",
-        "plugins/business-tools/wondelai-scorecard-marketing/.source.json",
-        "plugins/business-tools/wondelai-scorecard-marketing/package.json",
-        "plugins/business-tools/wondelai-storybrand-messaging/.source.json",
-        "plugins/business-tools/wondelai-storybrand-messaging/package.json",
-        "plugins/business-tools/wondelai-traction-eos/.source.json",
-        "plugins/business-tools/wondelai-traction-eos/package.json",
         "plugins/community/ejentum-anti-deception/.source.json",
         "plugins/community/ejentum-anti-deception/package.json",
         "plugins/community/ejentum-code/.source.json",
@@ -1589,8 +1511,6 @@
         "plugins/community/ejentum-memory/package.json",
         "plugins/community/ejentum-reasoning/.source.json",
         "plugins/community/ejentum-reasoning/package.json",
-        "plugins/community/gastown/.source.json",
-        "plugins/community/gastown/package.json",
         "plugins/community/hermes-tweet/.source.json",
         "plugins/community/hermes-tweet/package.json",
         "plugins/community/llm-box/.source.json",
@@ -1603,30 +1523,12 @@
         "plugins/community/quit-sponsor/package.json",
         "plugins/community/skills-janitor/.source.json",
         "plugins/community/skills-janitor/package.json",
-        "plugins/community/walkie-talkie/.source.json",
-        "plugins/community/walkie-talkie/package.json",
-        "plugins/community/zai-cli/.source.json",
-        "plugins/community/zai-cli/package.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/crypto/aomi/package.json",
         "plugins/design/brand-forge/.source.json",
         "plugins/design/brand-forge/package.json",
         "plugins/design/uizze/.source.json",
         "plugins/design/uizze/package.json",
-        "plugins/design/wondelai-design-everyday-things/.source.json",
-        "plugins/design/wondelai-design-everyday-things/package.json",
-        "plugins/design/wondelai-hooked-ux/.source.json",
-        "plugins/design/wondelai-hooked-ux/package.json",
-        "plugins/design/wondelai-ios-hig-design/.source.json",
-        "plugins/design/wondelai-ios-hig-design/package.json",
-        "plugins/design/wondelai-refactoring-ui/.source.json",
-        "plugins/design/wondelai-refactoring-ui/package.json",
-        "plugins/design/wondelai-top-design/.source.json",
-        "plugins/design/wondelai-top-design/package.json",
-        "plugins/design/wondelai-ux-heuristics/.source.json",
-        "plugins/design/wondelai-ux-heuristics/package.json",
-        "plugins/design/wondelai-web-typography/.source.json",
-        "plugins/design/wondelai-web-typography/package.json",
         "plugins/devops/sugar/.source.json",
         "plugins/devops/sugar/package.json",
         "plugins/mcp/dolt-mcp-vcs/.source.json",
@@ -1663,10 +1565,6 @@
         "plugins/productivity/schedule-after-usage-reset/package.json",
         "plugins/productivity/skyvern/.source.json",
         "plugins/productivity/skyvern/package.json",
-        "plugins/productivity/wondelai-design-sprint/.source.json",
-        "plugins/productivity/wondelai-design-sprint/package.json",
-        "plugins/productivity/wondelai-lean-startup/.source.json",
-        "plugins/productivity/wondelai-lean-startup/package.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/cli-ux-tester/package.json",
         "plugins/testing/kobiton-automate/.source.json",
@@ -1714,8 +1612,8 @@
       "source": [".github/workflows/publish-changed-packages.yml"],
       "status": "measured",
       "values": {
-        "swallowed_operations": ["tag_create", "tag_push", "github_release"],
-        "swallowed_total": 3,
+        "swallowed_operations": [],
+        "swallowed_total": 0,
         "target": 0
       }
     },
@@ -1726,7 +1624,7 @@
       "source": [".github/workflows/release.yml"],
       "status": "measured",
       "values": {
-        "skip_tests_bypass_present": true,
+        "skip_tests_bypass_present": false,
         "target_present": false
       }
     },
@@ -1742,76 +1640,137 @@
       }
     },
     "36": {
-      "cohort": "tracked privileged workflows",
+      "cohort": "tracked OIDC, npm-token, and signing workflows selected by the E7.9 privileged-action policy",
       "dimension": "Third-party actions on mutable tags in privileged workflows",
-      "reason_code": "MISSING_PRIVILEGED_WORKFLOW_POLICY",
       "reproduce": "pnpm run measure:e1 --row=36 --stdout",
-      "required_inputs": [
-        "machine-readable privileged-workflow definition",
-        "trusted-action pin policy"
+      "source": [
+        ".github/workflows/cli-publish.yml",
+        ".github/workflows/deploy-vps.yml",
+        ".github/workflows/emit-evidence.yml",
+        ".github/workflows/emit-publication-evidence.yml",
+        ".github/workflows/publish-all-packages.yml",
+        ".github/workflows/publish-changed-packages.yml",
+        ".github/workflows/publish-mcp-registry.yml",
+        ".github/workflows/release.yml",
+        ".github/workflows/verify-npm-production-credential.yml"
       ],
-      "source": [],
-      "status": "not_reproducible",
-      "values": null
+      "status": "measured",
+      "values": {
+        "distinct_actions": 8,
+        "mutable_uses": [],
+        "target_mutable_uses": 0,
+        "total_uses": 38
+      }
     },
     "37": {
       "cohort": "tracked .github Dependabot configuration",
       "dimension": "Dependabot configuration",
       "reproduce": "pnpm run measure:e1 --row=37 --stdout",
-      "source": [],
+      "source": [".github/dependabot.yml"],
       "status": "measured",
       "values": {
-        "present": false,
+        "present": true,
         "target_present": true
       }
     },
     "38": {
-      "cohort": "locally pinned root package dependencies",
+      "cohort": "exact root pins, retained npm registry observation, and coupling workflow",
       "dimension": "Kernel, eval CLI, and harness pins",
       "limitations": [
-        "local exactness is measured; latest versions and staleness are not inferred without a registry or clock"
+        "retained package-registry observation in 000-docs/810-RA-DATA-epic-9-boundary-evidence.json does not match the exact root pins (@intentsolutions/audit-harness: observed 1.3.1, pinned 1.4.0); capture a new versioned boundary observation without rewriting retained evidence"
       ],
-      "reason_code": "EXTERNAL_PACKAGE_REGISTRY_STATE_NOT_COMMITTED",
       "reproduce": "pnpm run measure:e1 --row=38 --stdout",
-      "required_inputs": ["versioned package-registry metadata snapshot"],
-      "source": ["package.json"],
+      "source": [
+        ".github/workflows/kernel-vendor-hash.yml",
+        "000-docs/810-RA-DATA-epic-9-boundary-evidence.json",
+        "package.json",
+        "pnpm-lock.yaml"
+      ],
       "status": "partial",
       "values": {
+        "one_resolved_core_version": true,
+        "ordering_test_blocking": true,
         "pins": {
           "@intentsolutions/audit-harness": {
-            "exact": false,
-            "version": "^1.3.1"
+            "exact": true,
+            "version": "1.4.0"
           },
           "@intentsolutions/core": {
             "exact": true,
-            "version": "0.9.0"
+            "version": "0.10.0"
           },
           "@intentsolutions/jrig-cli": {
             "exact": true,
-            "version": "0.1.2"
+            "version": "0.2.0"
           }
         },
-        "published_latest_versions": null
+        "published_latest_versions": {
+          "@intentsolutions/audit-harness": "1.3.1",
+          "@intentsolutions/core": "0.10.0",
+          "@intentsolutions/jrig-cli": "0.2.0"
+        },
+        "registry_matches_pins": false,
+        "staleness_alert_routed": true,
+        "target_met": false
       }
     },
     "39": {
-      "cohort": "kernel shadow output",
+      "cohort": "retained exact-head kernel-shadow boundary report",
       "dimension": "Kernel shadow report",
-      "reason_code": "KERNEL_SHADOW_REPORT_NOT_TRACKED",
-      "reproduce": "pnpm run measure:e1 --row=39 --stdout",
-      "required_inputs": [
-        "deterministic tracked shadow report generated at the current kernel pin"
+      "limitations": [
+        "this is a point-in-time exact-head closure receipt; the advisory workflow remains the live recurring observation lane"
       ],
-      "source": [],
-      "status": "not_reproducible",
-      "values": null
+      "reproduce": "pnpm run measure:e1 --row=39 --stdout",
+      "source": ["000-docs/810-RA-DATA-epic-9-boundary-evidence.json", "package.json"],
+      "status": "target_met",
+      "values": {
+        "report": {
+          "command": "node scripts/kernel-shadow-validation.mjs",
+          "corpus_files": 3630,
+          "frontmatter_deviations": [
+            "plugins/community/claude-reflect/SKILL.md",
+            "plugins/community/llm-box/skills/setup/SKILL.md",
+            "plugins/productivity/publishing-skills/skills/blog-editorial-calendar/SKILL.md",
+            "plugins/productivity/publishing-skills/skills/blog-topic-research/SKILL.md",
+            "plugins/saas-packs/podium-pack/skills/podium-rate-limit-survival/SKILL.md",
+            "plugins/testing/kobiton-automate/skills/run-automation-suite/SKILL.md"
+          ],
+          "full_report_sha256": "045be75e4110a4c2e05e722c3e4122b8a1999f6abb474c419bab2af81692a15d",
+          "kernel_package": "@intentsolutions/core",
+          "kernel_pin": "0.10.0",
+          "kernel_version": "0.10.0",
+          "lanes": {
+            "authoring/v1": {
+              "body_scope_only": 544,
+              "existing_fail_kernel_pass": 550,
+              "existing_pass_kernel_fail": 0,
+              "frontmatter_agree": 3624,
+              "frontmatter_deviation_percent": 0.17,
+              "frontmatter_disagree": 6
+            },
+            "authoring/v2": {
+              "decision_relevant_metric": "existing-PASS / kernel-FAIL",
+              "existing_fail_kernel_pass": 546,
+              "existing_pass_kernel_fail": 0,
+              "existing_pass_kernel_fail_percent": 0,
+              "kernel_unparseable_frontmatter": 0,
+              "strict": true
+            }
+          }
+        },
+        "root_kernel_pin": "0.10.0"
+      }
     },
     "40": {
       "cohort": "tracked workflow command lines invoking the canonical validator with --marketplace",
       "dimension": "Marketplace-tier validator runs that block a merge",
       "limitations": ["static workflow analysis does not execute GitHub expression control flow"],
       "reproduce": "pnpm run measure:e1 --row=40 --stdout",
-      "source": [".github/workflows/minimax-review.yml", ".github/workflows/promote-curated.yml"],
+      "source": [
+        ".github/workflows/minimax-review.yml",
+        ".github/workflows/pr-prescreen.yml",
+        ".github/workflows/promote-curated.yml"
+      ],
       "status": "partial",
       "values": {
         "blocking_candidates": 0,
@@ -1820,6 +1779,11 @@
             "blocking_candidate": false,
             "line": 247,
             "path": ".github/workflows/minimax-review.yml"
+          },
+          {
+            "blocking_candidate": false,
+            "line": 172,
+            "path": ".github/workflows/pr-prescreen.yml"
           },
           {
             "blocking_candidate": false,
@@ -1841,6 +1805,7 @@
       "values": {
         "actual_needs": [
           "validate",
+          "marketplace-compliance-ratchet",
           "verify",
           "test",
           "check-package-manager",
@@ -1863,7 +1828,7 @@
           "doc-governance",
           "secret-diff-scan"
         ],
-        "actual_needs_count": 22,
+        "actual_needs_count": 23,
         "documented_needs": null
       }
     },
@@ -1909,6 +1874,9 @@
         "000-docs/728-RA-DATA-reference-architecture-benchmark.md",
         "000-docs/729-AT-ADEC-reference-architecture-synthesis.md",
         "000-docs/790-DR-STND-safety-enforcement-register.md",
+        "000-docs/806-AT-ARCH-cross-repo-authority-contract.md",
+        "000-docs/807-DR-STND-evaluation-evidence.md",
+        "000-docs/808-DR-STND-certification-standard.md",
         "000-docs/SCHEMA_CHANGELOG.md",
         "STANDARDS.md"
       ],
@@ -1927,11 +1895,14 @@
           "000-docs/728-RA-DATA-reference-architecture-benchmark.md",
           "000-docs/729-AT-ADEC-reference-architecture-synthesis.md",
           "000-docs/790-DR-STND-safety-enforcement-register.md",
+          "000-docs/806-AT-ARCH-cross-repo-authority-contract.md",
+          "000-docs/807-DR-STND-evaluation-evidence.md",
+          "000-docs/808-DR-STND-certification-standard.md",
           "000-docs/SCHEMA_CHANGELOG.md"
         ],
-        "canonical_table_links": 13,
-        "declared": 3,
-        "linked_declared": 3,
+        "canonical_table_links": 16,
+        "declared": 6,
+        "linked_declared": 6,
         "target_unlinked": 0,
         "unlinked": []
       }
@@ -1946,10 +1917,10 @@
       ],
       "status": "measured",
       "values": {
-        "index_entries": 243,
+        "index_entries": 254,
         "missing_from_index": [],
         "target_equal": true,
-        "tracked_documents": 243,
+        "tracked_documents": 254,
         "untracked_index_entries": []
       }
     },
@@ -1973,9 +1944,9 @@
       "values": {
         "allowlist_patterns": 10,
         "invalid_patterns": 0,
-        "invisible_files": 21,
+        "invisible_files": 23,
         "target_invisible_files": 0,
-        "tracked_files": 23157
+        "tracked_files": 23949
       }
     },
     "47": {
@@ -2056,66 +2027,133 @@
       "values": null
     },
     "52": {
-      "cohort": null,
+      "cohort": "latest tracked immutable Freshie run receipt",
       "dimension": "Inventory header versus rows",
-      "reason_code": "MISSING_COMMITTED_INVENTORY_RUN_ROWS",
       "reproduce": "pnpm run measure:e1 --row=52 --stdout",
-      "required_inputs": [
-        "versioned discovery-run headers and row aggregates from the same database snapshot"
+      "source": [
+        "freshie/reports/run-delta-37.json",
+        "freshie/scripts/dolt-sync.py",
+        "freshie/scripts/run-delta.py"
       ],
-      "source": [],
-      "status": "not_reproducible",
-      "values": null
+      "status": "target_met",
+      "values": {
+        "dolt_commit": "5rm2klp5v6ve26iosb3gh7p8vd1s1b4n",
+        "header_total_skills": 2953,
+        "run_id": 37,
+        "skill_row_delta": 0,
+        "skill_rows": 2953,
+        "target_skill_row_delta": 0
+      }
     },
     "53": {
-      "cohort": null,
+      "cohort": "tracked grade exports against the latest immutable Freshie run receipt",
       "dimension": "Tracked export lag",
-      "reason_code": "MISSING_COMMITTED_LIVE_INVENTORY_HEAD",
       "reproduce": "pnpm run measure:e1 --row=53 --stdout",
-      "required_inputs": ["versioned latest database run ID", "versioned latest export run ID"],
-      "source": [],
-      "status": "not_reproducible",
-      "values": null
+      "source": [
+        "freshie/grade-histogram.json",
+        "freshie/grades.csv",
+        "freshie/reports/run-delta-37.json"
+      ],
+      "status": "target_met",
+      "values": {
+        "compliance_rows": 3531,
+        "export_dolt_commit": "5rm2klp5v6ve26iosb3gh7p8vd1s1b4n",
+        "export_run_id": 37,
+        "grades_csv_rows": 3531,
+        "grades_csv_sha256": "25405a1c192609d289986f78c8b493fd4f05d6383001b365875625a8ef0f97ae",
+        "histogram_grades": {
+          "A": 1884,
+          "B": 1076,
+          "C": 409,
+          "D": 157,
+          "F": 5
+        },
+        "histogram_total": 3531,
+        "immutable_grade_counts": {
+          "A": 1884,
+          "B": 1076,
+          "C": 409,
+          "D": 157,
+          "F": 5
+        },
+        "inventory_dolt_commit": "5rm2klp5v6ve26iosb3gh7p8vd1s1b4n",
+        "inventory_run_id": 37,
+        "target_lag_runs": 0
+      }
     },
     "54": {
-      "cohort": null,
+      "cohort": "tag-bound forge-proof ledger snapshot and legacy demotion receipt",
       "dimension": "Forge proofs",
-      "reason_code": "MISSING_COMMITTED_FORGE_PROOF_LEDGER",
       "reproduce": "pnpm run measure:e1 --row=54 --stdout",
-      "required_inputs": [
-        "versioned forge_proofs rows",
-        "proof schema with class, hash, and foreign key"
+      "source": [
+        "freshie/reports/legacy-forge-proofs-demotion.json",
+        "freshie/reports/run-delta-19.json",
+        "freshie/reports/run-delta-37.json",
+        "freshie/scripts/dolt-sync.py",
+        "freshie/scripts/run-delta.py",
+        "scripts/record-jrig-proofs.mjs"
       ],
-      "source": [],
-      "status": "not_reproducible",
-      "values": null
+      "status": "target_met",
+      "values": {
+        "class_counts": {
+          "E0": 3,
+          "E1": 0,
+          "E2": 0,
+          "E3": 0
+        },
+        "current_run_id": 37,
+        "invalid_identities": 0,
+        "legacy_e0_records": 3,
+        "retained_e2_e3": 0,
+        "source_dolt_commit": "ui4r79m97pkp5dk37a5v5rtfu355avl1",
+        "source_run_id": 19,
+        "source_tag": "run-19",
+        "target_legacy_e0_records": 3,
+        "target_unclassified": 0,
+        "total_e2_e3": 0,
+        "total_records": 3,
+        "unclassified": 0
+      }
     },
     "55": {
-      "cohort": null,
+      "cohort": "tag-bound evidence-class snapshot and canonical retention standard",
       "dimension": "Retained primary evaluation artifacts",
-      "reason_code": "MISSING_RETAINED_PRIMARY_EVAL_ARTIFACTS",
-      "reproduce": "pnpm run measure:e1 --row=55 --stdout",
-      "required_inputs": [
-        "versioned E2/E3 proof denominator",
-        "hash-linked retained primary artifacts"
+      "limitations": [
+        "zero E2/E3 claims satisfies the safety target of zero unretained claims; retention_percent remains null rather than fabricating 100%"
       ],
-      "source": [],
-      "status": "not_reproducible",
-      "values": null
+      "reproduce": "pnpm run measure:e1 --row=55 --stdout",
+      "source": [
+        "000-docs/807-DR-STND-evaluation-evidence.md",
+        "freshie/reports/legacy-forge-proofs-demotion.json",
+        "freshie/reports/run-delta-19.json",
+        "freshie/reports/run-delta-37.json",
+        "freshie/scripts/dolt-sync.py",
+        "freshie/scripts/run-delta.py"
+      ],
+      "status": "target_met",
+      "values": {
+        "legacy_e0_records": 3,
+        "no_e2_e3_claims": true,
+        "retained_e2_e3": 0,
+        "retention_percent": null,
+        "target_retention_percent": 100,
+        "total_e2_e3": 0,
+        "unretained_e2_e3": 0
+      }
     },
     "56": {
-      "cohort": "verified:true fields in tracked public marketplace data",
+      "cohort": "legacy JRig marketplace verification projection",
       "dimension": "Public verified claims with backing",
       "limitations": [
-        "a boolean verified field is not evidence that a retained backing artifact exists"
+        "a future public verification surface requires retained, hash-matched evidence and an explicit consumer boundary"
       ],
-      "reason_code": "MISSING_HASH_LINKED_PUBLIC_CLAIM_CONTRACT",
+      "reason_code": "NO_PUBLIC_JRIG_VERIFICATION_PROJECTION",
       "reproduce": "pnpm run measure:e1 --row=56 --stdout",
-      "required_inputs": ["claim-to-primary-artifact hash field", "consumer-page registry"],
+      "required_inputs": [],
       "source": [],
-      "status": "partial",
+      "status": "target_met",
       "values": {
-        "backing_verified": null,
+        "projection_present": false,
         "public_verified_claims": 0
       }
     },
@@ -2134,10 +2172,31 @@
         "plugins/saas-packs/databricks-pack/skills/databricks-cost-leak-hunter/eval-spec.yaml",
         "plugins/saas-packs/databricks-pack/skills/databricks-streaming-guardian/eval-spec.yaml",
         "plugins/saas-packs/databricks-pack/skills/databricks-uc-migration-pilot/eval-spec.yaml",
+        "plugins/saas-packs/grammarly-pack/skills/grammarly-access-readiness/eval-spec.yaml",
+        "plugins/saas-packs/grammarly-pack/skills/grammarly-api-reliability/eval-spec.yaml",
+        "plugins/saas-packs/grammarly-pack/skills/grammarly-data-safety-guardian/eval-spec.yaml",
+        "plugins/saas-packs/grammarly-pack/skills/grammarly-document-evaluator/eval-spec.yaml",
+        "plugins/saas-packs/grammarly-pack/skills/grammarly-license-governor/eval-spec.yaml",
         "plugins/saas-packs/hubspot-pack/skills/hubspot-warehouse-sync/eval-spec.yaml",
         "plugins/saas-packs/sentry-pack/skills/sentry-data-handling/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-access-guardian/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-cost-leak-hunter/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-data-quality-sentinel/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-deploy-medic/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-failover-readiness-drill/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-governance-coverage-auditor/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-native-app-release-sheriff/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-pipeline-guardian/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-query-forensics/eval-spec.yaml",
+        "plugins/saas-packs/snowflake-pack/skills/snowflake-strong-auth-migration-pilot/eval-spec.yaml",
         "plugins/saas-packs/supabase-pack/skills/supabase-known-pitfalls/eval-spec.yaml",
+        "plugins/skill-enhancers/agent-systems-toolkit/skills/artifact-creator/eval-spec.yaml",
+        "plugins/skill-enhancers/agent-systems-toolkit/skills/artifact-validator/eval-spec.yaml",
+        "plugins/skill-enhancers/agent-systems-toolkit/skills/production-upgrade/eval-spec.yaml",
         "plugins/skill-enhancers/skill-creator/skills/skill-creator/eval-spec.yaml",
+        "skills/.curated/artifact-creator/eval-spec.yaml",
+        "skills/.curated/artifact-validator/eval-spec.yaml",
+        "skills/.curated/audit-tests/eval-spec.yaml",
         "skills/.curated/coreweave-fabric-diagnostics/eval-spec.yaml",
         "skills/.curated/coreweave-gpu-cost-leak-hunter/eval-spec.yaml",
         "skills/.curated/coreweave-gpu-node-forensics/eval-spec.yaml",
@@ -2146,31 +2205,57 @@
         "skills/.curated/databricks-cost-leak-hunter/eval-spec.yaml",
         "skills/.curated/databricks-streaming-guardian/eval-spec.yaml",
         "skills/.curated/databricks-uc-migration-pilot/eval-spec.yaml",
+        "skills/.curated/grammarly-access-readiness/eval-spec.yaml",
+        "skills/.curated/grammarly-api-reliability/eval-spec.yaml",
+        "skills/.curated/grammarly-data-safety-guardian/eval-spec.yaml",
+        "skills/.curated/grammarly-document-evaluator/eval-spec.yaml",
+        "skills/.curated/grammarly-license-governor/eval-spec.yaml",
         "skills/.curated/hubspot-warehouse-sync/eval-spec.yaml",
+        "skills/.curated/production-upgrade/eval-spec.yaml",
         "skills/.curated/sentry-data-handling/eval-spec.yaml",
         "skills/.curated/skill-creator/eval-spec.yaml",
-        "skills/.curated/supabase-known-pitfalls/eval-spec.yaml"
+        "skills/.curated/snowflake-access-guardian/eval-spec.yaml",
+        "skills/.curated/snowflake-cost-leak-hunter/eval-spec.yaml",
+        "skills/.curated/snowflake-data-quality-sentinel/eval-spec.yaml",
+        "skills/.curated/snowflake-deploy-medic/eval-spec.yaml",
+        "skills/.curated/snowflake-failover-readiness-drill/eval-spec.yaml",
+        "skills/.curated/snowflake-governance-coverage-auditor/eval-spec.yaml",
+        "skills/.curated/snowflake-native-app-release-sheriff/eval-spec.yaml",
+        "skills/.curated/snowflake-pipeline-guardian/eval-spec.yaml",
+        "skills/.curated/snowflake-query-forensics/eval-spec.yaml",
+        "skills/.curated/snowflake-strong-auth-migration-pilot/eval-spec.yaml",
+        "skills/.curated/supabase-known-pitfalls/eval-spec.yaml",
+        "skills/.curated/validate-skillmd/eval-spec.yaml"
       ],
       "status": "measured",
       "values": {
-        "adoption_percent": 0.44,
-        "curated_copies": 12,
-        "plugin_skill_rows": 3175,
-        "source_eval_specs": 14,
-        "tracked_eval_specs": 26
+        "adoption_percent": 1.06,
+        "curated_copies": 32,
+        "plugin_skill_rows": 3031,
+        "source_eval_specs": 32,
+        "tracked_eval_specs": 64
       }
     },
     "58": {
-      "cohort": "tracked Freshie tests",
+      "cohort": "tracked Freshie hermetic-cycle test and blocking Python CI lane",
       "dimension": "Freshie test shape",
-      "reason_code": "MISSING_HERMETIC_E2E_TEST_CONTRACT",
       "reproduce": "pnpm run measure:e1 --row=58 --stdout",
-      "required_inputs": [
-        "registered scratch-database end-to-end scenario and its expected lifecycle assertions"
+      "source": [
+        ".github/workflows/validate-plugins.yml",
+        "scripts/measure-epic-1.mjs",
+        "tests/test_freshie_hermetic_cycle.py"
       ],
-      "source": [],
-      "status": "not_reproducible",
-      "values": null
+      "status": "target_met",
+      "values": {
+        "blocking_ci_registration": true,
+        "dependencies_fail_closed": true,
+        "fake_remote_push": true,
+        "full_cycle": true,
+        "pinned_dolt": true,
+        "scratch_state": true,
+        "server_refusal": true,
+        "target_all_checks": true
+      }
     },
     "59": {
       "cohort": "tracked Dolt sync writer and its focused tests",
@@ -2180,7 +2265,7 @@
       "status": "measured",
       "values": {
         "nonblocking_flock": true,
-        "refusal_tests": 1,
+        "refusal_tests": 4,
         "server_lock_refusal": true,
         "target_mechanical_refusal": true
       }

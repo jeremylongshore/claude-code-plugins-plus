@@ -200,6 +200,12 @@ Deprecated `builds` property (v2 → current):
 | `FUNCTION_INVOCATION_FAILED` | Runtime API removed in new Node.js | Check Node.js changelog for removed APIs |
 | Preview works but prod fails | Env vars differ between environments | Verify production env vars match preview |
 
+## Examples
+
+### Upgrade Node and framework versions with a controlled fallback
+
+Create a dependency-update branch, run the framework codemod and focused tests, and deploy the immutable commit to preview with production-like non-secret configuration. Compare build output, route behavior, and runtime errors against the prior release before approving production promotion. Retain the previous lockfile and deployment as the rollback target; if the upgrade exposes an incompatible module, revert the isolated upgrade commit rather than patching production ad hoc.
+
 ## Resources
 
 - [Vercel CLI Changelog](https://github.com/vercel/vercel/releases)

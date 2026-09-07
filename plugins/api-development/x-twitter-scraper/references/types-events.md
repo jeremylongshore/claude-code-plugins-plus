@@ -1,38 +1,34 @@
-# Xquik TypeScript Types: Events
+# Xquik TypeScript types: events
 
 ```typescript
 
-interface XquikEvent {
+interface XquikEventBase {
   id: string;
   type: EventType;
+  // Account monitor ID or keyword monitor ID, based on monitorType.
   monitorId: string;
-  username: string;
   occurredAt: string;
-  data: EventData;
+  data: Record<string, unknown>;
+}
+
+type XquikEvent = XquikEventBase & (
+  | {
+      monitorType: "account";
+      username: string;
+      query?: never;
+      keywordMonitorId?: never;
+    }
+  | {
+      monitorType: "keyword";
+      username?: never;
+      query: string;
+      keywordMonitorId: string;
+    }
+);
+
+type XquikEventDetail = XquikEvent & {
   xEventId?: string;
-}
-
-// Tweet events (tweet.new, tweet.reply, tweet.quote, tweet.retweet)
-interface TweetEventData {
-  tweetId: string;
-  text: string;
-  metrics: {
-    likes: number;
-    retweets: number;
-    replies: number;
-  };
-  // tweet.quote only
-  quotedTweetId?: string;
-  quotedUsername?: string;
-  // tweet.reply only
-  inReplyToTweetId?: string;
-  inReplyToUsername?: string;
-  // tweet.retweet only
-  retweetedTweetId?: string;
-  retweetedUsername?: string;
-}
-
-type EventData = TweetEventData;
+};
 
 interface EventList {
   events: XquikEvent[];

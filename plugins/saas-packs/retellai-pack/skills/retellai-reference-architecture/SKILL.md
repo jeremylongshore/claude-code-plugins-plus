@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Separate the call path from slow business-system enrichment
+
+Route the voice agent through a stable API boundary that validates inputs and
+returns a bounded response, while sending slow CRM or analytics enrichment to
+an asynchronous worker. The agent receives a clear timeout and human-transfer
+fallback if the business system is unavailable. Exercise this topology with a
+synthetic outage before launch, then document which component owns retries,
+audit events, and the rollback to the prior routing configuration.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

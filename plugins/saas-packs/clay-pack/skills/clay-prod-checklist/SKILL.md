@@ -153,6 +153,21 @@ curl -s -o /dev/null -w "Callback endpoint: HTTP %{http_code}\n" \
 | Webhook 429s | > 5 per hour | Reduce submission rate, check plan limits |
 | CRM sync failures | > 10 per batch | Check CRM field mapping, verify API key |
 
+## Output
+
+Create a production-readiness record that ties each required control to an
+owner, redacted evidence, approval, validation time, and tested rollback. It
+must name the currently certified table/CRM state and must not contain live
+credentials, raw lead records, webhook URLs, or unapproved provider output.
+
+## Examples
+
+Before enabling a production table, run a protected preflight with a synthetic
+row, verify budget alerts, deduplication, callback health, and CRM suppression
+conditions, then attach the results to the change record. If any alert or
+rollback test fails, keep automation disabled and restore the last certified
+configuration.
+
 ## Resources
 
 - [Clay Plans & Billing](https://university.clay.com/docs/plans-and-billing)

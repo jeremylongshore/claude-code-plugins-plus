@@ -8,7 +8,7 @@ description: |
   "/agent-preflight".
 argument-hint: "[repo-path]"
 allowed-tools: Read, Bash(git:*), Bash(python3:*)
-version: 1.0.0
+version: 1.1.0
 author: Signal Loom Works <194151508+el-zachariah@users.noreply.github.com>
 license: MIT
 compatibility: Designed for Claude Code

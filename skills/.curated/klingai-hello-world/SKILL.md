@@ -166,6 +166,28 @@ const poll = setInterval(async () => {
 - 5-second standard video = 10 credits
 - Free tier: 66 credits/day (refreshes daily, no rollover)
 
+## Instructions
+
+1. Run the first request in a sandbox using a synthetic or rights-cleared brief and an approved credit cap; never paste credentials into code or logs.
+2. Request one watermarked, draft-only canary and verify the task state, policy outcome, rights status, and destination before review.
+3. Cancel and remove the draft if quality, policy, attribution, or budget checks fail; do not publish from the smoke test.
+4. Record only a redacted receipt and delete temporary assets at the approved retention boundary.
+
+## Output
+
+Produce a first-render receipt with environment, brief classification, model/mode, duration, credit estimate, task state, policy/rights checks, draft-only assertion, owner, and cleanup reference. Exclude prompts, asset URLs, identities, and secrets.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Policy, rights, or attribution concern | Cancel the task, delete the draft, and route a redacted record for owner review. |
+| Budget or task-state anomaly | Pause further submissions and restore the approved test configuration. |
+
+## Examples
+
+`env=sandbox; brief=synthetic-sky; mode=standard; duration=5s; policy=pass; destination=draft-only; cleanup=24h` is an acceptable first canary.
+
 ## Resources
 
 - [Kling AI Text-to-Video API](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)

@@ -191,6 +191,22 @@ function auditBudgets(budgets: TableBudget[]): void {
 | Unauthorized data export | Viewer exported sensitive data | Review export audit log |
 | Former employee still has access | No offboarding process | Immediate removal on departure |
 
+## Output
+
+Publish a redacted access-and-budget review that identifies workspace/table
+roles, privileged integrations, data-export boundaries, credit caps, key
+owners, audit date, exceptions, and remediation decisions. Role names alone
+are insufficient evidence: verify the effective permissions and revoke access
+that has no current business justification.
+
+## Examples
+
+During a quarterly review, remove an inactive contractor, verify that scheduled
+jobs use a service identity rather than their account, and confirm that a
+viewer cannot export a sensitive table. If a critical workflow loses access,
+restore only the minimum documented role and record the exception with an
+expiry.
+
 ## Resources
 
 - [Clay Plans & Billing](https://university.clay.com/docs/plans-and-billing)

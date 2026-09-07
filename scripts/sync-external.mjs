@@ -46,6 +46,8 @@ import {
   saveLock,
   buildLockEntry,
   diffSource,
+  hasRootLicenseInclude,
+  isRootLicenseFile,
   matchesPattern,
   unanchoredIncludes,
 } from './sync-lockfile.mjs';
@@ -121,7 +123,7 @@ function logVerbose(message) {
  *
  * Caller must clean up the returned tmpdir.
  */
-function sparseCheckout(repo, sourcePath, branch = 'main') {
+function sparseCheckout(repo, sourcePath, branch = 'main', licensePath = 'LICENSE') {
   const tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), `sync-${repo.replace('/', '-')}-`));
   // Authenticated clone bumps rate limits when GITHUB_TOKEN is present.
   // Format: https://x-access-token:TOKEN@github.com/owner/repo.git
@@ -133,7 +135,7 @@ function sparseCheckout(repo, sourcePath, branch = 'main') {
   // else is treated as a path prefix. `--no-cone` mode treats patterns
   // as gitignore-style, so `/*` matches every entry at root recursively.
   const wholeRepo = !sourcePath || sourcePath === '.' || sourcePath === './';
-  const sparsePattern = wholeRepo ? '/*' : sourcePath;
+  const sparsePatterns = wholeRepo ? ['/*'] : [sourcePath, `/${licensePath.replace(/^\/+/, '')}`];
 
   try {
     execFileSync(
@@ -152,7 +154,7 @@ function sparseCheckout(repo, sourcePath, branch = 'main') {
       { stdio: ['ignore', 'pipe', 'pipe'] },
     );
 
-    execFileSync('git', ['-C', tmpdir, 'sparse-checkout', 'set', '--no-cone', sparsePattern], {
+    execFileSync('git', ['-C', tmpdir, 'sparse-checkout', 'set', '--no-cone', ...sparsePatterns], {
       stdio: ['ignore', 'pipe', 'pipe'],
     });
 
@@ -213,17 +215,70 @@ function walkFiles(baseDir, relPrefix = '') {
 export { matchesPattern } from './sync-lockfile.mjs';
 
 /**
- * Read marketplace.extended.json and check whether a plugin entry
- * already exists by name.
+ * Read marketplace.extended.json and return the unique plugin entry by name.
+ * Malformed or duplicate catalog state fails closed instead of being treated
+ * as a missing row that the sync may append around.
  */
-function catalogHasEntry(pluginName) {
-  if (!fs.existsSync(CATALOG_FILE)) return false;
-  try {
-    const data = JSON.parse(fs.readFileSync(CATALOG_FILE, 'utf8'));
-    return (data.plugins || []).some((p) => p.name === pluginName);
-  } catch {
-    return false;
+function catalogEntry(pluginName, catalogFile = CATALOG_FILE) {
+  if (!fs.existsSync(catalogFile)) return null;
+  const data = JSON.parse(fs.readFileSync(catalogFile, 'utf8'));
+  if (!Array.isArray(data?.plugins)) throw new Error('marketplace catalog has no plugins array');
+  const matches = data.plugins.filter((plugin) => plugin?.name === pluginName);
+  if (matches.length > 1) throw new Error(`${pluginName}: duplicate marketplace catalog entries`);
+  return matches[0] ?? null;
+}
+
+/**
+ * Return whether a mirrored source may be projected into publication catalogs.
+ * A quarantine is deliberately retained in sources.yaml and on disk for
+ * provenance/upstream repair, but it has no publication channel. Unknown or
+ * malformed disposition shapes fail closed instead of silently publishing.
+ */
+export function sourceAllowsPublication(source) {
+  const dispositions = [
+    ['publication_disposition', source?.publication_disposition],
+    ['copyleft_disposition', source?.copyleft_disposition],
+  ].filter(([, value]) => value !== undefined);
+  if (dispositions.length === 0) return true;
+  if (dispositions.length > 1) {
+    throw new Error(`${source?.name ?? '<unnamed source>'}: multiple publication dispositions`);
   }
+  const [field, disposition] = dispositions[0];
+  if (
+    !disposition ||
+    typeof disposition !== 'object' ||
+    disposition.status !== 'quarantined' ||
+    !Array.isArray(disposition.channels) ||
+    disposition.channels.length !== 0
+  ) {
+    throw new Error(
+      `${source?.name ?? '<unnamed source>'}: ${field} must be ` +
+        '`status: quarantined` with an empty `channels` list',
+    );
+  }
+  return false;
+}
+
+/** Require an existing catalog row to agree exactly with its source disposition. */
+export function assertCatalogPublicationParity(source, plugin) {
+  const publishable = sourceAllowsPublication(source);
+  if (plugin === null || plugin === undefined) return publishable;
+  if (!plugin || typeof plugin !== 'object' || Array.isArray(plugin)) {
+    throw new Error(`${source?.name ?? '<unnamed source>'}: catalog entry must be an object`);
+  }
+  if (plugin.publication !== undefined && plugin.publication !== 'quarantined') {
+    throw new Error(
+      `${source?.name ?? '<unnamed source>'}: unknown catalog publication state ` +
+        `${String(plugin.publication)}`,
+    );
+  }
+  const catalogPublishable = plugin.publication === undefined;
+  if (catalogPublishable !== publishable) {
+    throw new Error(
+      `${source?.name ?? '<unnamed source>'}: source disposition and catalog publication state disagree`,
+    );
+  }
+  return publishable;
 }
 
 /**
@@ -284,7 +339,26 @@ function ensurePluginJson(source) {
   const pluginJsonPath = path.join(ROOT_DIR, source.target_path, '.claude-plugin', 'plugin.json');
 
   if (fs.existsSync(pluginJsonPath)) {
-    return false; // upstream provided one, leave it alone
+    // License metadata is a projection of the reviewed sources.yaml contract.
+    // Preserve upstream fields, but never retain a contradictory license claim
+    // after the source record has been corrected.
+    try {
+      const existing = JSON.parse(fs.readFileSync(pluginJsonPath, 'utf8'));
+      if (source.license && existing.license !== source.license) {
+        if (options.dryRun) {
+          log(`   📋 Would reconcile plugin.json license: ${source.license}`, colors.yellow);
+          return false;
+        }
+        existing.license = source.license;
+        fs.writeFileSync(pluginJsonPath, JSON.stringify(existing, null, 2) + '\n');
+        log(`   📋 Reconciled plugin.json license: ${source.license}`, colors.green);
+        return true;
+      }
+    } catch {
+      // Existing malformed manifests are handled by the normal validators;
+      // never rewrite an unreadable upstream-owned file during sync.
+    }
+    return false;
   }
 
   if (options.dryRun) {
@@ -388,13 +462,18 @@ ${source.license ? `  \n**License:** ${source.license}` : ''}
  * Returns true if an entry was added, false if catalog already had one
  * or if dry-run mode.
  */
-function ensureCatalogEntry(source) {
-  if (catalogHasEntry(source.name)) {
+export function ensureCatalogEntry(
+  source,
+  { root = ROOT_DIR, catalogFile = CATALOG_FILE, dryRun = options.dryRun } = {},
+) {
+  const existing = catalogEntry(source.name, catalogFile);
+  const publishable = assertCatalogPublicationParity(source, existing);
+  if (existing) {
     return false; // already present, no action
   }
 
   // Pull version + license from the synced plugin.json if available.
-  const pluginJsonPath = path.join(ROOT_DIR, source.target_path, '.claude-plugin', 'plugin.json');
+  const pluginJsonPath = path.join(root, source.target_path, '.claude-plugin', 'plugin.json');
   let pluginJson = {};
   if (fs.existsSync(pluginJsonPath)) {
     try {
@@ -419,6 +498,7 @@ function ensureCatalogEntry(source) {
     version: pluginJson.version || '0.1.0',
     category: categoryFromTargetPath(source.target_path, source.category),
   };
+  if (!publishable) entry.publication = 'quarantined';
 
   // Keywords: prefer plugin.json, fall back to sources.yaml, else infer from category
   if (Array.isArray(pluginJson.keywords) && pluginJson.keywords.length > 0) {
@@ -475,7 +555,7 @@ function ensureCatalogEntry(source) {
     entry.license = pluginJson.license || source.license;
   }
 
-  if (options.dryRun) {
+  if (dryRun) {
     log(`   📋 Would add catalog entry: ${source.name}`, colors.yellow);
     return false;
   }
@@ -483,7 +563,7 @@ function ensureCatalogEntry(source) {
   // Insert the entry. Append at the end of the plugins array, before the
   // closing brace. We avoid full JSON.stringify of the whole file because
   // that reformats every existing entry and trips check-catalog-format.
-  const text = fs.readFileSync(CATALOG_FILE, 'utf8');
+  const text = fs.readFileSync(catalogFile, 'utf8');
   const entryJson = JSON.stringify(entry, null, 2)
     .split('\n')
     .map((line, i) => (i === 0 ? `    ${line}` : `    ${line}`))
@@ -504,7 +584,7 @@ function ensureCatalogEntry(source) {
   // jamming them onto one line as `},    {`, which the catalog-format gate flags.
   const updated = `${before}${lastEntryClose.replace(/}(\s*)$/, '},')}\n${entryJson}${arrayClose}`;
 
-  fs.writeFileSync(CATALOG_FILE, updated);
+  fs.writeFileSync(catalogFile, updated);
   log(`   📋 Added catalog entry: ${source.name}`, colors.green);
   return true;
 }
@@ -553,7 +633,8 @@ async function syncSource(source, config, lock) {
   let tmpdir = null;
 
   try {
-    tmpdir = sparseCheckout(source.repo, source.source_path, branch);
+    const licensePath = source.license_path || 'LICENSE';
+    tmpdir = sparseCheckout(source.repo, source.source_path, branch, licensePath);
     logVerbose(`Sparse-cloned ${source.repo}@${branch} → ${tmpdir}`);
 
     // Walk the sourcePath subtree (or repo root when source_path is '.' / '').
@@ -598,6 +679,45 @@ async function syncSource(source, config, lock) {
       const excluded = matchesPattern(file.path, source.exclude);
       return included && !excluded;
     });
+
+    // License text must travel with every mirror. A source may mirror a nested
+    // upstream subtree, but its license normally lives at repository root; the
+    // dedicated license_path lets the sparse checkout carry it without widening
+    // the mirrored content. Do not synthesize a license from a metadata claim:
+    // the bytes must come from the upstream source selected by the include list.
+    if (!hasRootLicenseInclude(source.include)) {
+      throw new Error(
+        'missing explicit root LICENSE/COPYING entry in sources.yaml include[]; refusing sync',
+      );
+    }
+    const licenseSourcePath = path.resolve(tmpdir, licensePath);
+    const checkoutRoot = path.resolve(tmpdir);
+    if (
+      licenseSourcePath === checkoutRoot ||
+      !licenseSourcePath.startsWith(checkoutRoot + path.sep) ||
+      !fs.existsSync(licenseSourcePath) ||
+      !fs.statSync(licenseSourcePath).isFile()
+    ) {
+      throw new Error(
+        `upstream license file "${licensePath}" is unavailable; refusing sync rather than distributing bytes without license text`,
+      );
+    }
+    const licenseName = path.basename(licensePath);
+    if (!isRootLicenseFile(licenseName)) {
+      throw new Error(
+        `license_path "${licensePath}" must name a root LICENSE/COPYING file; refusing sync`,
+      );
+    }
+    if (!filteredFiles.some((file) => isRootLicenseFile(file.path))) {
+      filteredFiles.push({
+        path: licenseName,
+        content: fs.readFileSync(licenseSourcePath),
+        mode: fs.statSync(licenseSourcePath).mode,
+      });
+    }
+    if (!filteredFiles.some((file) => isRootLicenseFile(file.path))) {
+      throw new Error('no root LICENSE/COPYING file selected for mirror; refusing sync');
+    }
     logVerbose(`${filteredFiles.length} files after filtering`);
 
     // ── Lockfile pinning gate (sources.lock.json) ────────────────────────
@@ -801,42 +921,6 @@ async function syncSource(source, config, lock) {
       }
     }
 
-    if (changes.length > 0 && !options.dryRun) {
-      const sourceJson = {
-        synced_from: {
-          repo: source.repo,
-          path: source.source_path,
-          branch,
-        },
-        last_sync: new Date().toISOString(),
-        author: source.author,
-        license: source.license,
-        files_synced: ownedFiles.length,
-        files: ownedFiles,
-      };
-      fs.writeFileSync(sourceJsonPath, JSON.stringify(sourceJson, null, 2));
-      logVerbose(`Written .source.json`);
-
-      // Loud warning if any synced file is git-ignored: the workflow's
-      // `git add -A` would silently drop it, producing an incomplete mirror.
-      try {
-        const targets = ownedFiles.map((f) => path.join(source.target_path, f));
-        const ignored = execFileSync('git', ['-C', ROOT_DIR, 'check-ignore', ...targets], {
-          stdio: ['ignore', 'pipe', 'ignore'],
-        })
-          .toString()
-          .trim();
-        if (ignored) {
-          log(
-            `   ⚠️  GIT-IGNORED — will NOT be committed: ${ignored.split('\n').join(', ')}`,
-            colors.red,
-          );
-        }
-      } catch {
-        // git check-ignore exits 1 when nothing matches — the normal, good path.
-      }
-    }
-
     // Synthesize plugin.json + README.md if the upstream sync didn't
     // include them (skill-only repos like skyvern / ejentum). Required so
     // the downstream validators (generate-plugin-package-jsons.mjs,
@@ -859,6 +943,62 @@ async function syncSource(source, config, lock) {
     const catalogAdded = ensureCatalogEntry(source);
     if (catalogAdded) {
       changes.push({ path: '.claude-plugin/marketplace.extended.json', action: 'catalog' });
+    }
+
+    // `.source.json` is the provenance authority for a mirrored artifact. A
+    // reviewed source-record correction (for example MIT → AGPL-3.0 after an
+    // upstream license check) must update it even when upstream file bytes are
+    // unchanged.
+    if (!options.dryRun && fs.existsSync(sourceJsonPath)) {
+      try {
+        const priorSource = JSON.parse(fs.readFileSync(sourceJsonPath, 'utf8'));
+        if (priorSource.license !== source.license) {
+          changes.push({ path: '.source.json', action: 'provenance' });
+        }
+      } catch {
+        // The final write below repairs the engine-owned manifest when this
+        // sync already has changes; an isolated malformed manifest remains a
+        // validator failure rather than an unreviewed overwrite.
+      }
+    }
+
+    // Write provenance only after every generated projection has settled. This
+    // keeps `.source.json` aligned when a source metadata correction changes a
+    // synthesized plugin manifest without changing any upstream file bytes.
+    if (changes.length > 0 && !options.dryRun) {
+      const sourceJson = {
+        synced_from: {
+          repo: source.repo,
+          path: source.source_path,
+          branch,
+        },
+        last_sync: new Date().toISOString(),
+        author: source.author,
+        license: source.license,
+        files_synced: ownedFiles.length,
+        files: ownedFiles,
+      };
+      fs.writeFileSync(sourceJsonPath, JSON.stringify(sourceJson, null, 2));
+      logVerbose(`Written .source.json`);
+
+      // Loud warning if any synced file is git-ignored: the workflow's
+      // `git add -A` would silently drop it, producing an incomplete mirror.
+      try {
+        const targets = ownedFiles.map((file) => path.join(source.target_path, file));
+        const ignored = execFileSync('git', ['-C', ROOT_DIR, 'check-ignore', ...targets], {
+          stdio: ['ignore', 'pipe', 'ignore'],
+        })
+          .toString()
+          .trim();
+        if (ignored) {
+          log(
+            `   ⚠️  GIT-IGNORED — will NOT be committed: ${ignored.split('\n').join(', ')}`,
+            colors.red,
+          );
+        }
+      } catch {
+        // git check-ignore exits 1 when nothing matches — the normal, good path.
+      }
     }
 
     if (changes.length === 0) {

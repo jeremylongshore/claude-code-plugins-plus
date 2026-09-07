@@ -199,6 +199,18 @@ curl -H "Authorization: Bearer ${BRIGHTDATA_API_TOKEN}" \
 3. Check  for outages
 4. Contact support with zone name, error headers, and timestamps
 
+## Output
+
+Troubleshooting produces a redacted error category, request identifier, policy/authorization state, retry decision, and escalation owner. It excludes proxy credentials, full URLs with parameters, raw response bodies, and target data.
+
+## Error Handling
+
+Retry only explicitly transient, idempotent operations within the approved rate and cost budget. Pause on authorization, compliance, unexpected-data, or persistent block failures; preserve a redacted receipt and escalate to the designated owner rather than rotating proxies or changing collection behavior to evade controls.
+
+## Examples
+
+For a timeout, retry one idempotent test request after bounded backoff and record the request identifier. For a 401/403 or policy block, stop, verify the authorized zone/credential and target scope, and obtain approval before resuming—do not treat an access denial as a signal to bypass controls.
+
 ## Resources
 
 - Bright Data Error Reference

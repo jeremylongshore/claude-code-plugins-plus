@@ -237,7 +237,9 @@ metricsApp.get('/metrics', async (_, res) => {
   res.end(await registry.metrics());
 });
 metricsApp.get('/health', (_, res) => res.json({ status: 'ok' }));
-metricsApp.listen(9090, () => console.log('Metrics on :9090'));
+// Keep metrics private; expose it to a scraper through a local agent or an
+// explicitly authenticated, network-restricted deployment path.
+metricsApp.listen(9090, '127.0.0.1', () => console.log('Metrics on 127.0.0.1:9090'));
 ```
 
 ## Output
@@ -248,6 +250,18 @@ metricsApp.listen(9090, () => console.log('Metrics on :9090'));
 - OpenTelemetry tracing spans for distributed tracing
 - Alerting rules for errors, rate limits, latency, and credit burn rate
 - `/metrics` and `/health` HTTP endpoints
+
+## Examples
+
+For a new enrichment worker, instrument the client before its first request,
+scrape `/metrics` only through the approved local collector or a
+network-restricted authenticated path, and confirm that a synthetic `429`
+increments the error and rate-limit signals without emitting a contact record
+or API key. Temporarily lower the rate-limit threshold in a non-production
+environment to prove the alert reaches the on-call route, then restore the
+production threshold. If a metric endpoint is publicly reachable, labels carry
+unbounded values, or the alert has no owner, block the rollout until the
+exposure or operational gap is corrected.
 
 ## Error Handling
 

@@ -127,6 +127,25 @@ async function batchAnalyzeDatasets(datasetIds: string[], query: string, batchSi
 | Analysis still processing | Complex query on large dataset | Poll status every 10s, timeout at 10 min |
 | 403 on export | Plan does not include export feature | Verify plan tier supports data export |
 
+## Prerequisites
+
+- An approved sandbox workload, synthetic records, current quota limits, source/destination allowlists, suppression controls, and a named operator for pause and rollback.
+
+## Instructions
+
+1. Exercise rate-limit behavior only with synthetic fixtures and bounded request budgets; reject real-record export or unapproved destinations.
+2. Apply idempotency keys, exponential backoff, and aggregate-only telemetry; verify suppression and `contacts_exported=0` at each probe.
+3. Stop the canary on unexpected quota, scope, policy, or retention drift, then cancel queued work and revoke temporary access.
+4. Retain only redacted aggregate evidence and delete sandbox artifacts after the approved test window.
+
+## Output
+
+Produce a rate-limit receipt with environment, request budget, aggregate response/error counts, suppression and no-export assertions, pause/rollback action, owner approval, and retention/deletion proof. Exclude queries, contacts, and credentials.
+
+## Examples
+
+`env=ci-synthetic; budget=30rpm; retries=backoff; suppression=pass; contacts_exported=0; queued_jobs=cancelled; cleanup=verified` is an acceptable receipt.
+
 ## Resources
 
 - Juicebox API Documentation

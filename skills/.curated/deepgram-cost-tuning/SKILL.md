@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Cost Tuning
 
+## Prerequisites
+
+- An aggregate usage/cost baseline, approved budget owner, delivery/quality SLO, and data/retention policy.
+- Synthetic fixtures and a reversible optimization/change record.
+
+## Examples
+
+Compare aggregate duration, model, concurrency, and error data in a development/staging workload, change one approved model or batching parameter, and observe the quality/latency/cost tradeoff. Revert if quality or reliability drops; do not reduce retention, privacy, or consent safeguards merely to lower spend.
+
 ## Overview
 
 Optimize Deepgram API costs through smart model selection, audio preprocessing to reduce billable minutes, usage monitoring via the Deepgram API, budget guardrails, and feature-aware cost estimation. Deepgram bills per audio minute processed.

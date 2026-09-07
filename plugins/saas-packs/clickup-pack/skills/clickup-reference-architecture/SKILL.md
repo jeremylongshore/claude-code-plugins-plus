@@ -26,6 +26,21 @@ compatibility: Designed for Claude Code
 
 Production-ready architecture for ClickUp API v2 integrations covering custom fields, time tracking, goals, and two-way sync with external systems.
 
+## Prerequisites
+
+- Approved workspace/list scope, data classification, and integration owner
+- Dedicated scoped identity, secret reference, and separate non-production path
+- Versioned mapping, idempotency, conflict-resolution, and recovery decisions
+- Monitoring/alerting for sync freshness, retries, and authorization failures
+
+## Instructions
+
+Implement the client boundary and mappings in a staging scope first, then test
+one-way and two-way changes with deterministic external IDs, conflict handling,
+and least-privilege access. Promote only after observed sync, permission, and
+rollback behavior match the architecture; do not use last-write-wins by default
+for business-critical fields without a named owner decision.
+
 ## Architecture Layers
 
 ```
@@ -217,6 +232,20 @@ class ClickUpSyncService {
 | Time entry negative duration | Timer still running | Stop timer before reading duration |
 | Goal permission denied | User not goal owner | Add user to goal owners |
 | Sync conflict | Both sides updated | Last-write-wins or manual merge |
+
+## Output
+
+Produce an architecture record with source/destination boundaries, mappings,
+identity scope, conflict and idempotency policy, monitoring, retention, owner,
+and rollback evidence. It must avoid live tokens, private task content, and
+unapproved member data.
+
+## Examples
+
+Synchronize one staging list with external IDs, then create a controlled
+simultaneous edit to prove the selected conflict policy and audit outcome. If
+the mapping or permission check fails, halt the sync and restore the prior
+certified state before expanding to additional lists.
 
 ## Resources
 

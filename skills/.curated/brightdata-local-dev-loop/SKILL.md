@@ -180,6 +180,10 @@ describe('Bright Data Scraper', () => {
 - Mocked test suite that doesn't require live proxy access
 - Live integration test flag (`BRIGHTDATA_LIVE=1`)
 
+## Examples
+
+Use mocked responses and provider-approved test endpoints while iterating locally. Keep zone credentials out of source control and terminal output, set a local request ceiling, and store only synthetic/redacted fixtures in the development cache. A live probe must be explicitly approved and scoped to a controlled target.
+
 ## Error Handling
 
 | Error | Cause | Solution |

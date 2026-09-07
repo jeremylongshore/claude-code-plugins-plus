@@ -120,6 +120,26 @@ docker run -d --name juicebox-integration -p 3000:3000 \
 | `429 Rate Limited` | Exceeding API rate limits | Implement exponential backoff; batch analysis requests |
 | Analysis timeout | Large dataset processing | Increase timeout or use async analysis endpoint with polling |
 
+## Prerequisites
+
+- An approved deployment change, secret references, sandbox workspace, source/destination allowlist, synthetic fixture, and tested rollback artifact.
+
+## Instructions
+
+1. Build and test the pinned artifact with synthetic fixtures; reject literal credentials and unapproved sources or destinations.
+2. Deploy to staging and verify health, source authority, suppression, data minimization, and `contacts_exported=0` before production approval.
+3. Release to one sandbox canary, monitor aggregate errors/quota/policy probes, and halt on any scope or retention drift.
+4. Promote in stages only after owner approval; restore the prior revision and delete staged artifacts on failure.
+5. Retain only the redacted receipt and revoke temporary deployment access.
+
+## Output
+
+Produce a deployment receipt with artifact digest, environment, canary workspace, source/destination/suppression outcomes, export-count assertion, owner approval, rollout state, retention, and rollback reference. Exclude contacts, enrichment data, and secrets.
+
+## Examples
+
+`artifact=sha256:opaque; env=staging; canary=sandbox-prospects; source=approved; suppression=pass; contacts_exported=0; rollback=release-r31` supports controlled promotion.
+
 ## Resources
 
 - Juicebox API Docs

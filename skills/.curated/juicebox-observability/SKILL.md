@@ -98,6 +98,25 @@ function logJuiceboxEvent(event: string, data: Record<string, any>) {
 | Ingestion stall | Dataset too large or format error | Check upload logs, validate schema |
 | Empty result set | Index gap or query mismatch | Verify dataset freshness, adjust search params |
 
+## Prerequisites
+
+- An approved telemetry schema, sandbox synthetic fixture, redaction policy, source/destination allowlists, suppression controls, retention window, and an owner for alert response.
+
+## Instructions
+
+1. Instrument aggregate operational signals only; reject raw queries, contact fields, enrichment values, credentials, and unapproved exports.
+2. Validate a sandbox canary, confirm suppression, retention, redaction, and `contacts_exported=0`, then compare it with the approved baseline.
+3. Pause ingestion or downstream delivery on scope, policy, quota, or retention drift and return to the last approved configuration.
+4. Keep only redacted aggregate evidence and delete test telemetry after its approved window.
+
+## Output
+
+Produce an observability receipt with environment, event classes, aggregate volume/error/latency signals, redaction/suppression/no-export outcomes, alert owner, retention/deletion proof, and rollback reference.
+
+## Examples
+
+`env=ci-synthetic; events=aggregate-only; latency_p95=within-baseline; suppression=pass; contacts_exported=0; retention=24h; cleanup=verified` is a valid canary record.
+
 ## Resources
 
 - Juicebox Dashboard

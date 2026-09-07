@@ -205,6 +205,32 @@ task_id = submit_async(
 # See klingai-webhook-config skill for receiver implementation
 ```
 
+## Prerequisites
+
+- An approved asynchronous workflow, sandbox callback endpoint, synthetic or rights-cleared briefs, secret references, content-policy controls, credit budget, and cancellation/removal owner.
+
+## Instructions
+
+1. Submit one draft-only sandbox job with a signed, allowlisted callback and an idempotency key; never include prompt or asset data in callback logs.
+2. Verify task transitions, callback signature, policy/rights outcome, credit use, and destination before permitting a downstream action.
+3. Halt the queue on duplicate, unauthorized, policy, budget, or retention drift; cancel queued work and remove temporary drafts.
+4. Promote only after owner approval and retain an aggregate redacted receipt for the approved window.
+
+## Output
+
+Produce an async-job receipt with task and callback correlation IDs, environment, aggregate state transitions, signature/idempotency result, policy/rights and draft-only checks, credit use, owner approval, and cleanup reference. Exclude prompts, URLs, identities, and secrets.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Callback signature or idempotency check fails | Reject the callback, quarantine the event, and investigate using redacted metadata only. |
+| Policy, rights, budget, or retention drift | Cancel queued jobs, remove drafts, and restore the previous workflow configuration. |
+
+## Examples
+
+`env=staging; task=opaque-42; callback=allowlisted; signature=pass; idempotency=pass; destination=draft-only; cleanup=verified` is a valid canary receipt.
+
 ## Resources
 
 - [API Reference](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)

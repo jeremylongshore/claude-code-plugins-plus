@@ -151,6 +151,22 @@ variable "clusters" {
 | Cluster not appearing | Wrong credentials | Verify cloud provider auth |
 | Policies not applying | JSON encoding error | Validate `jsonencode()` output |
 
+## Output
+
+Produce a reviewed infrastructure plan identifying cloud, cluster, module and
+provider versions, policy limits, secret references, and the per-cluster
+rollout decision. Deployment evidence must show the intended cluster identity
+and health after apply; never treat a successful Terraform exit code as proof
+that the autoscaler is safe to enable.
+
+## Examples
+
+Deploy one staging EKS cluster using a pinned module version and conservative
+policy limits, then verify agent health and policy state through the provider
+API. Promote separate GKE or AKS clusters only after their own plans and
+approvals pass; on a bad IAM or policy result, revert the changed state through
+the reviewed Terraform workflow rather than applying ad-hoc console changes.
+
 ## Resources
 
 - [EKS Module](https://registry.terraform.io/modules/castai/eks-cluster/castai/latest)

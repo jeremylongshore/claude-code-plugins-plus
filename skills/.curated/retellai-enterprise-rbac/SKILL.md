@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Grant a release operator access without granting call-data access
+
+Create a role limited to publishing an approved agent version and inspecting
+deployment status. Do not include transcript, recording, billing, or user
+management permissions in that role. Test the role against a preview agent:
+it should promote the designated version but fail to retrieve protected call
+content. Record the role, environment, and approver before assigning it to a
+new operator, and remove the assignment when the release window closes.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

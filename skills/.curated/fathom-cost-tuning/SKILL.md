@@ -18,6 +18,24 @@ compatibility: Designed for Claude Code
 ---
 # Fathom Cost Tuning
 
+## Prerequisites
+
+- An aggregate usage/cost baseline, budget owner, recording/consent policy, quality/delivery SLO, and synthetic evaluation fixture.
+
+## Instructions
+
+1. Measure aggregate meeting volume, processing, sync/follow-up behavior, errors, and cost by approved scope.
+2. Change one reversible setting and compare against the baseline and consent/delivery safeguards.
+3. Retain the change only after owner approval; restore the prior setting on regression.
+
+## Output
+
+- A measured cost decision with owner, data/consent/delivery guardrails, and rollback threshold.
+
+## Examples
+
+Evaluate a development workflow with synthetic meeting metadata, reduce duplicate processing or unnecessary integration calls, and compare aggregate cost/latency/error metrics. Revert on quality, consent, or CRM-sync regression; do not disable audit, retention, or access controls to save cost.
+
 ## Overview
 
 Fathom pricing scales with per-seat licensing for team features, with primary cost drivers being transcript storage volume and recording hours consumed. Every meeting generates a transcript and AI summary that persist in storage. For organizations running dozens of meetings daily, unchecked transcript accumulation and redundant API polling for meeting data create unnecessary spend. Optimizing retrieval patterns and storage lifecycle directly reduces both API costs and plan overhead.

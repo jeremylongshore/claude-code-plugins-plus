@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Iterate on a prompt with a deterministic local test set
+
+Keep a small suite of synthetic caller intents, including a successful request,
+an unclear request, and a required human handoff. Run that suite against a
+development agent after each prompt or tool-schema change and compare only
+redacted outcomes such as route, tool arguments, and completion state. Do not
+point local development at a production phone number; publish a versioned
+preview only after the suite continues to meet its expected behavior.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

@@ -18,6 +18,25 @@ compatibility: Designed for Claude Code
 ---
 # Fathom Performance Tuning
 
+## Prerequisites
+
+- A baseline for processing latency, sync/delivery error, quality, and an approved data/consent policy.
+- Synthetic meeting metadata, an owner, and a reversible performance-change threshold.
+
+## Instructions
+
+1. Measure aggregate processing, sync, and alert behavior without using meeting content as diagnostic data.
+2. Change one approved queue/concurrency/integration setting and compare against baseline.
+3. Revert on quality, consent, delivery, or reliability regression.
+
+## Output
+
+- A measured performance recommendation with data/consent guardrails, owner, and rollback record.
+
+## Examples
+
+Use synthetic meetings to measure processing and CRM-sync latency, change one bounded concurrency setting, and compare aggregate results. Revert if errors or incorrect follow-up behavior increases; do not bypass review or retention controls to improve performance.
+
 ## Overview
 
 Fathom's meeting intelligence API serves transcript downloads, bulk meeting sync, and action item aggregation. Transcript payloads are large (50-500KB each), making bulk sync of historical meetings a major latency bottleneck. The 60 req/min rate limit requires careful batching. Caching immutable transcripts aggressively while keeping action item data fresh reduces download latency by 70% and prevents rate limit errors during bulk operations.

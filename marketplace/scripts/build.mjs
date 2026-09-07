@@ -25,7 +25,6 @@ function run(label, command, args) {
 run('skills:generate', 'node', ['scripts/discover-skills.mjs']);
 run('readme:extract', 'node', ['scripts/extract-readme-sections.mjs']);
 run('catalog:sync', 'node', ['scripts/sync-catalog.mjs']);
-run('jrig:enrich', 'node', ['scripts/enrich-jrig-data.mjs']);
 run('search:generate', 'node', ['scripts/generate-unified-search.mjs']);
 run('cowork:zips', 'node', [resolve(repoRoot, 'scripts/build-cowork-zips.mjs')]);
 run('cowork:validate', 'node', [resolve(repoRoot, 'scripts/validate-cowork-manifest.mjs')]);

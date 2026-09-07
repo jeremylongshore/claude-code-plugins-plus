@@ -238,6 +238,12 @@ tar czf vercel-debug-$(date +%Y%m%d).tar.gz .
 | EDGE_FUNCTION_INVOCATION_FAILED | Node.js API in edge runtime | Check imports for Node.js-only modules |
 | Function works locally, fails deployed | Missing dependency or env var | Run `vercel build` locally, check output |
 
+## Examples
+
+### Isolate a production-only timeout without widening access
+
+Start with the deployment ID and a redacted request identifier, then reproduce the route against a preview deployment using synthetic data. Compare the function duration and region in `vercel logs` with the preview result; do not export customer payloads or production environment variables into the debug archive. If the evidence points to an initialization regression, deploy the smallest rollback or feature-flag change to preview first, verify the latency bound, and promote only after the incident owner records the before/after evidence.
+
 ## Resources
 
 - [Vercel Error Codes](https://vercel.com/docs/errors)

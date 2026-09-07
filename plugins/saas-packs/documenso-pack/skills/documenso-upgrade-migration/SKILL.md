@@ -12,7 +12,7 @@ description: 'Manage Documenso API version upgrades and SDK migrations.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -23,6 +23,15 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Upgrade & Migration
+
+## Output
+
+- A versioned upgrade record with compatibility, access/audit checks, staged evidence, and a verified rollback revision.
+- A paused/reversible release decision when any signing, authorization, or retention requirement regresses.
+
+## Examples
+
+Upgrade in a development workspace using synthetic documents and signers, test the previous and target versions for lifecycle, callback, access, and audit behavior, then stage a canary. Retain the prior release/configuration and roll back immediately if a control fails; do not validate upgrades by changing live signed documents.
 
 ## Current State
 

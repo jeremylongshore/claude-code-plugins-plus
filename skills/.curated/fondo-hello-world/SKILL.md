@@ -19,6 +19,18 @@ compatibility: Designed for Claude Code
 ---
 # Fondo Hello World
 
+## Prerequisites
+
+A scoped staging credential, a fictional data fixture, secret-manager access, and an authorized finance owner.
+
+## Output
+
+Return only an opaque test ID, schema result, review state, and redacted failure reference; never emit account, transaction, payroll, or tax data.
+
+## Examples
+
+Run the smallest read-only check against a fictional staging record, verify logs have no sensitive values, and revoke the test credential after validation.
+
 ## Overview
 
 Verify your Fondo setup is working: check that bank transactions are syncing, payroll data is flowing, and your company qualifies for R&D tax credits.

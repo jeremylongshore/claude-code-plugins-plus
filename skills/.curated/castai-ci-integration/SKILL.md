@@ -132,6 +132,21 @@ gh secret set CASTAI_CLUSTER_ID --body "your-cluster-id"
 | Terraform init fails | State backend misconfigured | Check backend config |
 | Agent offline in CI | Key scope mismatch | Use production API key |
 
+## Output
+
+The CI run publishes a redacted plan summary, agent-health decision,
+destructive-change result, immutable run URL, and named approver for any
+production promotion. Secrets remain in the CI secret store, are masked in
+logs, and are unavailable to untrusted pull-request code or forked workflows.
+
+## Examples
+
+On a protected branch, run the plan with a scoped staging credential and fail
+when the parsed plan contains destructive changes or the agent is offline.
+Upload only the redacted plan artifact; require an environment approval before
+any apply job, and cancel the deployment when the approval or freshness window
+expires.
+
 ## Resources
 
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)

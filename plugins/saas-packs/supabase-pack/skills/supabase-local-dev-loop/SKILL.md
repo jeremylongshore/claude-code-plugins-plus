@@ -14,7 +14,7 @@ description: 'Configure Supabase local development with the CLI, Docker, and mig
   '
 allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(supabase:*), Bash(docker:*), Bash(curl:*),
   Grep
-version: 1.53.0
+version: 1.54.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

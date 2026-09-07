@@ -226,6 +226,12 @@ async function getObjectPermissions(objectType: string) {
 | SSO loop | Wrong ACS URL | Verify My Domain + ACS URL match |
 | User can't see records | OWD is Private, no sharing rule | Add appropriate Sharing Rule or Role Hierarchy |
 
+## Examples
+
+### Grant an integration user the minimum viable object access
+
+Start with a dedicated non-human user and an empty permission set, add read or create permissions only for the required objects and fields, and keep organization-wide defaults restrictive. Test the integration’s synthetic workflow in a sandbox and verify an ungranted field is refused. Have a second administrator review the permission-set diff, schedule an access recertification, and remove emergency permissions once the operational need ends.
+
 ## Resources
 
 - [Salesforce Security Model](https://developer.salesforce.com/docs/atlas.en-us.securityImplGuide.meta/securityImplGuide/)

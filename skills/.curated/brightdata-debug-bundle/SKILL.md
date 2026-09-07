@@ -156,6 +156,14 @@ echo "REVIEW FOR SENSITIVE DATA BEFORE SHARING"
 - Runtime versions
 - Port connectivity results
 
+## Error Handling
+
+If the requested evidence contains a credential, full target URL, raw payload, or collected data, stop and redact or obtain the designated security/compliance approval before collection. A failed diagnostic is recorded as a redacted status with its opaque request identifier; do not retry by changing zones or bypassing target policy.
+
+## Examples
+
+For a scoped incident, collect the zone label, request identifier, status category, SDK/version, and timestamp in an encrypted bundle after redaction. Do not include credentials, proxy endpoints, full target URLs, response bodies, or collected data. Share only with approved responders and delete under the incident retention policy.
+
 ## Resources
 
 - [Bright Data Support Portal](https://brightdata.com/cp/support)

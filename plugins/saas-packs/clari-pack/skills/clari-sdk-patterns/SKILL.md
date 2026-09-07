@@ -233,6 +233,20 @@ class ClariClient {
 | 404 | Wrong forecast name | List forecasts first |
 | 429 | Rate limited | Back off and retry |
 
+## Output
+
+The client returns validated forecast/export results or a classified failure
+with a job ID and safe correlation metadata. It never logs bearer credentials,
+download URLs, or unfiltered forecast payloads; callers receive a bounded
+retry decision rather than an unstructured provider exception.
+
+## Examples
+
+Submit a read-only export for a staging period, poll the returned job ID within
+the configured attempt limit, and persist only the approved fields after a
+completed response. On 429, honor the backoff policy; on 401 or 403, stop and
+route the request to the credential or authorization owner instead of retrying.
+
 ## Resources
 
 - [Clari API Reference](https://developer.clari.com/documentation/external_spec)

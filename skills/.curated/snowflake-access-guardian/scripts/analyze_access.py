@@ -1,0 +1,696 @@
+#!/usr/bin/env python3
+"""Deterministic, read-only Snowflake authorization graph analyzer.
+
+The input is a sanitized JSON export.  This program never connects to
+Snowflake and never emits SQL that changes state.  It turns role edges, users,
+object grants, and future grants into a reviewable report so an operator can
+decide what to change under an approved change process.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import re
+import sys
+from collections import defaultdict, deque
+from datetime import datetime, timezone
+from pathlib import Path
+
+
+SENSITIVE_KEY_NAMES = {
+    "apikey",
+    "authorization",
+    "credential",
+    "credentials",
+    "jwt",
+    "oauthcode",
+    "oauthtoken",
+    "passphrase",
+    "password",
+    "privatekey",
+    "secret",
+    "sessiontoken",
+    "token",
+}
+SENSITIVE_KEY_FRAGMENTS = (
+    "password",
+    "passphrase",
+    "secret",
+    "privatekey",
+    "credential",
+    "token",
+    "apikey",
+    "authorization",
+    "jwt",
+)
+SEVERITY_ORDER = {"critical": 0, "high": 1, "medium": 2, "low": 3, "info": 4}
+SENSITIVE_VALUE_PATTERNS = (
+    re.compile(
+        r"(?i)\b(?:password|passwd|pwd|passphrase|secret|token|api[_ -]?key|authorization|credential|private[_ -]?key)\b\s*[:=]\s*\S+"
+    ),
+    re.compile(r"(?i)\bbearer\s+[A-Za-z0-9._~+/=-]{8,}"),
+    re.compile(r"-----BEGIN(?: [A-Z0-9]+)? PRIVATE KEY-----"),
+)
+
+
+def _norm(value: object) -> str:
+    return str(value or "").strip()
+
+
+def _upper(value: object) -> str:
+    return _norm(value).upper()
+
+
+def reject_secrets(value: object, path: str = "input") -> None:
+    """Fail closed if a caller tries to provide credential material."""
+    if isinstance(value, dict):
+        for key, child in value.items():
+            key_l = "".join(char for char in str(key).casefold() if char.isalnum())
+            if key_l in SENSITIVE_KEY_NAMES or any(fragment in key_l for fragment in SENSITIVE_KEY_FRAGMENTS):
+                raise ValueError(f"credential-bearing field is not accepted: {path}.{key}")
+            reject_secrets(child, f"{path}.{key}")
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            reject_secrets(child, f"{path}[{index}]")
+    elif isinstance(value, str) and any(pattern.search(value) for pattern in SENSITIVE_VALUE_PATTERNS):
+        raise ValueError(f"credential-shaped value is not accepted: {path}")
+
+
+def _rows(doc: dict, field: str) -> list[dict]:
+    value = doc.get(field, [])
+    if not isinstance(value, list):
+        raise ValueError(f"{field} must be an array")
+    for index, row in enumerate(value):
+        if not isinstance(row, dict):
+            raise ValueError(f"{field}[{index}] must be an object")
+    return value
+
+
+def _strings(value: object, path: str, *, allow_scalar: bool = False) -> list[str]:
+    if value is None:
+        return []
+    if allow_scalar and isinstance(value, str):
+        values = [value]
+    elif isinstance(value, list):
+        values = value
+    else:
+        raise ValueError(f"{path} must be an array of strings")
+    if any(not isinstance(item, str) for item in values):
+        raise ValueError(f"{path} must be an array of strings")
+    return values
+
+
+def _timestamp(value: object) -> datetime | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return None
+    return parsed.astimezone(timezone.utc)
+
+
+def _verification_receipts(value: object, path: str) -> list[dict]:
+    if not isinstance(value, list):
+        raise ValueError(f"{path} must be an array")
+    for index, row in enumerate(value):
+        if not isinstance(row, dict):
+            raise ValueError(f"{path}[{index}] must be an object")
+    return value
+
+
+def object_schema(object_name: str) -> str:
+    parts = [part for part in _norm(object_name).split(".") if part]
+    return ".".join(parts[:-1]) if len(parts) >= 2 else ""
+
+
+def role_paths(role: str, parents: dict[str, list[str]]) -> dict[str, list[str]]:
+    """Return role -> all inheritance paths from the starting role."""
+    result: dict[str, list[str]] = {role: [role]}
+    queue: deque[tuple[str, list[str]]] = deque([(role, [role])])
+    while queue:
+        current, path = queue.popleft()
+        for parent in sorted(parents.get(current, [])):
+            if parent in path:
+                continue
+            next_path = path + [parent]
+            result.setdefault(parent, next_path)
+            queue.append((parent, next_path))
+    return result
+
+
+def _finding(fid: str, severity: str, category: str, subject: str, detail: str, **extra: str) -> dict:
+    item = {
+        "id": fid,
+        "severity": severity,
+        "category": category,
+        "subject": subject,
+        "detail": detail,
+    }
+    item.update({key: value for key, value in extra.items() if value != ""})
+    return item
+
+
+def analyze(doc: dict, principal: str = "", object_name: str = "", privilege: str = "") -> dict:
+    if not isinstance(doc, dict):
+        raise ValueError("input must be a JSON object")
+    reject_secrets(doc)
+    role_rows = _rows(doc, "roles")
+    role_grants = _rows(doc, "role_grants") if "role_grants" in doc else role_rows
+    user_rows = _rows(doc, "users")
+    grants = _rows(doc, "grants")
+    future = _rows(doc, "future_grants")
+    metadata = doc.get("metadata", {})
+    if not isinstance(metadata, dict):
+        raise ValueError("metadata must be an object")
+    supplied_verification = doc.get("verification", {})
+    if not isinstance(supplied_verification, dict):
+        raise ValueError("verification must be an object")
+    positive_receipts = _verification_receipts(supplied_verification.get("positive", []), "verification.positive")
+    negative_receipts = _verification_receipts(supplied_verification.get("negative", []), "verification.negative")
+    managed_access_schemas = _strings(doc.get("managed_access_schemas"), "managed_access_schemas")
+    roles = {_upper(row.get("name")): row for row in role_rows if _norm(row.get("name"))}
+    role_parents: dict[str, list[str]] = defaultdict(list)
+    for index, row in enumerate(role_grants):
+        child = _upper(row.get("role") or row.get("child") or row.get("name"))
+        parent_field = "inherits" if "inherits" in row else "parents"
+        parents = _strings(row.get(parent_field), f"role_grants[{index}].{parent_field}")
+        for parent in parents:
+            parent_n = _upper(parent)
+            if child and parent_n:
+                role_parents[child].append(parent_n)
+                roles.setdefault(parent_n, {"name": parent_n})
+
+    users: dict[str, dict] = {}
+    user_roles: dict[str, list[str]] = defaultdict(list)
+    for index, row in enumerate(user_rows):
+        name = _upper(row.get("name"))
+        if not name:
+            continue
+        users[name] = row
+        declared = _strings(row.get("roles"), f"users[{index}].roles")
+        primary = _upper(row.get("primary_role") or row.get("default_role"))
+        for role in declared:
+            role_n = _upper(role)
+            if role_n and role_n not in user_roles[name]:
+                user_roles[name].append(role_n)
+        if primary and primary not in user_roles[name]:
+            user_roles[name].insert(0, primary)
+
+    known_grantees = set(roles) | set(users) | {"PUBLIC"}
+    findings: list[dict] = []
+    effective_paths: dict[str, list[dict]] = defaultdict(list)
+    direct_user_paths: list[dict] = []
+    ownership_paths: list[dict] = []
+
+    for index, grant in enumerate(grants):
+        grantee = _upper(grant.get("grantee"))
+        obj = _norm(grant.get("object") or grant.get("object_name"))
+        priv = _upper(grant.get("privilege"))
+        grant_type = _upper(grant.get("grantee_type"))
+        if not grantee or not obj:
+            continue
+        if not priv:
+            findings.append(
+                _finding(
+                    f"incomplete-grant-{index}",
+                    "high",
+                    "incomplete-grant",
+                    grantee,
+                    "Grant evidence has no privilege and cannot support an effective-access decision.",
+                    object=obj,
+                )
+            )
+            continue
+        if grantee not in known_grantees:
+            findings.append(
+                _finding(
+                    f"orphan-grant-{index}",
+                    "high",
+                    "orphan-grantee",
+                    grantee,
+                    "Grant targets a principal absent from the supplied role/user inventory; verify whether the grant is stale before any cleanup.",
+                    object=obj,
+                    privilege=priv,
+                )
+            )
+        if grantee == "PUBLIC":
+            findings.append(
+                _finding(
+                    f"public-grant-{index}",
+                    "high",
+                    "public-grant",
+                    grantee,
+                    "PUBLIC receives an object privilege available to every Snowflake user. Confirm that account-wide authenticated access is intentional; do not replace it automatically.",
+                    object=obj,
+                    privilege=priv,
+                )
+            )
+        elif grantee in users or grant_type == "USER":
+            direct_user_paths.append(
+                {
+                    "grantee": grantee,
+                    "object": obj,
+                    "privilege": priv,
+                    "path": f"{grantee} (direct grant)",
+                    "observed": True,
+                }
+            )
+            findings.append(
+                _finding(
+                    f"direct-user-grant-{index}",
+                    "high",
+                    "direct-user-grant",
+                    grantee,
+                    "Privilege is granted directly to a user instead of a reviewable access role.",
+                    object=obj,
+                    privilege=priv,
+                )
+            )
+        if priv == "OWNERSHIP":
+            ownership_paths.append(
+                {
+                    "grantee": grantee,
+                    "object": obj,
+                    "path": f"{grantee} -> OWNERSHIP",
+                    "via": "direct grant edge",
+                }
+            )
+            findings.append(
+                _finding(
+                    f"ownership-{index}",
+                    "medium",
+                    "ownership-control",
+                    grantee,
+                    "OWNERSHIP is a control-plane capability, not routine read/write access; capture dependencies and an approved transfer/reversal before changing it.",
+                    object=obj,
+                )
+            )
+
+        schema = object_schema(obj)
+        managed = {_upper(item) for item in managed_access_schemas}
+        if schema and schema.upper() in managed and not _norm(grant.get("grantor")):
+            findings.append(
+                _finding(
+                    f"managed-access-grantor-{index}",
+                    "medium",
+                    "managed-access",
+                    grantee,
+                    "Grant is in a managed access schema but its grantor evidence is absent; verify MANAGE GRANTS authority and centralized ownership before execution.",
+                    object=obj,
+                    privilege=priv,
+                )
+            )
+
+    database_future: dict[tuple[str, str], list[dict]] = defaultdict(list)
+    schema_future: dict[tuple[str, str], list[dict]] = defaultdict(list)
+    for index, grant in enumerate(future):
+        scope = _norm(grant.get("scope") or grant.get("container"))
+        scope_type = _upper(grant.get("scope_type"))
+        obj_type = _upper(grant.get("object_type"))
+        grantee = _upper(grant.get("grantee"))
+        priv = _upper(grant.get("privilege"))
+        if not scope or not grantee:
+            continue
+        normalized_future = {**grant, "_index": index, "_scope": scope, "_scope_type": scope_type}
+        if scope_type in {"DATABASE", "DATABASES"}:
+            database_future[(scope.upper(), obj_type)].append(normalized_future)
+        elif scope_type in {"SCHEMA", "SCHEMAS"}:
+            schema_future[(scope.upper(), obj_type)].append(normalized_future)
+        if priv == "OWNERSHIP":
+            findings.append(
+                _finding(
+                    f"future-ownership-{index}",
+                    "high",
+                    "future-ownership",
+                    grantee,
+                    "Future OWNERSHIP grant transfers control of newly created objects; require explicit design approval and creator/rollback testing.",
+                    scope=scope,
+                    object_type=obj_type,
+                )
+            )
+    future_precedence: list[dict] = []
+    for (schema_scope, object_type), schema_entries in sorted(schema_future.items()):
+        database_scope = schema_scope.split(".", 1)[0]
+        database_entries = database_future.get((database_scope, object_type), [])
+        if database_entries:
+            finding_id = re.sub(r"[^A-Z0-9_-]+", "-", f"{schema_scope}-{object_type}", flags=re.IGNORECASE)
+            findings.append(
+                _finding(
+                    f"future-conflict-{finding_id}",
+                    "medium",
+                    "future-grant-conflict",
+                    schema_scope,
+                    "Schema-level future grants suppress database-level future grants for this schema and object type, even when grantees or privileges differ; reconcile the effective definitions explicitly.",
+                    object_type=object_type,
+                )
+            )
+            future_precedence.append(
+                {
+                    "database": database_scope,
+                    "schema": schema_scope,
+                    "object_type": object_type,
+                    "shadowed_database_definitions": sorted(
+                        {(row.get("grantee", ""), row.get("privilege", "")) for row in database_entries}
+                    ),
+                    "effective_schema_definitions": sorted(
+                        {(row.get("grantee", ""), row.get("privilege", "")) for row in schema_entries}
+                    ),
+                    "effective_precedence": "SCHEMA",
+                    "rule": "Any schema-level future grant for an object type suppresses all database-level definitions for that object type in the schema, regardless of grantee or privilege.",
+                }
+            )
+
+    for user, row in sorted(users.items()):
+        primary = _upper(row.get("primary_role") or row.get("default_role"))
+        mode = _upper(row.get("secondary_roles_mode") or row.get("secondary_role_mode"))
+        declared_secondary = _strings(row.get("secondary_roles"), f"users.{user}.secondary_roles")
+        all_roles = list(user_roles.get(user, []))
+        active: list[str] = []
+        if primary:
+            active.append(primary)
+        if mode == "ALL":
+            active.extend(all_roles)
+        elif mode in {"LIST", "EXPLICIT"}:
+            active.extend(_upper(item) for item in declared_secondary)
+        active = sorted(set(item for item in active if item))
+        role_closure: set[str] = set()
+        active_paths: list[tuple[str, str, list[str]]] = []
+        for active_role in active:
+            for inherited_role, path in role_paths(active_role, role_parents).items():
+                role_closure.add(inherited_role)
+                active_paths.append((active_role, inherited_role, path))
+        user_roles[user] = sorted(set(user_roles[user]) | role_closure)
+        if any(role != primary for role in active) and mode != "ALL":
+            findings.append(
+                _finding(
+                    f"secondary-role-context-{user}",
+                    "info",
+                    "secondary-role-context",
+                    user,
+                    "Effective access depends on explicitly activated secondary roles; replay verification with the same USE SECONDARY ROLES context.",
+                    primary_role=primary,
+                )
+            )
+        for active_role, role, path in sorted(active_paths):
+            chain = " -> ".join([user] + path)
+            for grant in grants:
+                if _upper(grant.get("grantee")) != role:
+                    continue
+                key = f"{_norm(grant.get('object') or grant.get('object_name'))}|{_upper(grant.get('privilege'))}"
+                effective_paths[key].append(
+                    {
+                        "path": chain,
+                        "active_role": active_role,
+                        "via_secondary_role": active_role != primary,
+                    }
+                )
+                if _upper(grant.get("privilege")) == "OWNERSHIP":
+                    ownership_paths.append(
+                        {
+                            "grantee": role,
+                            "object": _norm(grant.get("object") or grant.get("object_name")),
+                            "path": chain,
+                            "via": "role inheritance",
+                        }
+                    )
+        for grant in grants:
+            if _upper(grant.get("grantee")) == "PUBLIC":
+                key = f"{_norm(grant.get('object') or grant.get('object_name'))}|{_upper(grant.get('privilege'))}"
+                effective_paths[key].append({"path": f"{user} -> PUBLIC", "via_secondary_role": False})
+                if _upper(grant.get("privilege")) == "OWNERSHIP":
+                    ownership_paths.append(
+                        {
+                            "grantee": "PUBLIC",
+                            "object": _norm(grant.get("object") or grant.get("object_name")),
+                            "path": f"{user} -> PUBLIC",
+                            "via": "PUBLIC grant",
+                        }
+                    )
+        if mode == "ALL":
+            for grant in grants:
+                # Snowflake user-based access control is activated only by
+                # USE SECONDARY ROLES ALL. NONE or an explicit role list does
+                # not activate privileges granted directly to the user.
+                if _upper(grant.get("grantee")) == user:
+                    key = f"{_norm(grant.get('object') or grant.get('object_name'))}|{_upper(grant.get('privilege'))}"
+                    effective_paths[key].append({"path": f"{user} (direct grant)", "via_secondary_role": True})
+
+    requested = None
+    if principal or object_name or privilege:
+        p = _upper(principal)
+        o = _norm(object_name)
+        v = _upper(privilege)
+        complete_request = bool(p and o and v)
+        paths = list(effective_paths.get(f"{o}|{v}", [])) if complete_request and p in users else []
+        if complete_request and p in users:
+            paths = [item for item in paths if item["path"].startswith(f"{p} ")]
+        requested = {
+            "principal": p,
+            "object": o,
+            "privilege": v,
+            "status": "INCOMPLETE_REQUEST"
+            if not complete_request
+            else ("OBJECT_PRIVILEGE_PATH_PROVEN" if paths else "NOT_PROVEN"),
+            "paths": sorted(paths, key=lambda item: item["path"]),
+            "note": "OBJECT_PRIVILEGE_PATH_PROVEN proves only the supplied object-grant path, not complete access; database/schema USAGE, policies, shares, and live authorization remain separate. INCOMPLETE_REQUEST requires principal, object, and privilege. NOT_PROVEN is not proof of denial.",
+        }
+
+    # Timestamp/freshness is explicit evidence, not inferred from the current
+    # clock or from a row's CREATED_ON value.  This keeps Account Usage lag and
+    # SHOW GRANTS current-state checks visible to the operator.
+    freshness = metadata.get("freshness", {})
+    freshness_missing: list[str] = []
+    collected_at = _timestamp(metadata.get("collected_at"))
+    window_start = _timestamp(metadata.get("window_start"))
+    window_end = _timestamp(metadata.get("window_end"))
+    if collected_at is None:
+        freshness_missing.append("metadata.collected_at(valid timezone timestamp)")
+    elif collected_at > datetime.now(timezone.utc):
+        freshness_missing.append("metadata.collected_at(not in future)")
+    if window_start is None:
+        freshness_missing.append("metadata.window_start(valid timezone timestamp)")
+    if window_end is None:
+        freshness_missing.append("metadata.window_end(valid timezone timestamp)")
+    if window_start is not None and window_end is not None and window_start > window_end:
+        freshness_missing.append("metadata.observation_window(ordered)")
+    if window_end is not None and collected_at is not None and window_end > collected_at:
+        freshness_missing.append("metadata.window_end(no later than collection)")
+    if not isinstance(freshness, dict):
+        freshness_missing.append("metadata.freshness(object)")
+    else:
+        if str(freshness.get("status", "")).upper() != "FRESH":
+            freshness_missing.append("metadata.freshness.status(FRESH)")
+        freshness_checked = _timestamp(freshness.get("checked_at"))
+        if freshness_checked is None:
+            freshness_missing.append("metadata.freshness.checked_at(valid timezone timestamp)")
+        elif collected_at is not None and freshness_checked > collected_at:
+            freshness_missing.append("metadata.freshness.checked_at(no later than collection)")
+        if type(freshness.get("max_age_seconds")) is not int or freshness.get("max_age_seconds") <= 0:
+            freshness_missing.append("metadata.freshness.max_age_seconds(positive integer)")
+        elif (
+            freshness_checked is not None
+            and collected_at is not None
+            and (collected_at - freshness_checked).total_seconds() > freshness["max_age_seconds"]
+        ):
+            freshness_missing.append("metadata.freshness.checked_at(within max_age_seconds)")
+    if freshness_missing:
+        findings.append(
+            _finding(
+                "evidence-freshness-missing",
+                "high",
+                "evidence-freshness",
+                "inventory",
+                "Missing or invalid: "
+                + ", ".join(freshness_missing)
+                + ". Recollect current SHOW GRANTS/FUTURE GRANTS evidence with UTC timestamps, an explicit freshness bound, and the observation window; Account Usage lag is not proof of denial.",
+            )
+        )
+
+    requested_user = users.get(_upper(principal), {})
+    expected_primary = _upper(requested_user.get("primary_role") or requested_user.get("default_role"))
+    expected_mode = _upper(requested_user.get("secondary_roles_mode") or "NONE")
+    if expected_mode == "ALL":
+        expected_secondary = sorted(
+            _upper(role)
+            for role in _strings(requested_user.get("secondary_roles"), "users[].secondary_roles")
+            if _upper(role)
+        )
+    elif expected_mode == "EXPLICIT":
+        expected_secondary = sorted(
+            _upper(role)
+            for role in _strings(requested_user.get("secondary_roles"), "users[].secondary_roles")
+            if _upper(role)
+        )
+    else:
+        expected_secondary = []
+    expected_context = {
+        "account": _upper(metadata.get("account")),
+        "principal": _upper(principal),
+        "object": _upper(object_name),
+        "privilege": _upper(privilege),
+        "primary_role": expected_primary,
+        "secondary_roles_mode": expected_mode,
+        "secondary_roles": expected_secondary,
+    }
+    request_is_bound = bool(
+        expected_context["account"]
+        and expected_context["principal"]
+        and expected_context["object"]
+        and expected_context["privilege"]
+        and requested_user
+    )
+    proof_start = window_start
+    proof_end_candidates = [item for item in (window_end, collected_at) if item is not None]
+    proof_end = min(proof_end_candidates) if proof_end_candidates else None
+
+    def proof_status(receipts: list[dict], expected: str, path: str) -> str:
+        if not request_is_bound:
+            return "NOT_PROVEN"
+        valid = []
+        for index, receipt in enumerate(receipts):
+            observed_at = _timestamp(receipt.get("observed_at"))
+            if (
+                observed_at is None
+                or proof_start is None
+                or proof_end is None
+                or not (proof_start <= observed_at <= proof_end)
+            ):
+                findings.append(
+                    _finding(
+                        f"{path}-timestamp-{index}",
+                        "high",
+                        "access-proof-timestamp",
+                        path,
+                        f"{path}[{index}] has no valid observed_at timestamp. Repeat the access proof and record a UTC timestamp tied to the same account, principal, object, and role context.",
+                    )
+                )
+                continue
+            actual_context = {
+                "account": _upper(receipt.get("account")),
+                "principal": _upper(receipt.get("principal")),
+                "object": _upper(receipt.get("object")),
+                "privilege": _upper(receipt.get("privilege")),
+                "primary_role": _upper(receipt.get("primary_role")),
+                "secondary_roles_mode": _upper(receipt.get("secondary_roles_mode")),
+                "secondary_roles": sorted(
+                    _upper(role)
+                    for role in _strings(receipt.get("secondary_roles"), f"{path}[{index}].secondary_roles")
+                    if _upper(role)
+                ),
+            }
+            if actual_context != expected_context:
+                findings.append(
+                    _finding(
+                        f"{path}-context-{index}",
+                        "high",
+                        "access-proof-context",
+                        path,
+                        f"{path}[{index}] is not bound to the requested account, principal, object, privilege, and primary/secondary-role context. Repeat the proof under the exact requested context.",
+                    )
+                )
+                continue
+            if str(receipt.get("status", "")).upper() == expected:
+                valid.append(receipt)
+        return "PROVEN" if valid else "NOT_PROVEN"
+
+    positive_status = proof_status(positive_receipts, "PASS", "positive-proof")
+    negative_status = proof_status(negative_receipts, "DENIED", "negative-proof")
+    if positive_status != "PROVEN":
+        findings.append(
+            _finding(
+                "positive-access-proof-missing",
+                "high",
+                "access-proof-missing",
+                "positive",
+                "No timestamped positive allowed-action receipt. Run a representative allowed operation under the requested primary/secondary-role context and attach a sanitized PASS receipt.",
+            )
+        )
+    if negative_status != "PROVEN":
+        findings.append(
+            _finding(
+                "negative-access-proof-missing",
+                "high",
+                "access-proof-missing",
+                "negative",
+                "No timestamped negative denied-action receipt. Run a representative prohibited operation and attach a sanitized DENIED receipt; do not infer denial from absent grants.",
+            )
+        )
+
+    findings.sort(key=lambda item: (SEVERITY_ORDER[item["severity"]], item["id"]))
+    payload = json.dumps(doc, sort_keys=True, separators=(",", ":")).encode()
+    return {
+        "schema_version": "1.0",
+        "input_sha256": hashlib.sha256(payload).hexdigest(),
+        "summary": {
+            "roles": len(roles),
+            "users": len(users),
+            "grants": len(grants),
+            "future_grants": len(future),
+            "findings": len(findings),
+            "high_or_critical": sum(item["severity"] in {"high", "critical"} for item in findings),
+        },
+        "boundaries": {
+            "read_only": True,
+            "authorization_source": "sanitized inventory only; Account Usage is historical and live SHOW/INFORMATION_SCHEMA checks remain required",
+            "secondary_roles": "primary role is always included; secondary roles are included only when mode is ALL or EXPLICIT/LIST",
+            "managed_access_schemas": sorted({_norm(item) for item in managed_access_schemas}),
+        },
+        "evidence_scope": {
+            "account": metadata.get("account"),
+            "role": metadata.get("role"),
+            "collected_at": metadata.get("collected_at"),
+            "observation_window": {"start": metadata.get("window_start"), "end": metadata.get("window_end")},
+            "freshness": freshness,
+        },
+        "findings": findings,
+        "direct_user_paths": sorted(
+            direct_user_paths, key=lambda item: (item["grantee"], item["object"], item["privilege"])
+        ),
+        "ownership_paths": sorted(ownership_paths, key=lambda item: (item["object"], item["path"])),
+        "future_grant_precedence": future_precedence,
+        "effective_access": requested,
+        "verification": {
+            "positive": [
+                "Run SHOW GRANTS and a representative allowed query under the workload's primary/secondary-role context."
+            ],
+            "negative": [
+                "Run a representative prohibited query and confirm it remains denied; test PUBLIC/direct paths separately."
+            ],
+            "change_packet": "No GRANT, REVOKE, GRANT OWNERSHIP, or ALTER statement is executed by this analyzer.",
+            "positive_proof": {"status": positive_status, "receipts": positive_receipts},
+            "negative_proof": {"status": negative_status, "receipts": negative_receipts},
+        },
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Analyze a sanitized Snowflake authorization graph")
+    parser.add_argument("--input", required=True, help="sanitized JSON inventory")
+    parser.add_argument("--out", help="write JSON report here; otherwise stdout")
+    parser.add_argument("--principal")
+    parser.add_argument("--object")
+    parser.add_argument("--privilege")
+    args = parser.parse_args()
+    try:
+        doc = json.loads(Path(args.input).read_text(encoding="utf-8"))
+        if not isinstance(doc, dict):
+            raise ValueError("input must be a JSON object")
+        report = analyze(doc, args.principal or "", args.object or "", args.privilege or "")
+    except (OSError, json.JSONDecodeError, ValueError) as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
+    output = json.dumps(report, indent=2, sort_keys=True) + "\n"
+    if args.out:
+        Path(args.out).write_text(output, encoding="utf-8")
+    else:
+        print(output, end="")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

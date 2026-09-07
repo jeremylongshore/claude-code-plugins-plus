@@ -25,6 +25,22 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Common Errors
 
+## Instructions
+
+Classify the failure as access, content generation, publish/share, integration, quota, or availability; reproduce safely in staging; apply the smallest reversible correction; verify recovery and safe failure behavior.
+
+## Output
+
+Return an opaque correlation ID, error category, corrective action, verification, owner, and follow-up. Keep private content, viewer details, and credentials out of evidence.
+
+## Error Handling
+
+Pause sharing/publishing on permission, destination, or privacy failures; use bounded retries for transient errors and rollback before replaying content actions.
+
+## Examples
+
+Use a fictional presentation to trigger a controlled publish error, restore the staging configuration, and verify no external audience received content.
+
 ## Overview
 
 Reference guide for debugging and resolving common Gamma API errors.

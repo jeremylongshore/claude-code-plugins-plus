@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Webhooks & Callbacks
 
+## Prerequisites
+
+- A verified callback endpoint, signature/authentication requirements, idempotency store, and redacted observability.
+- A data-retention/consent decision and an owner for failed callback recovery.
+
+## Examples
+
+Validate the callback signature before parsing its body, deduplicate by an opaque event ID, acknowledge promptly, and write only state/result metadata to logs. Test with a development event; retry transient failures with bounded backoff and quarantine terminal failures rather than replaying audio/transcripts blindly.
+
 ## Overview
 
 Implement async transcription with Deepgram's callback feature. When you pass a `callback` URL, Deepgram returns a `request_id` immediately, processes audio in the background, and POSTs results to your endpoint. Supports HTTP and WebSocket callbacks with automatic retry (10 attempts, 30s intervals).

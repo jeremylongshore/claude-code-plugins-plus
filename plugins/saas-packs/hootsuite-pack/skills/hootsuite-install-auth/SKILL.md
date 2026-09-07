@@ -12,7 +12,7 @@ description: 'Install and configure Hootsuite SDK/CLI authentication.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -143,6 +143,10 @@ async function verifyConnection(accessToken: string) {
 | `invalid_client` | Wrong client ID/secret | Check app credentials |
 | `invalid_grant` | Authorization code expired | Codes expire in 30s; re-authorize |
 | `redirect_uri_mismatch` | URI doesn't match | Must exactly match app registration |
+
+## Examples
+
+`env=sandbox; secret_ref=hootsuite-client-v4; scope=draft-scheduling; profile=approved; synthetic_probe=200; public_posts=0; rotation_owner=platform-ops` proves setup without a credential or social content.
 
 ## Resources
 

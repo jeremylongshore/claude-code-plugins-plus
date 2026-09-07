@@ -115,6 +115,25 @@ assert result["videos"][0]["url"], "No video URL"
 print("READY FOR PRODUCTION")
 ```
 
+## Prerequisites
+
+- A signed release change, approved production workspace, rights-cleared or synthetic smoke-test brief, policy review, budget ceiling, draft-only canary route, and tested rollback/removal procedure.
+
+## Instructions
+
+1. Run the smoke test in staging first with a synthetic, watermarked draft; reject literal credentials, unapproved sources, or public destinations.
+2. Verify health, task completion, policy/rights outcome, credit usage, access scope, retention, and draft-only behavior before production approval.
+3. Release one bounded production canary only after owner sign-off; halt and remove outputs on policy, rights, quality, scope, or budget drift.
+4. Promote in stages, preserving a redacted receipt and the rollback reference; delete temporary assets at the retention boundary.
+
+## Output
+
+Produce a production receipt with release ID, environment, smoke-test brief classification, aggregate health/task result, policy/rights/budget checks, draft destination, approver, retention/removal proof, and rollback reference. Exclude prompts, asset URLs, and credentials.
+
+## Examples
+
+`release=r31; env=staging; brief=synthetic-smoke; policy=pass; rights=pass; destination=draft-only; approval=pending; rollback=r30` supports canary approval.
+
 ## Resources
 
 - [API Reference](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)

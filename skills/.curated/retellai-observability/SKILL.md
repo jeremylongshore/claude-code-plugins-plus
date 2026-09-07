@@ -50,6 +50,18 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Alert on a regression while protecting call content
+
+Emit structured metrics for call completion, transfer outcome, latency, and
+provider errors using agent version and environment as bounded labels. When an
+alert fires, link the affected call identifiers to a restricted investigation
+record instead of attaching transcripts to the dashboard. Compare a synthetic
+call against the last known-good version, then make one reversible routing or
+configuration change and watch the same metrics through the defined recovery
+window.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

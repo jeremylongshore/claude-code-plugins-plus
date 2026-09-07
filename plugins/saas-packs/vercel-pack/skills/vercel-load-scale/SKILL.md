@@ -254,6 +254,12 @@ Capacity Planning Formula:
 | All requests timeout | Function region far from test origin | Set `regions` in vercel.json closer to test source |
 | Inconsistent results | Shared infrastructure variability | Run multiple test rounds, use median results |
 
+## Examples
+
+### Run an authorized capacity test with a stop condition
+
+Notify the platform owner and Vercel support if the intended test volume requires it, then run k6 only against a disposable preview deployment using synthetic accounts. Establish an error-rate, latency, and spend threshold before increasing load; stop immediately if any threshold is crossed. Save aggregate metrics and deployment metadata rather than request bodies, compare multiple rounds for shared-infrastructure variance, and remove the preview deployment after the capacity decision is recorded.
+
 ## Resources
 
 - [Vercel Function Limits](https://vercel.com/docs/functions/limitations)

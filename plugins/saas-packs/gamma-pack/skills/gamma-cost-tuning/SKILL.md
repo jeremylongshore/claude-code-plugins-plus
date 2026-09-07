@@ -25,6 +25,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Cost Tuning
 
+## Output
+
+Record the measurement window, aggregate usage, approved plan/workflow decision, owner, verification date, and rollback state. Do not include private presentation content, billing credentials, or user data.
+
+## Examples
+
+Use a fictional staging workspace to compare aggregate usage after an approved asset or workflow change, then promote only when the owner accepts the evidence and publishing/privacy behavior is unchanged.
+
 ## Overview
 
 Optimize Gamma API usage to minimize credit consumption. Gamma uses a credit-based billing system where costs are driven by image generation model tier and content complexity. API access requires Pro or higher subscription.

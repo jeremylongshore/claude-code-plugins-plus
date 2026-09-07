@@ -12,7 +12,7 @@ description: 'Execute Hootsuite primary workflow: Core Workflow A.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -193,6 +193,10 @@ async function bulkSchedule(posts: ScheduledPost[]) {
 | `422 scheduledSendTime` | Date in the past | Must be future date |
 | `413 Payload Too Large` | Image exceeds limit | Compress or resize image |
 | Missing profile | Profile disconnected | Reconnect in Hootsuite dashboard |
+
+## Examples
+
+Run a fictional content-plan fixture and record `fixture=calendar-basic-v2; profile=sandbox-brand; drafts=4; approval=required; audience=validated; public_posts=0; cleanup=complete`.
 
 ## Resources
 

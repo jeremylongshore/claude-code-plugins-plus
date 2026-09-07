@@ -21,6 +21,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Reference Architecture
 
+## Overview
+
+Organize Cursor rules, ignore files, repository guidance, and workspace boundaries so AI assistance follows architecture rather than inventing it.
+
+## Prerequisites
+
+- An approved repository architecture, ownership model, and data-classification policy.
+- Maintainers authorized to review `.cursor/rules`, ignore files, and shared templates.
+
+## Instructions
+
+1. Put durable engineering conventions in reviewed rules and keep sensitive/generated paths in ignore files.
+2. Scope rules by repository area and avoid contradictory always-on instructions.
+3. Test rule and indexing changes in a representative workspace before organization-wide rollout.
+4. Review these files through normal pull requests with security and architecture owners when relevant.
+
+## Output
+
+- A versioned Cursor configuration that maps rules and context boundaries to real repository ownership.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Rules conflict | Reduce them to one authoritative rule and test in a small workspace. |
+| Sensitive paths are indexed | Add an ignore rule, verify exclusion, and evaluate exposure according to policy. |
+| A shared template breaks a repo | Revert the configuration change and use a scoped repository override. |
+
+## Examples
+
+For a monorepo, commit a reviewed root rule for shared import conventions and scoped rules for each application. Add secrets, generated artifacts, and customer exports to ignore configuration, then verify a sample chat cannot attach those paths.
+
 Reference architecture patterns for optimizing Cursor IDE project setup. Covers directory structure, rules organization, indexing strategy, and multi-project configuration for maximum AI effectiveness.
 
 ## Project Layout for Cursor

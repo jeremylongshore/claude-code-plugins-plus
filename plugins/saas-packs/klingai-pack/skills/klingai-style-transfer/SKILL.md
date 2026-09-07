@@ -158,6 +158,32 @@ def styled_generation(scene_prompt: str):
     })
 ```
 
+## Prerequisites
+
+- An approved style brief, rights-cleared or synthetic references, sandbox workspace, content-policy review, credit cap, draft-only destination, and an asset-removal owner.
+
+## Instructions
+
+1. Use only approved style references and a watermarked sandbox canary; reject living-artist imitation requests, private materials, and unlicensed inputs unless documented rights permit them.
+2. Verify reference rights, policy outcome, model/mode, duration, credit estimate, and draft destination before submission.
+3. Review the canary for attribution, policy, and quality; cancel and remove it on rights, policy, or budget drift rather than publishing it.
+4. Promote only after owner approval and retain a redacted receipt with removal at the approved retention boundary.
+
+## Output
+
+Produce a style-transfer receipt with style-brief ID, reference classification, model/mode, credit estimate, policy/rights outcome, draft-only status, approver, and cleanup reference. Exclude prompt text, asset URLs, identities, and credentials.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Reference rights or imitation policy is unclear | Do not generate; request documented clearance or use a synthetic, non-identifying alternative. |
+| Policy or budget check fails | Cancel the task, remove temporary drafts, and require owner review before retrying. |
+
+## Examples
+
+`style=approved-geometric-motion; references=synthetic; mode=standard; policy=pass; rights=pass; destination=draft-only; cleanup=24h` is safe to review.
+
 ## Resources
 
 - [Effects API](https://app.klingai.com/global/dev/document-api/apiReference/model/videoEffects)

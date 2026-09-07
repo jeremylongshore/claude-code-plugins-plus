@@ -16,14 +16,16 @@ const EXAMPLES = new Map([
   ['marketplace-external-stats', 'marketplace/src/data/npm-stats.json'],
   ['marketplace-spotlight-editorial-data', 'marketplace/src/data/spotlights.json'],
   ['marketplace-canonical-data', 'marketplace/src/data/collections.json'],
-  ['marketplace-jrig-build-data', 'marketplace/src/data/jrig-data.json'],
   ['marketplace-readme-sections-build-data', 'marketplace/src/data/readme-sections.json'],
   ['marketplace-plugin-content', 'marketplace/src/content/plugins/example.json'],
   ['plugin-package-manifests', 'plugins/example/example/package.json'],
   ['curated-skill-mirror', 'skills/.curated/example/SKILL.md'],
+  ['disposition-ledger', 'freshie/disposition-ledger.json'],
+  ['saas-tutorial-lattice', 'freshie/saas-tutorial-lattice.json'],
   ['marketplace-public-data', 'marketplace/public/data/catalog.json'],
   ['cowork-downloads', 'marketplace/public/downloads/example.zip'],
   ['freshie-run-snapshots', 'freshie/exports/run-1/plugin_values.json'],
+  ['epic-9-boundary-evidence', '000-docs/810-RA-DATA-epic-9-boundary-evidence.json'],
   ['frozen-prose-anchor-manifest', 'tests/fixtures/prose-anchors/expected-output.json'],
 ]);
 

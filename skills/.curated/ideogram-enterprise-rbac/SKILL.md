@@ -272,6 +272,14 @@ Quarterly key rotation process:
 - Team-scoped generation proxy
 - Usage dashboard data for reporting
 
+## Prerequisites
+
+- Source-of-truth role inventory, named asset owner, authorized/denied synthetic identities, least-privilege admin role, and rollback mapping revision.
+
+## Examples
+
+`scope=staging-gallery; mapping_rev=42; owner=creative-ops; allow_probe=pass; deny_probe=pass; rights=test-owned; rollback=rev41` proves the boundary without disclosing groups or assets.
+
 ## Resources
 
 - [Ideogram API Setup](https://developer.ideogram.ai/ideogram-api/api-setup)

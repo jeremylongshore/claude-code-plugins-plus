@@ -1,0 +1,13 @@
+{
+  "run_id": 1,
+  "from_tag": null,
+  "to_tag": "run-1",
+  "dolt_commit": "u47nb9ttr34bmk99b4g59lb618viait4",
+  "tables_changed": 0,
+  "schema_changes": [],
+  "rows_added": 0,
+  "rows_deleted": 0,
+  "rows_modified": 0,
+  "tables": [],
+  "grade_regressions": []
+}

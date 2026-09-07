@@ -159,6 +159,27 @@ curl -s -I "https://api.granola.ai/v0/notes" \
 | API 429 response | Rate limit exceeded | Implement exponential backoff, reduce request frequency |
 | "Feature not available" | Feature requires higher plan | Check plan comparison above and upgrade |
 
+## Prerequisites
+
+- An approved request budget, observed response-header baseline, and a sandbox workload using fictional meeting metadata only.
+- A bounded queue, idempotency key for write-like actions, and a reviewed recovery path for exhausted work.
+
+## Instructions
+
+1. Classify calls by integration and operation, then apply per-scope concurrency limits before dispatch.
+2. Honor server retry guidance when present; otherwise use bounded exponential backoff with jitter and a maximum attempt count.
+3. Never replay task creation or external notification without an idempotency key, and defer nonessential work before backlog threatens freshness.
+4. Monitor aggregate limited/deferred counts and synthetic canary success, tuning one scope at a time with rollback.
+5. Send exhausted work to reviewed recovery rather than silently dropping or duplicating action items.
+
+## Output
+
+Return an aggregate rate-limit receipt with scope, requested/limited/deferred counts, retry revision, idempotency state, queue health, canary result, and rollback reference. Do not include meeting content or credentials.
+
+## Examples
+
+`scope=sandbox-actions; requested=100; limited=3; deferred=3; retry=v2; idempotent=pass; queue=healthy; rollback=limits-r7` proves bounded handling.
+
 ## Resources
 
 - [Granola Pricing](https://www.granola.ai/pricing)

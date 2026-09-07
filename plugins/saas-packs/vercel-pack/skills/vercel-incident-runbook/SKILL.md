@@ -239,6 +239,12 @@ Update: The issue has been resolved. [Brief root cause].
 | Cannot access Vercel dashboard | Use CLI with saved VERCEL_TOKEN |
 | Log retention expired | Check external log drain provider |
 
+## Examples
+
+### Contain a deployment regression during an incident
+
+Declare the severity and incident lead, capture the affected deployment ID and baseline error rate, then use Vercel’s instant rollback to the previously verified deployment. Validate recovery with synthetic requests from the monitoring system before announcing restoration. Do not change unrelated configuration while containment is active; preserve logs and the rollback receipt for the post-incident review, then schedule remediation as a separately reviewed change.
+
 ## Resources
 
 - [Vercel Status Page](https://www.vercel-status.com)

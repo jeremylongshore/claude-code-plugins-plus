@@ -208,6 +208,12 @@ Install: `npm install @vercel/edge-config`
 | `FUNCTION_PAYLOAD_TOO_LARGE` | Edge function bundle > 1 MB | Tree-shake imports, split into smaller functions |
 | `TypeError: x is not a function` | Node.js API used in edge runtime | Replace with Web Standard API equivalent |
 
+## Examples
+
+### Roll out edge authorization middleware safely
+
+Implement an allow-listed middleware matcher that excludes static assets and health checks, and validate its Web API-only dependencies with the Edge runtime in preview. Send synthetic signed and unsigned requests from at least two regions, verify that unauthorized requests receive the intended response without logging credentials, and measure added latency. Release behind a reversible configuration flag; if legitimate traffic is blocked, disable the flag or restore the previous deployment before changing the policy.
+
 ## Resources
 
 - [Edge Functions Documentation](https://vercel.com/docs/functions/runtimes/edge)

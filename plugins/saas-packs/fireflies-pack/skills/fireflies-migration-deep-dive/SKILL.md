@@ -32,6 +32,16 @@ compatibility: Designed for Claude Code
 
 Migrate to Fireflies.ai from other transcription platforms or custom recording systems. Covers historical recording import via `uploadAudio`, adapter pattern for gradual cutover, and data validation post-migration.
 
+## Prerequisites
+
+- A lawful/authorized migration scope, documented consent and retention requirements, and named data owners.
+- An inventory of recordings, transcripts, access rules, and deletion obligations; use synthetic fixtures for migration tests.
+- A staged cutover plan with rollback, reconciliation, and a restricted evidence location.
+
+## Examples
+
+Import a fictitious recording into staging, validate only approved metadata and derived action-item fields, and compare aggregate record counts with the source inventory. Disable the canary and retain the old path if consent, access, retention, or mapping checks fail.
+
 ## Migration Types
 
 | Scenario | Approach | Timeline |

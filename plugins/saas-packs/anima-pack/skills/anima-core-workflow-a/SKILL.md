@@ -221,6 +221,17 @@ runPipeline().catch(console.error);
 - Change detection for continuous design-to-code sync
 - Watch mode for iterative design development
 
+## Examples
+
+Create a staging Figma file with two approved components and configure the
+pipeline to write only to `src/components/generated`. Run one generation cycle,
+inspect the resulting diff, and run the project formatter, type check, and
+visual review before accepting either component. Persist the last approved
+Figma version outside the process so a restart does not regenerate an unknown
+set of nodes. If the scanner returns unexpected components, a generator writes
+outside the output directory, or validation fails, stop the watch loop and
+correct the node allowlist or design source before the next run.
+
 ## Error Handling
 
 | Error | Cause | Solution |

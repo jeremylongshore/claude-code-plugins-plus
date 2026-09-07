@@ -3,9 +3,11 @@ name: Publish changed @intentsolutionsio packages
 # Runs after the canonical Validate Plugins workflow completes successfully on
 # a push to main. For each
 # changed plugin whose package.json `version` is not yet on npm:
-#   1. Publishes to npm with provenance.
-#   2. Creates an annotated git tag of the form `<scope>/<name>@<version>`.
-#   3. Opens a GitHub Release linked to that tag with auto-generated notes.
+#   1. Creates an annotated git tag of the form `<scope>/<name>@<version>`.
+#   2. Opens a GitHub Release linked to that tag with auto-generated notes.
+#   3. Publishes to npm with provenance only after the source-release tuple is
+#      present. A tag/release failure therefore cannot leave an orphan npm
+#      package version.
 #
 # The version-bump trigger is provided by `auto-bump-on-pr.yml` — it runs on
 # every PR, detects which plugins' source files changed, bumps each plugin's
@@ -45,7 +47,7 @@ jobs:
       sha: ${{ steps.guard.outputs.sha }}
     steps:
       - name: Check out trusted default-branch guard
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: main
           persist-credentials: false
@@ -72,7 +74,7 @@ jobs:
     if: ${{ needs.guard.outputs.eligible == 'true' }}
     steps:
       - name: Check out trusted preflight implementation
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: main
           persist-credentials: false
@@ -101,7 +103,7 @@ jobs:
       count: ${{ steps.build.outputs.count }}
       packages_json: ${{ steps.build.outputs.packages_json }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: ${{ needs.guard.outputs.sha }}
           fetch-depth: 0
@@ -151,12 +153,14 @@ jobs:
     needs: [guard, preflight, detect]
     if: ${{ needs.guard.outputs.eligible == 'true' && needs.preflight.result == 'success' && needs.detect.outputs.count != '0' }}
     environment: npm-production
+    outputs:
+      publication_report: ${{ steps.publish.outputs.publication_report }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: ${{ needs.guard.outputs.sha }}
           fetch-depth: 0
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
@@ -166,7 +170,8 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Publish each changed package + tag + release
+      - name: Assert source release before publishing each changed package
+        id: publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -177,6 +182,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$PUBLISH_SHA"
           PUBLISHED=0; SKIPPED=0; FAILED=0
           PUBLISHED_LIST=""
+          PUBLISHED_JSON='[]'
 
           # Use a process-substitution loop so subshell counters survive.
           while read -r row; do
@@ -198,27 +204,13 @@ jobs:
               continue
             fi
 
-            if ! (cd "$DIR" && npm publish --access public --provenance); then
-              echo "❌ FAILED publish: $NAME@$VERSION — investigate and bump patch to retry"
-              FAILED=$((FAILED+1))
-              sleep 2
-              continue
-            fi
-            echo "✓ published: $NAME@$VERSION"
-            PUBLISHED=$((PUBLISHED+1))
-            PUBLISHED_LIST="${PUBLISHED_LIST}\n  - ${NAME}@${VERSION}"
-
             # Annotated tag with body that links to npm + the source dir.
             TAG_MSG="Release ${NAME} ${VERSION}\n\nnpm: https://www.npmjs.com/package/${NAME}/v/${VERSION}\nsource: ${DIR}"
             if git rev-parse "$TAG" >/dev/null 2>&1; then
               echo "  ⊙ tag $TAG already exists locally; skipping tag step"
             else
-              git tag -a "$TAG" -m "$(printf "%b" "$TAG_MSG")" || {
-                echo "  ⚠ failed to create tag $TAG"
-              }
-              git push origin "refs/tags/${TAG}" || {
-                echo "  ⚠ failed to push tag $TAG (network or perms)"
-              }
+              git tag -a "$TAG" -m "$(printf "%b" "$TAG_MSG")"
+              git push origin "refs/tags/${TAG}"
             fi
 
             # GitHub Release with auto-generated notes (PR + commit summaries
@@ -235,10 +227,28 @@ jobs:
               gh release create "$TAG" \
                 --title "$TAG" \
                 --notes "$REL_NOTES" \
-                --generate-notes || {
-                echo "  ⚠ failed to create GitHub release for $TAG"
-              }
+                --generate-notes
             fi
+
+            # Re-query both source-release components immediately before the
+            # irreversible npm publish. Do not rely on the earlier branch:
+            # a concurrent deletion or API failure must fail this run.
+            git rev-parse -q --verify "refs/tags/${TAG}^{tag}" >/dev/null
+            gh release view "$TAG" >/dev/null
+
+            if ! (cd "$DIR" && npm publish --access public --provenance); then
+              echo "❌ FAILED publish: $NAME@$VERSION — source release remains visible; investigate and bump patch to retry"
+              FAILED=$((FAILED+1))
+              sleep 2
+              continue
+            fi
+            echo "✓ published: $NAME@$VERSION"
+            PUBLISHED=$((PUBLISHED+1))
+            PUBLISHED_LIST="${PUBLISHED_LIST}\n  - ${NAME}@${VERSION}"
+            PUBLISHED_JSON=$(jq -cn \
+              --argjson prior "$PUBLISHED_JSON" \
+              --arg name "$NAME" --arg version "$VERSION" --arg tag "$TAG" --arg package_path "$DIR" \
+              '$prior + [{channel:"npm", name:$name, version:$version, release_tag:$tag, package_path:$package_path}]')
 
             sleep 2
           done < <(echo "$PACKAGES_JSON" | jq -c '.[]')
@@ -251,3 +261,25 @@ jobs:
             printf '%b\n' "$PUBLISHED_LIST"
           fi
           [ "$FAILED" -eq 0 ] || exit 1
+          if [ "$PUBLISHED" -gt 0 ]; then
+            printf '%s' "$PUBLISHED_JSON" > /tmp/completed-publications.json
+            node scripts/build-publication-report.mjs \
+              --completed /tmp/completed-publications.json \
+              --out /tmp/publication-report.json \
+              --sbom-dir /tmp/publication-sboms
+            echo "publication_report=$(jq -c . /tmp/publication-report.json)" >> "$GITHUB_OUTPUT"
+          fi
+
+  emit-publication-evidence:
+    name: Emit signed evidence for every completed package publication
+    needs: [guard, publish]
+    if: ${{ needs.publish.result == 'success' && needs.publish.outputs.publication_report != '' }}
+    uses: ./.github/workflows/emit-publication-evidence.yml
+    permissions:
+      actions: read
+      checks: read
+      contents: write
+      id-token: write
+    with:
+      source_sha: ${{ needs.guard.outputs.sha }}
+      publication_report: ${{ needs.publish.outputs.publication_report }}

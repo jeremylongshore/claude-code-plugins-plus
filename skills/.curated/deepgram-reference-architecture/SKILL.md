@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Reference Architecture
 
+## Prerequisites
+
+- A documented audio/transcript data flow, consent/retention policy, approved environment boundaries, and service/data owners.
+- Reviewed interfaces for auth, media ingestion, callbacks, observability, storage, and incident response.
+
+## Examples
+
+Model a development producer that validates media metadata, sends a request using a scoped project key, receives a signed callback, and records only correlation/state metrics. Promote the same versioned contract through staging before a production canary, retaining a dead-letter/recovery owner and excluding audio/transcript content from telemetry.
+
 ## Overview
 
 Four reference architectures for Deepgram transcription at scale: synchronous REST for short files, async queue (BullMQ) for batch processing, WebSocket proxy for real-time streaming, and a hybrid router that auto-selects the best pattern based on audio duration.

@@ -166,6 +166,21 @@ class KlingAuth:
 - Use separate keys per environment (dev/staging/prod)
 - Set `exp` to 1800s max (Kling enforces this ceiling)
 
+## Instructions
+
+1. Configure credentials only through approved secret references and separate sandbox/staging/production identities; never paste AK/SK values into source, prompts, logs, or receipts.
+2. Verify least-privilege scope, token lifetime, clock behavior, policy/rights workflow, credit cap, and draft-only destination with a synthetic canary.
+3. Halt use on an authentication, scope, policy, budget, or retention anomaly; revoke or rotate the affected credential and restore the approved configuration.
+4. Retain a redacted setup receipt only and remove temporary test assets at the approved boundary.
+
+## Output
+
+Produce an authentication receipt with environment, secret-reference status, granted scope, token-lifetime check, synthetic canary result, policy/rights/budget/draft-only assertions, owner, cleanup proof, and revocation reference. Exclude keys, identities, prompts, and asset URLs.
+
+## Examples
+
+`env=staging; credential=secret-reference; scope=draft-only; token=within-policy; fixture=synthetic; policy=pass; cleanup=verified` is a safe connection-check record.
+
 ## Resources
 
 - [Kling AI Developer Portal](https://app.klingai.com/global/dev)

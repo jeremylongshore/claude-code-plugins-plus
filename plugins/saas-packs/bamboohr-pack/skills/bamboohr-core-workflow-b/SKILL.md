@@ -233,6 +233,10 @@ for (const record of training) {
 - Photos fetched and updated
 - Goals and training records accessed
 
+## Examples
+
+For a scheduled sync, fetch only the approved field set, create an idempotency record before each downstream change, and reconcile the redacted result count before advancing the cursor. A termination, compensation, or access-related event must enter a policy-controlled worker and require the applicable HR approval; it must not be actioned directly from API data.
+
 ## Error Handling
 
 | Error | Cause | Solution |

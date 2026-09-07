@@ -42,6 +42,15 @@ HIPAA-compliant security configuration for Abridge clinical AI integrations. Abr
 | Minimum necessary | Only access needed PHI | Required |
 | Breach notification | 60-day notification plan | Required |
 
+## Prerequisites
+
+- A signed BAA, documented data-flow inventory, and organization-approved
+  retention and incident-response policies.
+- A non-production environment with synthetic fixtures for security testing;
+  never use real PHI to exercise logging, authorization, or TLS controls.
+- Named owners for security, privacy, clinical operations, and the EHR
+  integration who can approve or block a release.
+
 ## Instructions
 
 ### Step 1: Enforce TLS and Certificate Pinning
@@ -203,6 +212,17 @@ async function loadAbridgeSecrets(): Promise<Record<string, string>> {
 - HIPAA-compliant audit logger with PHI leak detection
 - Role-based access control matrix
 - Secrets loaded from cloud secret manager
+
+## Examples
+
+In a sandbox release check, call a protected endpoint as the
+`integration_service` role using a secret-manager-supplied credential and
+create an audit entry containing a fictional session ID. Verify TLS policy,
+the authorization outcome, and that the log contains no patient name, note
+content, MRN, or token. Then attempt an unauthorized export and confirm the
+RBAC layer refuses it with a redacted audit record. If PHI detection fires or
+an unauthorized request succeeds, halt deployment, revoke the affected access
+path if necessary, and investigate before processing any production data.
 
 ## Error Handling
 

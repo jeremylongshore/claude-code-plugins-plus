@@ -1,15 +1,11 @@
-# Xquik TypeScript Types: REST API vs MCP Field Naming
+# Xquik REST API and MCP field naming
 
-The REST API and MCP server use different field names for the same data. Map these when switching between interfaces:
+Hosted MCP exposes `docs`, `search`, and `execute`. It no longer exposes
+operation-named tools with separate legacy response models.
 
-| Type | REST API Field | MCP Field |
-|------|---------------|-----------|
-| **Monitor** | `username` | `xUsername` |
-| **XquikEvent** | `type` | `eventType` |
-| **XquikEvent** | `data` | `eventData` |
-| **XquikEvent** | `monitorId` | `monitoredAccountId` |
-| **UserProfile** | `followers` | `followersCount` |
-| **UserProfile** | `following` | `followingCount` |
-| **FollowerCheck** | `isFollowing` / `isFollowedBy` | `following` / `followedBy` |
+Use `search` to inspect the current operation. Then use its OpenAPI response
+schema. Do not map fields through old names such as `eventData`,
+`monitoredAccountId`, `following`, or `followedBy`.
 
-**MCP `get-user-info` returns a subset** of the full `UserProfile` type. Fields not returned by MCP: `verified`, `location`, `createdAt`, `statusesCount`. Use the REST API `GET /x/users/{id}` for the complete profile.
+Preserve every returned ID and cursor exactly. If a client transforms field
+case, follow that client's serializer documentation.

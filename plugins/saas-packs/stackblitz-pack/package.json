@@ -1,7 +1,7 @@
 {
   "name": "@intentsolutionsio/stackblitz-pack",
-  "version": "1.0.2",
-  "description": "Claude Code skill pack for StackBlitz - 18 skills covering browser-based IDE, WebContainers, and instant dev environments",
+  "version": "1.0.3",
+  "description": "Claude Code skill pack for StackBlitz - 10 skills covering browser-based IDE, WebContainers, and instant dev environments",
   "main": "README.md",
   "type": "module",
   "files": [
@@ -26,7 +26,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "url": "git+https://github.com/jeremylongshore/tons-of-skills-marketplace.git",
     "directory": "plugins/saas-packs/stackblitz-pack"
   },
   "homepage": "https://tonsofskills.com/learn/stackblitz/",

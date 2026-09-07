@@ -12,7 +12,7 @@ description: 'Execute Hootsuite production deployment checklist and rollback pro
 
   '
 allowed-tools: Read, Bash(curl:*), Grep
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -99,6 +99,27 @@ checkHootsuiteReadiness();
 | Media rejection handling | Broken posts with missing images | P2 |
 | Timezone validation | Posts published at wrong local time | P2 |
 | Content moderation | Brand-damaging automated content | P3 |
+
+## Prerequisites
+
+- Protected production approval, named incident/rollback owners, a pinned configuration revision, and a draft-only canary profile.
+- Baselines for health, quota, approval, audience, schedule behavior, and public-post count.
+
+## Instructions
+
+1. Confirm environment, secret reference, profile, audience, approval state, configuration revision, and owner approval before enabling execution.
+2. Run bounded draft-only canary operations and verify health, quota, approval, and `public_posts=0` assertions.
+3. Monitor aggregate metrics through the observation window; halt on scope, audience, approval, or publication drift.
+4. Promote only through the approved human-publication path, or cancel/revert to the prior revision and record the result.
+5. Close after owner acceptance of the redacted receipt and revocation of temporary access.
+
+## Output
+
+Create a readiness receipt with revision, canary profile, health/quota/approval/audience results, public-post count, approvals, outcome, and rollback reference. Exclude copy, media, handles, and secrets.
+
+## Examples
+
+`revision=r44; canary=sandbox-brand; health=pass; quota=within-budget; approval=pass; audience=approved; public_posts=0; outcome=hold-for-human` is a complete canary decision.
 
 ## Resources
 

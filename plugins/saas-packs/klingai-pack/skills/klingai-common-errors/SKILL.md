@@ -148,6 +148,32 @@ def debug_request(method, url, headers, json=None):
     return r
 ```
 
+## Prerequisites
+
+- A sandbox workspace, synthetic or rights-cleared diagnostic brief, secret references, approved scope, redaction rules, draft-only destination, and incident owner.
+
+## Instructions
+
+1. Reproduce errors with sandbox fixtures only; do not log authorization headers, prompts, source assets, response bodies, or generated asset URLs.
+2. Capture aggregate status, error class, credit use, policy/rights outcome, and task state while verifying redaction and retention controls.
+3. Halt the canary and remove temporary drafts on scope, policy, rights, budget, or retention drift; revoke temporary access where appropriate.
+4. Store a redacted diagnostic receipt for the approved window and restore the known-good configuration before resuming work.
+
+## Output
+
+Produce an error-triage receipt with environment, fixture classification, error class, aggregate status/credit signal, policy/rights/draft-only checks, incident owner, cleanup proof, and rollback reference. Exclude prompts, assets, identities, and credentials.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Sensitive material appears in diagnostics | Stop collection, delete the artifact, correct redaction, and rotate/revoke access as needed. |
+| Policy, rights, budget, or retention drift | Cancel tasks, remove drafts, and require owner review before retrying. |
+
+## Examples
+
+`env=ci-sandbox; error=429; retries=backoff; budget=within-cap; policy=pass; destination=draft-only; cleanup=verified` is a valid triage record.
+
 ## Resources
 
 - [API Reference](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)

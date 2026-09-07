@@ -23,6 +23,20 @@ compatibility: Designed for Claude Code
 
 Finta is a fundraising CRM that manages investor pipelines, deal rooms, email sync, and payment collection for startups raising capital. Common errors involve round state transition violations (e.g., moving a round backward from "Closing" to "Outreach"), investor deduplication failures during CSV imports, and pipeline sync breakdowns between email providers and the deal tracker. Aurora AI suggestions depend on complete company profiles, and incomplete data is the top cause of empty recommendations. This reference covers API-level errors and CRM workflow issues that disrupt fundraising operations.
 
+## Prerequisites
+
+- A reproducible symptom, timestamp, and opaque correlation identifier; collect no unnecessary investor or payment data.
+- Access to the affected workspace and integration logs through an authorized support role.
+- A known owner for account access, workflow changes, and any security escalation.
+
+## Instructions
+
+1. Classify the failure as authentication, authorization, validation, throttling, delivery, or upstream availability.
+2. Reproduce with a synthetic record or least-privilege read operation where possible; do not replay live outreach or payment actions to diagnose an error.
+3. Check configuration, scopes, schema mappings, and queue state in that order, recording redacted evidence for each decision.
+4. Apply the smallest reversible correction, then confirm the happy path and a failure-path response before closing the incident.
+5. Escalate suspected credential exposure, unexpected recipients, or data leakage immediately and preserve only approved forensic evidence.
+
 ## Error Reference
 
 | Code | Message | Cause | Fix |
@@ -82,6 +96,14 @@ Round state transitions must follow the sequence: Draft, Active, Closing, Closed
 | Email sync disconnected | OAuth token expired | Reconnect provider at Settings > Integrations |
 | Aurora AI no suggestions | Incomplete company profile | Fill all profile fields: sector, stage, location, raise amount |
 | Payment link mismatch | Amount differs from commitment | Regenerate Stripe payment link with correct amount |
+
+## Output
+
+Return an incident receipt with the category, opaque correlation ID, affected integration, safe reproduction result, corrective action, verification result, owner, and follow-up. Redact account identifiers, message bodies, contact details, and financial terms.
+
+## Examples
+
+For a simulated throttling event, use a synthetic record and confirm that the worker waits, retries within its bound, and produces one redacted receipt. For an authentication failure, pause the job, have the approved owner reauthorize the scoped credential, and verify a read-only check before resuming queued work.
 
 ## Quick Diagnostic
 

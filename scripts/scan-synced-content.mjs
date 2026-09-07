@@ -395,8 +395,289 @@ const FOREIGN_READ_SCRIPT = new RegExp(
 );
 // Foreign-store read in shell — a read command (cat/head/…/source) consuming one.
 const FOREIGN_READ_SHELL = new RegExp(
-  `\\b(?:cat|head|tail|less|xxd|base64|od|read|source|\\.)\\b[^\\n]{0,80}${FOREIGN_CRED_PATHS}`,
+  `(?:\\b(?:cat|head|tail|less|xxd|base64|od|read|source)\\b|(?:^|[;&|()\\n]|[\\t ])\\.\\s+)[^\\n]{0,80}${FOREIGN_CRED_PATHS}`,
 );
+
+// Shell reads embedded in a recognized process API are still executable theft.
+// Resolve namespace/named import aliases before inspecting call arguments:
+// generic `runner.run()` / RegExp `.exec()` methods are not process APIs, while
+// `cp.exec()`, `sp.run()`, and imported `check_output()` are. This matcher also
+// runs on concatCollapse() output, exposing split command/path tokens and nested
+// quote styles without weakening the API authority boundary.
+const SHELL_READ_VERBS = String.raw`(?:cat|head|tail|less|xxd|base64|od|read|source)`;
+const NODE_PROCESS_METHODS = new Set([
+  'exec',
+  'execSync',
+  'execFile',
+  'execFileSync',
+  'spawn',
+  'spawnSync',
+]);
+const PYTHON_PROCESS_METHODS = {
+  subprocess: new Set(['run', 'Popen', 'check_output', 'check_call']),
+  os: new Set(['system', 'popen']),
+};
+
+function escapeRegex(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function importedNames(clause, allowed, separator) {
+  const names = [];
+  for (const item of clause.split(',')) {
+    const parts = item
+      .trim()
+      .split(separator)
+      .map((part) => part.trim());
+    const original = parts[0];
+    const local = parts[1] || original;
+    if (allowed.has(original) && /^[A-Za-z_$][\w$]*$/.test(local)) names.push(local);
+  }
+  return names;
+}
+
+function maskPythonTripleQuotedStrings(text) {
+  return text.replace(/(?:[rubf]{0,2})?(?:"""[\s\S]*?"""|'''[\s\S]*?''')/gi, (match) =>
+    match.replace(/[^\n]/g, ' '),
+  );
+}
+
+function jsRegexCanStart(chars, offset) {
+  let previous = offset - 1;
+  while (previous >= 0 && /\s/.test(chars[previous])) previous--;
+  if (previous < 0) return true;
+  if ('=(:,!&|?{};[]+-*%^~<>'.includes(chars[previous])) return true;
+  if (chars[previous] === ')') {
+    let depth = 1;
+    let cursor = previous - 1;
+    for (; cursor >= 0 && depth > 0; cursor--) {
+      if (chars[cursor] === ')') depth++;
+      else if (chars[cursor] === '(') depth--;
+    }
+    if (depth === 0) {
+      while (cursor >= 0 && /\s/.test(chars[cursor])) cursor--;
+      const headerEnd = cursor + 1;
+      while (cursor >= 0 && /[\w$]/.test(chars[cursor])) cursor--;
+      const header = chars.slice(cursor + 1, headerEnd).join('');
+      if (/^(?:if|while|for|with)$/.test(header)) return true;
+    }
+  }
+  const prefix = chars.slice(0, previous + 1).join('');
+  // Every JavaScript keyword that can immediately precede an expression. Keep
+  // this list centralized so regex literals cannot poison later authority
+  // discovery merely by appearing in an uncommon expression context.
+  const keyword =
+    /(?:^|[^\w$])(await|case|default|delete|do|else|extends|in|instanceof|new|of|return|throw|typeof|void|yield)$/.exec(
+      prefix,
+    );
+  return Boolean(keyword);
+}
+
+function maskJsAuthorityNonCode(text) {
+  const chars = [...text];
+  for (let i = 0; i < chars.length; i++) {
+    if (chars[i] === '/' && chars[i + 1] === '/') {
+      while (i < chars.length && chars[i] !== '\n') chars[i++] = ' ';
+      i--;
+      continue;
+    }
+    if (chars[i] === '/' && chars[i + 1] === '*') {
+      chars[i++] = ' ';
+      chars[i] = ' ';
+      while (i + 1 < chars.length && !(chars[i] === '*' && chars[i + 1] === '/')) {
+        if (chars[i] !== '\n') chars[i] = ' ';
+        i++;
+      }
+      if (i + 1 < chars.length) {
+        chars[i] = ' ';
+        chars[i + 1] = ' ';
+        i++;
+      }
+      continue;
+    }
+
+    if (chars[i] === '/' && jsRegexCanStart(chars, i)) {
+      let escaped = false;
+      let inClass = false;
+      let end = -1;
+      for (let j = i + 1; j < chars.length; j++) {
+        const char = chars[j];
+        if (char === '\n') break;
+        if (escaped) {
+          escaped = false;
+          continue;
+        }
+        if (char === '\\') {
+          escaped = true;
+          continue;
+        }
+        if (char === '[') inClass = true;
+        else if (char === ']') inClass = false;
+        else if (char === '/' && !inClass) {
+          end = j;
+          while (/[A-Za-z]/.test(chars[end + 1] || '')) end++;
+          break;
+        }
+      }
+      if (end >= 0) {
+        for (let j = i; j <= end; j++) chars[j] = ' ';
+        i = end;
+        continue;
+      }
+    }
+
+    const quote = chars[i];
+    if (quote !== '"' && quote !== "'" && quote !== '`') continue;
+    let escaped = false;
+    let multiline = false;
+    let end = i;
+    for (let j = i + 1; j < chars.length; j++) {
+      const char = chars[j];
+      end = j;
+      if (char === '\n') multiline = true;
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
+      if (char === '\\') {
+        escaped = true;
+        continue;
+      }
+      if (char === quote) break;
+    }
+    if (multiline) {
+      for (let j = i; j <= end; j++) {
+        if (chars[j] !== '\n') chars[j] = ' ';
+      }
+    }
+    i = end;
+  }
+  return chars.join('');
+}
+
+function processAuthorityText(text, cls) {
+  let cleaned = text;
+  if (cls === 'js' || cls === 'doc') {
+    cleaned = maskJsAuthorityNonCode(cleaned);
+  }
+  if (cls === 'python' || cls === 'doc') {
+    cleaned = maskPythonTripleQuotedStrings(cleaned)
+      .split('\n')
+      .map((line) => stripLineComment(line, 'python'))
+      .join('\n');
+  }
+  const collapsed = cleaned.split('\n').map(concatCollapse).join('\n');
+  return `${cleaned}\n${collapsed}`;
+}
+
+function processApiAnchors(authorityText, cls) {
+  const text = processAuthorityText(authorityText, cls);
+  const anchors = new Set();
+  const addBare = (name) => anchors.add(`(?<![.\\w$])${escapeRegex(name)}`);
+  const addNamespace = (name, methods) => {
+    for (const method of methods) {
+      anchors.add(`\\b${escapeRegex(name)}\\s*\\.\\s*${escapeRegex(method)}`);
+    }
+  };
+
+  if (cls === 'js' || cls === 'doc') {
+    // Sync method names are process-specific enough to recognize when imported
+    // outside a snippet. Async bare names are added only from a proven named
+    // import/destructure below, avoiding generic user-defined `exec()`/`spawn()`.
+    for (const method of ['execSync', 'execFileSync', 'spawnSync']) addBare(method);
+    // The quoted form must close on the exact module name; the normalized
+    // unquoted form needs an identifier boundary. This prevents modules such as
+    // child_process_extra from granting process-launch authority.
+    const moduleToken = String.raw`(?:['"](?:node:)?child_process['"]|(?:node:)?child_process(?=\s|[);]|$))`;
+    const requireToken = `require\\s*\\(\\s*${moduleToken}\\s*\\)`;
+    const namespacePatterns = [
+      new RegExp(
+        `(?:^|\\n)\\s*(?:const|let|var)\\s+([A-Za-z_$][\\w$]*)\\s*=\\s*${requireToken}`,
+        'g',
+      ),
+      new RegExp(
+        `(?:^|\\n)\\s*import\\s+\\*\\s+as\\s+([A-Za-z_$][\\w$]*)\\s+from\\s+${moduleToken}`,
+        'g',
+      ),
+    ];
+    for (const pattern of namespacePatterns) {
+      for (const match of text.matchAll(pattern)) addNamespace(match[1], NODE_PROCESS_METHODS);
+    }
+
+    const namedPatterns = [
+      {
+        pattern: new RegExp(
+          `(?:^|\\n)\\s*(?:const|let|var)\\s*\\{([^}]+)\\}\\s*=\\s*${requireToken}`,
+          'g',
+        ),
+        separator: /\s*:\s*/,
+      },
+      {
+        pattern: new RegExp(`(?:^|\\n)\\s*import\\s*\\{([^}]+)\\}\\s*from\\s+${moduleToken}`, 'g'),
+        separator: /\s+as\s+/,
+      },
+    ];
+    for (const { pattern, separator } of namedPatterns) {
+      for (const match of text.matchAll(pattern)) {
+        for (const name of importedNames(match[1], NODE_PROCESS_METHODS, separator)) addBare(name);
+      }
+    }
+  }
+
+  if (cls === 'python' || cls === 'doc') {
+    // Python permits multiple imports, aliases, semicolon-separated statements,
+    // and trailing comments on the same physical line. Parse those statement
+    // shapes explicitly instead of letting punctuation weaken module equality.
+    for (const rawLine of text.split('\n')) {
+      const codeLine = stripLineComment(rawLine, 'python');
+      for (const rawStatement of codeLine.split(';')) {
+        const statement = rawStatement.trim();
+        const namespace = /^import\s+(.+)$/.exec(statement);
+        if (namespace) {
+          for (const item of namespace[1].split(',')) {
+            const match = /^([A-Za-z_]\w*)(?:\s+as\s+([A-Za-z_]\w*))?$/.exec(item.trim());
+            if (!match || !PYTHON_PROCESS_METHODS[match[1]]) continue;
+            addNamespace(match[2] || match[1], PYTHON_PROCESS_METHODS[match[1]]);
+          }
+          continue;
+        }
+
+        const named = /^from\s+(subprocess|os)\s+import\s+(.+)$/.exec(statement);
+        if (!named) continue;
+        for (const name of importedNames(named[2], PYTHON_PROCESS_METHODS[named[1]], /\s+as\s+/)) {
+          addBare(name);
+        }
+      }
+    }
+  }
+
+  return [...anchors];
+}
+
+function hasForeignProcessRead(text, cls, authorityText = text) {
+  const anchors = processApiAnchors(authorityText, cls);
+  if (anchors.length === 0) return false;
+  return new RegExp(
+    `(?:${anchors.join('|')})\\s*\\(\\s*[^\\n)]{0,360}(?:\\b${SHELL_READ_VERBS}\\b|\\.\\s+)[^\\n)]{0,180}${FOREIGN_CRED_PATHS}`,
+  ).test(text);
+}
+
+// Keep shell syntax out of executable Python/JavaScript classification. In
+// particular, JavaScript permits whitespace (including a newline) around member
+// access: `client . getCookies()` and `client\n  . getCookies()` are not shell
+// dot-source commands. Documentation can contain either language, so it retains
+// both matchers and is graded CHALLENGE rather than REFUSE below.
+function hasForeignRead(text, cls, authorityText = text) {
+  if (cls === 'shell') return FOREIGN_READ_SHELL.test(text);
+  if (cls === 'doc') {
+    return (
+      FOREIGN_READ_SCRIPT.test(text) ||
+      FOREIGN_READ_SHELL.test(text) ||
+      hasForeignProcessRead(text, cls, authorityText)
+    );
+  }
+  return FOREIGN_READ_SCRIPT.test(text) || hasForeignProcessRead(text, cls, authorityText);
+}
 // WHOLESALE environment harvest — dumping/iterating the ENTIRE environment (not a
 // single named var). Theft-grade with a sink. The legit subprocess-merge idioms
 // (`{ ...process.env }`, `Object.assign({}, process.env)`) are deliberately NOT
@@ -456,10 +737,7 @@ function detectSecretExfilCoOccurrence(relPath, text, cls) {
   // string-split tokens like `"fet"+"ch"(` → `fetch(` around the secret or sink.
   const collapsed = text.split('\n').map(concatCollapse).join('\n');
 
-  const foreignRaw =
-    cls === 'shell'
-      ? FOREIGN_READ_SHELL.test(text)
-      : FOREIGN_READ_SCRIPT.test(text) || FOREIGN_READ_SHELL.test(text);
+  const foreignRaw = hasForeignRead(text, cls);
   const harvestRaw = ENV_HARVEST.test(text);
   const namedRaw = NAMED_ENV_READ.test(text);
   const localEnvRaw = cls !== 'shell' && LOCAL_ENV_READ.test(text);
@@ -473,9 +751,7 @@ function detectSecretExfilCoOccurrence(relPath, text, cls) {
   // appears once split-token concatenation is collapsed. Scoped to the token so a
   // minified bundle's unrelated hex/escape noise does not trip it.
   const collapsedSecret =
-    (cls === 'shell'
-      ? FOREIGN_READ_SHELL.test(collapsed)
-      : FOREIGN_READ_SCRIPT.test(collapsed) || FOREIGN_READ_SHELL.test(collapsed)) ||
+    hasForeignRead(collapsed, cls, text) ||
     ENV_HARVEST.test(collapsed) ||
     NAMED_ENV_READ.test(collapsed);
   const obfuscated = (sinkCollapsed && !sinkRaw) || (collapsedSecret && !anySecretRaw);

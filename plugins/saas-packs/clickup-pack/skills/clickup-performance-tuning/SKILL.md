@@ -214,6 +214,32 @@ async function measuredRequest<T>(name: string, fn: () => Promise<T>): Promise<T
 | Pagination loop | API returns 100 forever | Add max page safety limit |
 | Queue backlog | Burst of requests | Increase concurrency or plan tier |
 
+## Prerequisites
+
+- Baseline latency, throughput, freshness, and rate-limit measurements
+- Defined SLO, data-consistency constraints, and change/rollback owner
+- Staging workload that represents target list/task volume without private data
+
+## Instructions
+
+Tune one bounded variable at a time—pagination, cache policy, concurrency, or
+payload handling—then compare observed behavior to the baseline. Keep retries
+and cache invalidation correct before raising concurrency; performance gains
+that create stale tasks, duplicate writes, or rate-limit debt are regressions.
+
+## Output
+
+Produce a tuning record with baseline, proposed setting, measured impact,
+rate-limit and error behavior, data-freshness result, owner approval, and
+rollback threshold. Keep raw task content and credentials out of measurements.
+
+## Examples
+
+In staging, cap a task-list pagination job, add an LRU limit, and compare p95
+latency and 429 rate to baseline. If cached task status becomes stale or queue
+depth rises, restore the prior setting and correct invalidation before tuning
+another parameter.
+
 ## Resources
 
 - [ClickUp Get Tasks](https://developer.clickup.com/reference/gettasks)

@@ -113,6 +113,26 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 | Export link expired | Download URL has 1-hour TTL | Fetch immediately on `export.ready` event |
 | Quota exceeded | API calls after limit hit | Implement backoff until `reset_date` |
 
+## Prerequisites
+
+- A secret-manager webhook secret, event-origin allowlist, replay-window policy, source-authority check, suppression policy, and opaque event ledger.
+
+## Instructions
+
+1. Authenticate origin before parsing, validate timestamp/event ID, and reject unknown sources, stale deliveries, and malformed payloads.
+2. Store only a bounded redacted envelope and use event ID plus target revision as the idempotency key.
+3. Verify source authority, suppression, and destination before enqueueing enrichment; quarantine uncertainty instead of exporting or enriching a contact.
+4. Canary one sandbox source, observe aggregate policy probes, then promote or disable the consumer.
+5. Route exhausted retries to reviewed recovery without replaying non-idempotent writes.
+
+## Output
+
+Return an event receipt with type, opaque ID, signature/timestamp result, source/destination, suppression result, idempotency outcome, export-count assertion, queue state, and rollback reference. Exclude payload contact data and signatures.
+
+## Examples
+
+`type=prospect.updated; event=evt-opaque-9; signature=pass; replay=absent; source=synthetic; suppression=pass; contacts_exported=0; rollback=consumer-disabled` proves the event boundary.
+
 ## Resources
 
 - Juicebox API Docs

@@ -24,6 +24,10 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Debug Bundle
 
+## Examples
+
+For a streaming failure, collect the correlation ID, environment, client/SDK version, model, connection state transitions, redacted status, and timestamp. Review the bundle for keys, audio bytes, transcript text, participant identifiers, and storage URLs before sharing; reproduce with a licensed fixture and use the approved support/incident route.
+
 ## Current State
 
 !`node --version 2>/dev/null || echo 'Node.js not installed'`

@@ -173,6 +173,10 @@ def search_google(query: str, country: str = 'us'):
 - Async collection snapshot IDs for large-scale scraping
 - Webhook delivery of completed datasets
 
+## Examples
+
+For a dataset or browser workflow, approve the target and fields first, execute a bounded pilot with a low rate/cost ceiling, and validate returned data against the allowed schema. Encrypt controlled artifacts, retain only the necessary result, and stop on unexpected personal, sensitive, or disallowed content.
+
 ## Error Handling
 
 | Error | Cause | Solution |

@@ -24,6 +24,14 @@ compatibility: Designed for Claude Code
 ---
 # Finta Install & Auth
 
+## Output
+
+Record only the authentication method, workspace owner, granted scope, validation timestamp, and secret-manager reference. Never paste credentials, authorization headers, or user information into tickets or logs.
+
+## Examples
+
+Authorize a staging integration using a least-privilege credential stored by the deployment platform. Perform a read-only validation with a synthetic workspace, then verify that revoking the credential stops access before any production use.
+
 ## Overview
 
 Set up Finta fundraising CRM at trustfinta.com. Finta is a UI-first platform for managing fundraising pipelines, investor relationships, and deal rooms. Integration is via email/calendar sync and the Finta web app -- there is no public REST API.

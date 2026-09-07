@@ -12,7 +12,7 @@ description: 'Execute major Adobe re-architecture: migrating from legacy Adobe A
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -272,6 +272,10 @@ async function validateMigration(): Promise<{ passed: boolean; checks: any[] }> 
 | Higher latency | Adobe async APIs | Use parallel job submission |
 | Cost increase | Different pricing model | Implement caching; optimize batch sizes |
 | Missing features | Not all features map 1:1 | Document gaps; find Adobe alternatives |
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

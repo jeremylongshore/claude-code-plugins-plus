@@ -12,7 +12,7 @@ description: 'Collect Adobe debug evidence for support tickets and troubleshooti
 
   '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -167,6 +167,10 @@ cat adobe-debug-*/summary.txt  # Review summary
 | OAuth token test | Auth validation | Status code only |
 | DNS resolution | Network issues | Yes |
 | API connectivity | Firewall/proxy issues | HTTP status codes |
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

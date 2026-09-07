@@ -1,31 +1,47 @@
-# Xquik REST API Endpoints: Radar
+# Xquik REST API endpoints: radar
 
-### List Radar Items
+## List radar items
 
-```
+```http
 GET /radar
 ```
 
 Get trending topics and news from supported trend and news sources.
 
-**Query parameters:**
+Use these query parameters:
 
-| Param | Type | Description |
+| Parameter | Type | Description |
 |-------|------|-------------|
-| `source` | string | Filter by public source: `google_trends`, `hacker_news`, `polymarket`, `wikipedia`, `github`, `reddit`. Omit to include all supported sources |
-| `category` | string | Filter by category: `general`, `tech`, `dev`, `science`, `culture`, `politics`, `business`, `entertainment` |
-| `limit` | number | Items per page (1-100, default 50) |
-| `hours` | number | Look-back window in hours (1-72, default 6) |
-| `region` | string | Region code: `US`, `GB`, `TR`, `ES`, `DE`, `FR`, `JP`, `IN`, `BR`, `CA`, `MX`, `global` (default) |
+| `after` | string | Previous `nextCursor` |
+| `source` | string | `github`, `google_trends`, `hacker_news`, `polymarket`, `reddit`, `trustmrr`, or `wikipedia` |
+| `category` | string | `general`, `tech`, `dev`, `science`, `culture`, `politics`, `business`, or `entertainment` |
+| `limit` | number | Items per page from 1-100; defaults to 50 |
+| `hours` | number | Look-back window from 1-72 hours; defaults to 6 |
+| `region` | string | `US`, `GB`, `TR`, `ES`, `DE`, `FR`, `JP`, `IN`, `BR`, `CA`, `MX`, or `global`; defaults to `global` |
 
-**Response:**
+Pass `nextCursor` as `after` for the next page:
+
+```javascript
+const originalQuery = new URLSearchParams({
+  source: "hacker_news",
+  category: "tech",
+  limit: "50",
+  hours: "6",
+  region: "global",
+});
+const query = new URLSearchParams(originalQuery);
+query.set("after", nextCursor);
+const nextPath = `/radar?${query}`;
+```
+
+The API returns:
 ```json
 {
   "items": [
     {
       "id": "12345",
-      "title": "Claude 4.6 Released",
-      "description": "Anthropic releases Claude 4.6...",
+      "title": "Claude 4.6 released",
+      "description": "Anthropic releases Claude 4.6.",
       "url": "https://example.com/article",
       "imageUrl": "https://example.com/image.png",
       "source": "hacker_news",
@@ -44,6 +60,6 @@ Get trending topics and news from supported trend and news sources.
 }
 ```
 
-Fields: `id`, `title`, `description?`, `url?`, `imageUrl?`, `source`, `sourceId`, `category`, `region`, `language`, `score`, `metadata`, `publishedAt`, `createdAt`. Response includes `hasMore` and `nextCursor` for pagination.
+Each item contains `id`, `title`, `source`, `sourceId`, `category`, `region`, `language`, `score`, `metadata`, `publishedAt`, and `createdAt`. It may include `description`, `url`, and `imageUrl`. The response also returns `hasMore` and `nextCursor`.
 
 ---

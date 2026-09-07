@@ -25,6 +25,26 @@ compatibility: Designed for Claude Code
 
 Claim R&D tax credits through Fondo. Startups with US W-2 employees doing qualifying R&D can offset up to $500,000/year in payroll taxes (FICA). Fondo's CPA team prepares the Form 6765 study.
 
+## Prerequisites
+
+- An authorized finance/tax owner, current professional guidance, complete source records, and a retention/access policy.
+- A reviewed scope for any calculator or export; this workflow does not determine eligibility or replace tax advice.
+
+## Instructions
+
+1. Gather approved source evidence and classify activities/expenses for review without altering originals.
+2. Use an opaque case identifier and aggregate counts for workflow tracking; keep payroll, tax, and employee records in authorized systems.
+3. Reconcile inputs with the responsible finance professional, document assumptions and exceptions, and obtain sign-off before filing or payment actions.
+4. Preserve an audit trail and follow the organization's retention and correction process for any discrepancy.
+
+## Output
+
+Create a review receipt with period, case ID, source-system references, owner, open questions, professional-review status, and next action. Do not include employee, payroll, tax-return, or bank details.
+
+## Examples
+
+Use a fictional project and aggregate cost buckets to exercise the evidence-collection checklist. Record unresolved classification questions for the finance reviewer and confirm no filing, calculation, or payroll action is generated from the test.
+
 ## R&D Credit Calculation
 
 ```

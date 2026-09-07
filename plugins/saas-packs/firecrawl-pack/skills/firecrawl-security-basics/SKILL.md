@@ -30,6 +30,14 @@ compatibility: Designed for Claude Code
 
 Security best practices for Firecrawl API keys, webhook signature verification, and scraped content handling. Firecrawl API keys start with `fc-` and grant full access to scrape, crawl, map, and extract endpoints — protecting them is critical.
 
+## Output
+
+Keep a security review receipt with secret-manager reference, identity scope, approved target policy, webhook verification outcome, access-review date, and revocation/rotation owner. Never include the key, captured pages, or sensitive request headers.
+
+## Examples
+
+Use a synthetic target with a least-privilege staging key. Confirm that the handler rejects an invalid signature without revealing comparison data, then revoke the test key and verify the request is denied before granting any production access.
+
 ## Prerequisites
 
 - Firecrawl API key

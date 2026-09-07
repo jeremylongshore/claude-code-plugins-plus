@@ -1,4 +1,4 @@
-# Xquik TypeScript Types: Draws
+# Xquik TypeScript types: draws
 
 ```typescript
 
@@ -34,6 +34,11 @@ interface DrawWinner {
   authorUsername: string;
   tweetId: string;
   isBackup: boolean;
+}
+
+interface DrawDetails {
+  draw: Draw;
+  winners: DrawWinner[];
 }
 
 interface DrawList {

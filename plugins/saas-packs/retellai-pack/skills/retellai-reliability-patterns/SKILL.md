@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Design a safe fallback for a dependent CRM outage
+
+Give the voice flow a short, explicit timeout for CRM lookup and a fallback
+response that either schedules a follow-up or transfers to a human queue. Test
+the fallback by making the preview CRM endpoint return a controlled error, then
+confirm no call is retried or double-booked. Track the fallback rate separately
+from general call failures and remove the temporary routing change only after
+the dependency and a synthetic recovery call both succeed.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

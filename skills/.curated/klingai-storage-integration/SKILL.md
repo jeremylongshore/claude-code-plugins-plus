@@ -186,6 +186,32 @@ def save_with_metadata(filepath: str, task_id: str, prompt: str, model: str):
     return meta_path
 ```
 
+## Prerequisites
+
+- An approved storage destination, encryption and retention policy, rights-cleared or synthetic draft asset, least-privilege service identity, metadata-redaction rules, and a tested deletion path.
+
+## Instructions
+
+1. Upload only watermarked draft canaries to an allowlisted sandbox bucket; reject public ACLs, unapproved regions, or assets without rights and policy clearance.
+2. Encrypt at rest and in transit, store only redacted metadata, and verify destination, access scope, retention, and removal controls before approval.
+3. Halt uploads on permission, policy, rights, region, or retention drift; delete staged assets and restore the prior storage configuration.
+4. Promote only after owner approval and preserve a redacted receipt rather than prompt text, asset URLs, or identifying metadata.
+
+## Output
+
+Produce a storage receipt with asset classification, destination/region classification, encryption and access checks, policy/rights outcome, draft-only status, retention/deletion proof, approver, and rollback reference. Exclude prompts, URLs, identities, and credentials.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Destination, ACL, or region is unapproved | Stop the transfer, delete staged copies, and restore the approved destination policy. |
+| Rights, policy, or retention control fails | Quarantine and remove the draft; require owner review before resubmission. |
+
+## Examples
+
+`asset=synthetic-draft; destination=approved-sandbox; encryption=pass; acl=private; policy=pass; retention=24h; deletion=tested` supports a controlled upload.
+
 ## Resources
 
 - [API Reference](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)

@@ -1,127 +1,67 @@
-# Lindy Performance Tuning -- Implementation Details
+# Lindy Performance Tuning -- Safety and Rollback Details
 
-## Latency Optimization
+## Non-Negotiable Invariants
 
-### Parallel Step Execution
+Performance work must not weaken:
 
-```python
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Callable, Any
+- Ask for Confirmation or draft mode for actions affecting people or records;
+- integration authorization scope and tenant/workspace boundaries;
+- input validation, output schema checks, and error routing;
+- redaction, data minimization, retention, and audit requirements;
+- loop limits, agent exit conditions, and fallback paths; or
+- task evidence needed to investigate failures.
 
-def run_parallel_tasks(tasks: list[Callable], max_workers: int = 5) -> list[Any]:
-    """Execute multiple independent API calls in parallel."""
-    results = [None] * len(tasks)
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        future_to_idx = {executor.submit(task): i for i, task in enumerate(tasks)}
-        for future in as_completed(future_to_idx):
-            idx = future_to_idx[future]
-            try:
-                results[idx] = future.result()
-            except Exception as e:
-                results[idx] = {"error": str(e)}
-    return results
+Treat any invariant change as a separate security/governance proposal, not as a
+performance optimization.
 
+## Safe Test Boundary
 
-def enrich_lead_parallel(lead_id: str, email: str) -> dict:
-    """Fetch CRM data and tickets simultaneously (2x faster than sequential)."""
-    crm_data, tickets = run_parallel_tasks([
-        lambda: fetch_crm_data(lead_id),
-        lambda: fetch_support_tickets(email),
-    ])
-    return {"crm": crm_data, "tickets": tickets}
-```
+Lindy's Test Panel executes actual actions. Use synthetic fixtures, test accounts,
+sandbox endpoints, and confirmations. Offline evals simulate the agent against
+selected historical/reference tasks and do not execute real actions, but they still
+consume workspace resources and may evaluate sensitive historical content inside
+Lindy. Do not export that content into the experiment receipt.
 
-## Advanced Patterns
+## Loop Tuning
 
-### Response Cache
+Max Concurrent is not a universal speed dial. Set it to `1` when iterations depend on
+each other, modify shared state, require ordering, or face a strict downstream limit.
+For independent items, increase it by one controlled step and measure error/rate-limit
+behavior. Always cap Max Cycles from the bounded input size plus a documented safety
+margin. Export only the minimum loop result needed downstream.
 
-```python
-import hashlib
-import json
-import time
-from typing import Any, Optional
+## Cache Decision Checklist
 
-class AgentResponseCache:
-    def __init__(self, ttl_seconds: int = 3600, max_size: int = 1000):
-        self._store: dict[str, dict] = {}
-        self.ttl = ttl_seconds
-        self.max_size = max_size
-        self.hits = 0
-        self.misses = 0
+Before introducing any cache, answer:
 
-    def _make_key(self, agent_id: str, inputs: dict) -> str:
-        data = json.dumps({"id": agent_id, "inputs": inputs}, sort_keys=True)
-        return hashlib.sha256(data.encode()).hexdigest()[:20]
+1. Is the data safe and authorized to retain outside the source action?
+2. What tenant/user key prevents cross-context reuse?
+3. What invalidates the entry after source or permission changes?
+4. What TTL and deletion path satisfy retention policy?
+5. Could a stale result cause a message, update, payment, or access decision?
+6. Does the same fixture/eval cohort prove correctness with and without the cache?
 
-    def get(self, agent_id: str, inputs: dict) -> Optional[Any]:
-        key = self._make_key(agent_id, inputs)
-        entry = self._store.get(key)
-        if entry and time.time() - entry["ts"] < self.ttl:
-            self.hits += 1
-            return entry["value"]
-        self.misses += 1
-        return None
+If these answers are missing, do not cache. Never hash a full customer payload and
+treat the hash as sufficient isolation; authorization and invalidation still apply.
 
-    def set(self, agent_id: str, inputs: dict, value: Any) -> None:
-        if len(self._store) >= self.max_size:
-            oldest = min(self._store, key=lambda k: self._store[k]["ts"])
-            del self._store[oldest]
-        key = self._make_key(agent_id, inputs)
-        self._store[key] = {"value": value, "ts": time.time()}
+## Rollback Procedure
 
-    @property
-    def hit_rate(self) -> float:
-        total = self.hits + self.misses
-        return self.hits / total if total > 0 else 0.0
+1. Pause or constrain the candidate rollout when any declared threshold fires.
+2. Open Version History and restore the recorded known-good version.
+3. Save and test the restored version with sanitized fixtures.
+4. Confirm approvals, integration scopes, trigger filters, loop caps, and fallbacks.
+5. Watch Tasks until the baseline behavior is re-established.
+6. Record the failed hypothesis and evidence before attempting another single change.
 
+## Troubleshooting Decisions
 
-cache = AgentResponseCache(ttl_seconds=300)
-
-def cached_trigger(agent_id: str, inputs: dict) -> dict:
-    cached = cache.get(agent_id, inputs)
-    if cached is not None:
-        return cached
-    result = trigger_lindy_agent(agent_id, inputs)
-    cache.set(agent_id, inputs, result)
-    return result
-```
-
-### Batch Processing
-
-```python
-import time
-
-def process_batch(items: list[dict], agent_id: str,
-                  batch_size: int = 10, delay: float = 0.5) -> list[dict]:
-    """Process a large list in batches to avoid overwhelming the API."""
-    results = []
-    for i in range(0, len(items), batch_size):
-        batch = items[i:i + batch_size]
-        print(f"Batch {i // batch_size + 1} ({len(batch)} items)...")
-        batch_results = run_parallel_tasks([
-            lambda item=item: trigger_lindy_agent(agent_id, item)
-            for item in batch
-        ], max_workers=min(len(batch), 5))
-        results.extend(batch_results)
-        if i + batch_size < len(items):
-            time.sleep(delay)
-    return results
-```
-
-## Troubleshooting
-
-### Slow Agent Execution
-
-1. Profile each step -- run logs show per-step timing
-2. Check if AI steps use overly large context windows
-3. Look for sequential steps that could be parallelized
-4. Verify connected integrations are not rate-limiting
-
-### High Memory Usage in Long-Running Agents
-
-1. Clear conversation memory between unrelated agent runs
-2. Use summarization steps to compress long histories
-3. Pass only relevant excerpts, not entire email threads
+| Observation | Next controlled experiment |
+|---|---|
+| One block dominates p95 | Change that block's prompt/model/config only |
+| Quality varies with shorter context | Restore context; test retrieval scope separately |
+| High task volume comes from irrelevant triggers | Add one filter and measure false negatives |
+| Parallel loop raises failures | Restore prior concurrency and inspect dependency limits |
+| Candidate saves usage but changes approvals | Reject; safety gate has priority |
 
 ---
 *[Tons of Skills](https://tonsofskills.com) by [Intent Solutions](https://intentsolutions.io) | [jeremylongshore.com](https://jeremylongshore.com)*

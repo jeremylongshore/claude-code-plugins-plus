@@ -13,7 +13,7 @@ description: 'Deploy Adobe-powered applications to Vercel, Cloud Run, and Adobe 
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(gcloud:*), Bash(aio:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -208,6 +208,10 @@ export async function GET() {
 | Vercel function timeout | Adobe API takes > 10s | Increase `maxDuration` in vercel.json |
 | Cloud Run cold start timeout | Token generation on cold start | Set `min-instances=1` |
 | Secret not found | Wrong secret name | Verify with `gcloud secrets list` or `vercel env ls` |
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

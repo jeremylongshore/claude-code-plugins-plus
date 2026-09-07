@@ -182,6 +182,12 @@ export async function healthCheck() {
 | Health check fails | Wrong SF_LOGIN_URL | `login.salesforce.com` for prod, `test.salesforce.com` for sandbox |
 | Secret not found | Wrong secret name | Verify with platform-specific secret list command |
 
+## Examples
+
+### Deploy an integration with a verified rollback path
+
+Deploy an immutable application build to a preview or staging environment that connects to a sandbox Salesforce org through a scoped JWT identity. Confirm the health endpoint uses a synthetic query and that secrets are loaded only from the platform secret manager. Promote after the integration tests and API-limit checks pass, recording the previous build identifier. If connectivity or error thresholds regress, restore the recorded build and avoid changing production Salesforce credentials during incident containment.
+
 ## Resources
 
 - [Heroku Connect](https://devcenter.heroku.com/articles/heroku-connect)

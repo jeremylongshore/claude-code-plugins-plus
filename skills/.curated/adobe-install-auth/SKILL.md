@@ -13,7 +13,7 @@ description: 'Install and configure Adobe Developer Console OAuth Server-to-Serv
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

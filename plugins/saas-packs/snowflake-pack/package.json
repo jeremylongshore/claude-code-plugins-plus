@@ -1,36 +1,47 @@
 {
   "name": "@intentsolutionsio/snowflake-pack",
-  "version": "1.0.2",
-  "description": "Claude Code skill pack for Snowflake - 30 skills covering cloud data warehouse, SQL analytics, and data sharing",
-  "main": "README.md",
-  "type": "module",
-  "files": [
-    "README.md",
-    ".claude-plugin/",
-    "skills/"
-  ],
+  "version": "3.0.11",
+  "description": "Ten model-neutral Snowflake operator skills with read-only evidence collection for cost, performance, pipelines, access, governance, data quality, failover, and Native Apps",
   "keywords": [
-    "claude-code",
-    "claude-code-plugin",
     "snowflake",
     "data-warehouse",
-    "sql-analytics",
-    "data-sharing",
-    "ai-skills",
-    "saas-pack"
+    "saas",
+    "snowflake-sdk",
+    "snowpark",
+    "data-platform",
+    "agent-skills",
+    "model-agnostic",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/tons-of-skills-marketplace.git",
+    "directory": "plugins/saas-packs/snowflake-pack"
+  },
+  "homepage": "https://tonsofskills.com/plugins/snowflake-pack",
+  "bugs": "https://github.com/jeremylongshore/tons-of-skills-marketplace/issues",
+  "license": "MIT",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
   },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
-    "directory": "plugins/saas-packs/snowflake-pack"
-  },
-  "homepage": "https://tonsofskills.com/learn/snowflake/",
   "publishConfig": {
     "access": "public"
+  },
+  "files": [
+    "LICENSE",
+    "README.md",
+    ".claude-plugin",
+    "000-docs",
+    "shared",
+    "skills",
+    "!**/__pycache__/**",
+    "!**/*.pyc",
+    "!**/*.pyo"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install snowflake-pack\\\\n  or /plugin install snowflake-pack@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
   }
 }

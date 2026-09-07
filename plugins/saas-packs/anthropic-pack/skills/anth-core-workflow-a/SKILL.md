@@ -201,6 +201,15 @@ tool_choice={"type": "tool", "name": "get_weather"}
 tool_choice={"type": "any"}
 ```
 
+## Examples
+
+For a support assistant, define `lookup_order` with an `order_id` string and
+return a structured order status from the application database. Send the tool
+result back using the original `block.id`; a successful run either returns an
+`end_turn` response with the status in plain language or requests the next
+tool needed to answer the user. Keep `max_turns` bounded so an unavailable
+dependency fails predictably instead of looping.
+
 ## Resources
 
 - [Tool Use Guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)

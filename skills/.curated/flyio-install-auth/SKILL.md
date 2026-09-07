@@ -10,7 +10,7 @@ description: 'Install flyctl CLI and configure Fly.io authentication with API to
 
   '
 allowed-tools: Read, Write, Edit, Bash(fly:*), Bash(curl:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -24,6 +24,14 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Install `flyctl` CLI and configure authentication for Fly.io edge compute platform. Two auth methods: **interactive login** (opens browser) and **API tokens** (CI/CD and Machines API). The Machines API base URL is `https://api.machines.dev`.
+
+## Output
+
+Record the authentication method, secret-manager reference, minimum scope, validation time, owner, and rotation/revocation procedure. Never put a token, header, machine response, or organization data in the receipt.
+
+## Examples
+
+Use an app-scoped staging deploy token injected by the CI environment, verify a read-only status check, then revoke it and confirm it can no longer access the app. Keep only redacted evidence of the scope and result.
 
 ## Prerequisites
 

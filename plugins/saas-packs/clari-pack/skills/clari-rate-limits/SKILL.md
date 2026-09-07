@@ -28,6 +28,13 @@ compatibility: Designed for Claude Code
 
 The Clari API enforces rate limits per API key. Export jobs are asynchronous and queued server-side, so the primary concern is polling frequency and concurrent export requests.
 
+## Prerequisites
+
+- A scoped API token and approved forecast export scope
+- Persistent job/attempt tracking for retry and idempotency decisions
+- A scheduler that can defer work without spawning duplicate workers
+- Monitoring for queue depth, response class, and terminal failures
+
 ## Rate Limit Behavior
 
 | Aspect | Value |
@@ -101,6 +108,20 @@ def export_all_periods(
 | 429 with Retry-After | Check header | Wait exact duration |
 | 429 without header | Status code only | Backoff from 5s |
 | Job queue full | Multiple pending jobs | Wait for completion before new exports |
+
+## Output
+
+Return a per-job state record with export period, provider job ID, attempts,
+applied delay, response class, and terminal decision. Do not report tokens or
+raw forecast records; callers must receive a bounded retryable failure rather
+than silently starting a parallel export.
+
+## Examples
+
+Submit one export for a staging period and persist its job ID before polling.
+On a 429 with `Retry-After`, reschedule the same job after that interval; if
+the attempt budget expires, mark the run unavailable and alert the scheduler
+instead of issuing another export request.
 
 ## Resources
 

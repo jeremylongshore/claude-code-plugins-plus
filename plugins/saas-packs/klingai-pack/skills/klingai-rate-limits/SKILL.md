@@ -168,6 +168,32 @@ class RequestQueue:
 | Concurrent limit hit | `429` or task rejection | Wait for active tasks to complete |
 | Burst detection | Multiple `429`s | Aggressive backoff (30-60s) |
 
+## Prerequisites
+
+- An approved sandbox workload, synthetic or rights-cleared brief, current quota baseline, budget cap, draft-only destination, and a named operator for pause and rollback.
+
+## Instructions
+
+1. Exercise limits with bounded draft-only canaries; reject unapproved sources, publishing destinations, or requests that exceed the approved credit budget.
+2. Use idempotency keys and backoff, recording aggregate status and credit consumption rather than prompt content or asset URLs.
+3. Stop queued work on quota, policy, rights, or retention drift; cancel tasks and restore the prior rate configuration before retrying.
+4. Keep a redacted receipt only and delete test artifacts when the approved retention window ends.
+
+## Output
+
+Produce a rate-limit receipt with environment, request budget, aggregate response/error counts, credit use, draft-only/policy outcome, pause or rollback action, owner approval, and cleanup proof. Exclude prompts, assets, and credentials.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Credit budget or quota anomaly | Pause the canary, cancel queued tasks, and restore the approved configuration. |
+| Rights or policy drift | Reject the draft, remove temporary assets, and route the redacted receipt for review. |
+
+## Examples
+
+`env=ci-sandbox; requests=3; budget=30-credits; backoff=enabled; policy=pass; destination=draft-only; cleanup=verified` is an acceptable test receipt.
+
 ## Resources
 
 - [API Reference](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)

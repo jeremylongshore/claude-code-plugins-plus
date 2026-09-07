@@ -170,6 +170,25 @@ A 20-second video (initial + 3 extensions) costs 40 credits in standard mode.
 | Source not complete | Extending a task still processing | Wait for source task to reach `succeed` status |
 | Extension failed | Prompt conflict with source | Align extension prompt with original scene |
 
+## Prerequisites
+
+- A completed, rights-cleared or synthetic source draft, approved extension brief, authorized workspace and credit budget, policy review, draft-only destination, and a rollback/removal owner.
+
+## Instructions
+
+1. Confirm source ownership, completion state, and approved continuity brief before creating an extension; do not use private, unlicensed, or policy-restricted material.
+2. Submit one watermarked draft canary within the approved duration and credit cap, then verify policy, rights, quality, and destination controls.
+3. Halt on continuity, policy, rights, or budget drift and delete the extension task instead of publishing it.
+4. Promote only after owner approval; retain a redacted receipt and remove temporary assets at the agreed retention boundary.
+
+## Output
+
+Produce an extension receipt with source task reference, rights classification, mode/duration, credit estimate, policy review, draft destination, approver, retention/removal reference, and task ID. Exclude prompts, identities, and asset URLs.
+
+## Examples
+
+`source=synthetic-task-42; rights=cleared; duration=5s; mode=standard; policy=pass; destination=draft-only; cleanup=24h` is safe for review.
+
 ## Resources
 
 - [Video Extension API](https://app.klingai.com/global/dev/document-api/apiReference/model/videoExtension)

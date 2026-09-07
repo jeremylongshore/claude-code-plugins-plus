@@ -26,6 +26,10 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Hello World
 
+## Examples
+
+Transcribe a short licensed fixture in the development project, verify the response shape and selected model/language, and remove the fixture according to the test policy. Keep only a correlation ID and aggregate result in logs; do not use a customer call or retain its transcript as a tutorial artifact.
+
 ## Overview
 
 Minimal working examples for Deepgram speech-to-text. Transcribe an audio URL in 5 lines with `createClient` + `listen.prerecorded.transcribeUrl`. Includes local file transcription, Python equivalent, and Nova-3 model selection.

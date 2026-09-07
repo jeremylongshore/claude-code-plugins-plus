@@ -4,15 +4,16 @@
     "path": "skills/code",
     "branch": "main"
   },
-  "last_sync": "2026-07-13T17:27:05.631Z",
+  "last_sync": "2026-08-26T16:39:55.247Z",
   "author": {
     "name": "Ejentum",
     "github": "ejentum",
     "email": "info@ejentum.com"
   },
   "license": "MIT",
-  "files_synced": 1,
+  "files_synced": 2,
   "files": [
+    "LICENSE",
     "SKILL.md"
   ]
 }

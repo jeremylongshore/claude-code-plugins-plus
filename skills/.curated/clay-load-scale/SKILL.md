@@ -284,6 +284,21 @@ When enabled, Clay enriches incoming webhook data, sends results via HTTP API co
 | Table too large to manage | 10K+ rows | Split into multiple focused tables |
 | Credit overrun | Uncontrolled batch size | Add budget check before queueing |
 
+## Output
+
+Produce a scale-run record with source, table/webhook identifiers, batch size,
+queue and credit guardrails, observed throughput, rejection/dead-letter count,
+data-retention decision, and rollback owner. Do not rotate webhook URLs or
+enable auto-delete as an unreviewed workaround for capacity or data-governance
+problems.
+
+## Examples
+
+Run a staged batch of 500 synthetic rows through a capped queue, monitor credit
+use and retries, and prove that a repeated submission is deduplicated. If the
+budget threshold or webhook limit is approached, stop intake, drain safely, and
+create an approved capacity plan before accepting more data.
+
 ## Resources
 
 - [Clay Plans & Billing](https://university.clay.com/docs/plans-and-billing)

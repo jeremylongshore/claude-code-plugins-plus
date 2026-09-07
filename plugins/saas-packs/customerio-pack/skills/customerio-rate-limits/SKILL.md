@@ -24,6 +24,20 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Rate Limits
 
+## Prerequisites
+
+- Current provider limit documentation/plan, a measured baseline, idempotency design, and a named capacity owner.
+- Synthetic test payloads and alerting for 429s, queue age, delivery failure, and duplicate-event risk.
+
+## Output
+
+- A rate-aware client/workflow configuration with bounded concurrency, backoff, idempotency, monitoring, and a safe replay decision path.
+- An aggregate load-test or incident receipt showing limit behavior without recipient payloads.
+
+## Examples
+
+Send synthetic events at gradually increasing concurrency below the approved limit, record 429s and queue age, and apply exponential backoff with jitter using a stable idempotency key. If throttling occurs, reduce concurrency and allow recovery; do not retry every failed event immediately or widen sends to compensate.
+
 ## Overview
 
 Understand Customer.io's API rate limits and implement proper throttling: token bucket limiters, exponential backoff with jitter, queue-based processing, and 429 response handling.

@@ -266,6 +266,14 @@ fi
 | Same issue flagged repeatedly | Learning not created | Reply to comment stating the preference |
 | Reviews on generated code | Missing path_filters | Add `!**/generated/**` to exclusions |
 
+## Examples
+
+Establish a baseline for review latency, comment acceptance, and pull-request
+size in one pilot repository, then add one targeted exclusion or instruction
+and compare the next set of reviews. Keep security-relevant paths in scope; if
+the change reduces useful findings or coverage, restore the prior profile and
+reassess with the team owner.
+
 ## Resources
 
 - [CodeRabbit Review Profiles](https://docs.coderabbit.ai/reference/configuration)

@@ -113,6 +113,23 @@ async function listConnections() {
 | API trigger + external cron | Any schedule | Team+ |
 | Airflow/Dagster integration | Any schedule | Team+ |
 
+## Prerequisites
+
+- A named data/project owner, approved parameter and destination policy, scoped credential, and safe sandbox project.
+- Opaque run IDs, idempotency strategy, aggregate assertions, and a cancellation/rollback plan.
+
+## Output
+
+Return a workflow receipt with project, run, parameter revision, accepted/quarantined operation counts, idempotency state, aggregate assertion, cancellation result, and rollback reference. Never include SQL, output, or credentials.
+
+## Error Handling
+
+Quarantine unknown project, parameter, destination, or response shape. Cancel failed runs and restore prior configuration; do not retry mutations without idempotency or export output to a diagnostic channel.
+
+## Examples
+
+`project=proj-sandbox-12; run=run-opaque-4; params=r3; accepted=24; quarantined=1; assertions=pass; rollback=workflow-r6` is a controlled execution result.
+
 ## Resources
 
 - [Scheduled Runs](https://learn.hex.tech/docs/share-insights/scheduled-runs)

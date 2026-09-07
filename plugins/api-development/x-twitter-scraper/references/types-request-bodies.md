@@ -1,4 +1,4 @@
-# Xquik TypeScript Types: Request Bodies
+# Xquik TypeScript types: request bodies
 
 ```typescript
 
@@ -9,6 +9,16 @@ interface CreateMonitorRequest {
 
 interface UpdateMonitorRequest {
   eventTypes?: EventType[];
+  isActive?: boolean;
+}
+
+interface CreateKeywordMonitorRequest {
+  query: string;
+  eventTypes: KeywordEventType[];
+}
+
+interface UpdateKeywordMonitorRequest {
+  eventTypes?: KeywordEventType[];
   isActive?: boolean;
 }
 

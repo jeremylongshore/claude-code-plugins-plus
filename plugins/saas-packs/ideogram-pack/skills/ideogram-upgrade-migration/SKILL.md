@@ -212,6 +212,14 @@ After migration, you gain access to:
 - Feature flag for gradual rollout
 - Validation script comparing both endpoints
 
+## Prerequisites
+
+- Pinned current/target versions, compatibility assessment, synthetic prompt fixtures, and owner for changed content, output, or destination contracts.
+
+## Examples
+
+`from=client-r12; to=client-r13; sandbox=pass; staging=pass; rights=test-owned; destination=approved; output_retention=none; rollback=r12` is a defensible upgrade record.
+
 ## Resources
 
 - [Legacy Generate API](https://developer.ideogram.ai/api-reference/api-reference/generate)

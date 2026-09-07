@@ -162,6 +162,10 @@ Additional Benefits:
 | Enterprise quote too high | Standard pricing | Negotiate annual commitment for 15-30% discount |
 | Free plan exhausted | 25 lifetime meetings used | Upgrade to Business ($14/mo) |
 
+## Examples
+
+`integration=sandbox-notes; baseline=12000; deferred=120; deduped=900; delivery=pass; retention=none; rollback=cost-r18` makes the cost decision auditable without inspecting meeting content.
+
 ## Resources
 
 - [Granola Pricing](https://www.granola.ai/pricing)

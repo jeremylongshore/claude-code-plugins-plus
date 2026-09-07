@@ -1,102 +1,71 @@
 # Lindy Observability - Implementation Guide
 
-# Lindy AI Observability
+## Supported Architecture
 
-## Overview
+Use Lindy's documented UI-native path:
 
-Monitor Lindy AI agent execution health, automation success rates, and response latency. Key observability signals for Lindy include agent run duration, step-level success/failure within multi-step automations, trigger frequency (how often agents are invoked), and per-agent cost tracking based on Lindy's per-agent pricing model where each active agent incurs a fixed monthly cost.
-
-## Prerequisites
-
-- Lindy Team or Enterprise workspace
-- API access with a valid `LINDY_API_KEY`
-- External monitoring stack (Prometheus/Grafana, Datadog, or similar)
-
-## Instructions
-
-### Step 1: Poll Agent Run Status via API
-
-```bash
-# List recent runs for all agents, sorted by recency
-curl "https://api.lindy.ai/v1/runs?limit=50&sort=-created_at" \
-  -H "Authorization: Bearer $LINDY_API_KEY" | \
-  jq '.runs[] | {agent_name, run_id, status, duration_ms, steps_completed, steps_failed, created_at}'
+```text
+Tasks (manual investigation)
+       |
+Agent Task Change (selected lifecycle events)
+       |
+Get Task Details (Auto agent/task association)
+       |
+Condition + explicit field mapping
+       +--> internal alert with task link
+       +--> HTTP Request to a protected metrics receiver
 ```
 
-### Step 2: Emit Metrics from Run Data
+Do not poll an assumed Lindy REST API. Lindy's public documentation describes Tasks,
+Agent Task Change, Get Task Details, and the outbound HTTP Request action for this
+use case; it does not document the `/v1/runs`, `/v1/agents`, or `/v1/webhooks`
+endpoints previously shown in this reference.
 
-```typescript
-// lindy-metrics-exporter.ts
-async function exportLindyMetrics() {
-  const res = await fetch('https://api.lindy.ai/v1/runs?limit=100&since=1h', {
-    headers: { Authorization: `Bearer ${process.env.LINDY_API_KEY}` },
-  });
-  const { runs } = await res.json();
+## UI Configuration Checklist
 
-  for (const run of runs) {
-    emitCounter('lindy_runs_total', 1, { agent: run.agent_name, status: run.status });
-    emitHistogram('lindy_run_duration_ms', run.duration_ms, { agent: run.agent_name });
-    if (run.steps_failed > 0) {
-      emitCounter('lindy_step_failures_total', run.steps_failed, { agent: run.agent_name });
-    }
-  }
-}
+### Monitored Agent
 
-// Run every 60 seconds
-setInterval(exportLindyMetrics, 60_000);
-```
+1. Open **Tasks** and inspect enough normal and failed tasks to cover each workflow
+   path.
+2. Choose a stable, low-cardinality key such as `support-bot`. Keep the display name,
+   task ID, user ID, email address, and task title out of metric labels.
+3. Record expected task volume and duration from this workspace, not generic values.
 
-### Step 3: Set Up Webhook-Based Real-Time Monitoring
+### Monitoring Agent
 
-Configure Lindy webhooks to push events on agent run completion:
+1. Add **Agent Task Change**.
+2. Select the monitored agent and events: succeeded, failed, and canceled.
+3. Add **Get Task Details**. Keep Agent and Sub Task on Auto; choose a block limit
+   large enough for the observed workflow.
+4. Add a condition for failure alerts and link back to the task.
+5. Add **HTTP Request** with POST and JSON content type.
+6. Store a receiver-owned callback secret as a protected Authorization bearer value.
+   It must be distinct from any secret used to invoke an inbound Lindy webhook.
+7. Map exactly `agent`, `status`, and `durationSeconds`. Do not map Get Task Details
+   inputs, outputs, prompts, messages, or error bodies.
 
-```bash
-curl -X POST https://api.lindy.ai/v1/webhooks \
-  -H "Authorization: Bearer $LINDY_API_KEY" \
-  -d '{
-    "url": "https://hooks.company.com/lindy",
-    "events": ["run.completed", "run.failed", "agent.error"],
-    "secret": "whsec_your_signing_secret"
-  }'
-```
+## Acceptance Tests
 
-### Step 4: Alert on Agent Failures
+| Test | Expected result |
+|---|---|
+| Known agent, known status, bounded duration, valid secret | `200` and one metric increment |
+| Missing or wrong bearer value | `401`; no metric increment |
+| Unknown agent/status/field or invalid duration | `400`; no metric increment |
+| Body larger than receiver limit | Request rejected |
+| Prometheus scrape | Counter and histogram appear with only configured labels |
+| Failure alert | Contains task link and operational metadata, no task content |
 
-```yaml
-groups:
-  - name: lindy
-    rules:
-      - alert: LindyAgentFailureRate
-        expr: rate(lindy_runs_total{status="failed"}[15m]) / rate(lindy_runs_total[15m]) > 0.1
-        for: 10m
-        annotations: { summary: "Lindy agent failure rate exceeds 10%" }
-      - alert: LindyAgentSlow
-        expr: histogram_quantile(0.95, rate(lindy_run_duration_ms_bucket[15m])) > 30000
-        annotations: { summary: "Lindy agent P95 latency exceeds 30 seconds" }
-      - alert: LindyAgentInactive
-        expr: lindy_runs_total == 0 and time() - lindy_last_run_timestamp > 3600
-        annotations: { summary: "No Lindy agent runs in the last hour (expected continuous)" }
-```
+## Threshold Calibration
 
-### Step 5: Build a Dashboard
+Collect a representative baseline before creating alerts. For each workflow class,
+record task count, outcome ratio, median duration, p95 duration, and observation
+window. Choose alert windows that contain enough expected tasks to be meaningful.
+Document the chosen threshold, owner, review date, and rollback action. Recalculate
+after intentional workflow or traffic changes.
 
-Key panels: agent run success/failure rate (stacked bar), run duration p50/p95 by agent, step failure heatmap (which steps fail most), trigger frequency (runs/hour), and active agent count vs billing (since Lindy charges per active agent).
+## Official References
 
-## Error Handling
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Webhook not delivering | Endpoint returning non-2xx | Fix endpoint, check Lindy webhook logs |
-| Run duration spike | Downstream API slow in agent step | Check step-level timing in run details |
-| Agent marked inactive | No triggers firing | Verify trigger configuration (schedule, webhook, email) |
-| Metrics exporter missing data | API rate limit on `/runs` | Reduce polling frequency, use webhooks instead |
-
-## Examples
-
-```bash
-# Quick health check: agent success rate over last 24h
-curl -s "https://api.lindy.ai/v1/runs?since=24h" \
-  -H "Authorization: Bearer $LINDY_API_KEY" | \
-  jq '{total: (.runs | length), failed: ([.runs[] | select(.status=="failed")] | length)}' | \
-  jq '{total, failed, success_rate: (1 - .failed/.total) * 100}'
-```
+- [Monitor Your Agents](https://docs.lindy.ai/testing/monitoring-your-agents)
+- [Tasks](https://docs.lindy.ai/fundamentals/lindy-101/tasks)
+- [Observability utilities](https://docs.lindy.ai/skills/lindy-utilities/observability)
+- [HTTP Request](https://docs.lindy.ai/skills/by-lindy/http-request)

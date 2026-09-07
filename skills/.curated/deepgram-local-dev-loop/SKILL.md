@@ -25,6 +25,10 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Local Dev Loop
 
+## Examples
+
+Use a local or development workspace with a short licensed fixture, make one SDK/config change, run the focused unit test and a bounded integration test, then inspect redacted metrics. Commit only the reviewed change; never copy production recordings, transcripts, or API keys into a local test loop.
+
 ## Overview
 
 Set up a fast local development workflow for Deepgram: test fixtures with sample audio, mock responses for offline unit tests, Vitest integration tests against the real API, and a watch-mode transcription dev server.

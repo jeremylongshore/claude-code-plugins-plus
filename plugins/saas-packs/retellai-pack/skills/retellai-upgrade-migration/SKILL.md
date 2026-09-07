@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Upgrade an SDK through a compatibility canary
+
+Pin the candidate SDK version in a branch and run the development agent suite
+against synthetic create-call, retrieval, error, and webhook scenarios. Record
+the old and new package versions and any changed request shapes, then deploy a
+preview configuration before altering production dependencies. Keep the prior
+lockfile and agent version available until the canary has met its error and
+latency limits, so rollback does not require reconstructing the old runtime.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

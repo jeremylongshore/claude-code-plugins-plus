@@ -263,6 +263,17 @@ export { EncounterSessionManager };
 - Exponential backoff with Retry-After support
 - Session lifecycle manager with state tracking
 
+## Examples
+
+In a sandbox integration test, initialize the singleton from a secret-managed
+environment, create a session with fictional identifiers, add a short
+synthetic transcript, and finalize it through `withRetry`. Assert that the
+audit stream contains a correlation ID, HTTP outcome, and redacted endpoint
+shape—but no transcript or patient value. Then inject a synthetic `429` and
+confirm the retry honors its delay and stops at the configured budget. If a
+safe-log assertion fails, disable the integration test output upload and fix
+the redaction boundary before reviewing the request trace.
+
 ## Error Handling
 
 | Pattern | Use Case | Benefit |

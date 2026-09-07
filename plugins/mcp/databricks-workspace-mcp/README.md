@@ -1,17 +1,12 @@
-<h1 align="center">databricks-workspace-mcp</h1>
+# databricks-workspace-mcp
 
-<p align="center">
-  An MCP server for the Databricks <strong>control plane</strong> — cluster forensics, instance-pool
-  waste, DLT pipeline event logs, and Unity Catalog storage governance.<br>
-  The 8 read-only tools no managed Databricks MCP exposes. Pairs with the managed SQL MCP for
-  <code>system.*</code> reads.
-</p>
+An MCP server for the Databricks **control plane** — cluster forensics, instance-pool waste, DLT
+pipeline event logs, and Unity Catalog storage governance. These are the eight read-only tools that
+no managed Databricks MCP exposes. Pair this server with the managed SQL MCP for `system.*` reads.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/License-MIT-10b981?style=flat-square" alt="License: MIT">
-  <img src="https://img.shields.io/badge/MCP-stdio%20%2B%20HTTP-8b5cf6?style=flat-square" alt="MCP stdio + HTTP">
-  <img src="https://img.shields.io/badge/access-read--only-0ea5e9?style=flat-square" alt="read-only">
-</p>
+- **License:** MIT
+- **Transport:** MCP over stdio and HTTP
+- **Access:** Read-only
 
 ---
 

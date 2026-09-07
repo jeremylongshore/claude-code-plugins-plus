@@ -202,6 +202,17 @@ main().catch(console.error);
 - Structured SOAP note with ICD-10/CPT codes
 - Source citations mapping AI output to conversation segments
 
+## Examples
+
+Create a new sandbox session with the included fictional identifiers and only a
+synthetic transcript, then run `main.ts` with credentials supplied through the
+local environment rather than the source file. A successful run prints a
+session ID, selected note sections, and a nonzero source-citation count. Check
+the generated note for obviously missing sections before using it as an
+integration fixture. If polling times out, keep the synthetic session ID and
+redacted status response for diagnosis, then retry only after confirming the
+sandbox service is healthy; never send a real patient conversation as a test.
+
 ## Error Handling
 
 | Error | Cause | Solution |

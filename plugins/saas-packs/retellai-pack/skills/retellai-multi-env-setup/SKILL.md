@@ -50,6 +50,18 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Keep development and production credentials separated
+
+Create distinct Retell projects or explicitly named agent groups for
+development, staging, and production. Each environment receives its own secret
+reference and phone routing configuration, so a local test cannot accidentally
+create a live call. Verify the separation by listing agents with the
+development credential and confirming that production identifiers are absent;
+promote configuration through a controlled CI environment instead of copying
+keys between files.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

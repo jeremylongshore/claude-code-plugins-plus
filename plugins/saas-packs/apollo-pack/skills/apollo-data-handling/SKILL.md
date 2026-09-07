@@ -118,6 +118,7 @@ export async function handleErasure(email: string): Promise<{
 
   // 2. Remove from all sequences first
   let sequencesRemoved = 0;
+  const sequenceRemovalFailures: string[] = [];
   for (const seqId of contact.emailer_campaign_ids ?? []) {
     try {
       await client.post('/emailer_campaigns/remove_or_stop_contact_ids', {
@@ -126,8 +127,13 @@ export async function handleErasure(email: string): Promise<{
       });
       sequencesRemoved++;
     } catch (err: any) {
-      console.warn(`Failed to remove from sequence ${seqId}:`, err.message);
+      // Do not delete while the contact may still receive outreach.
+      sequenceRemovalFailures.push(seqId);
     }
+  }
+
+  if (sequenceRemovalFailures.length > 0) {
+    throw new Error(`Erasure paused: removal failed for ${sequenceRemovalFailures.length} sequence(s)`);
   }
 
   // 3. Delete the contact from your CRM (requires master key)
@@ -250,6 +256,18 @@ export function logAudit(entry: Omit<AuditEntry, 'timestamp'>) {
 - Retention policy enforcer with age-based cleanup and label protection
 - AES-256-GCM field-level encryption for locally stored PII
 - Audit log capturing every data operation with user attribution
+
+## Examples
+
+For a verified subject-access and erasure request, authenticate the requester
+through the organization’s privacy process, create a case ID, and run the SAR
+against only the authorized contact record. Store the export in the approved
+restricted location and log its retention deadline without copying raw PII to
+CI or chat. For erasure, first remove the record from every active sequence;
+if any removal fails, leave the CRM record intact, record the failed sequence
+IDs in the case system, and escalate for manual completion. Delete only after
+all sequence removals succeed, then retain the minimal audit receipt required
+by the organization’s policy.
 
 ## Error Handling
 

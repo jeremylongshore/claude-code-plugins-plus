@@ -43,6 +43,7 @@ const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 // Resolve archiver — available in both root and marketplace node_modules
 const require = createRequire(join(ROOT, 'marketplace', 'package.json'));
 const archiver = require('archiver');
+const { publishedPlugins } = require(join(ROOT, 'scripts', 'publication-policy.cjs'));
 const EXTENDED_JSON = join(ROOT, '.claude-plugin', 'marketplace.extended.json');
 const OUTPUT_DIR = join(ROOT, 'marketplace', 'public', 'downloads');
 const PLUGINS_DIR = join(ROOT, 'plugins');
@@ -255,7 +256,7 @@ async function main() {
 
   // Read catalog
   const catalog = JSON.parse(readFileSync(EXTENDED_JSON, 'utf-8'));
-  const plugins = catalog.plugins || [];
+  const plugins = publishedPlugins(catalog.plugins || [], 'extended catalog');
 
   console.log(`Found ${plugins.length} plugins in catalog\n`);
 

@@ -39,7 +39,7 @@ const REPO_ROOT = join(__dirname, '..');
 const OUT = join(REPO_ROOT, 'marketplace', 'src', 'data', 'skills-stats.json');
 
 const OWNER = 'jeremylongshore';
-const REPO = 'claude-code-plugins-plus-skills';
+const REPO = 'tons-of-skills-marketplace';
 const BADGE = `https://skills.sh/b/${OWNER}/${REPO}`;
 const PAGE = `https://skills.sh/${OWNER}/${REPO}`;
 

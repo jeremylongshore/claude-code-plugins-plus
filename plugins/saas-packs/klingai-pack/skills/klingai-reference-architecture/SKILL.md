@@ -198,6 +198,49 @@ volumes:
   redis-data:
 ```
 
+## Prerequisites
+
+- Defined availability, latency, retention, residency, and cost objectives; a threat model; and named owners for policy, data rights, operations, and publication approval.
+- A secret manager, private staging storage, immutable artifact digests, queue-level idempotency, and a bounded model/credit/concurrency allowlist.
+- Synthetic or rights-cleared fixtures for load and integration tests. Production likeness or customer media requires consent and an explicit processing purpose; test runs must not export contacts or source media.
+
+## Instructions
+
+1. Keep the API gateway responsible for authentication, authorization, prompt and provenance validation, content-policy checks, destination allowlists, and budget estimation before queueing work.
+2. Put only opaque job references and approved parameters on the queue. Workers obtain short-lived credentials from the secret manager, enforce idempotency, and submit a private draft rather than publishing directly.
+3. Start each release with a watermarked sandbox canary. Verify policy, source rights, suppression/destination rules, output integrity, aggregate error rate, quota, and cost before an owner approves staged promotion.
+4. Store generated media under encrypted, access-controlled paths with a retention deadline. Keep logs and events redacted; never copy prompts, source URLs, faces, contact data, credentials, or raw provider payloads into durable telemetry.
+5. Promote by immutable digest and record the approval. On policy, quality, budget, storage, or provider failure, stop the queue, quarantine artifacts, revoke temporary links, delete staged data, and restore the previous approved manifest.
+6. Test rollback and deletion in staging, then retain a receipt containing only opaque IDs, hashes, aggregate metrics, approval state, retention proof, and rollback reference.
+
+## Output
+
+The architecture decision should produce a component/data-flow map, trust boundaries, approved provider/model matrix, queue and retry policy, budget guard, policy and rights gate, storage/retention policy, canary and approval workflow, rollback runbook, and redacted evidence schema. A successful deployment receipt must identify the artifact digest and aggregate checks without containing user media or personal data.
+
+## Error Handling
+
+Return user-safe errors for invalid input, policy rejection, missing rights, quota,
+budget, or authorization failures. Retry only bounded transient transport and
+polling failures with idempotency protection; never replay a policy rejection or
+unboundedly create billable tasks. Send unknown provider states to quarantine and
+owner review, pause promotion, and use the prior manifest for rollback. If storage
+or webhook delivery fails, preserve task state without exposing provider URLs,
+clean temporary artifacts after recovery, and verify deletion at the retention
+deadline.
+
+## Examples
+
+A staging deployment receipt may contain:
+
+```text
+artifact=sha256:opaque; environment=staging; fixture=synthetic-v4;
+rights=cleared; policy=pass; canary=watermarked-private;
+budget=within-limit; output_digest=sha256:opaque; approval=recorded;
+retention=24h; deletion=verified; rollback=release-r31
+```
+
+The production path must reject a request with an unknown source or destination before enqueueing it; a green canary alone is not publication approval.
+
 ## Resources
 
 - [API Reference](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)

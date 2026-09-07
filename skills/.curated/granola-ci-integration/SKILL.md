@@ -247,6 +247,10 @@ Meeting ends → Granola enhances notes
 - [ ] Check Slack message formatting in target channel
 - [ ] Verify Linear tasks appear in correct team
 
+## Examples
+
+Run a fictional action-item fixture through the staging pipeline and record `fixture=meeting-actions-v3; parsed=4; quarantined=1; destinations=allowlisted; tests=18/18; retention=none; rollback=pipeline-r7`. This demonstrates automation without creating a task from real meeting content.
+
 ## Resources
 
 - [Zapier Granola App](https://zapier.com/apps/granola/integrations)

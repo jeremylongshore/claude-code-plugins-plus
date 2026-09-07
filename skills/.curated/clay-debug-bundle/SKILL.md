@@ -197,6 +197,22 @@ echo "Submit at: https://community.clay.com or support@clay.com"
 - Credit usage numbers
 - Software versions
 
+## Output
+
+Generate a timestamped, redacted diagnostic archive with collection status,
+environment, correlation IDs, sanitized configuration, review decision, and
+support-case reference. The archive must not contain live secrets, raw lead or
+CRM records, or provider credentials; regenerate rather than manually editing
+an archive if sensitive data is found.
+
+## Examples
+
+For a failing enrichment callback, collect only the sanitized HTTP status,
+table structure, and application correlation ID, then inspect the archive
+locally before submitting it to support. If a log contains a contact email or
+secret, quarantine the archive, fix the collection filter, and create a new
+bundle instead of sending a partially redacted copy.
+
 ## Resources
 
 - [Clay Community Support](https://community.clay.com)

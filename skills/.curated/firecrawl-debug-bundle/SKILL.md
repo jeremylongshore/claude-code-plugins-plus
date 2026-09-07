@@ -32,6 +32,10 @@ compatibility: Designed for Claude Code
 
 Collect all diagnostic information needed for Firecrawl support tickets. Tests API connectivity, checks SDK version, verifies credentials, captures error context, and packages it all into a redacted bundle.
 
+## Examples
+
+For a synthetic crawl failure, collect the runtime version, opaque crawl ID, configured policy reference, and aggregate retry count. Review the bundle for secrets and page content, encrypt it in the approved evidence location, and share it only with the assigned incident owner before deleting it at the retention date.
+
 ## Prerequisites
 
 - Firecrawl SDK installed

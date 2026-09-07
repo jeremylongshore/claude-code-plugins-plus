@@ -28,6 +28,17 @@ compatibility: Designed for Claude Code
 
 Complete checklist for deploying Fireflies.ai integrations to production. Covers API key management, webhook setup, health checks, and monitoring.
 
+## Instructions
+
+1. Attach evidence or an owner decision to every applicable checklist control, including consent/access boundaries and retention behavior.
+2. Verify scoped secrets, signature validation, idempotent processing, redacted telemetry, and a tested rollback before production promotion.
+3. Run a canary with a fictional meeting event, observe aggregate health and delivery state, then stop promotion on any permission, destination, or safety failure.
+4. Record the launch, rollback owner, exceptions, and final approver in the production receipt.
+
+## Examples
+
+Process a synthetic transcript-ready event through staging, revoke a test recipient’s access, and verify no replay occurs after a simulated worker failure. Promote only when the approver records canary evidence and all required controls have a verified owner.
+
 ## Prerequisites
 
 - Staging environment tested

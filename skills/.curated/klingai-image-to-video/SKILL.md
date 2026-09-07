@@ -167,6 +167,37 @@ These features cannot be combined in a single request:
 | `task_status: failed` | Image too complex or low quality | Use higher resolution, clearer source |
 | Mask mismatch | Mask dimensions differ from source | Ensure mask matches source image dimensions |
 
+## Prerequisites
+
+- A Kling API credential stored in the runtime secret manager, an approved model and duration allowlist, and a per-job credit budget.
+- A synthetic or rights-cleared source image and any mask or tail image, with consent recorded for identifiable people and permission to transform the asset.
+- A private staging bucket and a review owner. New generations must remain draft-only and watermarked until policy, quality, and publication approval are recorded.
+
+## Instructions
+
+1. Resolve the source and mask references from an approved allowlist; reject data from untrusted URLs, missing provenance, or assets containing an identifiable person without documented consent.
+2. Validate format, dimensions, feature mutual exclusivity, prompt length, and the requested duration before spending credits. Use a synthetic fixture for automated checks.
+3. Deduplicate the request using a stable job key, submit only after the content-policy check passes, and keep the task and source in private staging storage.
+4. Run one short, watermarked sandbox canary. Check motion, policy outcome, source fidelity, and the credit budget before requesting an owner approval for a larger or public render.
+5. On approval, promote the exact task result by digest. On failure or withdrawal, stop downstream publication, remove staged media and temporary URLs, and restore the prior approved asset or job state.
+6. Record a redacted receipt containing only opaque job and asset digests, policy and approval outcomes, budget outcome, retention deadline, and rollback reference.
+
+## Output
+
+Return a result containing the opaque task identifier, model and duration, status, output digest or private staging URL, canary/approval state, and cleanup or rollback reference. Do not put source images, mask URLs, prompts, face data, credentials, or unredacted provider responses in logs or receipts.
+
+## Examples
+
+For a safe automated check, use a synthetic landscape fixture and a private canary:
+
+```text
+source=fixture:synthetic-landscape-v3; rights=cleared; mode=standard;
+duration=5; canary=watermarked-sandbox; policy=pass; approval=pending;
+publish=false; contacts_exported=0; receipt=asset-sha256:opaque
+```
+
+Do not substitute a live customer photograph or publish the canary until consent, policy, quality, and owner approval are all recorded.
+
 ## Resources
 
 - [Image-to-Video API](https://app.klingai.com/global/dev/document-api/apiReference/model/imageToVideo)

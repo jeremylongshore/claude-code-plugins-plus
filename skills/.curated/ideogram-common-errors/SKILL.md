@@ -274,6 +274,17 @@ esac
 - Applied fix with verification
 - Diagnostic output confirming resolution
 
+## Instructions
+
+1. Classify authentication, parameter, content-policy, quota, generation, storage, and destination errors before changing configuration.
+2. Reproduce once with a fictional prompt fixture and capture only status, latency band, correlation ID, and aggregate result state.
+3. Check scope, right-to-use/consent record, parameter shape, quota, and destination allowlist in that order.
+4. Apply one reversible change at a time and escalate a redacted bundle if the same failure persists.
+
+## Examples
+
+`status=429; env=sandbox; correlation=img-opaque-11; action=bounded-backoff; fixture=fictional; output_retention=none; probe=recovered` supports a safe handoff.
+
 ## Resources
 
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)

@@ -182,6 +182,14 @@ Developer writes code
 | Review hangs on large file | File too large for AI context | Review specific files instead of all |
 | Empty review output | No changed files detected | Stage changes with `git add` first |
 
+## Examples
+
+Run the CLI against one non-sensitive changed file in a local feature branch,
+review the output before committing, and use the pull-request app as the
+separate authoritative review layer. If the CLI lacks credits, authentication,
+or context, skip the local automation and rely on the configured PR workflow;
+do not paste repository secrets or large private files into an alternate tool.
+
 ## Resources
 
 - [CodeRabbit CLI Documentation](https://docs.coderabbit.ai/cli)

@@ -201,6 +201,12 @@ curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
 | Image optimization quota exceeded | Too many unique image transforms | Reduce `sizes` array, increase cache TTL |
 | Build minutes exceeded | Slow builds or too many deploys | Use `ignoreCommand` to skip non-code changes |
 
+## Examples
+
+### Reduce an invocation spike with a measurable rollback
+
+For a high-traffic read endpoint, add a conservative `s-maxage` response policy in a preview deployment and compare invocation count, cache hit rate, and response correctness against the prior release using synthetic requests. Set spend alerts before rollout and avoid a hard account-wide pause unless the owner accepts its blast radius. If personalized content is accidentally cached, immediately roll back the header change, purge only the affected deployment cache where supported, and document the regression.
+
 ## Resources
 
 - [Vercel Pricing](https://vercel.com/pricing)

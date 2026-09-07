@@ -29,10 +29,12 @@ test('maps frozen, generated, canonical, and record paths deterministically', ()
     'frozen',
   );
   assert.equal(expectedClass('000-docs/000-INDEX.md'), 'generated');
+  assert.equal(expectedClass('000-docs/813-RA-AUDT-saas-tutorial-lattice.md'), 'generated');
   assert.equal(
     expectedClass('000-docs/727-AT-ARCH-master-modernization-blueprint.md'),
     'canonical',
   );
+  assert.equal(expectedClass('000-docs/808-DR-STND-certification-standard.md'), 'canonical');
   assert.equal(expectedClass('000-docs/769-AA-AACR-epic-1-count-cohort-closure.md'), 'record');
 });
 

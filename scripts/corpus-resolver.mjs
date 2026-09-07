@@ -10,10 +10,14 @@
 
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { resolvePluginProvenance } from './plugin-provenance.mjs';
+
+const require = createRequire(import.meta.url);
+const { publishedPlugins } = require('./publication-policy.cjs');
 
 export const CORPUS_COHORTS = Object.freeze([
   'marketplace-visible',
@@ -164,7 +168,7 @@ function readCatalog(root) {
 
   const names = new Set();
   const roots = new Set();
-  for (const [index, plugin] of catalog.plugins.entries()) {
+  for (const [index, plugin] of publishedPlugins(catalog.plugins, 'extended catalog').entries()) {
     if (typeof plugin?.name !== 'string' || plugin.name.length === 0) {
       fail(`catalog plugin ${index} has no name`);
     }

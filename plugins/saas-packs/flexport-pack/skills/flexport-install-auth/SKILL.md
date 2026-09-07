@@ -26,6 +26,10 @@ compatibility: Designed for Claude Code
 
 Configure Flexport API authentication for logistics and supply chain integration. Flexport offers two auth methods: **API Keys** (simple bearer tokens that never expire) and **API Credentials** (client ID/secret pairs that issue JWTs valid for 24 hours). The v2 REST API base URL is `https://api.flexport.com` and speaks JSON.
 
+## Output
+
+Record only the authentication method, approved scope, secret-manager reference, validation time, owner, and revocation/rotation procedure. Do not include an API key, token, client secret, or any logistics response data.
+
 ## Prerequisites
 
 - Flexport account at [flexport.com](https://www.flexport.com)

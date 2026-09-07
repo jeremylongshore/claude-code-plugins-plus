@@ -252,6 +252,16 @@ async function enrichHighValueLeads(people: any[]) {
 - Budget-aware client blocking requests at daily limit
 - Cost-optimized pipeline combining all strategies
 
+## Examples
+
+For a weekly prospecting batch, search first without enrichment, score the
+results, and prepare only the eligible records for enrichment. Start with a
+small batch of ten, record the before-and-after credit count, and persist the
+deduplication key only after Apollo confirms a result. When the daily ceiling
+is reached, leave the remaining candidate IDs queued for the next budget
+window; do not increase the environment budget during the run or retry unknown
+results in a way that can consume the same credit twice.
+
 ## Error Handling
 
 | Issue | Resolution |

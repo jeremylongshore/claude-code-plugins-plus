@@ -99,6 +99,25 @@ function logAccess(entry: JuiceboxAuditEntry): void {
 | Saved search not visible | Search created in different dataset scope | Verify dataset access or share search explicitly |
 | Seat limit reached | All workspace licenses used | Remove inactive members or upgrade plan |
 
+## Prerequisites
+
+- An approved role matrix, sandbox workspace with synthetic fixtures, access-review owner, source/destination allowlists, suppression controls, secret references, and a tested access-revocation path.
+
+## Instructions
+
+1. Test role changes in a sandbox and enforce least privilege; reject broad grants, unapproved data sources/destinations, and literal credentials.
+2. Verify denial paths, suppression, audit-log redaction, retention, and `contacts_exported=0` using aggregate evidence only.
+3. Canary one role assignment at a time; halt on unauthorized access, scope, policy, or retention drift and revoke the change immediately.
+4. Promote only after named-owner approval, then retain a redacted access review and delete temporary fixtures.
+
+## Output
+
+Produce an RBAC receipt with environment, role and permitted scope, denial-test outcome, source/destination/suppression/no-export assertions, reviewer approval, revocation/rollback reference, and retention/deletion proof. Exclude user identities, records, and secrets.
+
+## Examples
+
+`env=staging; role=report-viewer; scope=aggregate-only; denial_test=pass; suppression=pass; contacts_exported=0; revocation=tested` is a valid role-change receipt.
+
 ## Resources
 
 - Juicebox Enterprise

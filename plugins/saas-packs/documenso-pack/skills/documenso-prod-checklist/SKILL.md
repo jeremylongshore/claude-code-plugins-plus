@@ -12,7 +12,7 @@ description: 'Execute Documenso production deployment checklist and rollback pro
 
   '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,6 +22,21 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Documenso Production Checklist
+
+## Instructions
+
+1. Complete evidence gates for workspace/identity, template/version review, signer authorization, data/retention, callbacks, audit, monitoring, and rollback.
+2. Validate the exact production role/audience and signing lifecycle with approved safe checks.
+3. Stop production enablement when any document, identity, security, or owner gate is unverified.
+4. Record the named go/no-go decision and post-release observation result.
+
+## Output
+
+- A production-readiness receipt with owners, evidence links, approved exceptions, and tested rollback path.
+
+## Examples
+
+Validate a new template in staging with synthetic signers, verify the production access roles and callback endpoint under review, then release to an approved canary. If authorization, state, or audit behavior differs, halt the release and restore the prior approved template.
 
 ## Overview
 

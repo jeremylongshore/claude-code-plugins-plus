@@ -236,6 +236,10 @@ console.log('Required permissions:', [...neededPermissions].join(', '));
 - Access control audit framework
 - Security compliance checklist
 
+## Examples
+
+Give the integration identity the smallest approved field and action scope, keep its credential in the organization's secret manager, and audit access on a defined schedule. For a suspected leak, revoke/rotate through BambooHR and the secret manager, preserve only redacted evidence, and verify that no employee data or secrets reached logs, tickets, or client-side code.
+
 ## Error Handling
 
 | Security Issue | Detection | Mitigation |

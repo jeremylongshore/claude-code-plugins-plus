@@ -147,6 +147,21 @@ kubectl get nodes -w
 | Terraform drift | Manual console changes | Run `terraform refresh` |
 | Agent offline after restart | Helm release stale | `helm upgrade --install` again |
 
+## Output
+
+The local loop produces a versioned plan, non-production policy result, agent
+health check, and observed node/policy evidence. Keep development credentials
+and cluster identifiers isolated from production; a plan or console result is
+not permission to apply a change to another environment.
+
+## Examples
+
+Run `terraform plan` against a disposable development cluster, inspect the
+saved plan for destructive changes, then apply only after a reviewer accepts
+the diff. Confirm policy state and node behavior, and destroy or reset the
+test resources after observation so temporary optimization settings cannot
+quietly persist into a later test.
+
 ## Resources
 
 - [CAST AI Terraform Provider](https://registry.terraform.io/providers/castai/castai/latest/docs)

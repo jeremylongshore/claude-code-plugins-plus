@@ -24,6 +24,10 @@ compatibility: Designed for Claude Code
 ---
 # Framer Code Components & Overrides
 
+## Examples
+
+Build a fictional staging component with no embedded secrets or visitor data, test its publish behavior under a limited role, and verify rollback removes the canary without changing production content.
+
 ## Overview
 
 Build code components with property controls and code overrides for Framer sites. Components are custom React rendered on the canvas. Overrides modify existing layer behavior (animations, interactions) without changing the component.
