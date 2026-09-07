@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-// Official Link Allowlist Validation Gate
-// Purpose: Enforce 3-domain allowlist for external links across markdown files
+// Official Link Blocklist Validation Gate
+// Purpose: Refuse invalid URLs and configured blocked domains across markdown files
 // Exit codes: 0 = All links allowed, 1 = Disallowed links found
 
 import fs from 'fs';
@@ -120,16 +120,20 @@ function parseHttpUrl(url) {
   }
 }
 
-function isDevelopmentUrlAllowed(url) {
-  const hasPlaceholder = PLACEHOLDER_PATTERN.test(url);
-  PLACEHOLDER_PATTERN.lastIndex = 0;
+function resolveHttpUrl(url) {
+  let hasPlaceholder = false;
+  const substitutedUrl = url.replace(PLACEHOLDER_PATTERN, () => {
+    hasPlaceholder = true;
+    return 'placeholder';
+  });
   const parsedUrl = parseHttpUrl(url);
-  const placeholderUrl =
-    !parsedUrl && hasPlaceholder
-      ? parseHttpUrl(url.replace(PLACEHOLDER_PATTERN, 'placeholder'))
-      : null;
+  const placeholderUrl = !parsedUrl && hasPlaceholder ? parseHttpUrl(substitutedUrl) : null;
   const effectiveUrl = parsedUrl ?? placeholderUrl;
 
+  return { effectiveUrl, hasPlaceholder };
+}
+
+function classifyDevelopmentUrl({ effectiveUrl, hasPlaceholder }) {
   // Do not let userinfo disguise a lookalike host or turn an allowed host into
   // a credential sink, including when placeholders make the original URL
   // intentionally unparsable.
@@ -150,6 +154,10 @@ function isDevelopmentUrlAllowed(url) {
   }
 
   return { allowed: false, reason: 'not-development-host' };
+}
+
+function isDevelopmentUrlAllowed(url) {
+  return classifyDevelopmentUrl(resolveHttpUrl(url));
 }
 
 function findMarkdownFiles() {
@@ -240,7 +248,7 @@ function extractLinks(markdown) {
   return links;
 }
 
-export function isLinkAllowed(url) {
+export function isLinkAllowed(url, blockedDomains = BLOCKED_DOMAINS) {
   // Relative links
   if (url.startsWith('./') || url.startsWith('../') || url.startsWith('#')) {
     return { allowed: true, reason: 'relative' };
@@ -251,26 +259,22 @@ export function isLinkAllowed(url) {
     return { allowed: true, reason: 'non-http' };
   }
 
-  const developmentResult = isDevelopmentUrlAllowed(url);
-  if (developmentResult.allowed) {
-    return developmentResult;
-  }
-  if (developmentResult.reason === 'credentials') {
-    return developmentResult;
-  }
-
-  // Check against blocklist
-  const urlObj = parseHttpUrl(url);
-  if (!urlObj) {
+  const resolvedUrl = resolveHttpUrl(url);
+  const developmentResult = classifyDevelopmentUrl(resolvedUrl);
+  if (developmentResult.reason === 'credentials') return developmentResult;
+  if (!resolvedUrl.effectiveUrl) {
     return { allowed: false, reason: 'invalid-url', error: 'Invalid URL' };
   }
 
-  const hostname = urlObj.hostname;
+  const hostname = resolvedUrl.effectiveUrl.hostname;
 
-  // Block malicious domains
-  if (isDomainBlocked(hostname)) {
+  // The blocklist always takes precedence, including for development and
+  // placeholder URLs.
+  if (isDomainBlocked(hostname, blockedDomains)) {
     return { allowed: false, reason: 'blocked-domain', domain: hostname };
   }
+
+  if (developmentResult.allowed) return developmentResult;
 
   // Allow all other domains
   return { allowed: true, reason: 'default-allow' };

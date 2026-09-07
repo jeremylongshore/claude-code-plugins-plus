@@ -97,6 +97,24 @@ test('the public validator remains an explicit blocklist policy', () => {
   });
 });
 
+test('configured blocklist entries take precedence over development and placeholder URLs', () => {
+  assert.deepEqual(isLinkAllowed('https://example.com/[PROJECT]', ['example.com']), {
+    allowed: false,
+    reason: 'blocked-domain',
+    domain: 'example.com',
+  });
+  assert.deepEqual(isLinkAllowed('https://[REGION].bad.example/path', ['bad.example']), {
+    allowed: false,
+    reason: 'blocked-domain',
+    domain: 'placeholder.bad.example',
+  });
+  assert.deepEqual(isLinkAllowed('http://localhost:3000/', ['localhost']), {
+    allowed: false,
+    reason: 'blocked-domain',
+    domain: 'localhost',
+  });
+});
+
 test('rejects invalid ports instead of treating them as development URLs', () => {
   assert.deepEqual(isDevelopmentUrlAllowed('https://localhost:99999/path'), {
     allowed: false,

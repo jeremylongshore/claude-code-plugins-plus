@@ -272,12 +272,59 @@ function scanFlowEnvEntries(value, offset) {
 }
 
 function flowEnvMappings(text) {
-  return text.matchAll(/^\s*env\s*:\s*\{([^}\n]*)\}\s*(?:#.*)?$/gm);
+  const mappings = [];
+  const prefix = /^[ \t]*env[ \t]*:[ \t]*\{/gm;
+  let match;
+
+  while ((match = prefix.exec(text)) !== null) {
+    const openBrace = match.index + match[0].lastIndexOf('{');
+    let cursor = openBrace + 1;
+    let depth = 1;
+    let quote = null;
+
+    while (cursor < text.length && depth > 0) {
+      const character = text[cursor];
+      if (quote) {
+        if (character === '\\' && quote !== "'") {
+          cursor += Math.min(2, text.length - cursor);
+          continue;
+        }
+        if (character === quote) {
+          if (quote === "'" && text[cursor + 1] === "'") {
+            cursor += 2;
+            continue;
+          }
+          quote = null;
+        }
+        cursor += 1;
+        continue;
+      }
+      if (isFlowQuote(character)) quote = character;
+      else if (character === '{') depth += 1;
+      else if (character === '}') depth -= 1;
+      cursor += 1;
+    }
+
+    const closed = depth === 0;
+    const contentEnd = closed ? cursor - 1 : cursor;
+    mappings.push({
+      content: text.slice(openBrace + 1, contentEnd),
+      contentOffset: openBrace + 1,
+      index: match.index,
+      closed,
+    });
+    if (!closed) break;
+    prefix.lastIndex = cursor;
+  }
+
+  return mappings;
 }
 
 function malformedFlowEnvOffset(text) {
   for (const flow of flowEnvMappings(text)) {
-    if (scanFlowEnvEntries(flow[1], flow.index).malformed) return flow.index;
+    if (!flow.closed || scanFlowEnvEntries(flow.content, flow.contentOffset).malformed) {
+      return flow.index;
+    }
   }
   return -1;
 }
@@ -316,7 +363,7 @@ function collectAssignments(text) {
     );
   }
   for (const flow of flowEnvMappings(text)) {
-    for (const entry of scanFlowEnvEntries(flow[1], flow.index).entries) {
+    for (const entry of scanFlowEnvEntries(flow.content, flow.contentOffset).entries) {
       record(entry.index, entry.name, entry.value);
     }
   }

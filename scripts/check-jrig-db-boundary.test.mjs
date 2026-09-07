@@ -210,17 +210,37 @@ test('flow-env scanner remains linear and fails closed on malformed escaped inpu
 });
 
 test('malformed flow-env mappings with JRig database arguments fail closed', () => {
-  const malformed = [
-    'env: { DB: "freshie/inventory.sqlite" OTHER: "safe" }',
-    'run: j-rig eval x --db "${DB:-/dev/shm/safe.sqlite}"',
-  ].join('\n');
+  const malformedCases = [
+    [
+      'env: { DB: "freshie/inventory.sqlite" OTHER: "safe" }',
+      'run: j-rig eval x --db "${DB:-/dev/shm/safe.sqlite}"',
+    ].join('\n'),
+    [
+      'env: {',
+      '  DB: "freshie/inventory.sqlite"',
+      '  OTHER: "safe"',
+      '}',
+      'run: j-rig eval x --db "${DB:-/dev/shm/safe.sqlite}"',
+    ].join('\n'),
+  ];
 
-  assert.deepEqual(
-    inspectJrigDbBoundary(malformed, 'plugins/example/README.md').map(
-      (finding) => finding.reasonCode,
-    ),
-    ['DIRECT_JRIG_FRESHIE_DB'],
-  );
+  for (const malformed of malformedCases) {
+    assert.deepEqual(
+      inspectJrigDbBoundary(malformed, 'plugins/example/README.md').map(
+        (finding) => finding.reasonCode,
+      ),
+      ['DIRECT_JRIG_FRESHIE_DB'],
+    );
+  }
+
+  const validScratch = [
+    'env: {',
+    '  DB: "/dev/shm/safe.sqlite",',
+    '  OTHER: "safe"',
+    '}',
+    'run: j-rig eval x --db "$DB"',
+  ].join('\n');
+  assert.deepEqual(inspectJrigDbBoundary(validScratch, 'plugins/example/README.md'), []);
 });
 
 test('command-scoped state, parameter expansion, and parsed YAML preserve shell semantics', () => {
