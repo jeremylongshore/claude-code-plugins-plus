@@ -182,6 +182,33 @@ run: >
   }
 });
 
+test('flow-env scanner preserves quoted commas, escapes, and semantic values', () => {
+  const dangerous = [
+    'env: { SAFE: "/dev/shm/safe,db.sqlite\\!", DB: \'freshie/inventory.sqlite\' }',
+    'run: >',
+    '  j-rig eval skills/example --db "$DB"',
+  ].join('\n');
+  assert.equal(inspectJrigDbBoundary(dangerous, 'plugins/example/README.md').length, 1);
+
+  const safe = [
+    'env: { DB: "/dev/shm/safe,db.sqlite", OTHER: \'freshie/other.sqlite\' }',
+    'run: >',
+    '  j-rig eval skills/example --db "$DB"',
+  ].join('\n');
+  assert.deepEqual(inspectJrigDbBoundary(safe, 'plugins/example/README.md'), []);
+});
+
+test('flow-env scanner remains linear and fails closed on malformed escaped input', () => {
+  const malformedEscapes = '\\!'.repeat(20_000);
+  const text = [
+    'env: { DB: "freshie/inventory.sqlite", BROKEN: "' + malformedEscapes + ' }',
+    'run: >',
+    '  j-rig eval skills/example --db "$DB"',
+  ].join('\n');
+
+  assert.ok(inspectJrigDbBoundary(text, 'plugins/example/README.md').length >= 1);
+});
+
 test('command-scoped state, parameter expansion, and parsed YAML preserve shell semantics', () => {
   const slash = String.fromCharCode(92);
   const chain = [

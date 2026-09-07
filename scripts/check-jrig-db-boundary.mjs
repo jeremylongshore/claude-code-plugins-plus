@@ -159,6 +159,102 @@ function containsJrigEval(text, aliases = new Set()) {
   return false;
 }
 
+function isFlowIdentifierStart(character) {
+  return (
+    (character >= 'A' && character <= 'Z') ||
+    (character >= 'a' && character <= 'z') ||
+    character === '_'
+  );
+}
+
+function isFlowIdentifierPart(character) {
+  return isFlowIdentifierStart(character) || (character >= '0' && character <= '9');
+}
+
+function isFlowQuote(character) {
+  return character === '`' || character === "'" || character === '"';
+}
+
+function skipFlowWhitespace(value, cursor) {
+  while (cursor < value.length && /\s/.test(value[cursor])) cursor += 1;
+  return cursor;
+}
+
+function scanFlowEnvEntries(value, offset) {
+  const entries = [];
+  let cursor = 0;
+
+  // Every branch advances cursor; even an unterminated quoted value is scanned once.
+  while (cursor < value.length) {
+    cursor = skipFlowWhitespace(value, cursor);
+    if (value[cursor] === ',') {
+      cursor += 1;
+      continue;
+    }
+    if (cursor >= value.length || value[cursor] === '}') break;
+
+    const entryStart = cursor;
+    if (isFlowQuote(value[cursor])) cursor += 1;
+    const nameStart = cursor;
+    if (!isFlowIdentifierStart(value[cursor])) {
+      while (cursor < value.length && value[cursor] !== ',') cursor += 1;
+      continue;
+    }
+    cursor += 1;
+    while (cursor < value.length && isFlowIdentifierPart(value[cursor])) cursor += 1;
+    const name = value.slice(nameStart, cursor);
+    if (isFlowQuote(value[cursor])) cursor += 1;
+
+    cursor = skipFlowWhitespace(value, cursor);
+    if (value[cursor] !== ':') {
+      while (cursor < value.length && value[cursor] !== ',') cursor += 1;
+      continue;
+    }
+    cursor = skipFlowWhitespace(value, cursor + 1);
+    const valueStart = cursor;
+    let valueEnd = cursor;
+
+    if (value[cursor] === '"' || value[cursor] === "'") {
+      const quote = value[cursor];
+      let fallbackEnd = null;
+      let closed = false;
+      cursor += 1;
+      while (cursor < value.length) {
+        const character = value[cursor];
+        if (fallbackEnd === null && (character === ',' || character === '}')) {
+          fallbackEnd = cursor;
+        }
+        if (character === '\\') {
+          cursor += Math.min(2, value.length - cursor);
+          continue;
+        }
+        cursor += 1;
+        if (character === quote) {
+          closed = true;
+          break;
+        }
+      }
+      valueEnd = closed ? cursor : (fallbackEnd ?? cursor);
+    } else {
+      while (cursor < value.length && value[cursor] !== ',' && value[cursor] !== '}') cursor += 1;
+      valueEnd = cursor;
+    }
+
+    entries.push({
+      index: offset + entryStart,
+      name,
+      value: value.slice(valueStart, valueEnd).trim(),
+    });
+
+    cursor = skipFlowWhitespace(value, cursor);
+    if (value[cursor] !== ',' && value[cursor] !== '}') {
+      while (cursor < value.length && value[cursor] !== ',') cursor += 1;
+    }
+  }
+
+  return entries;
+}
+
 function collectAssignments(text) {
   const events = [];
   const record = (index, name, rawValue) => {
@@ -194,10 +290,8 @@ function collectAssignments(text) {
   }
   const yamlFlowEnv = /^\s*env\s*:\s*\{([^}\n]*)\}\s*(?:#.*)?$/gm;
   for (const flow of text.matchAll(yamlFlowEnv)) {
-    const entry =
-      /(?:^|,)\s*[`'"]?([A-Za-z_][A-Za-z0-9_]*)[`'"]?\s*:\s*("(?:\\.|[^"])*"|'(?:\\.|[^'])*'|[^,}]+)/g;
-    for (const match of flow[1].matchAll(entry)) {
-      record(flow.index + match.index, match[1], match[2]);
+    for (const entry of scanFlowEnvEntries(flow[1], flow.index)) {
+      record(entry.index, entry.name, entry.value);
     }
   }
 
