@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import {
   isDevelopmentHostnameAllowed,
   isDevelopmentUrlAllowed,
@@ -134,5 +135,14 @@ test('rejects invalid ports instead of treating them as development URLs', () =>
 });
 
 test('importing the validator does not execute the repository scan', () => {
-  assert.equal(typeof isLinkAllowed, 'function');
+  const moduleUrl = new URL('./check-official-links.mjs', import.meta.url).href;
+  const result = spawnSync(
+    process.execPath,
+    ['--input-type=module', '--eval', `await import(${JSON.stringify(moduleUrl)})`],
+    { encoding: 'utf8' },
+  );
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stdout, '');
+  assert.equal(result.stderr, '');
 });
