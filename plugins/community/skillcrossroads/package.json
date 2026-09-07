@@ -1,6 +1,7 @@
 {
   "name": "@intentsolutionsio/skillcrossroads",
   "version": "0.11.4",
+  "private": true,
   "description": "Audit Claude Code artifacts from inside Claude Code: the audit-skill runs the free skillcrossroads CLI to grade skills, subagents, slash commands, MCP configs, and plugins with an evidence-cited file:",
   "keywords": [
     "audit",
