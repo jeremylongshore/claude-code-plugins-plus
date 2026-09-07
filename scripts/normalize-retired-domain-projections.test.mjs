@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readFileSync, symlinkSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
@@ -8,8 +8,9 @@ import test from 'node:test';
 import { DEAD_DOMAIN, LIVE_DOMAIN } from './dead-domain-policy.mjs';
 import { normalizeRetiredDomainProjections } from './normalize-retired-domain-projections.mjs';
 
-function fixture() {
+function fixture(t) {
   const root = mkdtempSync(join(tmpdir(), 'retired-domain-projections-'));
+  t.after(() => rmSync(root, { force: true, recursive: true }));
   execFileSync('git', ['init', '-q'], { cwd: root });
   return root;
 }
@@ -21,8 +22,8 @@ function put(root, path, value) {
   execFileSync('git', ['add', '--', path], { cwd: root });
 }
 
-test('normalizes only registered generated JSON containing the retired domain', () => {
-  const root = fixture();
+test('normalizes only registered generated JSON containing the retired domain', (t) => {
+  const root = fixture(t);
   const generated = [
     '000-docs/742-RA-DATA-epic-1-scorecard.json',
     'marketplace/src/content/plugins/example.json',
@@ -58,8 +59,8 @@ test('normalizes only registered generated JSON containing the retired domain', 
   assert.match(readFileSync(join(root, mirror), 'utf8'), new RegExp(DEAD_DOMAIN));
 });
 
-test('refuses a symlinked generated projection without modifying its target', () => {
-  const root = fixture();
+test('refuses a symlinked generated projection without modifying its target', (t) => {
+  const root = fixture(t);
   const target = join(root, 'outside.json');
   const projection = 'marketplace/src/data/catalog.json';
   writeFileSync(target, JSON.stringify({ url: `https://${DEAD_DOMAIN}` }));

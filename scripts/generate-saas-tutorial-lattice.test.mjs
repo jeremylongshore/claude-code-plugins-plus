@@ -22,8 +22,9 @@ function skill(name, body = 'Operational guidance.') {
   return `---\nname: ${name}\ndescription: Fixture skill for deterministic audit testing.\n---\n\n# ${name}\n\n${body}\n`;
 }
 
-function fixture() {
+function fixture(t) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'saas-lattice-'));
+  t.after(() => fs.rmSync(root, { force: true, recursive: true }));
   execFileSync('git', ['init', '-q'], { cwd: root });
   const plugins = [
     {
@@ -129,8 +130,8 @@ test('matches only explicit pack-prefix and terminal-family pairs', () => {
   assert.equal(tutorialFamily('langchain-py-pack', 'langchain-otel-observability'), null);
 });
 
-test('builds a catalog-scoped denominator and deterministic queue', () => {
-  const root = fixture();
+test('builds a catalog-scoped denominator and deterministic queue', (t) => {
+  const root = fixture(t);
   const report = buildReport({ root });
   assert.deepEqual(report.summary, {
     active_saas_packs: 2,
@@ -157,8 +158,8 @@ test('builds a catalog-scoped denominator and deterministic queue', () => {
   assert.match(renderMarkdown(report), /matching skill name proves structural repetition only/);
 });
 
-test('refuses a filesystem skill absent from the canonical corpus', () => {
-  const root = fixture();
+test('refuses a filesystem skill absent from the canonical corpus', (t) => {
+  const root = fixture(t);
   write(
     root,
     'plugins/saas-packs/alpha-pack/skills/alpha-debug-bundle/SKILL.md',
@@ -170,8 +171,8 @@ test('refuses a filesystem skill absent from the canonical corpus', () => {
   );
 });
 
-test('refuses catalog component counts that disagree with the canonical corpus', () => {
-  const root = fixture();
+test('refuses catalog component counts that disagree with the canonical corpus', (t) => {
+  const root = fixture(t);
   const catalogPath = path.join(root, '.claude-plugin/marketplace.extended.json');
   const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
   catalog.plugins[0].components.skills = 99;
@@ -179,8 +180,8 @@ test('refuses catalog component counts that disagree with the canonical corpus',
   assert.throws(() => buildReport({ root }), /alpha-pack declares 99 skills but resolves 2/);
 });
 
-test('pack and candidate hashes cover complete tracked subtrees without cross-pack drift', () => {
-  const root = fixture();
+test('pack and candidate hashes cover complete tracked subtrees without cross-pack drift', (t) => {
+  const root = fixture(t);
   const before = buildReport({ root });
   write(
     root,
@@ -208,8 +209,8 @@ test('pack and candidate hashes cover complete tracked subtrees without cross-pa
   assert.equal(candidateAlpha.candidate_set_sha256, noncandidateAlpha.candidate_set_sha256);
 });
 
-test('refuses public names that differ from their skill directory', () => {
-  const root = fixture();
+test('refuses public names that differ from their skill directory', (t) => {
+  const root = fixture(t);
   write(
     root,
     'plugins/saas-packs/alpha-pack/skills/alpha-hello-world/SKILL.md',
@@ -218,8 +219,8 @@ test('refuses public names that differ from their skill directory', () => {
   assert.throws(() => buildReport({ root }), /public name.*differs from directory/);
 });
 
-test('refuses a nested mirror boundary hidden below a first-party pack', () => {
-  const root = fixture();
+test('refuses a nested mirror boundary hidden below a first-party pack', (t) => {
+  const root = fixture(t);
   write(
     root,
     'plugins/saas-packs/alpha-pack/skills/alpha-hello-world/.source.json',
@@ -228,8 +229,8 @@ test('refuses a nested mirror boundary hidden below a first-party pack', () => {
   assert.throws(() => buildReport({ root }), /crosses a nested provenance boundary/);
 });
 
-test('refuses a tracked pack input replaced by a worktree symlink', () => {
-  const root = fixture();
+test('refuses a tracked pack input replaced by a worktree symlink', (t) => {
+  const root = fixture(t);
   const reference = path.join(
     root,
     'plugins/saas-packs/alpha-pack/skills/alpha-real-operator/references/operator-guide.md',
@@ -241,14 +242,14 @@ test('refuses a tracked pack input replaced by a worktree symlink', () => {
   assert.throws(() => buildReport({ root }), /tracked pack input crosses a symlink/);
 });
 
-test('refuses curated rows whose indexed mirror is missing from the worktree', () => {
-  const root = fixture();
+test('refuses curated rows whose indexed mirror is missing from the worktree', (t) => {
+  const root = fixture(t);
   fs.unlinkSync(path.join(root, 'skills/.curated/alpha-hello-world/SKILL.md'));
   assert.throws(() => buildReport({ root }), /mirror is unreadable/);
 });
 
-test('refuses a curated row whose canonical source is absent', () => {
-  const root = fixture();
+test('refuses a curated row whose canonical source is absent', (t) => {
+  const root = fixture(t);
   const manifestPath = path.join(root, 'skills/.curated/MANIFEST.json');
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   manifest.skills[0].source_path = 'plugins/saas-packs/alpha-pack/skills/does-not-exist';
@@ -256,8 +257,8 @@ test('refuses a curated row whose canonical source is absent', () => {
   assert.throws(() => buildReport({ root }), /has no tracked canonical source/);
 });
 
-test('refuses duplicate and traversal-shaped curated names', () => {
-  const root = fixture();
+test('refuses duplicate and traversal-shaped curated names', (t) => {
+  const root = fixture(t);
   const manifestPath = path.join(root, 'skills/.curated/MANIFEST.json');
   const duplicate = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   duplicate.count = 2;
@@ -280,8 +281,8 @@ test('refuses duplicate and traversal-shaped curated names', () => {
   assert.throws(() => buildReport({ root }), /curated manifest membership|invalid or duplicate/);
 });
 
-test('confines output paths and refuses output symlinks', () => {
-  const root = fixture();
+test('confines output paths and refuses output symlinks', (t) => {
+  const root = fixture(t);
   fs.mkdirSync(path.join(root, 'freshie'), { recursive: true });
   fs.mkdirSync(path.join(root, '000-docs'), { recursive: true });
   assert.throws(
@@ -297,8 +298,8 @@ test('confines output paths and refuses output symlinks', () => {
   );
 });
 
-test('check mode rejects input and staged-output divergence', () => {
-  const root = fixture();
+test('check mode rejects input and staged-output divergence', (t) => {
+  const root = fixture(t);
   fs.mkdirSync(path.join(root, 'freshie'), { recursive: true });
   fs.mkdirSync(path.join(root, '000-docs'), { recursive: true });
   main(['--root', root]);
@@ -315,8 +316,8 @@ test('check mode rejects input and staged-output divergence', () => {
   assert.throws(() => main(['--root', root, '--check']), /generated content drift/);
 });
 
-test('check mode refuses an input mutation after its initial parity check', () => {
-  const root = fixture();
+test('check mode refuses an input mutation after its initial parity check', (t) => {
+  const root = fixture(t);
   fs.mkdirSync(path.join(root, 'freshie'), { recursive: true });
   fs.mkdirSync(path.join(root, '000-docs'), { recursive: true });
   main(['--root', root]);
