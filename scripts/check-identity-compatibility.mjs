@@ -66,10 +66,10 @@ export function loadIdentitySnapshot(root = DEFAULT_ROOT) {
   };
 }
 
-function hasExportedString(source, name, value) {
-  const escaped = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(`^\\s*export\\s+const\\s+${name}\\s*=\\s*['"]${escaped}['"]\\s*;`, 'm').test(
-    source,
+export function hasExportedString(source, name, value) {
+  const declarations = /^\s*export\s+const\s+([A-Za-z_$][\w$]*)\s*=\s*(['"])([^\r\n]*?)\2\s*;/gm;
+  return [...source.matchAll(declarations)].some(
+    (match) => match[1] === name && match[3] === value,
   );
 }
 

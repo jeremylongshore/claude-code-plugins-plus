@@ -6,6 +6,7 @@ import {
   LIVE_REDIRECTS,
   checkIdentityCompatibility,
   checkLiveRedirects,
+  hasExportedString,
   loadIdentitySnapshot,
 } from './check-identity-compatibility.mjs';
 
@@ -83,6 +84,29 @@ test('canonical repository and catalog endpoints cannot regress', () => {
     .replace(IDENTITY.marketplaceSlug, 'tons-of-skills-marketplace')
     .concat(`\n// export const MARKETPLACE_SLUG = '${IDENTITY.marketplaceSlug}';\n`);
   assert.match(checkIdentityCompatibility(commentedRelic).join('\n'), /marketplace slug/);
+});
+
+test('exported URL checks compare literal values without compiling them as regular expressions', () => {
+  const source = [
+    "export const CATALOG_URL = 'https://raw.githubusercontent.com/owner/repo/main/catalog.json';",
+    "export const LOOKALIKE = 'https://rawXgithubusercontent.com/owner/repo/main/catalog.json';",
+  ].join('\n');
+  assert.equal(
+    hasExportedString(
+      source,
+      'CATALOG_URL',
+      'https://raw.githubusercontent.com/owner/repo/main/catalog.json',
+    ),
+    true,
+  );
+  assert.equal(
+    hasExportedString(
+      source,
+      'CATALOG_URL',
+      'https://rawXgithubusercontent.com/owner/repo/main/catalog.json',
+    ),
+    false,
+  );
 });
 
 test('the ccpi program identity and portable skills family remain registered', () => {

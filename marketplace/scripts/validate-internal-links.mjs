@@ -16,6 +16,7 @@
 import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { extractInternalLinks } from './internal-link-utils.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -43,46 +44,6 @@ if (!existsSync(DIST_DIR)) {
   console.error('❌ Dist directory not found:', DIST_DIR);
   console.error('   Run `npm run build` first');
   process.exit(1);
-}
-
-/**
- * Extract internal links from HTML content
- */
-function extractInternalLinks(html, sourcePath) {
-  const links = [];
-  // Match href attributes in anchor tags
-  const hrefRegex = /<a[^>]+href=["']([^"']+)["']/gi;
-  let match;
-
-  while ((match = hrefRegex.exec(html)) !== null) {
-    const href = match[1];
-
-    // Skip external links
-    if (href.startsWith('http://') || href.startsWith('https://')) continue;
-    // Skip mailto/tel
-    if (href.startsWith('mailto:') || href.startsWith('tel:')) continue;
-    // Skip hash-only links
-    if (href.startsWith('#')) continue;
-    // Skip javascript:
-    if (href.startsWith('javascript:')) continue;
-    // Skip data: URIs
-    if (href.startsWith('data:')) continue;
-    // Skip unrendered template literals (client-side JS)
-    if (href.includes('${')) continue;
-
-    // Normalize: strip query and hash
-    let path = href.split('?')[0].split('#')[0];
-
-    // Skip empty paths
-    if (!path || path === '') continue;
-
-    links.push({
-      href: path,
-      source: sourcePath,
-    });
-  }
-
-  return links;
 }
 
 /**
