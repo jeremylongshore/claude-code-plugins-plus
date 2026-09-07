@@ -209,6 +209,20 @@ test('flow-env scanner remains linear and fails closed on malformed escaped inpu
   assert.ok(inspectJrigDbBoundary(text, 'plugins/example/README.md').length >= 1);
 });
 
+test('malformed flow-env mappings with JRig database arguments fail closed', () => {
+  const malformed = [
+    'env: { DB: "freshie/inventory.sqlite" OTHER: "safe" }',
+    'run: j-rig eval x --db "${DB:-/dev/shm/safe.sqlite}"',
+  ].join('\n');
+
+  assert.deepEqual(
+    inspectJrigDbBoundary(malformed, 'plugins/example/README.md').map(
+      (finding) => finding.reasonCode,
+    ),
+    ['DIRECT_JRIG_FRESHIE_DB'],
+  );
+});
+
 test('command-scoped state, parameter expansion, and parsed YAML preserve shell semantics', () => {
   const slash = String.fromCharCode(92);
   const chain = [

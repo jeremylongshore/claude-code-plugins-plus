@@ -183,6 +183,7 @@ function skipFlowWhitespace(value, cursor) {
 function scanFlowEnvEntries(value, offset) {
   const entries = [];
   let cursor = 0;
+  let malformed = false;
 
   // Every branch advances cursor; even an unterminated quoted value is scanned once.
   while (cursor < value.length) {
@@ -194,19 +195,32 @@ function scanFlowEnvEntries(value, offset) {
     if (cursor >= value.length || value[cursor] === '}') break;
 
     const entryStart = cursor;
-    if (isFlowQuote(value[cursor])) cursor += 1;
+    const keyQuote = isFlowQuote(value[cursor]) ? value[cursor++] : null;
     const nameStart = cursor;
     if (!isFlowIdentifierStart(value[cursor])) {
+      malformed = true;
       while (cursor < value.length && value[cursor] !== ',') cursor += 1;
       continue;
     }
     cursor += 1;
     while (cursor < value.length && isFlowIdentifierPart(value[cursor])) cursor += 1;
     const name = value.slice(nameStart, cursor);
-    if (isFlowQuote(value[cursor])) cursor += 1;
+    if (keyQuote) {
+      if (value[cursor] !== keyQuote) {
+        malformed = true;
+        while (cursor < value.length && value[cursor] !== ',') cursor += 1;
+        continue;
+      }
+      cursor += 1;
+    } else if (isFlowQuote(value[cursor])) {
+      malformed = true;
+      while (cursor < value.length && value[cursor] !== ',') cursor += 1;
+      continue;
+    }
 
     cursor = skipFlowWhitespace(value, cursor);
     if (value[cursor] !== ':') {
+      malformed = true;
       while (cursor < value.length && value[cursor] !== ',') cursor += 1;
       continue;
     }
@@ -235,6 +249,7 @@ function scanFlowEnvEntries(value, offset) {
         }
       }
       valueEnd = closed ? cursor : (fallbackEnd ?? cursor);
+      if (!closed) malformed = true;
     } else {
       while (cursor < value.length && value[cursor] !== ',' && value[cursor] !== '}') cursor += 1;
       valueEnd = cursor;
@@ -247,12 +262,24 @@ function scanFlowEnvEntries(value, offset) {
     });
 
     cursor = skipFlowWhitespace(value, cursor);
-    if (value[cursor] !== ',' && value[cursor] !== '}') {
+    if (cursor < value.length && value[cursor] !== ',' && value[cursor] !== '}') {
+      malformed = true;
       while (cursor < value.length && value[cursor] !== ',') cursor += 1;
     }
   }
 
-  return entries;
+  return { entries, malformed };
+}
+
+function flowEnvMappings(text) {
+  return text.matchAll(/^\s*env\s*:\s*\{([^}\n]*)\}\s*(?:#.*)?$/gm);
+}
+
+function malformedFlowEnvOffset(text) {
+  for (const flow of flowEnvMappings(text)) {
+    if (scanFlowEnvEntries(flow[1], flow.index).malformed) return flow.index;
+  }
+  return -1;
 }
 
 function collectAssignments(text) {
@@ -288,9 +315,8 @@ function collectAssignments(text) {
       alias && anchors.has(alias[1]) ? anchors.get(alias[1]) : rawValue,
     );
   }
-  const yamlFlowEnv = /^\s*env\s*:\s*\{([^}\n]*)\}\s*(?:#.*)?$/gm;
-  for (const flow of text.matchAll(yamlFlowEnv)) {
-    for (const entry of scanFlowEnvEntries(flow[1], flow.index)) {
+  for (const flow of flowEnvMappings(text)) {
+    for (const entry of scanFlowEnvEntries(flow[1], flow.index).entries) {
       record(entry.index, entry.name, entry.value);
     }
   }
@@ -741,6 +767,18 @@ function structuredYamlBlocks(text, filePath) {
       });
     } catch {
       if (source.wholeDocument) wholeDocument = false;
+      const malformedFlowOffset = malformedFlowEnvOffset(source.text);
+      if (
+        malformedFlowOffset >= 0 &&
+        containsJrigEval(source.text) &&
+        /--db\b/.test(shellLiteralView(source.text))
+      ) {
+        blocks.push({
+          text: source.text,
+          offset: source.offset + malformedFlowOffset,
+          assignments: new Map([[AMBIGUOUS_STATE, 'true']]),
+        });
+      }
     }
   }
   return { blocks, wholeDocument };

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   isDevelopmentHostnameAllowed,
   isDevelopmentUrlAllowed,
+  isDomainBlocked,
   isLinkAllowed,
 } from './check-official-links.mjs';
 
@@ -27,6 +28,8 @@ test('allows intended development hosts with valid ports and paths', () => {
     'https://office.printer.local/devices',
     'https://example.com:65535/docs',
     'https://docs.example.com/reference',
+    'https://LOCALHOST.:3000/health',
+    'https://docs.example.com./reference',
   ]) {
     assertDevelopmentAllowed(url);
   }
@@ -55,6 +58,13 @@ test('uses exact hostname and subdomain boundaries', () => {
   }
 });
 
+test('normalizes trailing dots without weakening future blocklist boundaries', () => {
+  assert.equal(isDomainBlocked('BAD.EXAMPLE.', ['bad.example']), true);
+  assert.equal(isDomainBlocked('child.bad.example.', ['bad.example.']), true);
+  assert.equal(isDomainBlocked('notbad.example.', ['bad.example']), false);
+  assert.equal(isDomainBlocked('bad.example.evil.', ['bad.example']), false);
+});
+
 test('rejects credentials even when the parsed hostname would otherwise be allowed', () => {
   for (const url of [
     'https://evil.example@localhost:3000/path',
@@ -69,7 +79,22 @@ test('rejects credentials even when the parsed hostname would otherwise be allow
 test('preserves placeholder URL behavior without treating malformed URLs as development hosts', () => {
   assertDevelopmentAllowed('https://api.[REGION].example.com/v1');
   assertDevelopmentAllowed('https://github.com/[PROJECT]/issues');
+  assertDevelopmentAllowed(
+    'https://[REGION]-[PROJECT_ID].cloudfunctions.net/export?project=[PROJECT_ID]',
+  );
   assertDevelopmentRejected('https://api.test/not-a-placeholder');
+  assertDevelopmentRejected('https://evil.test:bad/[PROJECT]', 'invalid-url');
+  assertDevelopmentRejected('https://evil@[REGION].example.com/path', 'credentials');
+  assertDevelopmentRejected('https://user:pass@localhost:bad/[PROJECT]', 'invalid-url');
+  assertDevelopmentRejected('https://example.test/[PROJECT', 'not-development-host');
+});
+
+test('the public validator remains an explicit blocklist policy', () => {
+  assertDevelopmentRejected('https://localhost.example.test/path');
+  assert.deepEqual(isLinkAllowed('https://localhost.example.test/path'), {
+    allowed: true,
+    reason: 'default-allow',
+  });
 });
 
 test('rejects invalid ports instead of treating them as development URLs', () => {

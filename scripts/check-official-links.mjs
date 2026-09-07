@@ -31,7 +31,7 @@ const EXACT_DEVELOPMENT_HOSTS = new Set([
 
 const DEVELOPMENT_HOST_SUFFIXES = ['.local'];
 const RESERVED_DOCUMENTATION_HOST = 'example.com';
-const PLACEHOLDER_MARKERS = ['[REGION]', '[PROJECT'];
+const PLACEHOLDER_PATTERN = /\[(?:REGION|PROJECT[A-Z0-9_]*)\]/g;
 const RAW_URL_TRAILING_DELIMITERS = new Set([',', ';', ']', "'", '"', '`']);
 
 // NOTE: This validator is configured to BLOCK known bad domains
@@ -53,9 +53,19 @@ function log(message, color = 'reset') {
 }
 
 // Check if domain is blocked
-function isDomainBlocked(hostname) {
-  for (const blockedDomain of BLOCKED_DOMAINS) {
-    if (hostname === blockedDomain || hostname.endsWith(`.${blockedDomain}`)) {
+function normalizeHostname(hostname) {
+  return hostname.toLowerCase().replace(/\.+$/, '');
+}
+
+function isDomainBlocked(hostname, blockedDomains = BLOCKED_DOMAINS) {
+  const normalizedHostname = normalizeHostname(hostname);
+  for (const blockedDomain of blockedDomains) {
+    const normalizedBlockedDomain = normalizeHostname(blockedDomain);
+    if (
+      normalizedBlockedDomain &&
+      (normalizedHostname === normalizedBlockedDomain ||
+        normalizedHostname.endsWith(`.${normalizedBlockedDomain}`))
+    ) {
       return true;
     }
   }
@@ -63,7 +73,7 @@ function isDomainBlocked(hostname) {
 }
 
 function isDevelopmentHostnameAllowed(hostname) {
-  const normalizedHostname = hostname.toLowerCase();
+  const normalizedHostname = normalizeHostname(hostname);
 
   if (EXACT_DEVELOPMENT_HOSTS.has(normalizedHostname)) {
     return true;
@@ -111,24 +121,31 @@ function parseHttpUrl(url) {
 }
 
 function isDevelopmentUrlAllowed(url) {
+  const hasPlaceholder = PLACEHOLDER_PATTERN.test(url);
+  PLACEHOLDER_PATTERN.lastIndex = 0;
   const parsedUrl = parseHttpUrl(url);
+  const placeholderUrl =
+    !parsedUrl && hasPlaceholder
+      ? parseHttpUrl(url.replace(PLACEHOLDER_PATTERN, 'placeholder'))
+      : null;
+  const effectiveUrl = parsedUrl ?? placeholderUrl;
 
   // Do not let userinfo disguise a lookalike host or turn an allowed host into
-  // a credential sink. Placeholder links are still supported below when their
-  // template syntax makes the URL intentionally incomplete.
-  if (parsedUrl && (parsedUrl.username || parsedUrl.password)) {
+  // a credential sink, including when placeholders make the original URL
+  // intentionally unparsable.
+  if (effectiveUrl && (effectiveUrl.username || effectiveUrl.password)) {
     return { allowed: false, reason: 'credentials' };
   }
 
-  if (PLACEHOLDER_MARKERS.some((marker) => url.includes(marker))) {
+  if (hasPlaceholder && effectiveUrl) {
     return { allowed: true, reason: 'development' };
   }
 
-  if (!parsedUrl) {
+  if (!effectiveUrl) {
     return { allowed: false, reason: 'invalid-url' };
   }
 
-  if (isDevelopmentHostnameAllowed(parsedUrl.hostname)) {
+  if (isDevelopmentHostnameAllowed(effectiveUrl.hostname)) {
     return { allowed: true, reason: 'development' };
   }
 
@@ -259,7 +276,7 @@ export function isLinkAllowed(url) {
   return { allowed: true, reason: 'default-allow' };
 }
 
-export { isDevelopmentHostnameAllowed, isDevelopmentUrlAllowed };
+export { isDevelopmentHostnameAllowed, isDevelopmentUrlAllowed, isDomainBlocked };
 
 function main() {
   const startTime = Date.now();
