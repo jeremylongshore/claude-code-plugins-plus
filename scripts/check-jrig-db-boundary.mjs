@@ -159,6 +159,176 @@ function containsJrigEval(text, aliases = new Set()) {
   return false;
 }
 
+function isFlowIdentifierStart(character) {
+  return (
+    (character >= 'A' && character <= 'Z') ||
+    (character >= 'a' && character <= 'z') ||
+    character === '_'
+  );
+}
+
+function isFlowIdentifierPart(character) {
+  return isFlowIdentifierStart(character) || (character >= '0' && character <= '9');
+}
+
+function isFlowQuote(character) {
+  return character === '`' || character === "'" || character === '"';
+}
+
+function skipFlowWhitespace(value, cursor) {
+  while (cursor < value.length && /\s/.test(value[cursor])) cursor += 1;
+  return cursor;
+}
+
+function scanFlowEnvEntries(value, offset) {
+  const entries = [];
+  let cursor = 0;
+  let malformed = false;
+
+  // Every branch advances cursor; even an unterminated quoted value is scanned once.
+  while (cursor < value.length) {
+    cursor = skipFlowWhitespace(value, cursor);
+    if (value[cursor] === ',') {
+      cursor += 1;
+      continue;
+    }
+    if (cursor >= value.length || value[cursor] === '}') break;
+
+    const entryStart = cursor;
+    const keyQuote = isFlowQuote(value[cursor]) ? value[cursor++] : null;
+    const nameStart = cursor;
+    if (!isFlowIdentifierStart(value[cursor])) {
+      malformed = true;
+      while (cursor < value.length && value[cursor] !== ',') cursor += 1;
+      continue;
+    }
+    cursor += 1;
+    while (cursor < value.length && isFlowIdentifierPart(value[cursor])) cursor += 1;
+    const name = value.slice(nameStart, cursor);
+    if (keyQuote) {
+      if (value[cursor] !== keyQuote) {
+        malformed = true;
+        while (cursor < value.length && value[cursor] !== ',') cursor += 1;
+        continue;
+      }
+      cursor += 1;
+    } else if (isFlowQuote(value[cursor])) {
+      malformed = true;
+      while (cursor < value.length && value[cursor] !== ',') cursor += 1;
+      continue;
+    }
+
+    cursor = skipFlowWhitespace(value, cursor);
+    if (value[cursor] !== ':') {
+      malformed = true;
+      while (cursor < value.length && value[cursor] !== ',') cursor += 1;
+      continue;
+    }
+    cursor = skipFlowWhitespace(value, cursor + 1);
+    const valueStart = cursor;
+    let valueEnd = cursor;
+
+    if (value[cursor] === '"' || value[cursor] === "'") {
+      const quote = value[cursor];
+      let fallbackEnd = null;
+      let closed = false;
+      cursor += 1;
+      while (cursor < value.length) {
+        const character = value[cursor];
+        if (fallbackEnd === null && (character === ',' || character === '}')) {
+          fallbackEnd = cursor;
+        }
+        if (character === '\\') {
+          cursor += Math.min(2, value.length - cursor);
+          continue;
+        }
+        cursor += 1;
+        if (character === quote) {
+          closed = true;
+          break;
+        }
+      }
+      valueEnd = closed ? cursor : (fallbackEnd ?? cursor);
+      if (!closed) malformed = true;
+    } else {
+      while (cursor < value.length && value[cursor] !== ',' && value[cursor] !== '}') cursor += 1;
+      valueEnd = cursor;
+    }
+
+    entries.push({
+      index: offset + entryStart,
+      name,
+      value: value.slice(valueStart, valueEnd).trim(),
+    });
+
+    cursor = skipFlowWhitespace(value, cursor);
+    if (cursor < value.length && value[cursor] !== ',' && value[cursor] !== '}') {
+      malformed = true;
+      while (cursor < value.length && value[cursor] !== ',') cursor += 1;
+    }
+  }
+
+  return { entries, malformed };
+}
+
+function flowEnvMappings(text) {
+  const mappings = [];
+  const prefix = /^[ \t]*env[ \t]*:[ \t]*\{/gm;
+  let match;
+
+  while ((match = prefix.exec(text)) !== null) {
+    const openBrace = match.index + match[0].lastIndexOf('{');
+    let cursor = openBrace + 1;
+    let depth = 1;
+    let quote = null;
+
+    while (cursor < text.length && depth > 0) {
+      const character = text[cursor];
+      if (quote) {
+        if (character === '\\' && quote !== "'") {
+          cursor += Math.min(2, text.length - cursor);
+          continue;
+        }
+        if (character === quote) {
+          if (quote === "'" && text[cursor + 1] === "'") {
+            cursor += 2;
+            continue;
+          }
+          quote = null;
+        }
+        cursor += 1;
+        continue;
+      }
+      if (isFlowQuote(character)) quote = character;
+      else if (character === '{') depth += 1;
+      else if (character === '}') depth -= 1;
+      cursor += 1;
+    }
+
+    const closed = depth === 0;
+    const contentEnd = closed ? cursor - 1 : cursor;
+    mappings.push({
+      content: text.slice(openBrace + 1, contentEnd),
+      contentOffset: openBrace + 1,
+      index: match.index,
+      closed,
+    });
+    if (!closed) break;
+    prefix.lastIndex = cursor;
+  }
+
+  return mappings;
+}
+
+function malformedFlowEnvOffset(text) {
+  for (const flow of flowEnvMappings(text)) {
+    if (!flow.closed || scanFlowEnvEntries(flow.content, flow.contentOffset).malformed) {
+      return flow.index;
+    }
+  }
+  return -1;
+}
+
 function collectAssignments(text) {
   const events = [];
   const record = (index, name, rawValue) => {
@@ -192,12 +362,9 @@ function collectAssignments(text) {
       alias && anchors.has(alias[1]) ? anchors.get(alias[1]) : rawValue,
     );
   }
-  const yamlFlowEnv = /^\s*env\s*:\s*\{([^}\n]*)\}\s*(?:#.*)?$/gm;
-  for (const flow of text.matchAll(yamlFlowEnv)) {
-    const entry =
-      /(?:^|,)\s*[`'"]?([A-Za-z_][A-Za-z0-9_]*)[`'"]?\s*:\s*("(?:\\.|[^"])*"|'(?:\\.|[^'])*'|[^,}]+)/g;
-    for (const match of flow[1].matchAll(entry)) {
-      record(flow.index + match.index, match[1], match[2]);
+  for (const flow of flowEnvMappings(text)) {
+    for (const entry of scanFlowEnvEntries(flow.content, flow.contentOffset).entries) {
+      record(entry.index, entry.name, entry.value);
     }
   }
 
@@ -647,6 +814,18 @@ function structuredYamlBlocks(text, filePath) {
       });
     } catch {
       if (source.wholeDocument) wholeDocument = false;
+      const malformedFlowOffset = malformedFlowEnvOffset(source.text);
+      if (
+        malformedFlowOffset >= 0 &&
+        containsJrigEval(source.text) &&
+        /--db\b/.test(shellLiteralView(source.text))
+      ) {
+        blocks.push({
+          text: source.text,
+          offset: source.offset + malformedFlowOffset,
+          assignments: new Map([[AMBIGUOUS_STATE, 'true']]),
+        });
+      }
     }
   }
   return { blocks, wholeDocument };
