@@ -46,6 +46,9 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Run Windows path regression corpus
+        # The two marketplace installer suites execute POSIX Bash/Caddy
+        # transaction fixtures. Required Linux CI still covers their
+        # fileURLToPath changes; they are not Windows runtime contracts.
         run: >-
           node --test
           scripts/generate-plugin-package-jsons.test.mjs
@@ -53,8 +56,6 @@ jobs:
           scripts/check-mirror-quarantine.test.mjs
           scripts/scan-synced-content.test.mjs
           marketplace/scripts/discover-skills.test.mjs
-          marketplace/scripts/install-security-headers.test.mjs
-          marketplace/scripts/install-skill-redirects.test.mjs
 
       - name: Verify sync roots on Windows
         run: python -m unittest tests.test_sync_marketplace_root_resolution -v
