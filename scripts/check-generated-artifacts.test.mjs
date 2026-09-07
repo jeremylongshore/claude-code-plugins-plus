@@ -15,21 +15,41 @@ import {
 const CHECKER = fileURLToPath(new URL('./check-generated-artifacts.mjs', import.meta.url));
 
 test('accepts equivalent and nested Windows roots but rejects adjacent trees', () => {
+  const pathOptions = { pathApi: win32, canonicalize: (candidate) => candidate };
   assert.equal(
-    repositoryRootContains('C:/Users/dev/repo', String.raw`C:\Users\dev\repo`, win32),
+    repositoryRootContains('C:/Users/dev/repo', String.raw`C:\Users\dev\repo`, pathOptions),
     true,
   );
   assert.equal(
     repositoryRootContains(
       'c:/Users/DEV/repo',
       String.raw`C:\users\dev\repo\nested\directory`,
-      win32,
+      pathOptions,
     ),
     true,
   );
   assert.equal(
-    repositoryRootContains('C:/Users/dev/repo', String.raw`C:\Users\dev\repository`, win32),
+    repositoryRootContains('C:/Users/dev/repo', String.raw`C:\Users\dev\repository`, pathOptions),
     false,
+  );
+});
+
+test('canonicalizes Windows short-name aliases before checking containment', () => {
+  const aliases = new Map([
+    [String.raw`C:\Users\RUNNER~1\repo`, String.raw`C:\Users\runneradmin\repo`],
+    [String.raw`C:\Users\RUNNER~1\repo\nested`, String.raw`C:\Users\runneradmin\repo\nested`],
+  ]);
+  const options = {
+    pathApi: win32,
+    canonicalize: (candidate) => aliases.get(candidate) ?? candidate,
+  };
+  assert.equal(
+    repositoryRootContains(
+      'C:/Users/runneradmin/repo',
+      String.raw`C:\Users\RUNNER~1\repo\nested`,
+      options,
+    ),
+    true,
   );
 });
 

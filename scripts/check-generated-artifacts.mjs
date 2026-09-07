@@ -17,7 +17,7 @@
  * Exit 0 = clean. Exit 1 = a projection is tracked (each one named).
  */
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import * as nodePath from 'node:path';
 import { basename, isAbsolute, join, resolve } from 'node:path';
@@ -46,13 +46,17 @@ function normalizeRepositoryPath(candidate) {
   return path;
 }
 
-export function repositoryRootContains(topLevel, root, pathApi = nodePath) {
+export function repositoryRootContains(
+  topLevel,
+  root,
+  { pathApi = nodePath, canonicalize = realpathSync.native } = {},
+) {
   // Git may print a Windows root with forward slashes while Node uses native
-  // separators. Resolve both with the platform path API, then preserve the old
-  // fail-closed root invariant as a boundary check that also permits deliberate
-  // invocation from a nested repository directory.
-  const repositoryRoot = pathApi.resolve(topLevel);
-  const requestedRoot = pathApi.resolve(root);
+  // separators or an 8.3 short-name alias. Canonicalize both existing paths,
+  // then preserve the old fail-closed root invariant as a boundary check that
+  // also permits deliberate invocation from a nested repository directory.
+  const repositoryRoot = pathApi.resolve(canonicalize(topLevel));
+  const requestedRoot = pathApi.resolve(canonicalize(root));
   const rel = pathApi.relative(repositoryRoot, requestedRoot);
   return (
     rel === '' || (rel !== '..' && !rel.startsWith(`..${pathApi.sep}`) && !pathApi.isAbsolute(rel))
