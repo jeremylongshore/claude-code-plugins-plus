@@ -17,8 +17,9 @@
 #   - Placeholder/teaching examples pass by VALUE (stopwords + regexes below),
 #     never by excluding the file that holds them.
 #   - Each surviving path entry is a SPECIFIC surface carrying a
-#     "reason: ... expiry: YYYY-MM-DD" comment; the shape gate fails a path
-#     entry without one, and fails any reintroduced type blanket.
+#     "reason: ... expiry: YYYY-MM-DD" comment (or an explained permanent
+#     self-reference); the shape gate rejects missing, invalid, or expired
+#     metadata and any reintroduced type blanket.
 
 [extend]
 useDefault = true
@@ -67,27 +68,10 @@ paths = [
     # freshie/scripts/promote-to-curated.py; the source above is in scope.
     # expiry: 2027-06-30
     '''^skills/\.curated/scanning-for-hardcoded-secrets/scripts/scan_secrets\.py$''',
-    # reason: compiled MCP build output; sources under src/ are scanned.
-    # expiry: 2027-06-30 (re-review if dist/ ever stops being generated)
-    '''^plugins/mcp/.*/dist/.*\.js$''',
-    # reason: generated build projections of SKILL.md bodies already scanned
-    # at their source (skills-catalog/unified-search + the public/ and dist/
-    # copies build.mjs makes of them); scanning the bundle double-reports
-    # every source finding on each regen.
-    # expiry: 2027-06-30
-    '''^marketplace/src/data/.*\.json$''',
-    '''^marketplace/public/data/.*\.json$''',
-    '''^marketplace/dist/.*''',
-    # reason: generated HuggingFace dataset projection of SKILL.md bodies
-    # (freshie/scripts export); every embedded example exists in a scanned
-    # source file.
-    # expiry: 2027-06-30
-    '''^freshie/hf-dataset/.*''',
-    # reason: deleted backups/ tree — absent from HEAD but reachable in the
-    # weekly fetch-depth:0 history scan, where it re-fired ~60 stale findings
-    # per run.
-    # expiry: 2027-06-30 (drop when the weekly scan gains a HEAD-only mode)
-    '''^backups/.*''',
+    # reason: deterministic generated projection of tracked SKILL.md sources;
+    # every embedded value remains scanned at its canonical source path.
+    # expiry: 2027-06-30 (re-review if this file gains non-source content)
+    '''^marketplace/src/data/skills-catalog\.json$''',
 ]
 
 # Placeholder/teaching VALUES. gitleaks skips a finding whose secret matches
@@ -140,19 +124,9 @@ regexes = [
     # Doc text quoting PEM header patterns in backticks (pattern libraries,
     # not key material — real PEM bodies never contain a backtick).
     '''PRIVATE KEY-----[`'"]''',
-    # Dead historical npm token from the 2025 v1.3.2 release draft
-    # (000-docs/143). Redacted from the working tree in the E4.5 PR;
-    # registry-verified invalid (401) on 2026-08-19. Matched by prefix-anchored
-    # regex rather than the literal value (GitHub push protection rightly
-    # refuses commits containing the full token) so the fetch-depth:0 history
-    # scan doesn't re-fire on a credential that no longer exists.
-    '''npm_C26t[A-Za-z0-9]{32}''',
-    # Firebase Web (browser) API key from the retired Firebase-hosted
-    # BaseLayout.astro (history-only). Firebase Web API keys are public by
-    # design; the default gcp-api-key rule flags the AIzaSy… shape
-    # regardless. Exact value, NOT the path, so a real server key ever added
-    # to an .astro file still surfaces.
-    '''AIzaSyAUbgBuoMCtcjEdRcYzqu08kuVFVDeiHsM''',
+    # The retired Firebase browser identifier is suppressed by its exact,
+    # commit-bound finding fingerprint in .gitleaksignore. No key material is
+    # retained here, and future Google-key findings remain in scope.
 ]
 
 stopwords = [
