@@ -39,7 +39,9 @@ pnpm run test:coverage:ui
 
 ## Coverage Thresholds
 
-All thresholds **PASSING**:
+All configured suite-wide thresholds **PASSING**. Vitest does not enable
+`perFile`, so individual-file percentages are diagnostic rather than separate
+gates:
 
 - ✅ Statements: 96.08% (threshold: 80%)
 - ✅ Branches: 93.2% (threshold: 80%)

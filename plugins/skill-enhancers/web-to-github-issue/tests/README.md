@@ -21,6 +21,10 @@ github-client.js  |   90.85 |    79.31 |     100 |   90.85 |
 parser.js         |     100 |    98.14 |     100 |     100 |
 ```
 
+The configured 80% thresholds apply to the suite-wide totals because
+`perFile` is not enabled. Individual-file percentages are diagnostic and do
+not represent separate gates.
+
 ## Running Tests
 
 ### Quick Start
@@ -404,7 +408,7 @@ Potential areas for additional testing:
 When adding new features:
 
 1. Add tests BEFORE implementing feature (TDD)
-2. Maintain 80%+ coverage threshold
+2. Maintain the configured 80%+ suite-wide coverage threshold
 3. Test both happy path and error cases
 4. Update this README with new test categories
 5. Run `pnpm run test:coverage` before committing
