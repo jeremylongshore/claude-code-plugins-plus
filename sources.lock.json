@@ -350,14 +350,14 @@
     },
     "hol-guard": {
       "repo": "hashgraph-online/hol-guard-plugin",
-      "resolved_ref": "0ca9247b6387ebc4ace1cb0fca5b19fcf5caa8aa",
-      "locked_at": "2026-09-07T20:01:22.583Z",
+      "resolved_ref": "8e8d190fdef125d7d09e7da499338cc35bdad08f",
+      "locked_at": "2026-09-08T08:33:11.342Z",
       "files": {
         ".claude-plugin/plugin.json": "sha256:a4a6ea10ac5f063967da19bb7b16563089bcb5993c332623da5c22845a182b60",
         "LICENSE": "sha256:c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
-        "README.md": "sha256:67a12c921de269f99ee1a79a4b2216c9dbd9633050cafb2f70079fbfbd12da83",
-        "skills/hol-guard/SKILL.md": "sha256:2731cacd777854a962b4da0736d4bf61ec45cbaec754a8992a9911cef9da7dd2",
-        "skills/plugin-scanner/SKILL.md": "sha256:dc76f6bb5733d6e09ae796fae0fe9ea6a4021131ba869e8def6e35fb741cbae0"
+        "README.md": "sha256:581dbe83f43e65ab3471d5f9a48914f2b8ddd968fc4c62d3e655b74403d9b290",
+        "skills/hol-guard/SKILL.md": "sha256:0604c9264c9b071b02aad13fc161f7da89a5e04b61a546807d298491ba4eaafd",
+        "skills/plugin-scanner/SKILL.md": "sha256:01006ab8f19df502c36571d77140982894c7e28da316e88be3a462842a1f2163"
       }
     },
     "hyperflow": {

@@ -116,7 +116,7 @@ function isValidNpmName(name) {
   return /^[a-z0-9][a-z0-9._-]*$/.test(body);
 }
 
-function buildPackageJson(pluginDir, pluginJson) {
+export function buildPackageJson(pluginDir, pluginJson, { sourceOwned = false } = {}) {
   const slug = slugFromPath(pluginDir);
   const relDir = relative(ROOT, pluginDir);
   const name = scopedName(slug);
@@ -157,6 +157,7 @@ function buildPackageJson(pluginDir, pluginJson) {
       pluginJson.version && /^\d+\.\d+\.\d+/.test(pluginJson.version)
         ? pluginJson.version
         : '1.0.0',
+    ...(sourceOwned ? { private: true } : {}),
     description,
     keywords,
     repository: {
@@ -174,14 +175,18 @@ function buildPackageJson(pluginDir, pluginJson) {
     },
     publishConfig: { access: 'public' },
     files,
-    scripts: {
-      postinstall:
-        'node -e "console.log(\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install ' +
-        slug +
-        '\\\\n  or /plugin install ' +
-        slug +
-        '@claude-code-plugins-plus in Claude Code\\\\n\\")"',
-    },
+    ...(sourceOwned
+      ? {}
+      : {
+          scripts: {
+            postinstall:
+              'node -e "console.log(\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install ' +
+              slug +
+              '\\\\n  or /plugin install ' +
+              slug +
+              '@claude-code-plugins-plus in Claude Code\\\\n\\")"',
+          },
+        }),
   };
 
   return pkg;
@@ -319,7 +324,13 @@ async function main() {
       skipped.push({ pluginDir, reason: `invalid npm name: ${candidateName}` });
       continue;
     }
-    needsScaffold.push({ pluginDir, slug, candidateName, pluginJson });
+    needsScaffold.push({
+      pluginDir,
+      slug,
+      candidateName,
+      pluginJson,
+      sourceOwned: existsSync(join(pluginDir, '.source.json')),
+    });
   }
 
   console.log(`Plugins with package.json already: ${existing.length}`);
@@ -364,8 +375,8 @@ async function main() {
   }
 
   let written = 0;
-  for (const { pluginDir, pluginJson } of needsScaffold) {
-    const pkg = buildPackageJson(pluginDir, pluginJson);
+  for (const { pluginDir, pluginJson, sourceOwned } of needsScaffold) {
+    const pkg = buildPackageJson(pluginDir, pluginJson, { sourceOwned });
     const out = JSON.stringify(pkg, null, 2) + '\n';
     writeFileSync(join(pluginDir, 'package.json'), out);
     written++;

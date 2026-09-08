@@ -1239,7 +1239,6 @@ sources:
       - '**/node_modules/**'
       - '**/*.log'
 
-
   # ============================================================
   # HOL Guard (Hashgraph Online)
   # https://github.com/hashgraph-online/hol-guard-plugin

@@ -16563,6 +16563,18 @@
       "fallback_for_tools": []
     },
     {
+      "slug": "hol-guard",
+      "name": "hol-guard",
+      "description": "Protects local AI coding-agent workflows with HOL Guard pre-execution controls, approvals, receipts, and verification. Use when enabling Guard for a supported local harness, reviewing a Guard block, or validating protection before trusted tool execution. Trigger with \"hol guard\", \"protect this workspace\", \"review guard approvals\", or \"check guard status\".",
+      "version": "0.1.2",
+      "category": "security",
+      "parentPlugin": "hol-guard",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
       "slug": "hootsuite-ci-integration",
       "name": "hootsuite-ci-integration",
       "description": "Configure Hootsuite CI/CD integration with GitHub Actions and testing. Use when setting up automated testing, configuring CI pipelines, or integrating Hootsuite tests into your build process. Trigger with phrases like \"hootsuite CI\", \"hootsuite GitHub Actions\", \"hootsuite automated tests\", \"CI hootsuite\".",
@@ -25845,6 +25857,18 @@
       "version": "2.19.0",
       "category": "examples",
       "parentPlugin": "jeremy-plugin-tool",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
+      "slug": "plugin-scanner",
+      "name": "plugin-scanner",
+      "description": "Scan AI agent skills, plugins, MCP servers, and agent tooling for prompt injection, unsafe commands, secret exposure, and supply-chain risks before installing or trusting them. Use when evaluating agent ecosystem content before installation, publication, or use. Trigger with \"scan this skill\", \"check this MCP server\", \"audit this agent plugin\", or \"verify this AI tool\".",
+      "version": "0.1.0",
+      "category": "security",
+      "parentPlugin": "hol-guard",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -35283,8 +35307,8 @@
       "fallback_for_tools": []
     }
   ],
-  "count": 2940,
-  "generatedAt": "2026-09-05T21:34:35.617Z",
+  "count": 2942,
+  "generatedAt": "2026-09-08T08:47:16.169Z",
   "categories": [
     "ai-agency",
     "ai-ml",

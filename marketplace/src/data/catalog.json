@@ -5,13 +5,13 @@
     "generator": "marketplace/scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 440,
-    "totalSkills": 2940,
+    "totalPlugins": 441,
+    "totalSkills": 2942,
     "totalCommands": 85,
-    "pluginsWithSkills": 407,
+    "pluginsWithSkills": 408,
     "byCategory": {
       "productivity": 29,
-      "security": 27,
+      "security": 28,
       "testing": 28,
       "ai-agency": 9,
       "ai-ml": 37,
@@ -11908,6 +11908,33 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "hol-guard",
+      "name": "hol-guard",
+      "displayName": "hol guard",
+      "description": "Local pre-execution security controls and pre-install scanning for AI agent tools, packages, skills, plugins, and MCP servers.",
+      "version": "0.1.0",
+      "category": "security",
+      "keywords": [
+        "hol-guard",
+        "ai-security",
+        "agent-security",
+        "plugin-security",
+        "mcp-security",
+        "supply-chain-security"
+      ],
+      "hasSkills": true,
+      "skillCount": 2,
+      "commandCount": 0,
+      "installCommand": "/plugin install hol-guard",
+      "sourcePath": "./plugins/security/hol-guard",
+      "isFeatured": false,
+      "author": {
+        "name": "Hashgraph Online",
+        "url": "https://github.com/hashgraph-online"
       },
       "type": "instruction-plugin"
     }

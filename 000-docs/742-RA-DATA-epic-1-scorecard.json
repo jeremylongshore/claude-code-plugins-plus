@@ -22,13 +22,13 @@
       "error_files": 719,
       "error_total": 3702,
       "grade_distribution": {
-        "A": 1884,
+        "A": 1886,
         "B": 1076,
         "C": 409,
         "D": 157,
         "F": 5
       },
-      "rows": 3531
+      "rows": 3533
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 352,
-        "raw_tracked_plugin_skill_files": 3031,
-        "tracked_files": 23949
+        "raw_tracked_plugin_skill_files": 3033,
+        "tracked_files": 23958
       }
     },
     "2": {
@@ -53,9 +53,9 @@
       "status": "measured",
       "target_status": "pass",
       "values": {
-        "distinct_names": 443,
+        "distinct_names": 444,
         "duplicate_names": [],
-        "entries": 443
+        "entries": 444
       }
     },
     "3": {
@@ -80,27 +80,27 @@
       "values": {
         "agent_lane": {
           "error_total_all_validated_surfaces": 236,
-          "fully_compliant_surfaces": 775,
+          "fully_compliant_surfaces": 776,
           "terminal_denominator": {
             "agents": 363,
-            "files": 957,
+            "files": 958,
             "label": "agents_plus_plugin_manifests",
-            "plugin_manifests": 594
+            "plugin_manifests": 595
           },
           "validator_reported_mixed_denominator_percent": 81
         },
         "marketplace_terminal": {
           "error_total_all_validated_surfaces": 3939,
-          "fully_compliant_surfaces": 1153,
+          "fully_compliant_surfaces": 1154,
           "terminal_denominator": {
             "agents": 363,
             "commands": 373,
-            "files": 4861,
+            "files": 4864,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
-            "plugin_manifests": 594,
-            "skills": 3531
+            "plugin_manifests": 595,
+            "skills": 3533
           },
-          "validated_plugin_manifests": 602,
+          "validated_plugin_manifests": 603,
           "validator_reported_mixed_denominator_percent": 23.7
         },
         "skill_rows": {
@@ -112,13 +112,13 @@
           "error_files": 719,
           "error_total": 3702,
           "grade_distribution": {
-            "A": 1884,
+            "A": 1886,
             "B": 1076,
             "C": 409,
             "D": 157,
             "F": 5
           },
-          "rows": 3531
+          "rows": 3533
         }
       }
     },
@@ -131,7 +131,7 @@
       "values": {
         "average_score": 87.5,
         "grade_distribution": {
-          "A": 1884,
+          "A": 1886,
           "B": 1076,
           "C": 409,
           "D": 157,
@@ -144,7 +144,7 @@
           "D": 4.4,
           "F": 0.1
         },
-        "rows": 3531
+        "rows": 3533
       }
     },
     "6": {
@@ -161,7 +161,7 @@
         "b_error_total": 568,
         "b_failing": 276,
         "certified_target": 0,
-        "skill_summary_rows": 3531
+        "skill_summary_rows": 3533
       }
     },
     "7": {
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3520,
+        "declared": 3522,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 11,
-        "rows": 3531,
+        "rows": 3533,
         "target_malformed": 0
       }
     },
@@ -286,7 +286,7 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "distinct_values": 60,
+        "distinct_values": 62,
         "invalid_or_empty": 0,
         "target_free_text_values": 0,
         "values": [
@@ -504,6 +504,10 @@
           },
           {
             "count": 1,
+            "value": "Requires a local Python CLI environment with pipx for optional installation; scans local agent skills, plugins, MCP servers, packages, and repositories without executing the target."
+          },
+          {
+            "count": 1,
             "value": "Requires internet access to call the first-party Xquik REST API."
           },
           {
@@ -517,6 +521,10 @@
           {
             "count": 1,
             "value": "Runs on any MCP-aware host, including hosts with no local filesystem — this is the plugin's only pure-MCP skill, needing no local file, binary, or shell. Uses the Kobiton MCP tools createTestRun, getTestCase/getTestSuite, listDevices, and getOrgSettings; requires an authenticated Kobiton MCP connection. Delegates monitoring to the monitor-test-run skill (same plugin), which does need a local poller — so on a filesystem-less host, create the run and report its id rather than offering to watch it."
+          },
+          {
+            "count": 1,
+            "value": "Supports local harness workflows including Claude Code, Codex, Copilot CLI, Cursor, Gemini CLI, Hermes, OpenClaw, OpenCode, and Antigravity; requires a local Python CLI environment with pipx for optional HOL Guard installation."
           },
           {
             "count": 1,
@@ -1224,11 +1232,11 @@
           },
           {
             "cohort": "graded",
-            "value": 3531
+            "value": 3533
           },
           {
             "cohort": "marketplace-visible",
-            "value": 2940
+            "value": 2942
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1289,10 +1297,10 @@
       "source": ["sources.lock.json", "sources.yaml"],
       "status": "measured",
       "values": {
-        "lock_keys": 36,
+        "lock_keys": 37,
         "lock_only": [],
         "target_equal": true,
-        "yaml_keys": 36,
+        "yaml_keys": 37,
         "yaml_only": []
       }
     },
@@ -1335,22 +1343,23 @@
         "plugins/productivity/publishing-skills/.source.json",
         "plugins/productivity/schedule-after-usage-reset/.source.json",
         "plugins/productivity/skyvern/.source.json",
+        "plugins/security/hol-guard/.source.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/kobiton-automate/.source.json"
       ],
       "status": "measured",
       "values": {
-        "mirrors_shipping_license_text": 36,
+        "mirrors_shipping_license_text": 37,
         "missing_license_text": [],
-        "provenance_marked_mirrors": 36,
-        "target_shipping_license_text": 36
+        "provenance_marked_mirrors": 37,
+        "target_shipping_license_text": 37
       }
     },
     "29": {
       "cohort": "provenance-marked mirrors",
       "dimension": "Mirror SKILL.md contradicting upstream license",
       "measured_proxy": {
-        "local_source_records_with_parseable_json": 36
+        "local_source_records_with_parseable_json": 37
       },
       "reason_code": "MISSING_PINNED_UPSTREAM_LICENSE_EVIDENCE",
       "reproduce": "pnpm run measure:e1 --row=29 --stdout",
@@ -1393,6 +1402,7 @@
         "plugins/productivity/publishing-skills/.source.json",
         "plugins/productivity/schedule-after-usage-reset/.source.json",
         "plugins/productivity/skyvern/.source.json",
+        "plugins/security/hol-guard/.source.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/kobiton-automate/.source.json"
       ],
@@ -1475,6 +1485,8 @@
         "plugins/productivity/schedule-after-usage-reset/package.json",
         "plugins/productivity/skyvern/.source.json",
         "plugins/productivity/skyvern/package.json",
+        "plugins/security/hol-guard/.source.json",
+        "plugins/security/hol-guard/package.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/cli-ux-tester/package.json",
         "plugins/testing/kobiton-automate/.source.json",
@@ -1483,9 +1495,9 @@
       "status": "partial",
       "values": {
         "non_private": [],
-        "private_packages": 36,
-        "repository_package_mirrors": 36,
-        "scoped_packages": 31,
+        "private_packages": 37,
+        "repository_package_mirrors": 37,
+        "scoped_packages": 32,
         "target_publishable": 0
       }
     },
@@ -1565,6 +1577,8 @@
         "plugins/productivity/schedule-after-usage-reset/package.json",
         "plugins/productivity/skyvern/.source.json",
         "plugins/productivity/skyvern/package.json",
+        "plugins/security/hol-guard/.source.json",
+        "plugins/security/hol-guard/package.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/cli-ux-tester/package.json",
         "plugins/testing/kobiton-automate/.source.json",
@@ -1946,7 +1960,7 @@
         "invalid_patterns": 0,
         "invisible_files": 23,
         "target_invisible_files": 0,
-        "tracked_files": 23949
+        "tracked_files": 23958
       }
     },
     "47": {
@@ -2231,7 +2245,7 @@
       "values": {
         "adoption_percent": 1.06,
         "curated_copies": 32,
-        "plugin_skill_rows": 3031,
+        "plugin_skill_rows": 3033,
         "source_eval_specs": 32,
         "tracked_eval_specs": 64
       }

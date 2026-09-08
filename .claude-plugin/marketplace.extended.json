@@ -11768,6 +11768,34 @@
         "badge": "gold",
         "lastValidated": "2026-09-05T00:00:00.000Z"
       }
+    },
+    {
+      "name": "hol-guard",
+      "source": "./plugins/security/hol-guard",
+      "description": "Local pre-execution security controls and pre-install scanning for AI agent tools, packages, skills, plugins, and MCP servers.",
+      "version": "0.1.0",
+      "category": "security",
+      "keywords": [
+        "hol-guard",
+        "ai-security",
+        "agent-security",
+        "plugin-security",
+        "mcp-security",
+        "supply-chain-security"
+      ],
+      "author": {
+        "name": "Hashgraph Online",
+        "url": "https://github.com/hashgraph-online"
+      },
+      "homepage": "https://github.com/hashgraph-online/hol-guard",
+      "repository": "https://github.com/hashgraph-online/hol-guard-plugin",
+      "license": "Apache-2.0",
+      "verification": {
+        "score": 90,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-09-08T00:00:00.000Z"
+      }
     }
   ]
 }

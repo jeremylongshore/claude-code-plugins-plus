@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { reconcileGeneratedPackageMetadata } from './generate-plugin-package-jsons.mjs';
+import {
+  buildPackageJson,
+  reconcileGeneratedPackageMetadata,
+} from './generate-plugin-package-jsons.mjs';
 
 const canonicalRepository = {
   type: 'git',
@@ -107,4 +110,18 @@ test('does not rewrite a scoped manifest owned by a source-marked mirror', () =>
 
   assert.equal(result.changed, false);
   assert.equal(result.pkg, input);
+});
+
+test('scaffolds source-owned mirror packages as private', () => {
+  const pkg = buildPackageJson('/repo/plugins/security/example-mirror', {}, { sourceOwned: true });
+
+  assert.equal(pkg.private, true);
+  assert.equal(Object.hasOwn(pkg, 'scripts'), false);
+});
+
+test('keeps first-party generated packages publishable', () => {
+  const pkg = buildPackageJson('/repo/plugins/security/example-plugin', {});
+
+  assert.equal(Object.hasOwn(pkg, 'private'), false);
+  assert.match(pkg.scripts.postinstall, /ccpi install example-plugin/);
 });
