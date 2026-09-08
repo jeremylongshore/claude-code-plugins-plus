@@ -4,7 +4,7 @@ Get started with E2E testing in 5 minutes.
 
 ## Prerequisites
 
-- Node.js 20+
+- Node.js 20.19+ or 22.12+
 - pnpm 9.15.9+
 - Access to repository root
 
@@ -73,6 +73,7 @@ pnpm test:e2e:debug
 **File:** `scenarios/plugin-install.test.ts`
 
 Tests the complete plugin lifecycle:
+
 - Installation from valid source
 - File copying and validation
 - Schema validation
@@ -81,6 +82,7 @@ Tests the complete plugin lifecycle:
 - Multiple plugin management
 
 **Run:**
+
 ```bash
 pnpm test:e2e -- plugin-install
 ```
@@ -90,6 +92,7 @@ pnpm test:e2e -- plugin-install
 **File:** `scenarios/skill-activation.test.ts`
 
 Tests skill discovery and activation:
+
 - Skill loading from plugins
 - Frontmatter parsing
 - Trigger phrase detection
@@ -98,6 +101,7 @@ Tests skill discovery and activation:
 - 2025 schema compliance
 
 **Run:**
+
 ```bash
 pnpm test:e2e -- skill-activation
 ```
@@ -107,6 +111,7 @@ pnpm test:e2e -- skill-activation
 **File:** `scenarios/mcp-communication.test.ts`
 
 Tests MCP server interactions:
+
 - Server startup and shutdown
 - Tool registration
 - Tool invocation
@@ -114,6 +119,7 @@ Tests MCP server interactions:
 - Concurrent operations
 
 **Run:**
+
 ```bash
 pnpm test:e2e -- mcp-communication
 ```
@@ -155,6 +161,7 @@ All files            |   85.32 |   78.45 |   82.11 |   85.32
 **Issue:** `Cannot find module 'vitest'`
 
 **Solution:**
+
 ```bash
 cd tests/e2e
 pnpm install
@@ -165,6 +172,7 @@ pnpm install
 **Issue:** `EACCES: permission denied`
 
 **Solution:**
+
 ```bash
 # Ensure /tmp directory is writable
 chmod 1777 /tmp
@@ -178,6 +186,7 @@ E2E_TEST_DIR=/home/user/test-tmp pnpm test:e2e
 **Issue:** `Test timeout of 30000ms exceeded`
 
 **Solution:**
+
 ```bash
 # Increase timeout for slow systems
 E2E_TEST_TIMEOUT=60000 pnpm test:e2e
@@ -188,6 +197,7 @@ E2E_TEST_TIMEOUT=60000 pnpm test:e2e
 **Issue:** `/tmp/claude-e2e-test-*` directories accumulate
 
 **Solution:**
+
 ```bash
 # Tests auto-cleanup old directories (>1 hour)
 # Manual cleanup:
@@ -199,12 +209,12 @@ E2E_KEEP_ARTIFACTS=true pnpm test:e2e
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `E2E_TEST_TIMEOUT` | `30000` | Test timeout in milliseconds |
-| `E2E_DEBUG` | `false` | Enable verbose logging |
-| `E2E_KEEP_ARTIFACTS` | `false` | Keep test directories after run |
-| `E2E_TEST_DIR` | `/tmp` | Base directory for test environments |
+| Variable             | Default | Description                          |
+| -------------------- | ------- | ------------------------------------ |
+| `E2E_TEST_TIMEOUT`   | `30000` | Test timeout in milliseconds         |
+| `E2E_DEBUG`          | `false` | Enable verbose logging               |
+| `E2E_KEEP_ARTIFACTS` | `false` | Keep test directories after run      |
+| `E2E_TEST_DIR`       | `/tmp`  | Base directory for test environments |
 
 ## Test Fixtures
 
@@ -249,6 +259,7 @@ it('should install plugin successfully', async () => {
 ## CI/CD Integration
 
 Tests run automatically in GitHub Actions on:
+
 - Pull requests
 - Push to main branch
 - Manual workflow dispatch
