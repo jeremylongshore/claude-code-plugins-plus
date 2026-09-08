@@ -11,6 +11,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
 # Supersede stale PR runs (this aggregate re-runs on every push with no path
 # filter), but NEVER cancel a main run — a cancelled required job reads as a
 # gate failure. Per the 2026-07-14 ops review (bead claude-k0h2).
@@ -23,20 +26,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-        # fetch-depth=2 + persist-credentials=true required for the
+        # Full history + tags are required for the secret-fingerprint verifier:
+        # it proves every ignored finding is ancestral to an exact, pinned
+        # annotated release tag rather than trusting a PR-created ref.
+        # persist-credentials=true remains required for the
         # "Catalog format guard" step below — it runs `git fetch origin
         # <base_ref>` to compare against the PR's merge base. Without
         # credentials persisted, that fetch errors with "could not read
-        # Username for github.com". Default actions/checkout@v6 behavior
-        # depth=1 doesn't include any history to compare against either.
+        # Username for github.com". Workflow permissions restrict that token
+        # to read-only repository contents.
         with:
-          fetch-depth: 2
+          fetch-depth: 0
           # fetch-tags is REQUIRED by check-changelog-coverage.mjs below.
           # actions/checkout does not fetch tags by default, so `git tag --list`
           # returned EMPTY and that gate silently exited 0 — it never fired in
           # CI at all. Verified by cloning --depth 2 --no-tags and deleting every
-          # release note: still exit 0. fetch-depth stays 2 (the catalog format
-          # guard needs the merge base); fetch-tags is the surgical addition.
+          # release note: still exit 0.
           fetch-tags: true
           persist-credentials: true
 

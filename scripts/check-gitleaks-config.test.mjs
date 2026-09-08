@@ -1,7 +1,9 @@
 import { test } from 'node:test';
 import { equal, ok, deepEqual } from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   analyzeConfig,
@@ -20,6 +22,38 @@ const APPROVED_EXACT_2 =
 
 const governed = (pattern) =>
   `[allowlist]\npaths = [\n    # reason: because.\n    # expiry: 2999-01-01\n    '''${pattern}''',\n]\n`;
+
+function provenanceFixture({ trusted = true } = {}) {
+  const root = mkdtempSync(join(tmpdir(), 'gitleaks-provenance-'));
+  execFileSync('git', ['-C', root, 'init', '--quiet']);
+  execFileSync('git', ['-C', root, 'config', 'user.name', 'Test Author']);
+  execFileSync('git', ['-C', root, 'config', 'user.email', 'test@example.invalid']);
+  const path = 'fixtures/source.txt';
+  mkdirSync(join(root, 'fixtures'), { recursive: true });
+  writeFileSync(join(root, path), 'baseline\n');
+  execFileSync('git', ['-C', root, 'add', path]);
+  execFileSync('git', ['-C', root, 'commit', '--quiet', '-m', 'baseline']);
+  if (!trusted) {
+    execFileSync('git', ['-C', root, 'tag', '-a', 'trusted-provenance', '-m', 'anchor']);
+  }
+  const key = ['AI', 'za', 'A'.repeat(35)].join('');
+  writeFileSync(join(root, path), `fixture=${key}\n`);
+  execFileSync('git', ['-C', root, 'add', path]);
+  execFileSync('git', ['-C', root, 'commit', '--quiet', '-m', 'fixture']);
+  const commit = execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], {
+    encoding: 'utf8',
+  }).trim();
+  if (trusted) {
+    execFileSync('git', ['-C', root, 'tag', '-a', 'trusted-provenance', '-m', 'anchor']);
+  }
+  const anchor = {
+    ref: 'refs/tags/trusted-provenance',
+    object: execFileSync('git', ['-C', root, 'rev-parse', 'refs/tags/trusted-provenance'], {
+      encoding: 'utf8',
+    }).trim(),
+  };
+  return { root, entry: `${commit}:${path}:gcp-api-key:1`, anchor };
+}
 
 test('live config passes with zero issues', () => {
   const result = analyzeConfig(readFileSync(resolve(ROOT, '.gitleaks.toml'), 'utf8'));
@@ -246,11 +280,27 @@ test('diagnostics never render source patterns or possible credentials', () => {
   equal(message.includes(key), false);
 });
 
-test('fingerprint provenance is verified without exposing source content', () => {
-  const ignoreText = readFileSync(resolve(ROOT, '.gitleaksignore'), 'utf8');
-  const result = analyzeIgnore(ignoreText, (entry) => verifyFingerprintInRepository(entry));
-  equal(result.allow, true, JSON.stringify(result.issues));
-  equal(result.entries, 1);
+test('fingerprint provenance is verified against a pinned annotated release anchor', () => {
+  const fixture = provenanceFixture();
+  try {
+    deepEqual(verifyFingerprintInRepository(fixture.entry, fixture.root, fixture.anchor), {
+      ok: true,
+    });
+  } finally {
+    rmSync(fixture.root, { recursive: true, force: true });
+  }
+});
+
+test('an untrusted local branch cannot establish fingerprint provenance', () => {
+  const fixture = provenanceFixture({ trusted: false });
+  try {
+    deepEqual(verifyFingerprintInRepository(fixture.entry, fixture.root, fixture.anchor), {
+      ok: false,
+      code: 'FINGERPRINT_SOURCE_UNREACHABLE',
+    });
+  } finally {
+    rmSync(fixture.root, { recursive: true, force: true });
+  }
 });
 
 test('fingerprint provenance failures fail closed', () => {

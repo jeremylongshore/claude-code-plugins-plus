@@ -25,6 +25,10 @@ import { createHash } from 'node:crypto';
 import { parse } from 'smol-toml';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+export const TRUSTED_PROVENANCE_ANCHOR = Object.freeze({
+  ref: 'refs/tags/v4.31.0',
+  object: '742d4d45d090027618569f6ad1c82498535e8ca3',
+});
 
 // A path entry containing any of these re-creates a type blanket. Substring
 // match against the raw TOML literal-string entry.
@@ -282,7 +286,11 @@ export function validateFingerprintSourceLine(sourceLine) {
   return { ok: true };
 }
 
-export function verifyFingerprintInRepository(entry, root = ROOT) {
+export function verifyFingerprintInRepository(
+  entry,
+  root = ROOT,
+  trustedAnchor = TRUSTED_PROVENANCE_ANCHOR,
+) {
   const fingerprint = parseFingerprint(entry);
   if (!fingerprint) return { ok: false, code: 'NON_COMMIT_BOUND_FINGERPRINT' };
   if (!isNormalizedRepositoryPath(fingerprint.path)) {
@@ -297,24 +305,28 @@ export function verifyFingerprintInRepository(entry, root = ROOT) {
     execFileSync('git', ['-C', root, 'cat-file', '-e', `${fingerprint.commit}^{commit}`], {
       stdio: 'ignore',
     });
-    const containingRefs = execFileSync(
+    execFileSync('git', ['-C', root, 'cat-file', '-e', `${trustedAnchor.ref}^{tag}`], {
+      stdio: 'ignore',
+    });
+    const anchorObject = execFileSync('git', ['-C', root, 'rev-parse', trustedAnchor.ref], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+    if (anchorObject !== trustedAnchor.object) {
+      return { ok: false, code: 'FINGERPRINT_SOURCE_UNREACHABLE' };
+    }
+    execFileSync(
       'git',
       [
         '-C',
         root,
-        'for-each-ref',
-        '--contains',
+        'merge-base',
+        '--is-ancestor',
         fingerprint.commit,
-        '--format=%(refname)',
-        'refs/heads',
-        'refs/remotes',
-        'refs/tags',
+        `${trustedAnchor.ref}^{commit}`,
       ],
-      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] },
+      { stdio: 'ignore' },
     );
-    if (containingRefs.trim() === '') {
-      return { ok: false, code: 'FINGERPRINT_SOURCE_UNREACHABLE' };
-    }
     content = execFileSync(
       'git',
       ['-C', root, 'show', `${fingerprint.commit}:${fingerprint.path}`],
