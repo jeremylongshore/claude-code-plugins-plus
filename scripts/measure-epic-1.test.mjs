@@ -1,6 +1,14 @@
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { execFileSync, spawnSync } from 'node:child_process';
+import {
+  existsSync,
+  mkdtempSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
@@ -16,6 +24,12 @@ import {
   trackedPaths,
   withIndexSnapshot,
 } from './measure-epic-1.mjs';
+
+function temporaryFixtureRoot(t, prefix) {
+  const root = mkdtempSync(join(tmpdir(), prefix));
+  t.after(() => rmSync(root, { force: true, recursive: true }));
+  return root;
+}
 
 function put(root, path, contents = '') {
   const target = join(root, path);
@@ -37,8 +51,8 @@ function evidence(rows = 2) {
   };
 }
 
-function fixture() {
-  const root = mkdtempSync(join(tmpdir(), 'epic-1-measurement-'));
+function fixture(t) {
+  const root = temporaryFixtureRoot(t, 'epic-1-measurement-');
   const files = {
     '.gitignore': 'plugins/mirror/\n',
     '.claude-plugin/marketplace.extended.json': JSON.stringify({
@@ -105,8 +119,8 @@ def _is_binary(path: Path):
   return root;
 }
 
-test('buildReport names cohorts and derives every governed row from tracked fixture evidence', () => {
-  const root = fixture();
+test('buildReport names cohorts and derives every governed row from tracked fixture evidence', (t) => {
+  const root = fixture(t);
   const report = buildReport(root, evidence());
   assert.deepEqual(
     Object.keys(report.rows),
@@ -143,8 +157,8 @@ test('buildReport names cohorts and derives every governed row from tracked fixt
   });
 });
 
-test('refuses a planted second README metrics writer even when it is indexed', () => {
-  const root = fixture();
+test('refuses a planted second README metrics writer even when it is indexed', (t) => {
+  const root = fixture(t);
   put(
     root,
     'packages/planted-readme-metrics/writer.mjs',
@@ -209,8 +223,8 @@ test('validator parsers fail closed on malformed evidence and missing summaries'
   );
 });
 
-test('Git-index snapshots exclude untracked and unstaged working-tree contamination', () => {
-  const root = fixture();
+test('Git-index snapshots exclude untracked and unstaged working-tree contamination', (t) => {
+  const root = fixture(t);
   const before = withIndexSnapshot(root, ({ paths, root: snapshot }) =>
     buildReport(snapshot, evidence(), paths),
   );
@@ -230,8 +244,8 @@ test('Git-index snapshots exclude untracked and unstaged working-tree contaminat
   assert.deepEqual(after, before);
 });
 
-test('Git-index snapshots measure staged bytes and ignore a later unstaged edit', () => {
-  const root = fixture();
+test('Git-index snapshots measure staged bytes and ignore a later unstaged edit', (t) => {
+  const root = fixture(t);
   put(root, 'sources.yaml', 'sources:\n  - name: beta\n');
   execFileSync('git', ['add', 'sources.yaml'], { cwd: root });
   put(root, 'sources.yaml', 'sources:\n  - name: contaminated\n');
@@ -243,8 +257,8 @@ test('Git-index snapshots measure staged bytes and ignore a later unstaged edit'
   });
 });
 
-test('Git-index snapshots expose the staged artifact rather than a matching worktree replacement', () => {
-  const root = fixture();
+test('Git-index snapshots expose the staged artifact rather than a matching worktree replacement', (t) => {
+  const root = fixture(t);
   put(root, '000-docs/742-RA-DATA-epic-1-scorecard.json', '{"state":"stale"}\n');
   execFileSync('git', ['add', '000-docs/742-RA-DATA-epic-1-scorecard.json'], { cwd: root });
   put(root, '000-docs/742-RA-DATA-epic-1-scorecard.json', '{"state":"working-copy"}\n');
@@ -256,9 +270,9 @@ test('Git-index snapshots expose the staged artifact rather than a matching work
   });
 });
 
-test('every executable measurement input must match its indexed bytes', () => {
-  const worktree = mkdtempSync(join(tmpdir(), 'epic-1-worktree-inputs-'));
-  const snapshot = mkdtempSync(join(tmpdir(), 'epic-1-snapshot-inputs-'));
+test('every executable measurement input must match its indexed bytes', (t) => {
+  const worktree = temporaryFixtureRoot(t, 'epic-1-worktree-inputs-');
+  const snapshot = temporaryFixtureRoot(t, 'epic-1-snapshot-inputs-');
   const path = 'scripts/imported-measurement.mjs';
   put(worktree, path, 'export const value = 1;\n');
   put(snapshot, path, 'export const value = 1;\n');
@@ -297,25 +311,25 @@ test('signature registry accepts genuine bytes, exposes counterfeits, and refuse
   );
 });
 
-test('Git, catalog, source, and detector contradictions fail closed', () => {
-  const empty = mkdtempSync(join(tmpdir(), 'epic-1-empty-'));
+test('Git, catalog, source, and detector contradictions fail closed', (t) => {
+  const empty = temporaryFixtureRoot(t, 'epic-1-empty-');
   execFileSync('git', ['init', '-q'], { cwd: empty });
   assert.throws(() => trackedPaths(empty), /inventory is empty/);
 
-  const duplicateSource = fixture();
+  const duplicateSource = fixture(t);
   put(duplicateSource, 'sources.yaml', 'sources:\n  - name: alpha\n  - name: alpha\n');
   const duplicateReport = buildReport(duplicateSource, evidence());
   assert.equal(duplicateReport.rows[27].status, 'undefined');
   assert.equal(duplicateReport.rows[27].values, null);
 
-  const unknownDetector = fixture();
+  const unknownDetector = fixture(t);
   put(unknownDetector, 'freshie/scripts/promote-to-curated.py', 'return False\n');
   assert.throws(
     () => buildReport(unknownDetector, evidence()),
     /unknown promotion binary-detector shape/,
   );
 
-  const oldDetector = fixture();
+  const oldDetector = fixture(t);
   put(
     oldDetector,
     'freshie/scripts/promote-to-curated.py',
@@ -349,4 +363,39 @@ test('stable output excludes runtime metadata and byte comparison catches one-va
   const cycle = {};
   cycle.self = cycle;
   assert.throws(() => stableJson(cycle), /cycle in output/);
+});
+
+test('temporary fixture cleanup runs after a real test failure', (t) => {
+  const proofRoot = mkdtempSync(join(tmpdir(), 'epic-1-cleanup-proof-'));
+  t.after(() => rmSync(proofRoot, { force: true, recursive: true }));
+  const probePath = join(proofRoot, 'failure-probe.test.mjs');
+  writeFileSync(
+    probePath,
+    `import assert from 'node:assert/strict';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import test from 'node:test';
+
+${temporaryFixtureRoot.toString()}
+
+test('intentional failure', (t) => {
+  temporaryFixtureRoot(t, 'epic-1-failure-probe-');
+  assert.fail('intentional cleanup probe failure');
+});
+`,
+  );
+  const childEnvironment = {
+    ...process.env,
+    NODE_DISABLE_COMPILE_CACHE: '1',
+    TMPDIR: proofRoot,
+  };
+  delete childEnvironment.NODE_TEST_CONTEXT;
+  const child = spawnSync(process.execPath, ['--test', probePath], {
+    encoding: 'utf8',
+    env: childEnvironment,
+  });
+
+  assert.equal(child.status, 1, child.stderr || child.stdout);
+  assert.deepEqual(readdirSync(proofRoot), ['failure-probe.test.mjs']);
 });
