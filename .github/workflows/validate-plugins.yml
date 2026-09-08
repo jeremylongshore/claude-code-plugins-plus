@@ -1142,7 +1142,9 @@ jobs:
         run: node scripts/check-routes.mjs
 
       - name: Validate official links
-        run: node scripts/check-official-links.mjs
+        run: >-
+          node --test scripts/check-official-links.test.mjs &&
+          node scripts/check-official-links.mjs
 
       - name: Performance budget check
         run: node scripts/check-performance.mjs
