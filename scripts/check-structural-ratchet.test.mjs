@@ -1,8 +1,13 @@
 import { test } from 'node:test';
-import { deepEqual, equal, match, ok } from 'node:assert/strict';
+import { deepEqual, equal, match, ok, throws } from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { checkMirrorDisposition, compare, validateBaseline } from './check-structural-ratchet.mjs';
+import {
+  checkMirrorDisposition,
+  compare,
+  skillPath,
+  validateBaseline,
+} from './check-structural-ratchet.mjs';
 
 const digest = (members) => createHash('sha256').update(members.join('\n')).digest('hex');
 const baselineOf = (members = []) => ({
@@ -76,6 +81,13 @@ test('missing and publishable mirror ledger rows fail', () => {
   equal(result.failures.length, 2);
   match(result.failures[0], /must be QUARANTINE/);
   match(result.failures[1], /absent from the disposition ledger/);
+});
+
+test('validator members require a non-empty path and field suffix', () => {
+  equal(skillPath('a/SKILL.md::tags'), 'a/SKILL.md');
+  for (const malformed of ['', '::tags', 'a/SKILL.md', 'a/SKILL.md::']) {
+    throws(() => skillPath(malformed), /malformed validator member/);
+  }
 });
 
 test('the live baseline carries count, set hash, and members with no waiver mechanism', () => {

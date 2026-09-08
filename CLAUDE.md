@@ -132,7 +132,7 @@ Performance budgets (CI-enforced; authority is `scripts/check-performance.mjs` `
 
 Adopted model: **mirror by default · upstream improvements · never clobber.** Decision record: `000-docs/694-AT-DECR-external-sync-mirror-by-default-model.md`; pipeline audit + hardening: `000-docs/691-AT-AUDT-sync-external-pipeline-audit-and-hardening.md`.
 
-**Scale first — external is a minority augment, not the core.** 468 catalog plugins total (catalog-entry cohort; regenerate via `pnpm run measure:e1`), but only 64 are externally synced (58 third-party sources + 6 of Jeremy's own repos, per `sources.yaml`). The other 404 (~86%) are in-repo Intent Solutions work. The sync is a curated side-channel, not the marketplace — treat external contributors as a respected minority augment, never the center of gravity.
+**Scale first — external is a minority augment, not the core.** 443 entries in `marketplace.extended.json` (the `measure:e1` catalog-entry cohort is measured separately — regenerate with `pnpm run measure:e1` rather than quoting a number from here), but only 36 are externally synced (30 third-party sources + 6 of Jeremy's own repos, per `sources.yaml`; the mirror plugins are the 36 dirs carrying a `.source.json`). The overwhelming majority is in-repo Intent Solutions work. The sync is a curated side-channel, not the marketplace — treat external contributors as a respected minority augment, never the center of gravity.
 
 **How sync works.** `sources.yaml` registers each external source. `.github/workflows/sync-external.yml` runs weekly (Mondays 06:00 UTC) and on demand (`workflow_dispatch` / `repository_dispatch`), invoking `scripts/sync-external.mjs` to mirror a source's files into `plugins/` and open an automated PR. A human reviews every auto-PR — historically ~1 in 10 sync PRs merges. The contributor's own repo is the source of truth; we do NOT locally edit a pure-mirror plugin.
 
@@ -248,7 +248,7 @@ The validator itself does a kernel-loaded **shadow read** of `ALWAYS_REQUIRED` (
 
 **The kernel pin and the authority flip are two SEPARATE axes — do not conflate them.** The pin is _intended_ to track the latest published kernel; bumping it keeps the shadow lane reading a current, byte-frozen `authoring/v1` contract and is a routine governance/coupling update, not an authority change.
 
-> **Current coupling receipt (2026-08-30).** The root pins are exactly `@intentsolutions/core@0.10.0` and `@intentsolutions/jrig-cli@0.2.0`; a narrow root override keeps the CLI's published `core@0.9.0` dependency on the governed `0.10.0` root copy, and the lockfile resolves one kernel version. `@intentsolutions/audit-harness` is exactly `1.3.1`. The pin bump is complete, but it is **not** an authority flip: both kernel lanes remain advisory and `validate-skills-schema.py` remains authoritative.
+> **Current coupling receipt (2026-08-30).** The root pins are exactly `@intentsolutions/core@0.10.0` and `@intentsolutions/jrig-cli@0.2.0`; a narrow root override keeps the CLI's published `core@0.9.0` dependency on the governed `0.10.0` root copy, and the lockfile resolves one kernel version. `@intentsolutions/audit-harness` is exactly `1.4.0` (verify against `package.json`, not this line — it has drifted before). The pin bump is complete, but it is **not** an authority flip: both kernel lanes remain advisory and `validate-skills-schema.py` remains authoritative.
 
 What stays frozen is the **authority**: do **NOT** flip the kernel-shadow lane from advisory to authoritative (blocking) until ALL of these hold:
 
@@ -331,7 +331,7 @@ python3 freshie/scripts/batch-remediate.py --dry-run && python3 freshie/scripts/
 
 **skills.sh curated mirror** (`freshie/scripts/promote-to-curated.py`): rebuilds
 `skills/.curated/` as a generated mirror of the repo's best **A+B** plugin skills (our own;
-external `.source.json` mirrors excluded — 1,915 at this writing; the promote gate message
+external `.source.json` mirrors excluded — 2,392 promoted dirs at this writing; the promote gate message
 is the live count) so skills.sh can index them — it only
 crawls root `skills/` / `.curated/`, never `plugins/**/skills/`. The plugin skill stays the
 source of truth; the mirror is wipe-and-rebuilt from the tracked `grades.csv` (not the
@@ -386,9 +386,11 @@ Patch version bumps happen automatically on PR (via `auto-bump-on-pr.yml`). For 
 
 ## Internal governance agents — use them, don't re-derive their checks
 
-This repo ships 347 agents as **product** under `plugins/**/agents/`. Separately,
-`.claude/agents/` holds 3 internal governance agents that exist to work **on this
-repo**. The governance agents are advisory (read-only, no Write/Edit) — a deterministic
+This repo ships ~352 agents as **product** under `plugins/**/agents/`. Separately,
+`.claude/agents/` holds 6 internal agents that exist to work **on this
+repo** — 3 governance agents (below) plus 3 Omarchy-lane agents
+(`omarchy-plugin-architect` to build, `omarchy-submission-auditor` to block a bad
+submission, `omarchy-coverage-reporter` to prove what a PASS actually covered). The governance agents are advisory (read-only, no Write/Edit) — a deterministic
 check belongs in a script wired to `ci-required`, not in a prompt.
 
 | Agent            | Reach for it when                                                                                 | Catches                                                                                                                          |

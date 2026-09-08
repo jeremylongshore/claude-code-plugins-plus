@@ -6,6 +6,7 @@ import {
   LIVE_REDIRECTS,
   checkIdentityCompatibility,
   checkLiveRedirects,
+  hasExportedString,
   loadIdentitySnapshot,
 } from './check-identity-compatibility.mjs';
 
@@ -85,6 +86,44 @@ test('canonical repository and catalog endpoints cannot regress', () => {
   assert.match(checkIdentityCompatibility(commentedRelic).join('\n'), /marketplace slug/);
 });
 
+test('exported URL checks compare literal values without compiling them as regular expressions', () => {
+  const source = [
+    "export const CATALOG_URL = 'https://raw.githubusercontent.com/owner/repo/main/catalog.json';",
+    "export const LOOKALIKE = 'https://rawXgithubusercontent.com/owner/repo/main/catalog.json';",
+  ].join('\n');
+  assert.equal(
+    hasExportedString(
+      source,
+      'CATALOG_URL',
+      'https://raw.githubusercontent.com/owner/repo/main/catalog.json',
+    ),
+    true,
+  );
+  assert.equal(
+    hasExportedString(
+      source,
+      'CATALOG_URL',
+      'https://rawXgithubusercontent.com/owner/repo/main/catalog.json',
+    ),
+    false,
+  );
+});
+
+test('exported URL checks ignore declaration-shaped comments and template contents', () => {
+  const malicious = [
+    `/* export const CATALOG_URL = '${IDENTITY.catalogUrl}'; */`,
+    `const documentation = \`export const CATALOG_URL = '${IDENTITY.catalogUrl}';\`;`,
+    "export const CATALOG_URL = 'https://attacker.invalid/catalog.json';",
+  ].join('\n');
+  assert.equal(hasExportedString(malicious, 'CATALOG_URL', IDENTITY.catalogUrl), false);
+
+  const duplicated = [
+    `export const CATALOG_URL = '${IDENTITY.catalogUrl}';`,
+    "export const CATALOG_URL = 'https://attacker.invalid/catalog.json';",
+  ].join('\n');
+  assert.equal(hasExportedString(duplicated, 'CATALOG_URL', IDENTITY.catalogUrl), false);
+});
+
 test('the ccpi program identity and portable skills family remain registered', () => {
   const missingCcpi = snapshot({
     cliProgramSource: LIVE.cliProgramSource.replace(".name('ccpi')", ".name('tons')"),
@@ -95,6 +134,38 @@ test('the ccpi program identity and portable skills family remain registered', (
     cliProgramSource: LIVE.cliProgramSource.replace(".command('skills')", ".command('portable')"),
   });
   assert.match(checkIdentityCompatibility(missingSkills).join('\n'), /tons skills/);
+
+  const templateSpoof = snapshot({
+    cliProgramSource: LIVE.cliProgramSource
+      .replace(".name('ccpi')", ".name('attacker')")
+      .replace(".command('skills')", ".command('portable')")
+      .replace(
+        'export function buildProgram() {',
+        "export function buildProgram() {\n  const documentation = `.name('ccpi') .command('skills')`;",
+      ),
+  });
+  const spoofViolations = checkIdentityCompatibility(templateSpoof).join('\n');
+  assert.match(spoofViolations, /ccpi program identity/);
+  assert.match(spoofViolations, /tons skills/);
+});
+
+test('unreachable nested functions cannot satisfy the program identity contract', () => {
+  const nestedFunctionSpoof = snapshot({
+    cliProgramSource: [
+      'export function buildProgram() {',
+      '  const program = new Command();',
+      "  function decoyName() { program.name('ccpi'); }",
+      '  const skills = function decoyCommand() {',
+      "    return program.command('skills');",
+      '  };',
+      '  return program;',
+      '}',
+    ].join('\n'),
+  });
+
+  const violations = checkIdentityCompatibility(nestedFunctionSpoof).join('\n');
+  assert.match(violations, /ccpi program identity/);
+  assert.match(violations, /tons skills/);
 });
 
 test('live redirect verifier follows every legacy route to the canonical destination', async () => {
