@@ -24,7 +24,7 @@ const SUPPORT = new Set([
 export function validateRegistry(value) {
   const errors = [];
   if (!value || typeof value !== 'object') return ['registry must be an object'];
-  if (value.schemaVersion !== 1) errors.push('schemaVersion must be 1');
+  if (value.schemaVersion !== 2) errors.push('schemaVersion must be 2');
   if (!value.portableArtifact || typeof value.portableArtifact !== 'object') {
     errors.push('portableArtifact is required');
   } else {
@@ -32,6 +32,11 @@ export function validateRegistry(value) {
       if (typeof value.portableArtifact[field] !== 'string' || !value.portableArtifact[field]) {
         errors.push(`portableArtifact.${field} must be a non-empty string`);
       }
+    }
+    if (value.portableArtifact.source !== 'plugins/<category>/<plugin>/skills/<skill>/') {
+      errors.push(
+        'portableArtifact.source must identify the canonical plugin skill tree in schemaVersion 2',
+      );
     }
   }
   if (!Array.isArray(value.harnesses) || value.harnesses.length === 0) {
