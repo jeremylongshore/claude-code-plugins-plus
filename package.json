@@ -102,7 +102,7 @@
     "prettier": "^3.8.3",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.60.0",
-    "vitest": "^2.1.9"
+    "vitest": "^3.2.6"
   },
   "pnpm": {
     "overrides": {
@@ -114,6 +114,7 @@
       "express-rate-limit>ip-address": "10.3.1",
       "hono": "4.12.34",
       "vite": ">=6.4.2",
+      "vitest@<3.2.6": "3.2.7",
       "qs": ">=6.15.2"
     }
   }
