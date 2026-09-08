@@ -10,6 +10,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import ts from 'typescript';
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const DEFAULT_ROOT = join(SCRIPT_DIR, '..');
@@ -66,11 +67,115 @@ export function loadIdentitySnapshot(root = DEFAULT_ROOT) {
   };
 }
 
-function hasExportedString(source, name, value) {
-  const escaped = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(`^\\s*export\\s+const\\s+${name}\\s*=\\s*['"]${escaped}['"]\\s*;`, 'm').test(
+export function hasExportedString(source, name, value) {
+  const sourceFile = ts.createSourceFile(
+    'identity-constants.ts',
     source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
   );
+  if (sourceFile.parseDiagnostics.length > 0) return false;
+
+  const values = [];
+  for (const statement of sourceFile.statements) {
+    if (!ts.isVariableStatement(statement)) continue;
+    const exported = statement.modifiers?.some(
+      (modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword,
+    );
+    const constant = (statement.declarationList.flags & ts.NodeFlags.Const) !== 0;
+    if (!exported || !constant) continue;
+    for (const declaration of statement.declarationList.declarations) {
+      if (!ts.isIdentifier(declaration.name) || declaration.name.text !== name) continue;
+      if (declaration.initializer && ts.isStringLiteralLike(declaration.initializer)) {
+        values.push(declaration.initializer.text);
+      } else {
+        values.push(null);
+      }
+    }
+  }
+  return values.length === 1 && values[0] === value;
+}
+
+function buildProgramFunction(source) {
+  const sourceFile = ts.createSourceFile(
+    'program.ts',
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
+  );
+  if (sourceFile.parseDiagnostics.length > 0) return null;
+  const matches = sourceFile.statements.filter(
+    (statement) =>
+      ts.isFunctionDeclaration(statement) &&
+      statement.name?.text === 'buildProgram' &&
+      statement.body,
+  );
+  return matches.length === 1 ? matches[0] : null;
+}
+
+function directCallsIn(node, receiver, method) {
+  const calls = [];
+  const visit = (current) => {
+    // Calls inside any nested function are not part of buildProgram's executed
+    // registration flow. This includes a function-like node passed as the root
+    // (for example, a variable initializer containing a decoy function).
+    if (ts.isFunctionLike(current)) return;
+    if (
+      ts.isCallExpression(current) &&
+      ts.isPropertyAccessExpression(current.expression) &&
+      current.expression.name.text === method &&
+      ts.isIdentifier(current.expression.expression) &&
+      current.expression.expression.text === receiver
+    ) {
+      calls.push(current);
+    }
+    ts.forEachChild(current, visit);
+  };
+  visit(node);
+  return calls;
+}
+
+function stringArgument(call) {
+  const argument = call?.arguments[0];
+  return argument && ts.isStringLiteralLike(argument) ? argument.text : null;
+}
+
+function hasProgramIdentity(source, expectedName, expectedCommand) {
+  const buildProgram = buildProgramFunction(source);
+  if (!buildProgram) return { name: false, command: false };
+  const programDeclarations = buildProgram.body.statements.flatMap((statement) => {
+    if (!ts.isVariableStatement(statement)) return [];
+    return statement.declarationList.declarations.filter(
+      (declaration) =>
+        ts.isIdentifier(declaration.name) &&
+        declaration.name.text === 'program' &&
+        declaration.initializer &&
+        ts.isNewExpression(declaration.initializer) &&
+        ts.isIdentifier(declaration.initializer.expression) &&
+        declaration.initializer.expression.text === 'Command',
+    );
+  });
+  if (programDeclarations.length !== 1) return { name: false, command: false };
+
+  const nameCalls = buildProgram.body.statements.flatMap((statement) =>
+    directCallsIn(statement, 'program', 'name'),
+  );
+  const name = nameCalls.length === 1 && stringArgument(nameCalls[0]) === expectedName;
+
+  const skillBindings = buildProgram.body.statements.flatMap((statement) => {
+    if (!ts.isVariableStatement(statement)) return [];
+    return statement.declarationList.declarations.filter(
+      (declaration) => ts.isIdentifier(declaration.name) && declaration.name.text === 'skills',
+    );
+  });
+  const commandCalls =
+    skillBindings.length === 1 && skillBindings[0].initializer
+      ? directCallsIn(skillBindings[0].initializer, 'program', 'command')
+      : [];
+  const command = commandCalls.length === 1 && stringArgument(commandCalls[0]) === expectedCommand;
+  return { name, command };
 }
 
 export function checkIdentityCompatibility(snapshot) {
@@ -121,10 +226,11 @@ export function checkIdentityCompatibility(snapshot) {
   if (!hasExportedString(cliConstantsSource, 'CATALOG_URL', IDENTITY.catalogUrl)) {
     violations.push('CLI catalog URL is not canonical');
   }
-  if (!/^\s*\.name\(\s*['"]ccpi['"]\s*\)/m.test(cliProgramSource)) {
+  const programIdentity = hasProgramIdentity(cliProgramSource, 'ccpi', 'skills');
+  if (!programIdentity.name) {
     violations.push('existing ccpi program identity is missing');
   }
-  if (!/^\s*\.command\(\s*['"]skills['"]\s*\)/m.test(cliProgramSource)) {
+  if (!programIdentity.command) {
     violations.push('portable capability is not exposed through the tons skills command family');
   }
 

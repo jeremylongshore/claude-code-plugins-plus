@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 352,
         "raw_tracked_plugin_skill_files": 3031,
-        "tracked_files": 23951
+        "tracked_files": 23964
       }
     },
     "2": {
@@ -1942,11 +1942,11 @@
       "source": [".gitleaks.toml"],
       "status": "measured",
       "values": {
-        "allowlist_patterns": 10,
+        "allowlist_patterns": 5,
         "invalid_patterns": 0,
-        "invisible_files": 23,
+        "invisible_files": 5,
         "target_invisible_files": 0,
-        "tracked_files": 23951
+        "tracked_files": 23964
       }
     },
     "47": {

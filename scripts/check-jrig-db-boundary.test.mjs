@@ -182,6 +182,67 @@ run: >
   }
 });
 
+test('flow-env scanner preserves quoted commas, escapes, and semantic values', () => {
+  const dangerous = [
+    'env: { SAFE: "/dev/shm/safe,db.sqlite\\!", DB: \'freshie/inventory.sqlite\' }',
+    'run: >',
+    '  j-rig eval skills/example --db "$DB"',
+  ].join('\n');
+  assert.equal(inspectJrigDbBoundary(dangerous, 'plugins/example/README.md').length, 1);
+
+  const safe = [
+    'env: { DB: "/dev/shm/safe,db.sqlite", OTHER: \'freshie/other.sqlite\' }',
+    'run: >',
+    '  j-rig eval skills/example --db "$DB"',
+  ].join('\n');
+  assert.deepEqual(inspectJrigDbBoundary(safe, 'plugins/example/README.md'), []);
+});
+
+test('flow-env scanner remains linear and fails closed on malformed escaped input', () => {
+  const malformedEscapes = '\\!'.repeat(20_000);
+  const text = [
+    'env: { DB: "freshie/inventory.sqlite", BROKEN: "' + malformedEscapes + ' }',
+    'run: >',
+    '  j-rig eval skills/example --db "$DB"',
+  ].join('\n');
+
+  assert.ok(inspectJrigDbBoundary(text, 'plugins/example/README.md').length >= 1);
+});
+
+test('malformed flow-env mappings with JRig database arguments fail closed', () => {
+  const malformedCases = [
+    [
+      'env: { DB: "freshie/inventory.sqlite" OTHER: "safe" }',
+      'run: j-rig eval x --db "${DB:-/dev/shm/safe.sqlite}"',
+    ].join('\n'),
+    [
+      'env: {',
+      '  DB: "freshie/inventory.sqlite"',
+      '  OTHER: "safe"',
+      '}',
+      'run: j-rig eval x --db "${DB:-/dev/shm/safe.sqlite}"',
+    ].join('\n'),
+  ];
+
+  for (const malformed of malformedCases) {
+    assert.deepEqual(
+      inspectJrigDbBoundary(malformed, 'plugins/example/README.md').map(
+        (finding) => finding.reasonCode,
+      ),
+      ['DIRECT_JRIG_FRESHIE_DB'],
+    );
+  }
+
+  const validScratch = [
+    'env: {',
+    '  DB: "/dev/shm/safe.sqlite",',
+    '  OTHER: "safe"',
+    '}',
+    'run: j-rig eval x --db "$DB"',
+  ].join('\n');
+  assert.deepEqual(inspectJrigDbBoundary(validScratch, 'plugins/example/README.md'), []);
+});
+
 test('command-scoped state, parameter expansion, and parsed YAML preserve shell semantics', () => {
   const slash = String.fromCharCode(92);
   const chain = [

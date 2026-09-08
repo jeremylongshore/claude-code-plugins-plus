@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
+import { buildSitemap } from '../lib/sitemap-xml.mjs';
 
 // Generate sitemap.xml from marketplace catalog
 export const GET: APIRoute = async () => {
@@ -29,7 +30,7 @@ export const GET: APIRoute = async () => {
       const files = readdirSync(join(docsDir, section));
       for (const file of files) {
         if (file.endsWith('.md')) {
-          const slug = file.replace(/\.md$/, '');
+          const slug = encodeURIComponent(file.replace(/\.md$/, ''));
           docsPages.push({ url: `/docs/${section}/${slug}`, priority: '0.7', changefreq: 'weekly' });
         }
       }
@@ -56,30 +57,13 @@ export const GET: APIRoute = async () => {
     { url: '/verification', priority: '0.7', changefreq: 'monthly' },
   ];
 
-  // Generate XML
-  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${staticPages.map(page => `  <url>
-    <loc>${siteUrl}${page.url}</loc>
-    <changefreq>${page.changefreq}</changefreq>
-    <priority>${page.priority}</priority>
-  </url>`).join('\n')}
-${docsPages.map(page => `  <url>
-    <loc>${siteUrl}${page.url}</loc>
-    <changefreq>${page.changefreq}</changefreq>
-    <priority>${page.priority}</priority>
-  </url>`).join('\n')}
-${catalog.plugins.map((plugin) => `  <url>
-    <loc>${siteUrl}/plugins/${encodeURIComponent(plugin.name)}</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>`).join('\n')}
-${skillsCatalog.skills.map((skill) => `  <url>
-    <loc>${siteUrl}/skills/${encodeURIComponent(skill.slug)}</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>`).join('\n')}
-</urlset>`;
+  const sitemap = buildSitemap({
+    siteUrl,
+    staticPages,
+    docsPages,
+    pluginNames: catalog.plugins.map((plugin) => plugin.name),
+    skillSlugs: skillsCatalog.skills.map((skill) => skill.slug),
+  });
 
   return new Response(sitemap, {
     headers: {
