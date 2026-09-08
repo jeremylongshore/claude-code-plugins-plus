@@ -134,6 +134,19 @@ test('the ccpi program identity and portable skills family remain registered', (
     cliProgramSource: LIVE.cliProgramSource.replace(".command('skills')", ".command('portable')"),
   });
   assert.match(checkIdentityCompatibility(missingSkills).join('\n'), /tons skills/);
+
+  const templateSpoof = snapshot({
+    cliProgramSource: LIVE.cliProgramSource
+      .replace(".name('ccpi')", ".name('attacker')")
+      .replace(".command('skills')", ".command('portable')")
+      .replace(
+        'export function buildProgram() {',
+        "export function buildProgram() {\n  const documentation = `.name('ccpi') .command('skills')`;",
+      ),
+  });
+  const spoofViolations = checkIdentityCompatibility(templateSpoof).join('\n');
+  assert.match(spoofViolations, /ccpi program identity/);
+  assert.match(spoofViolations, /tons skills/);
 });
 
 test('live redirect verifier follows every legacy route to the canonical destination', async () => {

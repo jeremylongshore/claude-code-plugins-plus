@@ -7,7 +7,19 @@ const XML_ENTITIES = Object.freeze({
 });
 
 export function escapeXml(value) {
-  return String(value).replace(/[&<>"']/g, (character) => XML_ENTITIES[character]);
+  const text = String(value);
+  for (const character of text) {
+    const codePoint = character.codePointAt(0);
+    const valid =
+      codePoint === 0x09 ||
+      codePoint === 0x0a ||
+      codePoint === 0x0d ||
+      (codePoint >= 0x20 && codePoint <= 0xd7ff) ||
+      (codePoint >= 0xe000 && codePoint <= 0xfffd) ||
+      (codePoint >= 0x10000 && codePoint <= 0x10ffff);
+    if (!valid) throw new TypeError(`XML value contains forbidden code point U+${codePoint.toString(16)}`);
+  }
+  return text.replace(/[&<>"']/g, (character) => XML_ENTITIES[character]);
 }
 
 export function buildSitemap({ siteUrl, staticPages, docsPages, pluginNames, skillSlugs }) {

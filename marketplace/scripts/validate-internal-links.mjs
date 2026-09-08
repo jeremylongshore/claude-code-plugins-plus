@@ -16,7 +16,7 @@
 import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { extractInternalLinks } from './internal-link-utils.mjs';
+import { extractInternalLinks, pathExistsInDist } from './internal-link-utils.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -50,37 +50,7 @@ if (!existsSync(DIST_DIR)) {
  * Check if a path resolves to an existing file in dist
  */
 function pathExists(path) {
-  // Normalize path
-  let normalizedPath = path;
-
-  // Handle root path
-  if (normalizedPath === '/') {
-    normalizedPath = '';
-  }
-
-  // Remove leading slash
-  if (normalizedPath.startsWith('/')) {
-    normalizedPath = normalizedPath.slice(1);
-  }
-
-  // Remove trailing slash for checking
-  if (normalizedPath.endsWith('/')) {
-    normalizedPath = normalizedPath.slice(0, -1);
-  }
-
-  // Check various file patterns
-  const checks = [
-    join(DIST_DIR, normalizedPath, 'index.html'),  // /foo/ -> /foo/index.html
-    join(DIST_DIR, normalizedPath + '.html'),       // /foo -> /foo.html
-    join(DIST_DIR, normalizedPath),                 // /foo.css, /foo.js, etc.
-  ];
-
-  // For root path
-  if (normalizedPath === '') {
-    return existsSync(join(DIST_DIR, 'index.html'));
-  }
-
-  return checks.some(checkPath => existsSync(checkPath));
+  return pathExistsInDist(DIST_DIR, path);
 }
 
 // Collect all internal links from seed pages
