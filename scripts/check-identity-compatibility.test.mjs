@@ -149,6 +149,25 @@ test('the ccpi program identity and portable skills family remain registered', (
   assert.match(spoofViolations, /tons skills/);
 });
 
+test('unreachable nested functions cannot satisfy the program identity contract', () => {
+  const nestedFunctionSpoof = snapshot({
+    cliProgramSource: [
+      'export function buildProgram() {',
+      '  const program = new Command();',
+      "  function decoyName() { program.name('ccpi'); }",
+      '  const skills = function decoyCommand() {',
+      "    return program.command('skills');",
+      '  };',
+      '  return program;',
+      '}',
+    ].join('\n'),
+  });
+
+  const violations = checkIdentityCompatibility(nestedFunctionSpoof).join('\n');
+  assert.match(violations, /ccpi program identity/);
+  assert.match(violations, /tons skills/);
+});
+
 test('live redirect verifier follows every legacy route to the canonical destination', async () => {
   const seen = [];
   const results = await checkLiveRedirects(async (url) => {
