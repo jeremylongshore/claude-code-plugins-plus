@@ -4,7 +4,7 @@ Get started with E2E testing in 5 minutes.
 
 ## Prerequisites
 
-- Node.js 20.19+ or 22.12+
+- Node.js 20.19.x or 22.12+
 - pnpm 9.15.9+
 - Access to repository root
 
