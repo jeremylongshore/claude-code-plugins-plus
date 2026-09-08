@@ -15,8 +15,8 @@ export default defineConfig({
         '**/*.spec.js',
       ],
       all: true,
-      // Migrated from vitest 0.x flat format to vitest 2.x nested
-      // `thresholds: {}`. Floor declared in tests/TESTING.md.
+      // Migrated from the Vitest 0.x flat format to nested thresholds.
+      // `thresholds: {}`. Floor documented in tests/README.md.
       thresholds: {
         lines: 80,
         functions: 80,

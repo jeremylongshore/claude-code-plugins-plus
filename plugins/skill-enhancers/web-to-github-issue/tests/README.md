@@ -1,13 +1,13 @@
 # Test Suite for web-to-github-issue Plugin
 
-Comprehensive automated test suite with **100% code coverage** across all source files.
+Comprehensive automated test suite with **96.08% statement and line coverage** across all source files.
 
 ## Test Statistics
 
 - **Total Tests**: 118 tests
 - **Test Files**: 3
-- **Code Coverage**: 100% (statements, branches, functions, lines)
-- **Test Framework**: Vitest 3.2.4
+- **Code Coverage**: 96.08% statements/lines, 93.2% branches, 100% functions
+- **Test Framework**: Vitest 3.2.7
 - **Mocking**: Vitest built-in mocking (@octokit/rest)
 
 ## Coverage Report
@@ -15,10 +15,10 @@ Comprehensive automated test suite with **100% code coverage** across all source
 ```
 File              | % Stmts | % Branch | % Funcs | % Lines |
 ------------------|---------|----------|---------|---------|
-All files         |     100 |    98.8  |     100 |     100 |
+All files         |   96.08 |    93.2  |     100 |   96.08 |
 formatter.js      |     100 |     100  |     100 |     100 |
-github-client.js  |     100 |     100  |     100 |     100 |
-parser.js         |     100 |   98.03  |     100 |     100 |
+github-client.js  |   90.85 |    79.31 |     100 |   90.85 |
+parser.js         |     100 |    98.14 |     100 |     100 |
 ```
 
 ## Running Tests
@@ -27,19 +27,19 @@ parser.js         |     100 |   98.03  |     100 |     100 |
 
 ```bash
 # Run all tests once
-npm test
+pnpm test
 
 # Run tests in watch mode (auto-rerun on changes)
-npm run test:watch
+pnpm run test:watch
 
 # Run tests with interactive UI
-npm run test:ui
+pnpm run test:ui
 
 # Generate coverage report
-npm run test:coverage
+pnpm run test:coverage
 
 # Generate coverage report with UI
-npm run test:coverage:ui
+pnpm run test:coverage:ui
 ```
 
 ### Coverage Output
@@ -370,7 +370,7 @@ To integrate with CI/CD pipelines:
 ```yaml
 # GitHub Actions example
 - name: Run tests with coverage
-  run: npm run test:coverage
+  run: pnpm run test:coverage
 
 - name: Upload coverage to Codecov
   uses: codecov/codecov-action@v3
@@ -407,29 +407,25 @@ When adding new features:
 2. Maintain 80%+ coverage threshold
 3. Test both happy path and error cases
 4. Update this README with new test categories
-5. Run `npm run test:coverage` before committing
+5. Run `pnpm run test:coverage` before committing
 
 ## Troubleshooting
 
 ### Tests Failing
 
 ```bash
-# Clear coverage cache
-rm -rf coverage/
-
-# Clear node_modules and reinstall
-rm -rf node_modules/
-npm install
+# Reproduce the locked standalone install
+pnpm install --ignore-workspace --frozen-lockfile
 
 # Run tests with verbose output
-npm test -- --reporter=verbose
+pnpm test -- --reporter=verbose
 ```
 
 ### Coverage Below Threshold
 
 ```bash
 # Generate detailed coverage report
-npm run test:coverage
+pnpm run test:coverage
 
 # Open HTML report
 open coverage/index.html
@@ -439,7 +435,7 @@ open coverage/index.html
 
 ---
 
-**Last Updated**: January 2025
-**Test Framework**: Vitest 3.2.4
-**Coverage**: 100% across all files
+**Last Verified**: September 2026
+**Test Framework**: Vitest 3.2.7
+**Coverage**: 96.08% statements/lines, 93.2% branches, 100% functions
 **Total Tests**: 118 passing
