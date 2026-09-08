@@ -19,6 +19,7 @@ const PARSER_SECURITY_SUITES = [
 const RED_PROOF_CHILD = 'GENERATED_CONTENT_SECURITY_RED_PROOF_CHILD';
 const RED_PROOF_TARGET = 'GENERATED_CONTENT_SECURITY_RED_PROOF_TARGET';
 const DISCOVER_SKILLS = readFileSync(`${ROOT}/marketplace/scripts/discover-skills.mjs`, 'utf8');
+const SKILL_FRONTMATTER = readFileSync(`${ROOT}/scripts/skill-frontmatter.mjs`, 'utf8');
 const VENDORED_JS_YAML = `${ROOT}/scripts/vendor/js-yaml-4.1.1/js-yaml.mjs`;
 const VENDORED_JS_YAML_SHA256 = 'efbc45850bf15f0c8ee3434983f512be656002d7507dc292c7ade4449b5d57fa';
 const VENDORED_JS_YAML_PATH = 'scripts/vendor/js-yaml-4.1.1/js-yaml.mjs';
@@ -94,9 +95,11 @@ test('generated content drift job is unconditional, credential-free, and exact',
 test('generated content parser uses the pinned install-free YAML implementation', () => {
   assert.match(
     DISCOVER_SKILLS,
-    /import yaml from '\.\.\/\.\.\/scripts\/vendor\/js-yaml-4\.1\.1\/js-yaml\.mjs';/,
+    /import \{ parseSkillFrontmatter \} from '\.\.\/\.\.\/scripts\/skill-frontmatter\.mjs';/,
   );
+  assert.match(SKILL_FRONTMATTER, /import yaml from '\.\/vendor\/js-yaml-4\.1\.1\/js-yaml\.mjs';/);
   assert.doesNotMatch(DISCOVER_SKILLS, /(?:from|require\()\s*['"]js-yaml['"]/);
+  assert.doesNotMatch(SKILL_FRONTMATTER, /(?:from|require\()\s*['"]js-yaml['"]/);
   assert.equal(
     createHash('sha256').update(readFileSync(VENDORED_JS_YAML)).digest('hex'),
     VENDORED_JS_YAML_SHA256,
