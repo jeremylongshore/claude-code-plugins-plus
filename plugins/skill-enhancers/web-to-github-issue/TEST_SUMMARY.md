@@ -1,18 +1,19 @@
 # Test Suite Implementation Summary
 
 **Project**: web-to-github-issue Plugin
-**Date**: January 2025
-**Test Coverage**: 100% (statements, branches, functions, lines)
+**Originally Created**: January 2025
+**Last Verified**: September 2026
+**Test Coverage**: 96.08% statements/lines, 93.2% branches, 100% functions
 
 ## Overview
 
-Comprehensive automated test suite created using Vitest with 118 passing tests across 3 test files, achieving 100% code coverage.
+Comprehensive automated test suite using Vitest with 118 passing tests across 3 test files.
 
 ## Test Files Created
 
 ### 1. tests/github-client.test.js
 
-**Tests**: 23 | **Coverage**: 100%
+**Tests**: 23 | **Coverage**: 90.85% statements/lines, 79.31% branches, 100% functions
 
 Comprehensive testing of GitHub API client wrapper including:
 
@@ -36,7 +37,7 @@ Comprehensive testing of GitHub API client wrapper including:
 
 ### 2. tests/parser.test.js
 
-**Tests**: 46 | **Coverage**: 100% statements, 98.03% branches
+**Tests**: 46 | **Coverage**: 100% statements/lines/functions, 98.14% branches
 
 Extensive testing of search results parser with edge case coverage:
 
@@ -142,22 +143,21 @@ Complete testing of markdown issue formatter:
 ```
 File              | % Stmts | % Branch | % Funcs | % Lines | Uncovered Lines
 ------------------|---------|----------|---------|---------|----------------
-All files         |     100 |    98.8  |     100 |     100 |
+All files         |   96.08 |    93.2  |     100 |   96.08 |
 formatter.js      |     100 |     100  |     100 |     100 |
-github-client.js  |     100 |     100  |     100 |     100 |
-parser.js         |     100 |   98.03  |     100 |     100 | 77 (edge case)
+github-client.js  |   90.85 |    79.31 |     100 |   90.85 | 30, 113-138, 158-161
+parser.js         |     100 |    98.14 |     100 |     100 | 87
 ```
-
-**Note**: Line 77 in parser.js is an edge case in the ternary operator that's technically reachable but difficult to trigger. Coverage still meets 100% statement coverage.
 
 ## Dependencies Installed
 
 ```json
 {
   "devDependencies": {
-    "@vitest/coverage-v8": "^3.2.4",
-    "@vitest/ui": "^3.2.4",
-    "vitest": "^3.2.4"
+    "@vitest/coverage-v8": "3.2.7",
+    "@vitest/ui": "3.2.7",
+    "vite": "6.4.3",
+    "vitest": "3.2.7"
   }
 }
 ```
@@ -205,23 +205,23 @@ parser.js         |     100 |   98.03  |     100 |     100 | 77 (edge case)
 ## How to Run Tests
 
 ```bash
-# Install dependencies (if not already installed)
-npm install
+# Reproduce the locked standalone install
+pnpm install --ignore-workspace --frozen-lockfile
 
 # Run all tests once
-npm test
+pnpm test
 
 # Run tests in watch mode (development)
-npm run test:watch
+pnpm run test:watch
 
 # Run tests with interactive UI
-npm run test:ui
+pnpm run test:ui
 
 # Generate coverage report
-npm run test:coverage
+pnpm run test:coverage
 
 # Generate coverage report with UI
-npm run test:coverage:ui
+pnpm run test:coverage:ui
 
 # View HTML coverage report
 open coverage/index.html
@@ -232,8 +232,8 @@ open coverage/index.html
 ```
 Test Files: 3 passed (3)
 Tests:      118 passed (118)
-Duration:   1.51s
-Coverage:   100% statements, 98.8% branches, 100% functions, 100% lines
+Duration:   2.60s
+Coverage:   96.08% statements/lines, 93.2% branches, 100% functions
 ```
 
 ## Continuous Integration
@@ -242,7 +242,7 @@ The test suite is CI-ready with LCOV coverage output:
 
 ```bash
 # CI command
-npm run test:coverage
+pnpm run test:coverage
 
 # Coverage artifact
 coverage/lcov.info  # Upload to Codecov/Coveralls
@@ -250,7 +250,7 @@ coverage/lcov.info  # Upload to Codecov/Coveralls
 
 ## Future Test Enhancements
 
-While current coverage is 100%, potential future additions:
+While current coverage clears the configured global thresholds, potential future additions include:
 
 1. **Integration Tests**: Test actual GitHub API (with test repository)
 2. **Performance Tests**: Benchmark parser with 1000+ results
@@ -267,13 +267,13 @@ When adding new features:
 - [ ] Test both happy path and error cases
 - [ ] Add edge case tests
 - [ ] Update test README with new categories
-- [ ] Run `npm run test:coverage` before committing
+- [ ] Run `pnpm run test:coverage` before committing
 - [ ] Verify no coverage regression
 
 ## Files Created
 
-1. ✅ `tests/github-client.test.js` - 23 tests, 100% coverage
-2. ✅ `tests/parser.test.js` - 46 tests, 100% coverage
+1. ✅ `tests/github-client.test.js` - 23 tests
+2. ✅ `tests/parser.test.js` - 46 tests
 3. ✅ `tests/formatter.test.js` - 49 tests, 100% coverage
 4. ✅ `vitest.config.js` - Test configuration
 5. ✅ `tests/README.md` - Comprehensive test documentation
@@ -281,7 +281,7 @@ When adding new features:
 
 ## Key Takeaways
 
-1. **100% code coverage achieved** across all source files
+1. **Configured global coverage thresholds pass** across all source files
 2. **118 comprehensive tests** covering happy paths, error cases, and edge cases
 3. **Vitest** provides excellent ES module support and fast test execution
 4. **Mocking strategy** successfully isolated GitHub API calls
@@ -296,7 +296,7 @@ The test suite provides comprehensive coverage of the web-to-github-issue plugin
 
 - Robust error handling validation
 - Extensive edge case coverage
-- Fast test execution (< 2 seconds)
+- Fast local test execution
 - CI/CD integration ready
 - Developer-friendly with watch mode and UI
 
@@ -305,7 +305,7 @@ The plugin is now production-ready with confidence in code quality and reliabili
 ---
 
 **Total Test Count**: 118
-**Total Coverage**: 100% (statements, functions, lines), 98.8% (branches)
-**Test Framework**: Vitest 3.2.4
-**Execution Time**: ~1.5 seconds
+**Total Coverage**: 96.08% statements/lines, 93.2% branches, 100% functions
+**Test Framework**: Vitest 3.2.7
+**Observed Local Duration**: ~2.6 seconds
 **Status**: ✅ All tests passing
