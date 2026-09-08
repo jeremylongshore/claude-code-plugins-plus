@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdtempSync, mkdirSync, readFileSync, symlinkSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
@@ -32,8 +32,9 @@ function canonicalJson(value) {
   return JSON.stringify(value);
 }
 
-function fixture() {
+function fixture(t) {
   const root = mkdtempSync(join(tmpdir(), 'epic-1-scorecard-'));
+  t.after(() => rmSync(root, { force: true, recursive: true }));
   const doltCommit = 'a'.repeat(32);
   const gradesCsv = 'skill_path,grade,score\none,A,90\ntwo,B,80\n';
   const gradesHash = createHash('sha256').update(gradesCsv).digest('hex');
@@ -238,8 +239,8 @@ function input(fixtureValue) {
   };
 }
 
-test('emits the exact extended numbered row set in deterministic order and shape', () => {
-  const rows = buildExtendedScorecardRows(input(fixture()));
+test('emits the exact extended numbered row set in deterministic order and shape', (t) => {
+  const rows = buildExtendedScorecardRows(input(fixture(t)));
   assert.deepEqual(Object.keys(rows).map(Number), EXPECTED_ROWS);
   for (const number of EXPECTED_ROWS) {
     assert.deepEqual(Object.keys(rows[number]).slice(0, 6), [
@@ -252,13 +253,13 @@ test('emits the exact extended numbered row set in deterministic order and shape
     ]);
     assert.equal(rows[number].reproduce, `pnpm run measure:e1 --row=${number} --stdout`);
   }
-  const again = buildExtendedScorecardRows(input(fixture()));
+  const again = buildExtendedScorecardRows(input(fixture(t)));
   const firstWithoutRootSpecificData = JSON.stringify(rows);
   assert.equal(JSON.stringify(again), firstWithoutRootSpecificData);
 });
 
-test('discovers additional generated artifacts and README count writers dynamically', () => {
-  const base = fixture();
+test('discovers additional generated artifacts and README count writers dynamically', (t) => {
+  const base = fixture(t);
   let rows = buildExtendedScorecardRows(input(base));
   assert.deepEqual(
     rows[22].values.artifacts.map((entry) => entry.path),
@@ -284,8 +285,8 @@ test('discovers additional generated artifacts and README count writers dynamica
   ]);
 });
 
-test('requires call-bound production evidence and excludes measurement instrumentation', () => {
-  const base = fixture();
+test('requires call-bound production evidence and excludes measurement instrumentation', (t) => {
+  const base = fixture(t);
   put(
     base.root,
     'scripts/measure-epic-1-scorecard.mjs',
@@ -322,8 +323,8 @@ test('requires call-bound production evidence and excludes measurement instrumen
   assert.deepEqual(rows[25].values.writers, ['scripts/readme-metrics.mjs']);
 });
 
-test('writer discovery matches exact basenames instead of catalog suffixes', () => {
-  const base = fixture();
+test('writer discovery matches exact basenames instead of catalog suffixes', (t) => {
+  const base = fixture(t);
   put(base.root, 'marketplace/src/data/catalog.json', '{}');
   put(base.root, 'marketplace/src/data/skills-catalog.json', '{}');
   put(
@@ -348,8 +349,8 @@ test('writer discovery matches exact basenames instead of catalog suffixes', () 
   );
 });
 
-test('counts only producer-integrated workflow checks as artifact drift gates', () => {
-  const base = fixture();
+test('counts only producer-integrated workflow checks as artifact drift gates', (t) => {
+  const base = fixture(t);
   put(
     base.root,
     'scripts/consumer-check.mjs',
@@ -385,8 +386,8 @@ test('counts only producer-integrated workflow checks as artifact drift gates', 
   assert.equal(row.status, 'measured');
 });
 
-test('normalizes absolute validator paths into the tracked Git cohort', () => {
-  const base = fixture();
+test('normalizes absolute validator paths into the tracked Git cohort', (t) => {
+  const base = fixture(t);
   const values = input(base);
   values.skillRows = values.skillRows.map((entry) => ({
     ...entry,
@@ -397,8 +398,8 @@ test('normalizes absolute validator paths into the tracked Git cohort', () => {
   assert.deepEqual(row.values.grade_distribution, { A: 1, B: 1, C: 0, D: 0, F: 0 });
 });
 
-test('measures the merged provenance boundary, ci-required needs, and STANDARDS authority table', () => {
-  const base = fixture();
+test('measures the merged provenance boundary, ci-required needs, and STANDARDS authority table', (t) => {
+  const base = fixture(t);
   put(
     base.root,
     '.github/workflows/cli-publish.yml',
@@ -415,8 +416,8 @@ test('measures the merged provenance boundary, ci-required needs, and STANDARDS 
   assert.deepEqual(rows[43].values.authority_links, ['000-docs/canonical.md']);
 });
 
-test('fails closed on malformed ci-required needs', () => {
-  const base = fixture();
+test('fails closed on malformed ci-required needs', (t) => {
+  const base = fixture(t);
   put(
     base.root,
     '.github/workflows/validate-plugins.yml',
@@ -428,8 +429,8 @@ test('fails closed on malformed ci-required needs', () => {
   assert.equal(row.reason_code, 'MALFORMED_CI_REQUIRED_NEEDS');
 });
 
-test('link instrumentation stays excluded while domain instrumentation cannot bypass policy', () => {
-  const base = fixture();
+test('link instrumentation stays excluded while domain instrumentation cannot bypass policy', (t) => {
+  const base = fixture(t);
   put(
     base.root,
     '000-docs/742-RA-DATA-epic-1-scorecard.json',
@@ -467,8 +468,8 @@ test('link instrumentation stays excluded while domain instrumentation cannot by
   assert.equal(rows[21].source.includes('scripts/measure-epic-1-scorecard.test.mjs'), true);
 });
 
-test('unresolved rows fail closed with null values rather than fabricated zeroes', () => {
-  const rows = buildExtendedScorecardRows(input(fixture()));
+test('unresolved rows fail closed with null values rather than fabricated zeroes', (t) => {
+  const rows = buildExtendedScorecardRows(input(fixture(t)));
   for (const number of [7, 8, 9, 15, 16, 17, 18, 19, 23, 29, 49, 50, 51, 60, 61, 62]) {
     assert.equal(rows[number].values, null, `row ${number}`);
     assert.match(rows[number].reason_code, /^[A-Z][A-Z0-9_]+$/);
@@ -476,8 +477,8 @@ test('unresolved rows fail closed with null values rather than fabricated zeroes
   }
 });
 
-test('Epic 9 pin and shadow rows require retained matching boundary evidence', () => {
-  let base = fixture();
+test('Epic 9 pin and shadow rows require retained matching boundary evidence', (t) => {
+  let base = fixture(t);
   let rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[38].status, 'target_met');
   assert.equal(rows[38].values.registry_matches_pins, true);
@@ -487,7 +488,7 @@ test('Epic 9 pin and shadow rows require retained matching boundary evidence', (
   assert.equal(rows[39].status, 'target_met');
   assert.equal(rows[39].values.report.lanes['authoring/v2'].existing_pass_kernel_fail, 0);
 
-  base = fixture();
+  base = fixture(t);
   const evidencePath = '000-docs/810-RA-DATA-epic-9-boundary-evidence.json';
   const evidence = JSON.parse(readFileSync(join(base.root, evidencePath), 'utf8'));
   evidence.package_registry.packages['@intentsolutions/core'].version = '2.0.0';
@@ -502,8 +503,8 @@ test('Epic 9 pin and shadow rows require retained matching boundary evidence', (
   assert.equal(rows[39].status, 'stale_evidence');
 });
 
-test('Freshie exit rows use tracked receipts and fail closed on planted drift', () => {
-  let base = fixture();
+test('Freshie exit rows use tracked receipts and fail closed on planted drift', (t) => {
+  let base = fixture(t);
   let rows = buildExtendedScorecardRows(input(base));
   for (const number of [52, 53, 54, 58]) assert.equal(rows[number].status, 'target_met');
   assert.equal(rows[55].status, 'target_met');
@@ -519,7 +520,7 @@ test('Freshie exit rows use tracked receipts and fail closed on planted drift', 
   rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[52].status, 'partial');
 
-  base = fixture();
+  base = fixture(t);
   const histogramPath = 'freshie/grade-histogram.json';
   let histogram = JSON.parse(readFileSync(join(base.root, histogramPath), 'utf8'));
   histogram.dolt_commit = 'b'.repeat(32);
@@ -527,19 +528,19 @@ test('Freshie exit rows use tracked receipts and fail closed on planted drift', 
   rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[53].status, 'partial');
 
-  base = fixture();
+  base = fixture(t);
   histogram = JSON.parse(readFileSync(join(base.root, histogramPath), 'utf8'));
   histogram.grades = { A: 2, B: 0 };
   put(base.root, histogramPath, JSON.stringify(histogram));
   rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[53].status, 'partial');
 
-  base = fixture();
+  base = fixture(t);
   put(base.root, 'freshie/grades.csv', 'skill_path,grade,score\none,B,90\ntwo,A,80\n');
   rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[53].status, 'partial');
 
-  base = fixture();
+  base = fixture(t);
   const proofPath = 'freshie/reports/legacy-forge-proofs-demotion.json';
   const proof = JSON.parse(readFileSync(join(base.root, proofPath), 'utf8'));
   proof.records.push({
@@ -554,7 +555,7 @@ test('Freshie exit rows use tracked receipts and fail closed on planted drift', 
   assert.equal(rows[54].status, 'not_reproducible');
   assert.equal(rows[55].status, 'not_reproducible');
 
-  base = fixture();
+  base = fixture(t);
   const workflowPath = '.github/workflows/validate-plugins.yml';
   const workflow = readFileSync(join(base.root, workflowPath), 'utf8').replace(
     '      - test\n',
@@ -564,7 +565,7 @@ test('Freshie exit rows use tracked receipts and fail closed on planted drift', 
   rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[58].status, 'partial');
 
-  base = fixture();
+  base = fixture(t);
   put(
     base.root,
     'tests/test_freshie_hermetic_cycle.py',
@@ -593,7 +594,7 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[58].status, 'partial');
 
-  base = fixture();
+  base = fixture(t);
   const skippedTest = readFileSync(
     join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
     'utf8',
@@ -606,7 +607,7 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   assert.equal(rows[58].status, 'partial');
   assert.equal(rows[58].values.full_cycle, false);
 
-  base = fixture();
+  base = fixture(t);
   const aliasedMutation = readFileSync(
     join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
     'utf8',
@@ -619,7 +620,7 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   assert.equal(rows[58].status, 'partial');
   assert.equal(rows[58].values.full_cycle, false);
 
-  base = fixture();
+  base = fixture(t);
   const replacedMethod = readFileSync(
     join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
     'utf8',
@@ -632,7 +633,7 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   assert.equal(rows[58].status, 'partial');
   assert.equal(rows[58].values.full_cycle, false);
 
-  base = fixture();
+  base = fixture(t);
   const lifecycleSkip = readFileSync(
     join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
     'utf8',
@@ -645,7 +646,7 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   assert.equal(rows[58].status, 'partial');
   assert.equal(rows[58].values.full_cycle, false);
 
-  base = fixture();
+  base = fixture(t);
   const generatorTest = readFileSync(
     join(base.root, 'tests/test_freshie_hermetic_cycle.py'),
     'utf8',
@@ -658,7 +659,7 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   assert.equal(rows[58].status, 'partial');
   assert.equal(rows[58].values.full_cycle, false);
 
-  base = fixture();
+  base = fixture(t);
   const unsafeWorkflow = readFileSync(join(base.root, workflowPath), 'utf8').replace(
     '"$dolt_extract/dolt-linux-amd64/bin/dolt"',
     '/tmp/unverified/dolt',
@@ -668,7 +669,7 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   assert.equal(rows[58].status, 'partial');
   assert.equal(rows[58].values.pinned_dolt, false);
 
-  base = fixture();
+  base = fixture(t);
   const aliasedOverwrite = readFileSync(join(base.root, workflowPath), 'utf8').replace(
     '      - name: Run Freshie hermetic publication cycle\n',
     '      - name: Overwrite Dolt through an alias\n        if: matrix.test-type == \'python-tests\'\n        env:\n          DOLT_DEST: /usr/local/bin/dolt\n        run: sudo /usr/bin/install -m 0755 /tmp/unverified/dolt "$DOLT_DEST"\n      - name: Run Freshie hermetic publication cycle\n',
@@ -678,7 +679,7 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   assert.equal(rows[58].status, 'partial');
   assert.equal(rows[58].values.pinned_dolt, false);
 
-  base = fixture();
+  base = fixture(t);
   const separateStepOverwrite = readFileSync(join(base.root, workflowPath), 'utf8').replace(
     '      - name: Run Freshie hermetic publication cycle\n',
     "      - name: Overwrite Dolt after verification\n        if: matrix.test-type == 'python-tests'\n        run: sudo /usr/bin/install -m 0755 /tmp/unverified/dolt /usr/local/bin/dolt\n      - name: Run Freshie hermetic publication cycle\n",
@@ -688,7 +689,7 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   assert.equal(rows[58].status, 'partial');
   assert.equal(rows[58].values.pinned_dolt, false);
 
-  base = fixture();
+  base = fixture(t);
   const alternateOverwriteWorkflow = readFileSync(join(base.root, workflowPath), 'utf8').replace(
     '          test "$installed_dolt_version" = "$dolt_version"\n',
     '          test "$installed_dolt_version" = "$dolt_version"\n          sudo /usr/bin/install -m 0755 /tmp/unverified/dolt /usr/local/bin/dolt\n',
@@ -698,7 +699,7 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   assert.equal(rows[58].status, 'partial');
   assert.equal(rows[58].values.pinned_dolt, false);
 
-  base = fixture();
+  base = fixture(t);
   const overwrittenWorkflow = readFileSync(join(base.root, workflowPath), 'utf8').replace(
     '          test "$installed_dolt_version" = "$dolt_version"\n',
     '          test "$installed_dolt_version" = "$dolt_version"\n          sudo install -m 0755 /tmp/unverified/dolt /usr/local/bin/dolt\n',
@@ -708,7 +709,7 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   assert.equal(rows[58].status, 'partial');
   assert.equal(rows[58].values.pinned_dolt, false);
 
-  base = fixture();
+  base = fixture(t);
   const emptyGrades = 'skill_path,grade,score\n';
   const emptyHash = createHash('sha256').update(emptyGrades).digest('hex');
   put(base.root, 'freshie/grades.csv', emptyGrades);
@@ -730,15 +731,15 @@ class HermeticFreshieCycleTests(unittest.TestCase):
   assert.notEqual(rows[52].status, 'target_met');
   assert.notEqual(rows[53].status, 'target_met');
 
-  base = fixture();
+  base = fixture(t);
   put(base.root, runPath, '{not json');
   rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[52].status, 'not_reproducible');
   assert.equal(rows[52].values, null);
 });
 
-test('legacy forge-proof evidence remains bound to its source when a newer run is empty', () => {
-  const base = fixture();
+test('legacy forge-proof evidence remains bound to its source when a newer run is empty', (t) => {
+  const base = fixture(t);
   const run9Path = 'freshie/reports/run-delta-9.json';
   const run10Path = 'freshie/reports/run-delta-10.json';
   const run10 = JSON.parse(readFileSync(join(base.root, run9Path), 'utf8'));
@@ -778,8 +779,8 @@ test('legacy forge-proof evidence remains bound to its source when a newer run i
   assert.equal(rows[55].status, 'not_reproducible');
 });
 
-test('measures privileged workflow action pins and exposes mutable references', () => {
-  const base = fixture();
+test('measures privileged workflow action pins and exposes mutable references', (t) => {
+  const base = fixture(t);
   let row = buildExtendedScorecardRows(input(base))[36];
   assert.equal(row.status, 'measured');
   assert.deepEqual(row.values.mutable_uses, []);
@@ -794,8 +795,8 @@ test('measures privileged workflow action pins and exposes mutable references', 
   assert.deepEqual(row.values.mutable_uses, ['.github/workflows/emit-evidence.yml:6']);
 });
 
-test('measurements follow fixture inputs and do not preserve historical blueprint numbers', () => {
-  const base = fixture();
+test('measurements follow fixture inputs and do not preserve historical blueprint numbers', (t) => {
+  const base = fixture(t);
   const first = buildExtendedScorecardRows(input(base));
   assert.equal(first[5].values.rows, 2);
   assert.equal(first[28].values.provenance_marked_mirrors, 1);
@@ -823,8 +824,8 @@ test('measurements follow fixture inputs and do not preserve historical blueprin
   }
 });
 
-test('rejects path traversal and ignores untracked validator rows', () => {
-  const base = fixture();
+test('rejects path traversal and ignores untracked validator rows', (t) => {
+  const base = fixture(t);
   const values = input(base);
   values.skillRows.push({ errors: 0, grade: 'A', path: 'plugins/untracked/SKILL.md', score: 100 });
   assert.equal(buildExtendedScorecardRows(values)[5].values.rows, 2);
@@ -834,8 +835,8 @@ test('rejects path traversal and ignores untracked validator rows', () => {
   );
 });
 
-test('scorecard corpus counts reject a supplied SKILL.md symlink', () => {
-  const base = fixture();
+test('scorecard corpus counts reject a supplied SKILL.md symlink', (t) => {
+  const base = fixture(t);
   const linked = 'plugins/local/skills/linked/SKILL.md';
   mkdirSync(dirname(join(base.root, linked)), { recursive: true });
   symlinkSync(join(base.root, 'plugins/local/skills/two/SKILL.md'), join(base.root, linked));

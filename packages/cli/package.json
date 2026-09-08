@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/ccpi",
-  "version": "2.0.6",
+  "version": "2.1.0",
   "description": "Command-line tool for Tons of Skills portable skills and marketplace plugins",
   "type": "module",
   "main": "./dist/index.js",
@@ -11,6 +11,7 @@
   "files": [
     "dist",
     "registry",
+    "schemas",
     "README.md",
     "LICENSE"
   ],
@@ -58,10 +59,11 @@
     "@size-limit/file": "^12.1.0",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.19.41",
+    "ajv": "^8.18.0",
     "eslint": "^9.39.4",
     "size-limit": "^12.1.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.60.0",
-    "vitest": "^2.1.9"
+    "vitest": "^4.1.7"
   }
 }
