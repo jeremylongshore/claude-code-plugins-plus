@@ -10,6 +10,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import ts from 'typescript';
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const DEFAULT_ROOT = join(SCRIPT_DIR, '..');
@@ -67,10 +68,33 @@ export function loadIdentitySnapshot(root = DEFAULT_ROOT) {
 }
 
 export function hasExportedString(source, name, value) {
-  const declarations = /^\s*export\s+const\s+([A-Za-z_$][\w$]*)\s*=\s*(['"])([^\r\n]*?)\2\s*;/gm;
-  return [...source.matchAll(declarations)].some(
-    (match) => match[1] === name && match[3] === value,
+  const sourceFile = ts.createSourceFile(
+    'identity-constants.ts',
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
   );
+  if (sourceFile.parseDiagnostics.length > 0) return false;
+
+  const values = [];
+  for (const statement of sourceFile.statements) {
+    if (!ts.isVariableStatement(statement)) continue;
+    const exported = statement.modifiers?.some(
+      (modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword,
+    );
+    const constant = (statement.declarationList.flags & ts.NodeFlags.Const) !== 0;
+    if (!exported || !constant) continue;
+    for (const declaration of statement.declarationList.declarations) {
+      if (!ts.isIdentifier(declaration.name) || declaration.name.text !== name) continue;
+      if (declaration.initializer && ts.isStringLiteralLike(declaration.initializer)) {
+        values.push(declaration.initializer.text);
+      } else {
+        values.push(null);
+      }
+    }
+  }
+  return values.length === 1 && values[0] === value;
 }
 
 export function checkIdentityCompatibility(snapshot) {

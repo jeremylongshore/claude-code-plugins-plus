@@ -109,6 +109,21 @@ test('exported URL checks compare literal values without compiling them as regul
   );
 });
 
+test('exported URL checks ignore declaration-shaped comments and template contents', () => {
+  const malicious = [
+    `/* export const CATALOG_URL = '${IDENTITY.catalogUrl}'; */`,
+    `const documentation = \`export const CATALOG_URL = '${IDENTITY.catalogUrl}';\`;`,
+    "export const CATALOG_URL = 'https://attacker.invalid/catalog.json';",
+  ].join('\n');
+  assert.equal(hasExportedString(malicious, 'CATALOG_URL', IDENTITY.catalogUrl), false);
+
+  const duplicated = [
+    `export const CATALOG_URL = '${IDENTITY.catalogUrl}';`,
+    "export const CATALOG_URL = 'https://attacker.invalid/catalog.json';",
+  ].join('\n');
+  assert.equal(hasExportedString(duplicated, 'CATALOG_URL', IDENTITY.catalogUrl), false);
+});
+
 test('the ccpi program identity and portable skills family remain registered', () => {
   const missingCcpi = snapshot({
     cliProgramSource: LIVE.cliProgramSource.replace(".name('ccpi')", ".name('tons')"),

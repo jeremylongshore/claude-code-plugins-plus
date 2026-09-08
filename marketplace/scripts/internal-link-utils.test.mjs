@@ -14,6 +14,9 @@ test('extractInternalLinks excludes every absolute URI scheme case-insensitively
     '<a href="file:///etc/passwd">file</a>',
     '<a href="blob:https://example.com/id">blob</a>',
     '<a href="custom+app:open">custom</a>',
+    '<a href="javascript&#58;alert(1)">numeric colon</a>',
+    '<a href="jav&#x61;script&colon;alert(1)">encoded scheme</a>',
+    '<a href="java&Tab;script&colon;alert(1)">control-obfuscated scheme</a>',
     '<a href="//cdn.example.com/file.js">scheme relative</a>',
     '<a href="/docs/start?view=all#top">internal</a>',
   ].join('');
