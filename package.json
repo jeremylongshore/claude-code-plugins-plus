@@ -103,7 +103,7 @@
     "smol-toml": "1.6.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.60.0",
-    "vitest": "^3.2.6"
+    "vitest": "^4.1.11"
   },
   "pnpm": {
     "overrides": {
