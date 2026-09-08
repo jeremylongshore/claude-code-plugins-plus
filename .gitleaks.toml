@@ -51,8 +51,8 @@ tags = ["url", "slack"]
 [allowlist]
 description = "Specific documented surfaces + placeholder VALUES. No file-type blankets (E4.5)."
 paths = [
-    # reason: this config file itself holds the detector regexes and example
-    # values below, which the default rules would re-read as leaks.
+    # reason: this config file itself holds detector and allowlist regexes
+    # below, which the default rules would re-read as leaks.
     # expiry: none (self-referential by construction)
     '''^\.gitleaks\.toml$''',
     # reason: the canonical validator embeds credential-shape detector

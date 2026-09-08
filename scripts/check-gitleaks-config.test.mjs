@@ -199,7 +199,7 @@ test('expiry metadata must be a real ISO date or an explained permanent exceptio
   equal(analyzeConfig(governed(APPROVED_EXACT)).allow, true);
   equal(
     analyzeConfig(
-      `[allowlist]\npaths = [\n    # reason: this config file itself holds the detector regexes and example\n    # expiry: none (self-referential by construction)\n    '''^\\.gitleaks\\.toml$''',\n]\n`,
+      `[allowlist]\npaths = [\n    # reason: this config file itself holds detector and allowlist regexes\n    # expiry: none (self-referential by construction)\n    '''^\\.gitleaks\\.toml$''',\n]\n`,
     ).allow,
     true,
   );

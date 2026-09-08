@@ -25,6 +25,9 @@ import { createHash } from 'node:crypto';
 import { parse } from 'smol-toml';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+// v4.31.0 is a fixed annotated release predating this policy. Rotate this
+// anchor only in a reviewed policy change that proves every retained
+// fingerprint is still reachable; never move or recreate the existing tag.
 export const TRUSTED_PROVENANCE_ANCHOR = Object.freeze({
   ref: 'refs/tags/v4.31.0',
   object: '742d4d45d090027618569f6ad1c82498535e8ca3',
@@ -67,7 +70,7 @@ const PERMANENT_EXCEPTIONS = new Map([
   [
     '^\\.gitleaks\\.toml$',
     {
-      reason: 'this config file itself holds the detector regexes and example',
+      reason: 'this config file itself holds detector and allowlist regexes',
       expiry: 'none (self-referential by construction)',
     },
   ],
