@@ -4,9 +4,9 @@ import test from 'node:test';
 import {
   normalizeDescription,
   normalizeListField,
-  parseFrontmatter,
   resolveSkillVersion,
 } from './discover-skills.mjs';
+import { parseSkillFrontmatter as parseFrontmatter } from '../../scripts/skill-frontmatter.mjs';
 
 // Test-only sentinel consumed by scripts/generated-content-ci.test.mjs.
 if (process.env.GENERATED_CONTENT_SECURITY_RED_PROOF_TARGET === 'discover-skills') {
