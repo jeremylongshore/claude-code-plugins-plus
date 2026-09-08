@@ -118,7 +118,10 @@ function buildProgramFunction(source) {
 function directCallsIn(node, receiver, method) {
   const calls = [];
   const visit = (current) => {
-    if (current !== node && ts.isFunctionLike(current)) return;
+    // Calls inside any nested function are not part of buildProgram's executed
+    // registration flow. This includes a function-like node passed as the root
+    // (for example, a variable initializer containing a decoy function).
+    if (ts.isFunctionLike(current)) return;
     if (
       ts.isCallExpression(current) &&
       ts.isPropertyAccessExpression(current.expression) &&
