@@ -1,7 +1,7 @@
 {
   "name": "log-analysis-tool",
   "description": "Analyze logs for performance insights and issues",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "category": "other",
   "keywords": [
     "logs",

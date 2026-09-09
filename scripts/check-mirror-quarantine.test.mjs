@@ -230,6 +230,7 @@ test('every install and download projection consumes the canonical publication p
     'marketplace/scripts/discover-skills.mjs',
     'marketplace/scripts/extract-readme-sections.mjs',
     'marketplace/scripts/validate-routes.mjs',
+    'marketplace/generate-content.js',
   ]) {
     const source = fs.readFileSync(path.join(root, relativePath), 'utf8');
     assert.match(source, /publication-policy\.cjs/);

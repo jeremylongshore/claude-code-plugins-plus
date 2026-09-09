@@ -1,0 +1,30 @@
+{
+  "name": "aomi",
+  "description": "Aomi for AI agents: drive natural-language EVM transactions (chat, fork-simulate, sign) and scaffold new Aomi apps from API specs. Non-custodial, account-abstraction-first. 40+ protocol apps: Polymarket, 1inch, GMX, Hyperliquid, Aave, Uniswap. Bundle ships two skills: aomi-transact and aomi-build.",
+  "version": "0.10.0",
+  "category": "other",
+  "keywords": [
+    "crypto",
+    "defi",
+    "web3",
+    "evm",
+    "ethereum",
+    "wallet",
+    "account-abstraction",
+    "trading",
+    "agent",
+    "mcp"
+  ],
+  "author": {
+    "name": "aomi-labs",
+    "email": "info@aomi.dev",
+    "url": "https://aomi.dev"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/aomi",
+  "license": "MIT",
+  "installation": "/plugin install aomi@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

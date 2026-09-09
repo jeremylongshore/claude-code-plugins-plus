@@ -1,7 +1,7 @@
 {
   "name": "sql-injection-detector",
   "description": "Detect SQL injection vulnerabilities",
-  "version": "1.0.0",
+  "version": "1.31.0",
   "category": "security",
   "keywords": [
     "security",

@@ -1,7 +1,7 @@
 {
   "name": "roi-calculator",
   "description": "Calculate and present ROI for AI automation projects",
-  "version": "1.0.0",
+  "version": "1.9.0",
   "category": "business-tools",
   "keywords": [
     "roi",

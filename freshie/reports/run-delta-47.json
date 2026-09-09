@@ -1,0 +1,444 @@
+{
+  "schema_version": "freshie-run-delta/v3",
+  "run_id": 47,
+  "from_tag": "run-46",
+  "to_tag": "run-47",
+  "dolt_commit": "5jer5n04s9drg6deqfo5ji6cfhqnovsj",
+  "run_coherence": {
+    "discovery_run_id": 47,
+    "header_total_skills": 2955,
+    "skill_rows": 2955,
+    "skill_row_delta": 0,
+    "skill_compliance_rows": 3533
+  },
+  "grade_export": {
+    "row_count": 3533,
+    "csv_sha256": "d792f829e80c6f51448bbe333c7b26731149a241a020dfadf99a69b52b9c1896",
+    "grade_counts": {
+      "A": 1922,
+      "B": 1036,
+      "C": 402,
+      "D": 166,
+      "F": 7
+    }
+  },
+  "forge_proofs": {
+    "row_count": 0,
+    "records_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "class_counts": {
+      "E0": 0,
+      "E1": 0,
+      "E2": 0,
+      "E3": 0
+    },
+    "retained_e2_e3": 0,
+    "total_e2_e3": 0,
+    "records": []
+  },
+  "tables_changed": 38,
+  "schema_changes": [],
+  "rows_added": 2,
+  "rows_deleted": 2033614,
+  "rows_modified": 81618,
+  "tables": [
+    {
+      "table": "agent_compliance",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 8988,
+      "rows_modified": 363
+    },
+    {
+      "table": "agent_files",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 8715,
+      "rows_modified": 352
+    },
+    {
+      "table": "anomalies",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 4000,
+      "rows_modified": 160
+    },
+    {
+      "table": "ci_workflows",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 882,
+      "rows_modified": 36
+    },
+    {
+      "table": "command_files",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 9324,
+      "rows_modified": 374
+    },
+    {
+      "table": "content_signals",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 76140,
+      "rows_modified": 3033
+    },
+    {
+      "table": "cross_references",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 67976,
+      "rows_modified": 2791
+    },
+    {
+      "table": "discovery_runs",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 1,
+      "rows_deleted": 26,
+      "rows_modified": 0
+    },
+    {
+      "table": "docs",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 455044,
+      "rows_modified": 18250
+    },
+    {
+      "table": "duplicate_files",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 325,
+      "rows_modified": 13
+    },
+    {
+      "table": "field_registry",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 575,
+      "rows_modified": 23
+    },
+    {
+      "table": "frontmatter_fields",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 575,
+      "rows_modified": 23
+    },
+    {
+      "table": "frontmatter_shapes",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 774,
+      "rows_modified": 32
+    },
+    {
+      "table": "frontmatter_values",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 600643,
+      "rows_modified": 23937
+    },
+    {
+      "table": "marketplace_catalog",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 11069,
+      "rows_modified": 444
+    },
+    {
+      "table": "pack_aggregates",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 3082,
+      "rows_modified": 123
+    },
+    {
+      "table": "pack_metadata",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 475,
+      "rows_modified": 19
+    },
+    {
+      "table": "packs",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 475,
+      "rows_modified": 19
+    },
+    {
+      "table": "plugin_companions",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 10869,
+      "rows_modified": 436
+    },
+    {
+      "table": "plugin_compliance",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 10147,
+      "rows_modified": 407
+    },
+    {
+      "table": "plugin_fields",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 474,
+      "rows_modified": 20
+    },
+    {
+      "table": "plugin_shapes",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 456,
+      "rows_modified": 20
+    },
+    {
+      "table": "plugin_templates",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 675,
+      "rows_modified": 27
+    },
+    {
+      "table": "plugin_values",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 1,
+      "rows_deleted": 106043,
+      "rows_modified": 4260
+    },
+    {
+      "table": "plugins",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 10869,
+      "rows_modified": 436
+    },
+    {
+      "table": "root_files",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 1064,
+      "rows_modified": 43
+    },
+    {
+      "table": "root_skills_files",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 185427,
+      "rows_modified": 7499
+    },
+    {
+      "table": "scripts",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 5821,
+      "rows_modified": 238
+    },
+    {
+      "table": "skill_compliance",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 88660,
+      "rows_modified": 3533
+    },
+    {
+      "table": "skill_database_vendors",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 250,
+      "rows_modified": 10
+    },
+    {
+      "table": "skill_files",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 219188,
+      "rows_modified": 8865
+    },
+    {
+      "table": "skill_structure_shapes",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 738,
+      "rows_modified": 31
+    },
+    {
+      "table": "skills",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 74190,
+      "rows_modified": 2955
+    },
+    {
+      "table": "unique_extensions",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 711,
+      "rows_modified": 29
+    },
+    {
+      "table": "unique_filenames",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 55603,
+      "rows_modified": 2291
+    },
+    {
+      "table": "unique_subdirs",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 476,
+      "rows_modified": 19
+    },
+    {
+      "table": "validator_checks",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 8529,
+      "rows_modified": 339
+    },
+    {
+      "table": "validators",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 0,
+      "rows_deleted": 4336,
+      "rows_modified": 168
+    }
+  ],
+  "grade_regressions": [
+    {
+      "skill_path": "plugins/ai-ml/local-tts/skills/local-tts",
+      "from_grade": "B",
+      "to_grade": "D"
+    },
+    {
+      "skill_path": "plugins/business-tools/executive-assistant-skills/skills/action-items-todoist",
+      "from_grade": "B",
+      "to_grade": "D"
+    },
+    {
+      "skill_path": "plugins/business-tools/executive-assistant-skills/skills/email-drafting",
+      "from_grade": "B",
+      "to_grade": "D"
+    },
+    {
+      "skill_path": "plugins/business-tools/executive-assistant-skills/skills/executive-digest",
+      "from_grade": "B",
+      "to_grade": "F"
+    },
+    {
+      "skill_path": "plugins/business-tools/executive-assistant-skills/skills/meeting-prep",
+      "from_grade": "B",
+      "to_grade": "D"
+    },
+    {
+      "skill_path": "plugins/business-tools/executive-assistant-skills/skills/todoist-due-drafts",
+      "from_grade": "B",
+      "to_grade": "D"
+    },
+    {
+      "skill_path": "plugins/business-tools/promptbook/skills/doctor",
+      "from_grade": "A",
+      "to_grade": "D"
+    },
+    {
+      "skill_path": "plugins/business-tools/promptbook/skills/setup",
+      "from_grade": "B",
+      "to_grade": "D"
+    },
+    {
+      "skill_path": "plugins/community/boycott-filter/skills/boycott-filter",
+      "from_grade": "B",
+      "to_grade": "C"
+    },
+    {
+      "skill_path": "plugins/community/claude-reflect",
+      "from_grade": "B",
+      "to_grade": "D"
+    },
+    {
+      "skill_path": "plugins/productivity/hyperfocus/skills/hyperfocus",
+      "from_grade": "B",
+      "to_grade": "D"
+    }
+  ]
+}

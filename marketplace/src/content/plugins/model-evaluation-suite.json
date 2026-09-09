@@ -1,7 +1,7 @@
 {
   "name": "model-evaluation-suite",
   "description": "Comprehensive model evaluation with multiple metrics",
-  "version": "1.0.0",
+  "version": "1.22.0",
   "category": "ai-ml-assistance",
   "keywords": [
     "evaluation",

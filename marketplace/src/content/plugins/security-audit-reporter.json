@@ -1,7 +1,7 @@
 {
   "name": "security-audit-reporter",
   "description": "Generate comprehensive security audit reports",
-  "version": "1.0.0",
+  "version": "1.28.0",
   "category": "security",
   "keywords": [
     "security",

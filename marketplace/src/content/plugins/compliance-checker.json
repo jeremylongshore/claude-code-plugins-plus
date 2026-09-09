@@ -1,7 +1,7 @@
 {
   "name": "compliance-checker",
   "description": "Check infrastructure compliance (SOC2, HIPAA, PCI-DSS)",
-  "version": "1.0.0",
+  "version": "1.26.0",
   "category": "devops",
   "keywords": [
     "compliance",

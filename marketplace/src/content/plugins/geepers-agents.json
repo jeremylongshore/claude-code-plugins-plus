@@ -1,0 +1,33 @@
+{
+  "name": "geepers-agents",
+  "description": "Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, games, and more. Includes orchestrators for checkpoint, deploy, quality, fullstack, research, games, corpus, web, and python workflows.",
+  "version": "1.13.0",
+  "category": "other",
+  "keywords": [
+    "orchestration",
+    "multi-agent",
+    "development-workflow",
+    "code-quality",
+    "deployment",
+    "research",
+    "games",
+    "accessibility",
+    "performance",
+    "flask",
+    "react",
+    "godot",
+    "corpus-linguistics",
+    "mcp"
+  ],
+  "author": {
+    "name": "Luke Steuber",
+    "url": "https://github.com/lukeslp"
+  },
+  "featured": false,
+  "repository": "https://github.com/lukeslp/geepers",
+  "license": "MIT",
+  "installation": "/plugin install geepers-agents@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

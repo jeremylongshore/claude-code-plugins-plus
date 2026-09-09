@@ -1,8 +1,8 @@
 {
   "name": "ai-experiment-logger",
   "description": "Track and analyze AI experiments with a web dashboard and MCP tools",
-  "version": "1.0.0",
-  "category": "ai-ml-assistance",
+  "version": "1.12.0",
+  "category": "other",
   "keywords": [
     "ai",
     "experiments",

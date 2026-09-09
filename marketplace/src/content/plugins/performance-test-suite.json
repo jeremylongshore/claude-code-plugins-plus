@@ -1,7 +1,7 @@
 {
   "name": "performance-test-suite",
   "description": "Load testing and performance benchmarking with metrics analysis and bottleneck identification",
-  "version": "1.0.0",
+  "version": "1.30.0",
   "category": "testing",
   "keywords": [
     "testing",

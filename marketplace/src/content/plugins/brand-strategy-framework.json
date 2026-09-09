@@ -1,0 +1,27 @@
+{
+  "name": "brand-strategy-framework",
+  "description": "A 7-part brand strategy framework for building comprehensive brand foundations - the same methodology top agencies use with Fortune 500 clients.",
+  "version": "1.7.0",
+  "category": "other",
+  "keywords": [
+    "brand-strategy",
+    "marketing",
+    "branding",
+    "positioning",
+    "messaging",
+    "brand-guidelines",
+    "audience-architecture",
+    "brand-identity"
+  ],
+  "author": {
+    "name": "Rowan Brooks",
+    "email": "rowanbrooks100@github.com"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
+  "license": "MIT",
+  "installation": "/plugin install brand-strategy-framework@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

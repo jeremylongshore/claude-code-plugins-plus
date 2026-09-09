@@ -1,7 +1,7 @@
 {
   "name": "time-series-forecaster",
   "description": "Time series forecasting and analysis",
-  "version": "1.0.0",
+  "version": "1.23.0",
   "category": "ai-ml-assistance",
   "keywords": [
     "time-series",

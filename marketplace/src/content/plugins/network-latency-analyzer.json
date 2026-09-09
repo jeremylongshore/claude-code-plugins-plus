@@ -1,7 +1,7 @@
 {
   "name": "network-latency-analyzer",
   "description": "Analyze network latency and optimize request patterns",
-  "version": "1.0.0",
+  "version": "1.21.0",
   "category": "other",
   "keywords": [
     "network",

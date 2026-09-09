@@ -1,7 +1,7 @@
 {
   "name": "test-doubles-generator",
   "description": "Generate mocks, stubs, spies, and fakes for unit testing with Jest, Sinon, and test frameworks",
-  "version": "1.0.0",
+  "version": "1.22.0",
   "category": "testing",
   "keywords": [
     "testing",

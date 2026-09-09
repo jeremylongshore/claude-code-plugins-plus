@@ -1,0 +1,27 @@
+{
+  "name": "youtube-strategy",
+  "description": "Complete YouTube content production workflow: research competitors, generate video ideas, build briefs, craft titles and thumbnails, and create detailed video outlines with demo prep checklists.",
+  "version": "1.10.0",
+  "category": "other",
+  "keywords": [
+    "youtube",
+    "content-strategy",
+    "video-production",
+    "ideation",
+    "research",
+    "thumbnails",
+    "titles",
+    "outlining",
+    "content-creation"
+  ],
+  "author": {
+    "name": "Claude Code Plugins"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/productivity/youtube-strategy",
+  "license": "MIT",
+  "installation": "/plugin install youtube-strategy@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

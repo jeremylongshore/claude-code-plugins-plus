@@ -1,0 +1,24 @@
+{
+  "name": "mattyp-changelog",
+  "description": "Automates changelog generation from git history with config validation and quality scoring. Use when publishing weekly updates, release notes, or PR summaries. Trigger with /changelog-weekly, /changelog-custom, or /changelog-validate.",
+  "version": "0.3.0",
+  "category": "devops",
+  "keywords": [
+    "changelog",
+    "release-notes",
+    "weekly-update",
+    "git",
+    "github",
+    "automation"
+  ],
+  "author": {
+    "name": "Mattyp"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/devops/mattyp-changelog",
+  "license": "MIT",
+  "installation": "/plugin install mattyp-changelog@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

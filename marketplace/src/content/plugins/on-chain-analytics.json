@@ -1,7 +1,7 @@
 {
   "name": "on-chain-analytics",
   "description": "Analyze on-chain metrics including whale movements, network activity, and holder distribution",
-  "version": "1.0.0",
+  "version": "1.28.0",
   "category": "other",
   "keywords": [
     "on-chain",

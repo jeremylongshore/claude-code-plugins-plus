@@ -1,7 +1,7 @@
 {
   "name": "test-orchestrator",
   "description": "Orchestrate complex test workflows with dependencies, parallel execution, and smart test selection",
-  "version": "1.0.0",
+  "version": "1.25.0",
   "category": "testing",
   "keywords": [
     "testing",

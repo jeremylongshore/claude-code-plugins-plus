@@ -1,0 +1,28 @@
+{
+  "name": "tweetclaw",
+  "description": "X/Twitter automation - post, reply, like, retweet, follow, DM, search, extract data, monitor accounts, run giveaways. 121 endpoints via Xquik REST API.",
+  "version": "1.5.3",
+  "category": "devops",
+  "keywords": [
+    "twitter",
+    "x",
+    "automation",
+    "social-media",
+    "tweets",
+    "monitoring",
+    "giveaway",
+    "scraping"
+  ],
+  "author": {
+    "name": "Burak Bayir",
+    "email": "burak@xquik.com",
+    "url": "https://xquik.com"
+  },
+  "featured": false,
+  "repository": "https://github.com/Xquik-dev/tweetclaw",
+  "license": "MIT",
+  "installation": "/plugin install tweetclaw@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

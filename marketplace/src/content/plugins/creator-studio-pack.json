@@ -1,7 +1,7 @@
 {
   "name": "creator-studio-pack",
   "description": "Complete plugin suite for builder-filmmakers: Build products AND create viral videos. 20 plugins covering documentation, video production, content strategy, and workflow optimization. Transform from code to published video in 30 minutes.",
-  "version": "1.0.0",
+  "version": "1.16.0",
   "category": "other",
   "keywords": [
     "video",

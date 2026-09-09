@@ -1,0 +1,24 @@
+{
+  "name": "over-50s-health",
+  "description": "Evidence-based health, fitness, nutrition, and longevity guidance for adults 50+",
+  "version": "3.3.0",
+  "category": "other",
+  "keywords": [
+    "health",
+    "fitness",
+    "nutrition",
+    "longevity",
+    "50+"
+  ],
+  "author": {
+    "name": "Alister Lewis-Bowen",
+    "url": "https://github.com/ali5ter"
+  },
+  "featured": false,
+  "repository": "https://github.com/ali5ter/over-50s-health-advisor",
+  "license": "MIT",
+  "installation": "/plugin install over-50s-health@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

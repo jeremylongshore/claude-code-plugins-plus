@@ -1,0 +1,24 @@
+{
+  "name": "a2a-client",
+  "description": "Security-hardened MCP client for Agent2Agent card discovery, messaging, streaming, and confirmation-gated task control",
+  "version": "0.1.0",
+  "category": "other",
+  "keywords": [
+    "a2a",
+    "agent2agent",
+    "agent-card",
+    "multi-agent",
+    "mcp"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/tons-of-skills-marketplace",
+  "license": "MIT",
+  "installation": "/plugin install a2a-client@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

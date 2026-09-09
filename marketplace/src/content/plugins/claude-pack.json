@@ -1,0 +1,24 @@
+{
+  "name": "claude-pack",
+  "description": "Claude Code skill pack for building with the Claude API and Anthropic SDK.",
+  "version": "1.0.0",
+  "category": "other",
+  "keywords": [
+    "claude",
+    "anthropic",
+    "ai",
+    "sdk",
+    "messages-api"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/saas-packs/claude-pack",
+  "license": "MIT",
+  "installation": "/plugin install claude-pack@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

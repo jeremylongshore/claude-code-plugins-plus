@@ -1,0 +1,30 @@
+{
+  "name": "langchain-py-pack",
+  "description": "LangChain 1.0 + LangGraph 1.0 skill pack for Python. Pain-first skills anchored to a 68-entry pain catalog covering content blocks, streaming token accounting, structured-output, vector stores, checkpointing, HITL, middleware, Deep Agents, and native OTEL. Includes 33 skills across four epics.",
+  "version": "2.6.0",
+  "category": "other",
+  "keywords": [
+    "langchain",
+    "langgraph",
+    "python",
+    "llm",
+    "agents",
+    "rag",
+    "checkpointing",
+    "streaming",
+    "middleware",
+    "langsmith"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/saas-packs/langchain-py-pack",
+  "license": "MIT",
+  "installation": "/plugin install langchain-py-pack@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

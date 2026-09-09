@@ -1,0 +1,27 @@
+{
+  "name": "jeremy-google-adk",
+  "description": "Google Agent Development Kit (ADK) starter for building production AI agents — ReAct single-agent or multi-agent orchestration (Sequential/Parallel/Loop), tool wiring, evaluation harness, and optional Vertex AI Agent Engine deployment.",
+  "version": "2.2.0",
+  "category": "ai-ml-assistance",
+  "keywords": [
+    "google",
+    "adk",
+    "agent-development-kit",
+    "ai-agents",
+    "react-pattern",
+    "multi-agent",
+    "vertex-ai",
+    "agent-engine"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/jeremy-google-adk",
+  "license": "MIT",
+  "installation": "/plugin install jeremy-google-adk@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

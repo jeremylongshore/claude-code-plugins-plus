@@ -1,0 +1,27 @@
+{
+  "name": "lumera-agent-memory",
+  "description": "Durable agent memory with Cascade object storage, client-side encryption, and local full-text search index. Persists agent context across sessions.",
+  "version": "1.7.0",
+  "category": "other",
+  "keywords": [
+    "mcp",
+    "memory",
+    "cascade",
+    "storage",
+    "encryption",
+    "search",
+    "fts",
+    "agent"
+  ],
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/mcp/lumera-agent-memory",
+  "license": "MIT",
+  "installation": "/plugin install lumera-agent-memory@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

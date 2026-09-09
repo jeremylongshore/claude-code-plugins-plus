@@ -1,0 +1,24 @@
+{
+  "name": "jeremy-vertex-validator",
+  "description": "Production readiness validator for Vertex AI deployments and configurations",
+  "version": "2.22.0",
+  "category": "ai-ml-assistance",
+  "keywords": [
+    "vertex-ai",
+    "validation",
+    "production-readiness",
+    "security",
+    "compliance"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/jeremy-vertex-validator",
+  "license": "MIT",
+  "installation": "/plugin install jeremy-vertex-validator@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

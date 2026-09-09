@@ -1,0 +1,28 @@
+{
+  "name": "shipwright",
+  "description": "Describe your app in plain English — Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.",
+  "version": "1.3.0",
+  "category": "business-tools",
+  "keywords": [
+    "app-builder",
+    "code-generator",
+    "autonomous-agent",
+    "pipeline",
+    "nextjs",
+    "supabase",
+    "sveltekit",
+    "astro",
+    "ai-agency"
+  ],
+  "author": {
+    "name": "Nate Nelson",
+    "url": "https://github.com/Wynelson94"
+  },
+  "featured": false,
+  "repository": "https://github.com/Wynelson94/shipwright",
+  "license": "MIT",
+  "installation": "/plugin install shipwright@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

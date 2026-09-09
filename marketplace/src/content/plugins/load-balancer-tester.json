@@ -1,7 +1,7 @@
 {
   "name": "load-balancer-tester",
   "description": "Test load balancing strategies with traffic distribution validation and failover testing",
-  "version": "1.0.0",
+  "version": "1.21.0",
   "category": "testing",
   "keywords": [
     "testing",

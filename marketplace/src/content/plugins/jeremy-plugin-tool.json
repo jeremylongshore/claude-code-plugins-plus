@@ -1,0 +1,27 @@
+{
+  "name": "jeremy-plugin-tool",
+  "description": "Production-grade plugin creator with marketplace-validated quality standards. 4 Agent Skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace",
+  "version": "2.19.0",
+  "category": "other",
+  "keywords": [
+    "skills",
+    "agent-skills",
+    "plugin-management",
+    "marketplace",
+    "validation",
+    "audit",
+    "versioning",
+    "meta-plugin",
+    "repository-tools"
+  ],
+  "author": {
+    "name": "Claude Code Plugins"
+  },
+  "featured": true,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "installation": "/plugin install jeremy-plugin-tool@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

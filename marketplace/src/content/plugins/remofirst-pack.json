@@ -1,0 +1,24 @@
+{
+  "name": "remofirst-pack",
+  "description": "Claude Code skill pack for RemoFirst (12 skills)",
+  "version": "1.4.0",
+  "category": "other",
+  "keywords": [
+    "remofirst",
+    "saas",
+    "sdk",
+    "integration"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/saas-packs/remofirst-pack",
+  "license": "MIT",
+  "installation": "/plugin install remofirst-pack@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

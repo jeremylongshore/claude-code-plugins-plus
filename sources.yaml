@@ -1308,6 +1308,17 @@ sources:
     license: MIT
     category: business-tools
     verified: false
+    publication_disposition:
+      status: quarantined
+      channels: []
+      artifacts:
+        - path: plugins/business-tools/promptbook/skills/doctor/SKILL.md
+          reason_codes:
+            - plugins/business-tools/promptbook/scripts/submit.js:pipe-to-shell
+        - path: plugins/business-tools/promptbook/skills/setup/SKILL.md
+          reason_codes:
+            - plugins/business-tools/promptbook/scripts/submit.js:pipe-to-shell
+      rationale: Upstream renders a curl-to-shell update instruction from executable plugin code; retain the exact reviewed source for provenance, but expose it through no publication channel until upstream replaces that instruction.
     include:
       - '/.claude-plugin/**'
       - '/LICENSE'

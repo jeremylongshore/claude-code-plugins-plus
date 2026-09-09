@@ -1,7 +1,7 @@
 {
   "name": "network-policy-manager",
   "description": "Manage Kubernetes network policies and firewall rules",
-  "version": "1.0.0",
+  "version": "1.25.0",
   "category": "devops",
   "keywords": [
     "network-policy",

@@ -1,0 +1,36 @@
+{
+  "name": "servicegraph",
+  "description": "ServiceGraph business datasets for founders — 18 skills for finding agencies, firms, and directories via metrics-enriched data (110k+ US professional-services agencies, product and business directories, newsletters)",
+  "version": "0.2.0",
+  "category": "other",
+  "keywords": [
+    "servicegraph",
+    "service-providers",
+    "agencies",
+    "law-firms",
+    "consulting",
+    "accounting",
+    "marketing",
+    "lead-generation",
+    "professional-services",
+    "us-firms",
+    "product-directories",
+    "saas-directories",
+    "mcp-directories",
+    "ai-directories",
+    "product-launch",
+    "backlinks"
+  ],
+  "author": {
+    "name": "Artur Briugeman",
+    "email": "artur@nostr.band",
+    "url": "https://servicegraph.co"
+  },
+  "featured": false,
+  "repository": "https://github.com/nostrband/servicegraph",
+  "license": "MIT",
+  "installation": "/plugin install servicegraph@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

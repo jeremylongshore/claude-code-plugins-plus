@@ -1,0 +1,29 @@
+{
+  "name": "claude-workflow-skills",
+  "description": "Common Claude Code workflow skills — promote, audit-plugin, audit-standards, improve, and triage",
+  "version": "1.7.1",
+  "category": "other",
+  "keywords": [
+    "workflow",
+    "promote",
+    "release",
+    "audit",
+    "standards",
+    "improve",
+    "triage",
+    "git",
+    "review",
+    "pull-request"
+  ],
+  "author": {
+    "name": "Alister Lewis-Bowen",
+    "url": "https://github.com/ali5ter"
+  },
+  "featured": false,
+  "repository": "https://github.com/ali5ter/claude-workflow-skills",
+  "license": "MIT",
+  "installation": "/plugin install claude-workflow-skills@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

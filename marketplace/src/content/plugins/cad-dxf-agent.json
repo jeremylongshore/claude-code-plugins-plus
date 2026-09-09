@@ -1,0 +1,25 @@
+{
+  "name": "cad-dxf-agent",
+  "description": "Deterministic DXF drawing analysis for compliance, drawing QA, quantity takeoff, summaries, RFIs, and room/zone detection — no LLM or API key required.",
+  "version": "0.1.0",
+  "category": "ai-ml-assistance",
+  "keywords": [
+    "dxf",
+    "cad",
+    "compliance",
+    "takeoff",
+    "drawing-intelligence",
+    "aec"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/cad-dxf-agent",
+  "license": "MIT",
+  "installation": "/plugin install cad-dxf-agent@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

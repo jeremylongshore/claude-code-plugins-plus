@@ -1,7 +1,7 @@
 {
   "name": "compliance-report-generator",
   "description": "Generate compliance reports",
-  "version": "1.0.0",
+  "version": "1.25.0",
   "category": "security",
   "keywords": [
     "security",

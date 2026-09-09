@@ -1,7 +1,7 @@
 {
   "name": "helm-chart-generator",
   "description": "Generate Helm charts for Kubernetes applications",
-  "version": "1.0.0",
+  "version": "1.25.0",
   "category": "devops",
   "keywords": [
     "helm",

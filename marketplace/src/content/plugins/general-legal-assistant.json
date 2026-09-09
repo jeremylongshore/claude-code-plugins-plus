@@ -1,0 +1,28 @@
+{
+  "name": "general-legal-assistant",
+  "description": "AI-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents",
+  "version": "1.1.0",
+  "category": "other",
+  "keywords": [
+    "legal",
+    "contracts",
+    "nda",
+    "compliance",
+    "gdpr",
+    "ccpa",
+    "risk-analysis",
+    "terms-of-service",
+    "privacy-policy"
+  ],
+  "author": {
+    "name": "Intent Solutions",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
+  "license": "MIT",
+  "installation": "/plugin install general-legal-assistant@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

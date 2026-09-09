@@ -1,0 +1,27 @@
+{
+  "name": "prettier-markdown-hook",
+  "description": "Automatically format markdown files with prettier when Claude stops responding, with configurable organization and path exclusions",
+  "version": "1.8.0",
+  "category": "other",
+  "keywords": [
+    "prettier",
+    "markdown",
+    "formatting",
+    "automation",
+    "hook",
+    "stop",
+    "git",
+    "conventional-commits"
+  ],
+  "author": {
+    "name": "Terry Li",
+    "url": "https://github.com/terrylica"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/productivity/prettier-markdown-hook",
+  "license": "MIT",
+  "installation": "/plugin install prettier-markdown-hook@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

@@ -1,0 +1,25 @@
+{
+  "name": "framecraft",
+  "description": "Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos with voiceover, transitions, and CSS animations.",
+  "version": "1.3.0",
+  "category": "other",
+  "keywords": [
+    "demo-video",
+    "video-generation",
+    "playwright",
+    "ffmpeg",
+    "edge-tts",
+    "mcp"
+  ],
+  "author": {
+    "name": "vaddisrinivas",
+    "url": "https://github.com/vaddisrinivas"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/community/framecraft",
+  "license": "MIT",
+  "installation": "/plugin install framecraft@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

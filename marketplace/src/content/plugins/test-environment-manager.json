@@ -1,7 +1,7 @@
 {
   "name": "test-environment-manager",
   "description": "Manage test environments with Docker Compose, Testcontainers, and environment isolation",
-  "version": "1.0.0",
+  "version": "1.25.0",
   "category": "testing",
   "keywords": [
     "testing",

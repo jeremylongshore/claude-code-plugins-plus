@@ -1,7 +1,7 @@
 {
   "name": "api-error-handler",
   "description": "Implement standardized error handling with proper HTTP status codes",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "category": "other",
   "keywords": [
     "error-handling",

@@ -1,0 +1,19 @@
+{
+  "name": "ejentum-code",
+  "description": "Cognitive scaffold for code generation, refactoring, or architecture tasks. Calls harness_code on the ejentum MCP server to retrieve a structured scaffold (failure pattern, procedure, correct-pattern example, verification step) the agent absorbs before generating. Requires ejentum-mcp and EJENTUM_API_KEY.",
+  "version": "0.1.0",
+  "category": "other",
+  "keywords": [],
+  "author": {
+    "name": "Ejentum",
+    "email": "info@ejentum.com",
+    "url": "https://github.com/ejentum"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/community/ejentum-code",
+  "license": "MIT",
+  "installation": "/plugin install ejentum-code@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

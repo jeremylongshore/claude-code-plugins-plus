@@ -1,7 +1,7 @@
 {
   "name": "security-incident-responder",
   "description": "Assist with security incident response",
-  "version": "1.0.0",
+  "version": "1.32.0",
   "category": "security",
   "keywords": [
     "security",

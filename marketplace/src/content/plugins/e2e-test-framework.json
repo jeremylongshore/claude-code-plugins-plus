@@ -1,7 +1,7 @@
 {
   "name": "e2e-test-framework",
   "description": "End-to-end test automation with Playwright, Cypress, and Selenium for browser-based testing",
-  "version": "1.0.0",
+  "version": "1.21.0",
   "category": "testing",
   "keywords": [
     "testing",

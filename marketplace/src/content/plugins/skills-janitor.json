@@ -1,0 +1,26 @@
+{
+  "name": "skills-janitor",
+  "description": "Audit, clean and swipe-triage your Claude Code skills — honest always-loaded vs on-demand token costs, usage tracking, duplicate detection, and safe deletion (auto-fix, prune, interactive swipe TUI)",
+  "version": "0.1.0",
+  "category": "other",
+  "keywords": [
+    "skills",
+    "cleanup",
+    "context-window",
+    "token-budget",
+    "maintenance",
+    "tui"
+  ],
+  "author": {
+    "name": "Krzysztof Hendzel",
+    "email": "krzysztoff.hendzel@gmail.com",
+    "url": "https://github.com/khendzel"
+  },
+  "featured": false,
+  "repository": "https://github.com/khendzel/skills-janitor",
+  "license": "MIT",
+  "installation": "/plugin install skills-janitor@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

@@ -1,0 +1,24 @@
+{
+  "name": "skill-creator",
+  "description": "Create and validate production-grade agent skills with 100-point marketplace grading. Supports creation workflows, eval-driven development, and auto-fix for spec compliance.",
+  "version": "5.22.0",
+  "category": "other",
+  "keywords": [
+    "skill-creation",
+    "validation",
+    "meta-tooling",
+    "grading",
+    "anthropic-spec"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": true,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/skill-enhancers/skill-creator",
+  "license": "MIT",
+  "installation": "/plugin install skill-creator@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

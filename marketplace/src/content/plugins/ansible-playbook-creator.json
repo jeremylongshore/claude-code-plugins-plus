@@ -1,7 +1,7 @@
 {
   "name": "ansible-playbook-creator",
   "description": "Create Ansible playbooks for configuration management",
-  "version": "1.0.0",
+  "version": "1.27.0",
   "category": "devops",
   "keywords": [
     "ansible",

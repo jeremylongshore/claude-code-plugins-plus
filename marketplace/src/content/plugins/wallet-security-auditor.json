@@ -1,0 +1,24 @@
+{
+  "name": "wallet-security-auditor",
+  "description": "Crypto wallet security auditor for reviewing wallet implementations, key management, signing flows, and common vulnerability patterns.",
+  "version": "1.17.0",
+  "category": "other",
+  "keywords": [
+    "crypto",
+    "wallet",
+    "security",
+    "audit",
+    "web3"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/wallet-security-auditor",
+  "license": "MIT",
+  "installation": "/plugin install wallet-security-auditor@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

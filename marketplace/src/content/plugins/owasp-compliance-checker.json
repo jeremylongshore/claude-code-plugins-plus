@@ -1,7 +1,7 @@
 {
   "name": "owasp-compliance-checker",
   "description": "Check OWASP Top 10 compliance",
-  "version": "1.0.0",
+  "version": "1.28.0",
   "category": "security",
   "keywords": [
     "security",

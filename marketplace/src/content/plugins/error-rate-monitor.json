@@ -1,7 +1,7 @@
 {
   "name": "error-rate-monitor",
   "description": "Monitor and analyze application error rates",
-  "version": "1.0.0",
+  "version": "1.22.0",
   "category": "other",
   "keywords": [
     "errors",

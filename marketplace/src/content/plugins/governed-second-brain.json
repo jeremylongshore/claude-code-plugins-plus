@@ -1,0 +1,27 @@
+{
+  "name": "governed-second-brain",
+  "description": "Bob's Big Brain — governed, cited memory with local and team modes, deterministic promotion, and a tamper-evident audit trail.",
+  "version": "1.2.0",
+  "category": "other",
+  "keywords": [
+    "memory",
+    "knowledge",
+    "governance",
+    "qmd",
+    "brain",
+    "citations",
+    "local-first",
+    "second-brain"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/bobs-big-brain-plugin",
+  "license": "Apache-2.0",
+  "installation": "/plugin install governed-second-brain@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

@@ -1,7 +1,7 @@
 {
   "name": "api-batch-processor",
   "description": "Implement batch API operations with bulk processing and job queues",
-  "version": "1.0.0",
+  "version": "1.25.0",
   "category": "other",
   "keywords": [
     "batch",

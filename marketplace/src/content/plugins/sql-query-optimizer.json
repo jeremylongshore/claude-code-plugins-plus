@@ -1,7 +1,7 @@
 {
   "name": "sql-query-optimizer",
   "description": "Analyze and optimize SQL queries for better performance, suggesting indexes, query rewrites, and execution plan improvements",
-  "version": "1.0.0",
+  "version": "1.27.0",
   "category": "other",
   "keywords": [
     "sql",

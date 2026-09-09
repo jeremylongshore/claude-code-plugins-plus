@@ -1,0 +1,26 @@
+{
+  "name": "jeremy-genkit-pro",
+  "description": "Firebase Genkit expert for production-ready AI workflows with RAG and tool calling",
+  "version": "2.26.0",
+  "category": "ai-ml-assistance",
+  "keywords": [
+    "firebase",
+    "genkit",
+    "ai-flows",
+    "rag",
+    "monitoring",
+    "gemini",
+    "vertex-ai"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/jeremy-genkit-pro",
+  "license": "MIT",
+  "installation": "/plugin install jeremy-genkit-pro@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

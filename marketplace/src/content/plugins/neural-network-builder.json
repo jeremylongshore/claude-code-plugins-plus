@@ -1,7 +1,7 @@
 {
   "name": "neural-network-builder",
   "description": "Build and configure neural network architectures",
-  "version": "1.0.0",
+  "version": "1.20.0",
   "category": "ai-ml-assistance",
   "keywords": [
     "neural-networks",

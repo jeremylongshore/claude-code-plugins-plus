@@ -1,0 +1,27 @@
+{
+  "name": "cursor-pack",
+  "description": "Complete Cursor integration skill pack with 30 skills covering AI code editing, composer workflows, codebase indexing, and productivity features. Flagship+ tier vendor pack.",
+  "version": "1.18.0",
+  "category": "other",
+  "keywords": [
+    "cursor",
+    "ai-editor",
+    "code-editor",
+    "composer",
+    "ai-coding",
+    "vscode-fork",
+    "copilot-alternative"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/saas-packs/cursor-pack",
+  "license": "MIT",
+  "installation": "/plugin install cursor-pack@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

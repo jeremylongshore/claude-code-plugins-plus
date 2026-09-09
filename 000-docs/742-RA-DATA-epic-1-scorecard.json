@@ -16,19 +16,19 @@
     "values": {
       "a_error_total": 32,
       "a_failing": 15,
-      "ab_error_total": 575,
-      "ab_failing": 270,
-      "b_failing": 255,
-      "error_files": 691,
-      "error_total": 3670,
+      "ab_error_total": 574,
+      "ab_failing": 269,
+      "b_failing": 254,
+      "error_files": 702,
+      "error_total": 3799,
       "grade_distribution": {
-        "A": 1923,
-        "B": 1046,
-        "C": 401,
-        "D": 157,
-        "F": 5
+        "A": 1922,
+        "B": 1036,
+        "C": 402,
+        "D": 166,
+        "F": 7
       },
-      "rows": 3532
+      "rows": 3533
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 352,
-        "raw_tracked_plugin_skill_files": 3032,
-        "tracked_files": 24078
+        "raw_tracked_plugin_skill_files": 3033,
+        "tracked_files": 24307
       }
     },
     "2": {
@@ -90,35 +90,35 @@
           "validator_reported_mixed_denominator_percent": 81
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 3907,
-          "fully_compliant_surfaces": 1185,
+          "error_total_all_validated_surfaces": 4040,
+          "fully_compliant_surfaces": 1182,
           "terminal_denominator": {
             "agents": 363,
-            "commands": 373,
-            "files": 4863,
+            "commands": 374,
+            "files": 4865,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
             "plugin_manifests": 595,
-            "skills": 3532
+            "skills": 3533
           },
-          "validated_plugin_manifests": 603,
-          "validator_reported_mixed_denominator_percent": 24.4
+          "validated_plugin_manifests": 602,
+          "validator_reported_mixed_denominator_percent": 24.3
         },
         "skill_rows": {
           "a_error_total": 32,
           "a_failing": 15,
-          "ab_error_total": 575,
-          "ab_failing": 270,
-          "b_failing": 255,
-          "error_files": 691,
-          "error_total": 3670,
+          "ab_error_total": 574,
+          "ab_failing": 269,
+          "b_failing": 254,
+          "error_files": 702,
+          "error_total": 3799,
           "grade_distribution": {
-            "A": 1923,
-            "B": 1046,
-            "C": 401,
-            "D": 157,
-            "F": 5
+            "A": 1922,
+            "B": 1036,
+            "C": 402,
+            "D": 166,
+            "F": 7
           },
-          "rows": 3532
+          "rows": 3533
         }
       }
     },
@@ -131,20 +131,20 @@
       "values": {
         "average_score": 87.6,
         "grade_distribution": {
-          "A": 1923,
-          "B": 1046,
-          "C": 401,
-          "D": 157,
-          "F": 5
+          "A": 1922,
+          "B": 1036,
+          "C": 402,
+          "D": 166,
+          "F": 7
         },
         "grade_percentages": {
           "A": 54.4,
-          "B": 29.6,
+          "B": 29.3,
           "C": 11.4,
-          "D": 4.4,
-          "F": 0.1
+          "D": 4.7,
+          "F": 0.2
         },
-        "rows": 3532
+        "rows": 3533
       }
     },
     "6": {
@@ -156,12 +156,12 @@
       "values": {
         "a_error_total": 32,
         "a_failing": 15,
-        "ab_error_total": 575,
-        "ab_failing": 270,
-        "b_error_total": 543,
-        "b_failing": 255,
+        "ab_error_total": 574,
+        "ab_failing": 269,
+        "b_error_total": 542,
+        "b_failing": 254,
         "certified_target": 0,
-        "skill_summary_rows": 3532
+        "skill_summary_rows": 3533
       }
     },
     "7": {
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3521,
+        "declared": 3515,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
-        "missing": 11,
-        "rows": 3532,
+        "missing": 18,
+        "rows": 3533,
         "target_malformed": 0
       }
     },
@@ -367,7 +367,7 @@
             "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18, a persistent local filesystem (the observe-decide-act loop passes state through local turn files), and ~/.kobiton/.credentials written by /automate:setup — scripts/appium.js reads that file directly and never calls the MCP getCredential tool, so it is required, not a fallback. An authenticated Kobiton MCP connection is additionally useful for device selection."
           },
           {
-            "count": 3196,
+            "count": 3185,
             "value": "Designed for Claude Code"
           },
           {
@@ -1220,7 +1220,7 @@
         "answers": [
           {
             "cohort": "curated-mirror",
-            "value": 2400
+            "value": 2389
           },
           {
             "cohort": "curriculum",
@@ -1228,15 +1228,15 @@
           },
           {
             "cohort": "first-party",
-            "value": 2687
+            "value": 2676
           },
           {
             "cohort": "graded",
-            "value": 3532
+            "value": 3533
           },
           {
             "cohort": "marketplace-visible",
-            "value": 2941
+            "value": 2934
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1297,10 +1297,10 @@
       "source": ["sources.lock.json", "sources.yaml"],
       "status": "measured",
       "values": {
-        "lock_keys": 37,
+        "lock_keys": 42,
         "lock_only": [],
         "target_equal": true,
-        "yaml_keys": 37,
+        "yaml_keys": 42,
         "yaml_only": []
       }
     },
@@ -1311,7 +1311,12 @@
       "source": [
         "plugins/ai-agency/hyperflow/.source.json",
         "plugins/ai-agency/tonone/.source.json",
+        "plugins/ai-ml/local-tts/.source.json",
         "plugins/api-development/x-twitter-scraper/.source.json",
+        "plugins/business-tools/executive-assistant-skills/.source.json",
+        "plugins/business-tools/promptbook/.source.json",
+        "plugins/community/boycott-filter/.source.json",
+        "plugins/community/claude-reflect/.source.json",
         "plugins/community/ejentum-anti-deception/.source.json",
         "plugins/community/ejentum-code/.source.json",
         "plugins/community/ejentum-memory/.source.json",
@@ -1338,6 +1343,7 @@
         "plugins/productivity/claudebase/.source.json",
         "plugins/productivity/cli-power-skills/.source.json",
         "plugins/productivity/content-multiplier/.source.json",
+        "plugins/productivity/hyperfocus/.source.json",
         "plugins/productivity/obsidian-project-documentation/.source.json",
         "plugins/productivity/over-50s-health/.source.json",
         "plugins/productivity/pair-programmer/.source.json",
@@ -1349,17 +1355,17 @@
       ],
       "status": "measured",
       "values": {
-        "mirrors_shipping_license_text": 37,
+        "mirrors_shipping_license_text": 43,
         "missing_license_text": [],
-        "provenance_marked_mirrors": 37,
-        "target_shipping_license_text": 37
+        "provenance_marked_mirrors": 43,
+        "target_shipping_license_text": 43
       }
     },
     "29": {
       "cohort": "provenance-marked mirrors",
       "dimension": "Mirror SKILL.md contradicting upstream license",
       "measured_proxy": {
-        "local_source_records_with_parseable_json": 37
+        "local_source_records_with_parseable_json": 43
       },
       "reason_code": "MISSING_PINNED_UPSTREAM_LICENSE_EVIDENCE",
       "reproduce": "pnpm run measure:e1 --row=29 --stdout",
@@ -1370,7 +1376,12 @@
       "source": [
         "plugins/ai-agency/hyperflow/.source.json",
         "plugins/ai-agency/tonone/.source.json",
+        "plugins/ai-ml/local-tts/.source.json",
         "plugins/api-development/x-twitter-scraper/.source.json",
+        "plugins/business-tools/executive-assistant-skills/.source.json",
+        "plugins/business-tools/promptbook/.source.json",
+        "plugins/community/boycott-filter/.source.json",
+        "plugins/community/claude-reflect/.source.json",
         "plugins/community/ejentum-anti-deception/.source.json",
         "plugins/community/ejentum-code/.source.json",
         "plugins/community/ejentum-memory/.source.json",
@@ -1397,6 +1408,7 @@
         "plugins/productivity/claudebase/.source.json",
         "plugins/productivity/cli-power-skills/.source.json",
         "plugins/productivity/content-multiplier/.source.json",
+        "plugins/productivity/hyperfocus/.source.json",
         "plugins/productivity/obsidian-project-documentation/.source.json",
         "plugins/productivity/over-50s-health/.source.json",
         "plugins/productivity/pair-programmer/.source.json",
@@ -1421,8 +1433,18 @@
         "plugins/ai-agency/hyperflow/package.json",
         "plugins/ai-agency/tonone/.source.json",
         "plugins/ai-agency/tonone/package.json",
+        "plugins/ai-ml/local-tts/.source.json",
+        "plugins/ai-ml/local-tts/package.json",
         "plugins/api-development/x-twitter-scraper/.source.json",
         "plugins/api-development/x-twitter-scraper/package.json",
+        "plugins/business-tools/executive-assistant-skills/.source.json",
+        "plugins/business-tools/executive-assistant-skills/package.json",
+        "plugins/business-tools/promptbook/.source.json",
+        "plugins/business-tools/promptbook/package.json",
+        "plugins/community/boycott-filter/.source.json",
+        "plugins/community/boycott-filter/package.json",
+        "plugins/community/claude-reflect/.source.json",
+        "plugins/community/claude-reflect/package.json",
         "plugins/community/ejentum-anti-deception/.source.json",
         "plugins/community/ejentum-anti-deception/package.json",
         "plugins/community/ejentum-code/.source.json",
@@ -1475,6 +1497,8 @@
         "plugins/productivity/cli-power-skills/package.json",
         "plugins/productivity/content-multiplier/.source.json",
         "plugins/productivity/content-multiplier/package.json",
+        "plugins/productivity/hyperfocus/.source.json",
+        "plugins/productivity/hyperfocus/package.json",
         "plugins/productivity/obsidian-project-documentation/.source.json",
         "plugins/productivity/obsidian-project-documentation/package.json",
         "plugins/productivity/over-50s-health/.source.json",
@@ -1494,10 +1518,17 @@
       ],
       "status": "partial",
       "values": {
-        "non_private": [],
+        "non_private": [
+          "plugins/ai-ml/local-tts/package.json",
+          "plugins/business-tools/executive-assistant-skills/package.json",
+          "plugins/business-tools/promptbook/package.json",
+          "plugins/community/boycott-filter/package.json",
+          "plugins/community/claude-reflect/package.json",
+          "plugins/productivity/hyperfocus/package.json"
+        ],
         "private_packages": 37,
-        "repository_package_mirrors": 37,
-        "scoped_packages": 32,
+        "repository_package_mirrors": 43,
+        "scoped_packages": 38,
         "target_publishable": 0
       }
     },
@@ -1513,8 +1544,18 @@
         "plugins/ai-agency/hyperflow/package.json",
         "plugins/ai-agency/tonone/.source.json",
         "plugins/ai-agency/tonone/package.json",
+        "plugins/ai-ml/local-tts/.source.json",
+        "plugins/ai-ml/local-tts/package.json",
         "plugins/api-development/x-twitter-scraper/.source.json",
         "plugins/api-development/x-twitter-scraper/package.json",
+        "plugins/business-tools/executive-assistant-skills/.source.json",
+        "plugins/business-tools/executive-assistant-skills/package.json",
+        "plugins/business-tools/promptbook/.source.json",
+        "plugins/business-tools/promptbook/package.json",
+        "plugins/community/boycott-filter/.source.json",
+        "plugins/community/boycott-filter/package.json",
+        "plugins/community/claude-reflect/.source.json",
+        "plugins/community/claude-reflect/package.json",
         "plugins/community/ejentum-anti-deception/.source.json",
         "plugins/community/ejentum-anti-deception/package.json",
         "plugins/community/ejentum-code/.source.json",
@@ -1567,6 +1608,8 @@
         "plugins/productivity/cli-power-skills/package.json",
         "plugins/productivity/content-multiplier/.source.json",
         "plugins/productivity/content-multiplier/package.json",
+        "plugins/productivity/hyperfocus/.source.json",
+        "plugins/productivity/hyperfocus/package.json",
         "plugins/productivity/obsidian-project-documentation/.source.json",
         "plugins/productivity/obsidian-project-documentation/package.json",
         "plugins/productivity/over-50s-health/.source.json",
@@ -1588,12 +1631,12 @@
       ],
       "status": "measured",
       "values": {
-        "boundaries_live": 2,
+        "boundaries_live": 1,
         "mirror_capable_publishers": [
           ".github/workflows/publish-all-packages.yml",
           ".github/workflows/publish-changed-packages.yml"
         ],
-        "package_private_boundary": true,
+        "package_private_boundary": false,
         "publisher_provenance_boundary": true,
         "target_boundaries": 2
       }
@@ -1960,7 +2003,7 @@
         "invalid_patterns": 0,
         "invisible_files": 5,
         "target_invisible_files": 0,
-        "tracked_files": 24078
+        "tracked_files": 24307
       }
     },
     "47": {
@@ -2045,17 +2088,17 @@
       "dimension": "Inventory header versus rows",
       "reproduce": "pnpm run measure:e1 --row=52 --stdout",
       "source": [
-        "freshie/reports/run-delta-46.json",
+        "freshie/reports/run-delta-47.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py"
       ],
       "status": "target_met",
       "values": {
-        "dolt_commit": "8eu20bejkbje4ph44kr2c95heeek7ihb",
-        "header_total_skills": 2954,
-        "run_id": 46,
+        "dolt_commit": "5jer5n04s9drg6deqfo5ji6cfhqnovsj",
+        "header_total_skills": 2955,
+        "run_id": 47,
         "skill_row_delta": 0,
-        "skill_rows": 2954,
+        "skill_rows": 2955,
         "target_skill_row_delta": 0
       }
     },
@@ -2066,32 +2109,32 @@
       "source": [
         "freshie/grade-histogram.json",
         "freshie/grades.csv",
-        "freshie/reports/run-delta-46.json"
+        "freshie/reports/run-delta-47.json"
       ],
       "status": "target_met",
       "values": {
-        "compliance_rows": 3532,
-        "export_dolt_commit": "8eu20bejkbje4ph44kr2c95heeek7ihb",
-        "export_run_id": 46,
-        "grades_csv_rows": 3532,
-        "grades_csv_sha256": "0217da9d276ad664196c8e9d604bc44d6fee1c04e7681a3b710c4262aa661216",
+        "compliance_rows": 3533,
+        "export_dolt_commit": "5jer5n04s9drg6deqfo5ji6cfhqnovsj",
+        "export_run_id": 47,
+        "grades_csv_rows": 3533,
+        "grades_csv_sha256": "d792f829e80c6f51448bbe333c7b26731149a241a020dfadf99a69b52b9c1896",
         "histogram_grades": {
-          "A": 1923,
-          "B": 1046,
-          "C": 401,
-          "D": 157,
-          "F": 5
+          "A": 1922,
+          "B": 1036,
+          "C": 402,
+          "D": 166,
+          "F": 7
         },
-        "histogram_total": 3532,
+        "histogram_total": 3533,
         "immutable_grade_counts": {
-          "A": 1923,
-          "B": 1046,
-          "C": 401,
-          "D": 157,
-          "F": 5
+          "A": 1922,
+          "B": 1036,
+          "C": 402,
+          "D": 166,
+          "F": 7
         },
-        "inventory_dolt_commit": "8eu20bejkbje4ph44kr2c95heeek7ihb",
-        "inventory_run_id": 46,
+        "inventory_dolt_commit": "5jer5n04s9drg6deqfo5ji6cfhqnovsj",
+        "inventory_run_id": 47,
         "target_lag_runs": 0
       }
     },
@@ -2102,7 +2145,7 @@
       "source": [
         "freshie/reports/legacy-forge-proofs-demotion.json",
         "freshie/reports/run-delta-19.json",
-        "freshie/reports/run-delta-46.json",
+        "freshie/reports/run-delta-47.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py",
         "scripts/record-jrig-proofs.mjs"
@@ -2115,7 +2158,7 @@
           "E2": 0,
           "E3": 0
         },
-        "current_run_id": 46,
+        "current_run_id": 47,
         "invalid_identities": 0,
         "legacy_e0_records": 3,
         "retained_e2_e3": 0,
@@ -2140,7 +2183,7 @@
         "000-docs/807-DR-STND-evaluation-evidence.md",
         "freshie/reports/legacy-forge-proofs-demotion.json",
         "freshie/reports/run-delta-19.json",
-        "freshie/reports/run-delta-46.json",
+        "freshie/reports/run-delta-47.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py"
       ],
@@ -2245,7 +2288,7 @@
       "values": {
         "adoption_percent": 1.06,
         "curated_copies": 32,
-        "plugin_skill_rows": 3032,
+        "plugin_skill_rows": 3033,
         "source_eval_specs": 32,
         "tracked_eval_specs": 64
       }

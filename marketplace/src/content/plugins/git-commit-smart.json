@@ -1,7 +1,7 @@
 {
   "name": "git-commit-smart",
   "description": "AI-powered conventional commit message generator with smart analysis",
-  "version": "1.0.0",
+  "version": "1.28.0",
   "category": "devops",
   "keywords": [
     "git",

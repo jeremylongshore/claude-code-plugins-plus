@@ -1,7 +1,7 @@
 {
   "name": "graphql-server-builder",
   "description": "Build GraphQL servers with schema-first design, resolvers, and subscriptions",
-  "version": "1.0.0",
+  "version": "1.22.0",
   "category": "other",
   "keywords": [
     "graphql",

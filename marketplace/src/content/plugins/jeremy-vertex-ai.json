@@ -1,0 +1,27 @@
+{
+  "name": "jeremy-vertex-ai",
+  "description": "Build and deploy generative AI agents on Vertex AI: Gemini model selection, RAG with grounded retrieval, function calling, multimodal extraction, evaluation, and Agent Engine deployment with operational guardrails.",
+  "version": "2.2.0",
+  "category": "ai-ml-assistance",
+  "keywords": [
+    "vertex-ai",
+    "gemini",
+    "google-cloud",
+    "generative-ai",
+    "rag",
+    "agent-engine",
+    "function-calling",
+    "multimodal"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/jeremy-vertex-ai",
+  "license": "MIT",
+  "installation": "/plugin install jeremy-vertex-ai@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

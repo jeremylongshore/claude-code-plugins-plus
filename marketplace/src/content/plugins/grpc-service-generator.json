@@ -1,7 +1,7 @@
 {
   "name": "grpc-service-generator",
   "description": "Generate gRPC services with Protocol Buffers and streaming support",
-  "version": "1.0.0",
+  "version": "1.23.0",
   "category": "other",
   "keywords": [
     "grpc",

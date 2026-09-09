@@ -1,7 +1,7 @@
 {
   "name": "regression-test-tracker",
   "description": "Track and run regression tests to ensure new changes don't break existing functionality",
-  "version": "1.0.0",
+  "version": "1.26.0",
   "category": "testing",
   "keywords": [
     "testing",

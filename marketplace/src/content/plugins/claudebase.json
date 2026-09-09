@@ -1,0 +1,25 @@
+{
+  "name": "claudebase",
+  "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
+  "version": "0.2.0",
+  "category": "other",
+  "keywords": [
+    "github",
+    "sync",
+    "backup",
+    "config",
+    "profiles",
+    "settings"
+  ],
+  "author": {
+    "name": "Rohit Hazra",
+    "url": "https://github.com/rohithzr"
+  },
+  "featured": false,
+  "repository": "https://github.com/rohithzr/claudebase",
+  "license": "MIT",
+  "installation": "/plugin install claudebase@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

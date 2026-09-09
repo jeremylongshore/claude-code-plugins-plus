@@ -1,0 +1,29 @@
+{
+  "name": "engineer-design-diagram",
+  "description": "Generate production-grade engineering design diagrams (architecture, sequence, delta, drift) as self-contained dark-themed HTML files with accessible inline SVG. Grounds every diagram in real repo topology via DCI — package manifests, docker-compose, k8s, terraform, import graph. Four modes: generate, diff, trace, watch. Semantic OKLCH palette; Mermaid fallback for large graphs.",
+  "version": "0.5.0",
+  "category": "devops",
+  "keywords": [
+    "architecture",
+    "diagram",
+    "visualization",
+    "svg",
+    "html",
+    "pr-review",
+    "drift-detection",
+    "sequence-diagram",
+    "engineering-design",
+    "documentation",
+    "onboarding"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/devops/engineer-design-diagram",
+  "license": "MIT",
+  "installation": "/plugin install engineer-design-diagram@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

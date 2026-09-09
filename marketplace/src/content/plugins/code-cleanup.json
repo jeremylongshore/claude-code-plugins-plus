@@ -1,0 +1,30 @@
+{
+  "name": "code-cleanup",
+  "description": "Comprehensive codebase cleanup across 11 quality dimensions — dead code, duplication, weak types, circular deps, defensive cruft, legacy code, AI slop, type consolidation, security, performance, and async patterns. Confidence scoring and build verification gates.",
+  "version": "1.7.0",
+  "category": "testing",
+  "keywords": [
+    "code-quality",
+    "cleanup",
+    "refactoring",
+    "dead-code",
+    "deduplication",
+    "type-safety",
+    "security",
+    "performance",
+    "async",
+    "tech-debt",
+    "code-review"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/code-cleanup",
+  "license": "MIT",
+  "installation": "/plugin install code-cleanup@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

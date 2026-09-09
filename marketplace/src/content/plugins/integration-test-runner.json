@@ -1,7 +1,7 @@
 {
   "name": "integration-test-runner",
   "description": "Run and manage integration test suites with environment setup, database seeding, and cleanup",
-  "version": "1.0.0",
+  "version": "1.22.0",
   "category": "testing",
   "keywords": [
     "testing",

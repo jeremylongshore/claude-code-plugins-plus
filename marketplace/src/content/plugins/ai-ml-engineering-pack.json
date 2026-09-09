@@ -1,8 +1,8 @@
 {
   "name": "ai-ml-engineering-pack",
   "description": "Professional AI/ML Engineering toolkit: Prompt engineering, LLM integration, RAG systems, AI safety with 12 expert plugins",
-  "version": "1.0.0",
-  "category": "ai-ml-assistance",
+  "version": "1.30.0",
+  "category": "other",
   "keywords": [
     "ai",
     "ml",

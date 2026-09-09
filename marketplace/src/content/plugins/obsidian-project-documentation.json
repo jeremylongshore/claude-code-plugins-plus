@@ -1,0 +1,23 @@
+{
+  "name": "obsidian-project-documentation",
+  "description": "Automatically documents technical projects in Obsidian vaults during Claude Code sessions",
+  "version": "3.2.5",
+  "category": "other",
+  "keywords": [
+    "obsidian",
+    "documentation",
+    "notes",
+    "projects"
+  ],
+  "author": {
+    "name": "Alister Lewis-Bowen",
+    "url": "https://github.com/ali5ter"
+  },
+  "featured": false,
+  "repository": "https://github.com/ali5ter/obsidian-project-assistant",
+  "license": "MIT",
+  "installation": "/plugin install obsidian-project-documentation@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

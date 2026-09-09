@@ -1,0 +1,32 @@
+{
+  "name": "sprint",
+  "description": "Autonomous multi-agent development framework with spec-driven sprints. Write specs, run /sprint, and let coordinated agents (backend, frontend, QA, UI testing) handle implementation through self-iterating convergent loops.",
+  "version": "1.20.0",
+  "category": "other",
+  "keywords": [
+    "autonomous",
+    "agentic",
+    "yolo",
+    "self-iterating",
+    "multi-agent",
+    "hands-off",
+    "auto-pilot",
+    "orchestration",
+    "sprint",
+    "testing",
+    "qa",
+    "mcp"
+  ],
+  "author": {
+    "name": "Damien Laine",
+    "email": "damien.laine@gmail.com",
+    "url": "https://github.com/damienlaine"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/community/sprint",
+  "license": "MIT",
+  "installation": "/plugin install sprint@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

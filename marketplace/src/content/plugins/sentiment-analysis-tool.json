@@ -1,7 +1,7 @@
 {
   "name": "sentiment-analysis-tool",
   "description": "Sentiment analysis on text data",
-  "version": "1.0.0",
+  "version": "1.22.0",
   "category": "ai-ml-assistance",
   "keywords": [
     "sentiment",

@@ -3,8 +3,8 @@
   "authority": "Blueprint 727 §8; Freshie graded export",
   "source": {
     "path": "freshie/grades.csv",
-    "sha256": "0217da9d276ad664196c8e9d604bc44d6fee1c04e7681a3b710c4262aa661216",
-    "artifact_count": 3532
+    "sha256": "d792f829e80c6f51448bbe333c7b26731149a241a020dfadf99a69b52b9c1896",
+    "artifact_count": 3533
   },
   "rule_order": [
     "G0",
@@ -21,10 +21,10 @@
   "counts": {
     "AUTO-MIGRATE": 409,
     "CERTIFY": 0,
-    "CERTIFY-PENDING-EVIDENCE": 2776,
+    "CERTIFY-PENDING-EVIDENCE": 2766,
     "CERTIFY-UPSTREAM": 0,
-    "DEEP-REMEDIATE": 2,
-    "QUARANTINE": 345
+    "DEEP-REMEDIATE": 1,
+    "QUARANTINE": 357
   },
   "artifacts": [
     {
@@ -5690,13 +5690,22 @@
     },
     {
       "path": "plugins/ai-ml/local-tts/skills/local-tts/SKILL.md",
-      "grade": "B",
-      "score": 87,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
+      "grade": "D",
+      "score": 68,
+      "diagnostics": [
+        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
+        "[body] Required section missing: '## Instructions' (or an equivalent heading: ## Usage, ## How to use, ## How it works, ## Steps, ## Workflow, ## Guide, ## Getting started) (marketplace tier)",
+        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
+        "[body] Required section missing: '## Overview' (or an equivalent heading: ## Summary, ## About, ## Description, ## What it does, ## Introduction, ## Capabilities, ## Purpose) (marketplace tier)",
+        "[frontmatter] Missing required field: 'compatibility' (marketplace)",
+        "[frontmatter] Missing required field: 'tags' (marketplace)",
+        "[frontmatter] allowed-tools: unscoped 'Bash' is not allowed - use scoped Bash(git:*), Bash(npm:*), etc.",
+        "[tier2:tool-safety] Unscoped Bash + Write/WebFetch declared without a Safety Justification section — high-risk combo. Add `## Safety Justification` explaining why."
+      ],
+      "disposition": "QUARANTINE",
+      "gate": "G3",
       "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+        "MIRROR_NOT_CLEAN"
       ]
     },
     {
@@ -6205,57 +6214,141 @@
     },
     {
       "path": "plugins/business-tools/executive-assistant-skills/skills/action-items-todoist/SKILL.md",
-      "grade": "B",
-      "score": 81,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
+      "grade": "D",
+      "score": 67,
+      "diagnostics": [
+        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
+        "[body] Required section missing: '## Overview' (or an equivalent heading: ## Summary, ## About, ## Description, ## What it does, ## Introduction, ## Capabilities, ## Purpose) (marketplace tier)",
+        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)",
+        "[body] Required section missing: '## Resources' (or an equivalent heading: ## References, ## See also, ## Links, ## Further reading, ## Related, ## Additional resources) (marketplace tier)",
+        "[frontmatter] Missing required field: 'allowed-tools' (marketplace)",
+        "[frontmatter] Missing required field: 'author' (marketplace)",
+        "[frontmatter] Missing required field: 'compatibility' (marketplace)",
+        "[frontmatter] Missing required field: 'license' (marketplace)",
+        "[frontmatter] Missing required field: 'tags' (marketplace)",
+        "[frontmatter] Missing required field: 'version' (marketplace)"
+      ],
+      "disposition": "QUARANTINE",
+      "gate": "G3",
       "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+        "MIRROR_NOT_CLEAN"
       ]
     },
     {
       "path": "plugins/business-tools/executive-assistant-skills/skills/email-drafting/SKILL.md",
-      "grade": "B",
-      "score": 82,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
+      "grade": "D",
+      "score": 67,
+      "diagnostics": [
+        "[body] Required section missing: '## Error Handling' (or an equivalent heading: ## Errors, ## Troubleshooting, ## Failure modes, ## Edge cases, ## Limitations) (marketplace tier)",
+        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
+        "[body] Required section missing: '## Instructions' (or an equivalent heading: ## Usage, ## How to use, ## How it works, ## Steps, ## Workflow, ## Guide, ## Getting started) (marketplace tier)",
+        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
+        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)",
+        "[body] Required section missing: '## Resources' (or an equivalent heading: ## References, ## See also, ## Links, ## Further reading, ## Related, ## Additional resources) (marketplace tier)",
+        "[frontmatter] Missing required field: 'allowed-tools' (marketplace)",
+        "[frontmatter] Missing required field: 'author' (marketplace)",
+        "[frontmatter] Missing required field: 'compatibility' (marketplace)",
+        "[frontmatter] Missing required field: 'license' (marketplace)",
+        "[frontmatter] Missing required field: 'tags' (marketplace)",
+        "[frontmatter] Missing required field: 'version' (marketplace)"
+      ],
+      "disposition": "QUARANTINE",
+      "gate": "G3",
       "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+        "MIRROR_NOT_CLEAN"
       ]
     },
     {
       "path": "plugins/business-tools/executive-assistant-skills/skills/executive-digest/SKILL.md",
-      "grade": "B",
-      "score": 81,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
+      "grade": "F",
+      "score": 59,
+      "diagnostics": [
+        "[body] Required section missing: '## Error Handling' (or an equivalent heading: ## Errors, ## Troubleshooting, ## Failure modes, ## Edge cases, ## Limitations) (marketplace tier)",
+        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
+        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
+        "[body] Required section missing: '## Overview' (or an equivalent heading: ## Summary, ## About, ## Description, ## What it does, ## Introduction, ## Capabilities, ## Purpose) (marketplace tier)",
+        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)",
+        "[body] Required section missing: '## Resources' (or an equivalent heading: ## References, ## See also, ## Links, ## Further reading, ## Related, ## Additional resources) (marketplace tier)",
+        "[frontmatter] Missing required field: 'allowed-tools' (marketplace)",
+        "[frontmatter] Missing required field: 'author' (marketplace)",
+        "[frontmatter] Missing required field: 'compatibility' (marketplace)",
+        "[frontmatter] Missing required field: 'license' (marketplace)",
+        "[frontmatter] Missing required field: 'tags' (marketplace)",
+        "[frontmatter] Missing required field: 'version' (marketplace)"
+      ],
+      "disposition": "QUARANTINE",
+      "gate": "G3",
       "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+        "MIRROR_NOT_CLEAN"
+      ]
+    },
+    {
+      "path": "plugins/business-tools/executive-assistant-skills/skills/humanizer/SKILL.md",
+      "grade": "F",
+      "score": 59,
+      "diagnostics": [
+        "[body] Required section missing: '## Error Handling' (or an equivalent heading: ## Errors, ## Troubleshooting, ## Failure modes, ## Edge cases, ## Limitations) (marketplace tier)",
+        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
+        "[body] Required section missing: '## Instructions' (or an equivalent heading: ## Usage, ## How to use, ## How it works, ## Steps, ## Workflow, ## Guide, ## Getting started) (marketplace tier)",
+        "[body] Required section missing: '## Overview' (or an equivalent heading: ## Summary, ## About, ## Description, ## What it does, ## Introduction, ## Capabilities, ## Purpose) (marketplace tier)",
+        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)",
+        "[body] Required section missing: '## Resources' (or an equivalent heading: ## References, ## See also, ## Links, ## Further reading, ## Related, ## Additional resources) (marketplace tier)",
+        "[frontmatter] Missing required field: 'author' (marketplace)",
+        "[frontmatter] Missing required field: 'compatibility' (marketplace)",
+        "[frontmatter] Missing required field: 'license' (marketplace)",
+        "[frontmatter] Missing required field: 'tags' (marketplace)"
+      ],
+      "disposition": "QUARANTINE",
+      "gate": "G3",
+      "reason_codes": [
+        "MIRROR_NOT_CLEAN"
       ]
     },
     {
       "path": "plugins/business-tools/executive-assistant-skills/skills/meeting-prep/SKILL.md",
-      "grade": "B",
-      "score": 81,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
+      "grade": "D",
+      "score": 66,
+      "diagnostics": [
+        "[body] Line 11: contains absolute/OS-specific path (/home/...) - use '${CLAUDE_SKILL_DIR}/...'",
+        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
+        "[body] Required section missing: '## Instructions' (or an equivalent heading: ## Usage, ## How to use, ## How it works, ## Steps, ## Workflow, ## Guide, ## Getting started) (marketplace tier)",
+        "[body] Required section missing: '## Overview' (or an equivalent heading: ## Summary, ## About, ## Description, ## What it does, ## Introduction, ## Capabilities, ## Purpose) (marketplace tier)",
+        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)",
+        "[body] Required section missing: '## Resources' (or an equivalent heading: ## References, ## See also, ## Links, ## Further reading, ## Related, ## Additional resources) (marketplace tier)",
+        "[frontmatter] Missing required field: 'allowed-tools' (marketplace)",
+        "[frontmatter] Missing required field: 'author' (marketplace)",
+        "[frontmatter] Missing required field: 'compatibility' (marketplace)",
+        "[frontmatter] Missing required field: 'license' (marketplace)",
+        "[frontmatter] Missing required field: 'tags' (marketplace)",
+        "[frontmatter] Missing required field: 'version' (marketplace)"
+      ],
+      "disposition": "QUARANTINE",
+      "gate": "G2",
       "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+        "[body] Line 11: contains absolute/OS-specific path (/home/...) - use '${CLAUDE_SKILL_DIR}/...'"
       ]
     },
     {
       "path": "plugins/business-tools/executive-assistant-skills/skills/todoist-due-drafts/SKILL.md",
-      "grade": "B",
-      "score": 86,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
+      "grade": "D",
+      "score": 66,
+      "diagnostics": [
+        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
+        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
+        "[body] Required section missing: '## Overview' (or an equivalent heading: ## Summary, ## About, ## Description, ## What it does, ## Introduction, ## Capabilities, ## Purpose) (marketplace tier)",
+        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)",
+        "[body] Required section missing: '## Resources' (or an equivalent heading: ## References, ## See also, ## Links, ## Further reading, ## Related, ## Additional resources) (marketplace tier)",
+        "[frontmatter] Missing required field: 'allowed-tools' (marketplace)",
+        "[frontmatter] Missing required field: 'author' (marketplace)",
+        "[frontmatter] Missing required field: 'compatibility' (marketplace)",
+        "[frontmatter] Missing required field: 'license' (marketplace)",
+        "[frontmatter] Missing required field: 'tags' (marketplace)",
+        "[frontmatter] Missing required field: 'version' (marketplace)"
+      ],
+      "disposition": "QUARANTINE",
+      "gate": "G3",
       "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+        "MIRROR_NOT_CLEAN"
       ]
     },
     {
@@ -6392,24 +6485,45 @@
     },
     {
       "path": "plugins/business-tools/promptbook/skills/doctor/SKILL.md",
-      "grade": "A",
-      "score": 90,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
+      "grade": "D",
+      "score": 67,
+      "diagnostics": [
+        "[body] Required section missing: '## Error Handling' (or an equivalent heading: ## Errors, ## Troubleshooting, ## Failure modes, ## Edge cases, ## Limitations) (marketplace tier)",
+        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
+        "[body] Required section missing: '## Instructions' (or an equivalent heading: ## Usage, ## How to use, ## How it works, ## Steps, ## Workflow, ## Guide, ## Getting started) (marketplace tier)",
+        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
+        "[body] Required section missing: '## Overview' (or an equivalent heading: ## Summary, ## About, ## Description, ## What it does, ## Introduction, ## Capabilities, ## Purpose) (marketplace tier)",
+        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)",
+        "[body] Required section missing: '## Resources' (or an equivalent heading: ## References, ## See also, ## Links, ## Further reading, ## Related, ## Additional resources) (marketplace tier)",
+        "[frontmatter] Missing required field: 'compatibility' (marketplace)",
+        "[frontmatter] Missing required field: 'tags' (marketplace)",
+        "[frontmatter] allowed-tools: unscoped 'Bash' is not allowed - use scoped Bash(git:*), Bash(npm:*), etc."
+      ],
+      "disposition": "QUARANTINE",
+      "gate": "G0",
       "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+        "plugins/business-tools/promptbook/scripts/submit.js:pipe-to-shell"
       ]
     },
     {
       "path": "plugins/business-tools/promptbook/skills/setup/SKILL.md",
-      "grade": "B",
-      "score": 82,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
+      "grade": "D",
+      "score": 68,
+      "diagnostics": [
+        "[body] Required section missing: '## Error Handling' (or an equivalent heading: ## Errors, ## Troubleshooting, ## Failure modes, ## Edge cases, ## Limitations) (marketplace tier)",
+        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
+        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
+        "[body] Required section missing: '## Overview' (or an equivalent heading: ## Summary, ## About, ## Description, ## What it does, ## Introduction, ## Capabilities, ## Purpose) (marketplace tier)",
+        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)",
+        "[body] Required section missing: '## Resources' (or an equivalent heading: ## References, ## See also, ## Links, ## Further reading, ## Related, ## Additional resources) (marketplace tier)",
+        "[frontmatter] Missing required field: 'compatibility' (marketplace)",
+        "[frontmatter] Missing required field: 'tags' (marketplace)",
+        "[frontmatter] allowed-tools: unscoped 'Bash' is not allowed - use scoped Bash(git:*), Bash(npm:*), etc."
+      ],
+      "disposition": "QUARANTINE",
+      "gate": "G0",
       "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+        "plugins/business-tools/promptbook/scripts/submit.js:pipe-to-shell"
       ]
     },
     {
@@ -6425,13 +6539,23 @@
     },
     {
       "path": "plugins/community/boycott-filter/skills/boycott-filter/SKILL.md",
-      "grade": "B",
-      "score": 86,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
+      "grade": "C",
+      "score": 74,
+      "diagnostics": [
+        "[body] Required section missing: '## Error Handling' (or an equivalent heading: ## Errors, ## Troubleshooting, ## Failure modes, ## Edge cases, ## Limitations) (marketplace tier)",
+        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
+        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
+        "[body] Required section missing: '## Overview' (or an equivalent heading: ## Summary, ## About, ## Description, ## What it does, ## Introduction, ## Capabilities, ## Purpose) (marketplace tier)",
+        "[body] Required section missing: '## Resources' (or an equivalent heading: ## References, ## See also, ## Links, ## Further reading, ## Related, ## Additional resources) (marketplace tier)",
+        "[frontmatter] Missing required field: 'compatibility' (marketplace)",
+        "[frontmatter] Missing required field: 'tags' (marketplace)",
+        "[frontmatter] allowed-tools: unscoped 'Bash' is not allowed - use scoped Bash(git:*), Bash(npm:*), etc.",
+        "[tier2:tool-safety] Unscoped Bash + Write/WebFetch declared without a Safety Justification section — high-risk combo. Add `## Safety Justification` explaining why."
+      ],
+      "disposition": "QUARANTINE",
+      "gate": "G3",
       "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+        "MIRROR_NOT_CLEAN"
       ]
     },
     {
@@ -6447,15 +6571,27 @@
     },
     {
       "path": "plugins/community/claude-reflect/SKILL.md",
-      "grade": "B",
-      "score": 88,
+      "grade": "D",
+      "score": 61,
       "diagnostics": [
-        "[frontmatter] 'name' contains reserved word: claude-reflect"
+        "[body] Required section missing: '## Error Handling' (or an equivalent heading: ## Errors, ## Troubleshooting, ## Failure modes, ## Edge cases, ## Limitations) (marketplace tier)",
+        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
+        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
+        "[body] Required section missing: '## Overview' (or an equivalent heading: ## Summary, ## About, ## Description, ## What it does, ## Introduction, ## Capabilities, ## Purpose) (marketplace tier)",
+        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)",
+        "[body] Required section missing: '## Resources' (or an equivalent heading: ## References, ## See also, ## Links, ## Further reading, ## Related, ## Additional resources) (marketplace tier)",
+        "[frontmatter] 'name' contains reserved word: claude-reflect",
+        "[frontmatter] Missing required field: 'allowed-tools' (marketplace)",
+        "[frontmatter] Missing required field: 'author' (marketplace)",
+        "[frontmatter] Missing required field: 'compatibility' (marketplace)",
+        "[frontmatter] Missing required field: 'license' (marketplace)",
+        "[frontmatter] Missing required field: 'tags' (marketplace)",
+        "[frontmatter] Missing required field: 'version' (marketplace)"
       ],
-      "disposition": "DEEP-REMEDIATE",
-      "gate": "G4",
+      "disposition": "QUARANTINE",
+      "gate": "G3",
       "reason_codes": [
-        "NON_STRUCTURAL_VALIDATION_FAILURE"
+        "MIRROR_NOT_CLEAN"
       ]
     },
     {
@@ -9209,13 +9345,28 @@
     },
     {
       "path": "plugins/productivity/hyperfocus/skills/hyperfocus/SKILL.md",
-      "grade": "B",
-      "score": 87,
-      "diagnostics": [],
-      "disposition": "CERTIFY-PENDING-EVIDENCE",
-      "gate": "G7",
+      "grade": "D",
+      "score": 67,
+      "diagnostics": [
+        "[body] Required section missing: '# ' (marketplace tier)",
+        "[body] Required section missing: '## Error Handling' (or an equivalent heading: ## Errors, ## Troubleshooting, ## Failure modes, ## Edge cases, ## Limitations) (marketplace tier)",
+        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
+        "[body] Required section missing: '## Instructions' (or an equivalent heading: ## Usage, ## How to use, ## How it works, ## Steps, ## Workflow, ## Guide, ## Getting started) (marketplace tier)",
+        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
+        "[body] Required section missing: '## Overview' (or an equivalent heading: ## Summary, ## About, ## Description, ## What it does, ## Introduction, ## Capabilities, ## Purpose) (marketplace tier)",
+        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)",
+        "[body] Required section missing: '## Resources' (or an equivalent heading: ## References, ## See also, ## Links, ## Further reading, ## Related, ## Additional resources) (marketplace tier)",
+        "[frontmatter] Missing required field: 'allowed-tools' (marketplace)",
+        "[frontmatter] Missing required field: 'author' (marketplace)",
+        "[frontmatter] Missing required field: 'compatibility' (marketplace)",
+        "[frontmatter] Missing required field: 'license' (marketplace)",
+        "[frontmatter] Missing required field: 'tags' (marketplace)",
+        "[frontmatter] Missing required field: 'version' (marketplace)"
+      ],
+      "disposition": "QUARANTINE",
+      "gate": "G3",
       "reason_codes": [
-        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+        "MIRROR_NOT_CLEAN"
       ]
     },
     {

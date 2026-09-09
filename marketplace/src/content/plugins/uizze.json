@@ -1,0 +1,25 @@
+{
+  "name": "uizze",
+  "description": "STOP UI SLOP. Ground Claude Code in 800,000+ real web and iOS screens, a product-specific design contract, required states, and a hard finish gate.",
+  "version": "1.2.11",
+  "category": "other",
+  "keywords": [
+    "ui",
+    "design",
+    "frontend",
+    "anti-slop",
+    "agent-skill"
+  ],
+  "author": {
+    "name": "UIZZE",
+    "email": "business@uizze.com",
+    "url": "https://uizze.com"
+  },
+  "featured": false,
+  "repository": "https://github.com/uizze/uizze",
+  "license": "MIT",
+  "installation": "/plugin install uizze@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

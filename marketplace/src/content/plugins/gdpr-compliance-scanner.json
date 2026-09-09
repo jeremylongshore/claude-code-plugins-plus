@@ -1,7 +1,7 @@
 {
   "name": "gdpr-compliance-scanner",
   "description": "Scan for GDPR compliance issues",
-  "version": "1.0.0",
+  "version": "1.27.0",
   "category": "security",
   "keywords": [
     "security",

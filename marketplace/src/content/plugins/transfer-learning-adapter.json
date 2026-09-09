@@ -1,7 +1,7 @@
 {
   "name": "transfer-learning-adapter",
   "description": "Transfer learning adaptation",
-  "version": "1.0.0",
+  "version": "1.22.0",
   "category": "ai-ml-assistance",
   "keywords": [
     "transfer-learning",

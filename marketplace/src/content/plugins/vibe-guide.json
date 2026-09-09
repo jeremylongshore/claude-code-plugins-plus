@@ -1,0 +1,27 @@
+{
+  "name": "vibe-guide",
+  "description": "Non-technical progress summaries for Claude Code work (hides diffs/log noise).",
+  "version": "1.16.0",
+  "category": "other",
+  "keywords": [
+    "ux",
+    "accessibility",
+    "explain",
+    "pairing",
+    "non-technical",
+    "beginner-friendly",
+    "explanations",
+    "noise-filtering"
+  ],
+  "author": {
+    "name": "Intent Solutions",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/productivity/vibe-guide",
+  "license": "MIT",
+  "installation": "/plugin install vibe-guide@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

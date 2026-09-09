@@ -1,0 +1,24 @@
+{
+  "name": "x-bug-triage-plugin",
+  "description": "Closed-loop bug triage: X complaints → clusters → repo evidence → owner routing → Slack review → filed issues",
+  "version": "0.3.0",
+  "category": "other",
+  "keywords": [
+    "bug-triage",
+    "x-twitter",
+    "slack",
+    "devops",
+    "mcp"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/x-bug-triage-plugin",
+  "license": "MIT",
+  "installation": "/plugin install x-bug-triage-plugin@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

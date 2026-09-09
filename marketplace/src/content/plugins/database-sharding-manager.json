@@ -1,7 +1,7 @@
 {
   "name": "database-sharding-manager",
   "description": "Database plugin for database-sharding-manager",
-  "version": "1.0.0",
+  "version": "1.27.0",
   "category": "other",
   "keywords": [
     "database",

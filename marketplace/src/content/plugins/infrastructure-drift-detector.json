@@ -1,7 +1,7 @@
 {
   "name": "infrastructure-drift-detector",
   "description": "Detect infrastructure drift from desired state",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "category": "devops",
   "keywords": [
     "drift",

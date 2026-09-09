@@ -1,7 +1,7 @@
 {
   "name": "anomaly-detection-system",
   "description": "Detect anomalies and outliers in data",
-  "version": "1.0.0",
+  "version": "1.26.0",
   "category": "ai-ml-assistance",
   "keywords": [
     "anomaly",

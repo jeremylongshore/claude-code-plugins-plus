@@ -1,0 +1,25 @@
+{
+  "name": "cli-ux-tester",
+  "description": "Expert UX evaluator for CLIs and developer APIs, rates usability across 11 criteria with parallel evaluation agents",
+  "version": "3.1.0",
+  "category": "testing",
+  "keywords": [
+    "CLI",
+    "UX",
+    "testing",
+    "developer-experience",
+    "terminal",
+    "usability"
+  ],
+  "author": {
+    "name": "Alister Lewis-Bowen",
+    "url": "https://github.com/ali5ter"
+  },
+  "featured": false,
+  "repository": "https://github.com/ali5ter/claude-cli-ux-skill",
+  "license": "MIT",
+  "installation": "/plugin install cli-ux-tester@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

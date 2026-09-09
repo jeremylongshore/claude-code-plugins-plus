@@ -1,0 +1,24 @@
+{
+  "name": "jeremy-vertex-terraform",
+  "description": "Terraform configurations for Vertex AI platform and Agent Engine",
+  "version": "2.22.0",
+  "category": "devops",
+  "keywords": [
+    "terraform",
+    "vertex-ai",
+    "gemini",
+    "model-garden",
+    "infrastructure"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/devops/jeremy-vertex-terraform",
+  "license": "MIT",
+  "installation": "/plugin install jeremy-vertex-terraform@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

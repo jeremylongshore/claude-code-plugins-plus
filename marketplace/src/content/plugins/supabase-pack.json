@@ -1,0 +1,32 @@
+{
+  "name": "supabase-pack",
+  "description": "Complete Supabase integration skill pack with 30 skills covering authentication, database, storage, realtime, edge functions, and production operations. Flagship+ tier vendor pack.",
+  "version": "1.54.0",
+  "category": "other",
+  "keywords": [
+    "supabase",
+    "postgres",
+    "database",
+    "authentication",
+    "realtime",
+    "storage",
+    "edge-functions",
+    "rls",
+    "row-level-security",
+    "baas",
+    "backend-as-a-service",
+    "firebase-alternative"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/saas-packs/supabase-pack",
+  "license": "MIT",
+  "installation": "/plugin install supabase-pack@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

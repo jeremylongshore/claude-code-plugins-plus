@@ -1,7 +1,7 @@
 {
   "name": "ssl-certificate-manager",
   "description": "Manage and monitor SSL/TLS certificates",
-  "version": "1.0.0",
+  "version": "1.21.0",
   "category": "security",
   "keywords": [
     "security",

@@ -1,7 +1,7 @@
 {
   "name": "ai-ethics-validator",
   "description": "AI ethics and fairness validation",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "category": "ai-ml-assistance",
   "keywords": [
     "ethics",

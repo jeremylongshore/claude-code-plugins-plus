@@ -1,7 +1,7 @@
 {
   "name": "load-balancer-configurator",
   "description": "Configure load balancers (ALB, NLB, Nginx, HAProxy)",
-  "version": "1.0.0",
+  "version": "1.28.0",
   "category": "devops",
   "keywords": [
     "load-balancer",

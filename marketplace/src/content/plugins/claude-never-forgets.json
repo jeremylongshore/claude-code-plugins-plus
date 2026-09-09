@@ -1,0 +1,25 @@
+{
+  "name": "claude-never-forgets",
+  "description": "Persistent memory plugin for Claude Code - remembers preferences, decisions, and corrections across sessions and context limits",
+  "version": "1.21.0",
+  "category": "other",
+  "keywords": [
+    "memory",
+    "context",
+    "persistent",
+    "preferences",
+    "sessions",
+    "recall"
+  ],
+  "author": {
+    "name": "yldrmahmet",
+    "url": "https://github.com/yldrmahmet"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/community/claude-never-forgets",
+  "license": "MIT",
+  "installation": "/plugin install claude-never-forgets@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

@@ -1,7 +1,7 @@
 {
   "name": "domain-memory-agent",
   "description": "Knowledge base with TF-IDF semantic search and extractive summarization - no ML dependencies required",
-  "version": "1.0.0",
+  "version": "1.17.0",
   "category": "other",
   "keywords": [
     "mcp",

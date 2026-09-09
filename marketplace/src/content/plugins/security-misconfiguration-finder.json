@@ -1,7 +1,7 @@
 {
   "name": "security-misconfiguration-finder",
   "description": "Find security misconfigurations",
-  "version": "1.0.0",
+  "version": "1.29.0",
   "category": "security",
   "keywords": [
     "security",

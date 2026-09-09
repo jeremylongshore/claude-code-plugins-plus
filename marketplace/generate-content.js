@@ -7,6 +7,9 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import publicationPolicy from '../scripts/publication-policy.cjs';
+
+const { publishedPlugins } = publicationPolicy;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,7 +38,7 @@ existingFiles.forEach(file => {
 
 // Generate plugin files
 let pluginCount = 0;
-marketplaceData.plugins.forEach(plugin => {
+publishedPlugins(marketplaceData.plugins, 'marketplace content catalog').forEach(plugin => {
   // Normalize category names
   let category = plugin.category || 'other';
 

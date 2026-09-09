@@ -29,7 +29,6 @@ plugins/ai-ml/jeremy-vertex-validator/README.md:pipe-to-shell  documented offici
 plugins/devops/jeremy-adk-terraform/README.md:pipe-to-shell  documented official Google Cloud SDK installer (https://sdk.cloud.google.com) as the gcloud setup step
 plugins/devops/jeremy-vertex-terraform/README.md:pipe-to-shell  documented official Google Cloud SDK installer (https://sdk.cloud.google.com) as the gcloud setup step
 plugins/business-tools/promptbook/README.md:pipe-to-shell  upstream's own documented setup script (promptbook.gg/setup.sh) in the mirrored README
-plugins/business-tools/promptbook/scripts/submit.js:pipe-to-shell  reviewed 2026-09-09: upstream code only renders the setup command as terminal text when an update is available; it never executes the fetched command
 plugins/community/mnemos/README.md:pipe-to-shell  upstream's own install.sh (raw.githubusercontent.com/polyxmedia/mnemos) documented as the install step
 plugins/community/portaljs/README.md:pipe-to-shell  upstream's own install script (raw.githubusercontent.com/datopian/portaljs) documented as the install step
 plugins/ai-ml/ollama-local-ai/**:pipe-to-shell  official Ollama installer is the documented setup path for this skill

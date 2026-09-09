@@ -1,0 +1,25 @@
+{
+  "name": "jeremy-vertex-engine",
+  "description": "Vertex AI Agent Engine deployment inspector and runtime validator",
+  "version": "2.31.0",
+  "category": "ai-ml-assistance",
+  "keywords": [
+    "vertex-ai",
+    "agent-engine",
+    "runtime-inspector",
+    "agent-monitoring",
+    "compliance",
+    "production-validation"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/jeremy-vertex-engine",
+  "license": "MIT",
+  "installation": "/plugin install jeremy-vertex-engine@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

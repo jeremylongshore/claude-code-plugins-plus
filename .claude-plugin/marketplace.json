@@ -3571,29 +3571,6 @@
       }
     },
     {
-      "name": "promptbook",
-      "source": "./plugins/business-tools/promptbook",
-      "description": "Opt-in session analytics for Claude Code. After setup consent, tracks prompts, tokens, build time, and lines changed per session. Publishes shareable build cards on promptbook.gg. Strict consent gating — no data transmitted without explicit opt-in. Background submission after session end.",
-      "version": "1.4.0",
-      "category": "business-tools",
-      "keywords": [
-        "analytics",
-        "telemetry",
-        "builds",
-        "portfolio",
-        "tracking",
-        "metrics",
-        "sessions"
-      ],
-      "author": {
-        "name": "Promptbook",
-        "email": "contact@promptbook.gg"
-      },
-      "homepage": "https://promptbook.gg",
-      "repository": "https://github.com/promptbookgg/claude-code-plugin",
-      "license": "MIT"
-    },
-    {
       "name": "query-performance-analyzer",
       "source": "./plugins/database/query-performance-analyzer",
       "description": "Analyze query performance with EXPLAIN plan interpretation, bottleneck identification, and optimization recommendations",

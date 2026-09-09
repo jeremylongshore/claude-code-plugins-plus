@@ -1,7 +1,7 @@
 {
   "name": "deployment-rollback-manager",
   "description": "Manage and execute deployment rollbacks with safety checks",
-  "version": "1.0.0",
+  "version": "1.28.0",
   "category": "devops",
   "keywords": [
     "rollback",

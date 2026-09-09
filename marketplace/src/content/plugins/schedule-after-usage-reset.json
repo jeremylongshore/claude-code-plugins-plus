@@ -1,0 +1,24 @@
+{
+  "name": "schedule-after-usage-reset",
+  "description": "Find the real Claude usage-limit reset time from the Anthropic usage API and schedule a deferred task to run right after the limit lifts (macOS)",
+  "version": "1.0.0",
+  "category": "other",
+  "keywords": [
+    "schedule",
+    "usage-reset",
+    "rate-limit",
+    "claude-code",
+    "automation"
+  ],
+  "author": {
+    "name": "patricksong1993",
+    "url": "https://github.com/patricksong1993"
+  },
+  "featured": false,
+  "repository": "https://github.com/patricksong1993/schedule-after-usage-reset",
+  "license": "MIT",
+  "installation": "/plugin install schedule-after-usage-reset@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

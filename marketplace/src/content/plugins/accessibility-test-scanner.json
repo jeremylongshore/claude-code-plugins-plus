@@ -1,7 +1,7 @@
 {
   "name": "accessibility-test-scanner",
   "description": "A11y compliance testing with WCAG 2.1/2.2 validation, screen reader compatibility, and automated accessibility audits",
-  "version": "1.0.0",
+  "version": "1.23.0",
   "category": "testing",
   "keywords": [
     "testing",

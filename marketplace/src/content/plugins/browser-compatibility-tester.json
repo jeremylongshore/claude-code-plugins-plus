@@ -1,7 +1,7 @@
 {
   "name": "browser-compatibility-tester",
   "description": "Cross-browser testing with BrowserStack, Selenium Grid, and Playwright - test across Chrome, Firefox, Safari, Edge",
-  "version": "1.0.0",
+  "version": "2.20.0",
   "category": "testing",
   "keywords": [
     "testing",

@@ -1,0 +1,29 @@
+{
+  "name": "kobiton-automate",
+  "description": "Real mobile devices on demand via Kobiton's remote MCP — no emulators, no flaky CI. 12 tools across Devices, Sessions, and Apps surfaces, plus specialist agents for device picking, Appium capability reconciliation, and session triage.",
+  "version": "1.0.2",
+  "category": "testing",
+  "keywords": [
+    "mobile",
+    "testing",
+    "appium",
+    "automation",
+    "devices",
+    "ios",
+    "android",
+    "real-device",
+    "mcp",
+    "kobiton"
+  ],
+  "author": {
+    "name": "Kobiton Inc.",
+    "url": "https://github.com/kobiton"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/kobiton-automate",
+  "license": "MIT",
+  "installation": "/plugin install kobiton-automate@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

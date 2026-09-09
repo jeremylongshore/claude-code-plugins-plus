@@ -1,0 +1,18 @@
+{
+  "name": "quit-sponsor",
+  "description": "Turns an AI agent with persistent memory into a quit-smoking sponsor — evidence-based cessation protocols (44 cited sources) plus a sponsor decision tree",
+  "version": "0.1.0",
+  "category": "other",
+  "keywords": [],
+  "author": {
+    "name": "metr0x",
+    "url": "https://github.com/metrox-eth"
+  },
+  "featured": false,
+  "repository": "https://github.com/metrox-eth/quit-sponsor",
+  "license": "MIT",
+  "installation": "/plugin install quit-sponsor@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

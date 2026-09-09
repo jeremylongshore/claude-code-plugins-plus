@@ -1,7 +1,7 @@
 {
   "name": "experiment-tracking-setup",
   "description": "Set up ML experiment tracking",
-  "version": "1.0.0",
+  "version": "1.19.0",
   "category": "ai-ml-assistance",
   "keywords": [
     "experiments",

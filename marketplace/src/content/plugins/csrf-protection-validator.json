@@ -1,7 +1,7 @@
 {
   "name": "csrf-protection-validator",
   "description": "Validate CSRF protection",
-  "version": "1.0.0",
+  "version": "1.26.0",
   "category": "security",
   "keywords": [
     "security",

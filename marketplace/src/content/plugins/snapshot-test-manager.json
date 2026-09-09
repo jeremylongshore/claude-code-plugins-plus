@@ -1,7 +1,7 @@
 {
   "name": "snapshot-test-manager",
   "description": "Manage and update snapshot tests with intelligent diff analysis and selective updates",
-  "version": "1.0.0",
+  "version": "1.21.0",
   "category": "testing",
   "keywords": [
     "testing",

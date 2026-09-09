@@ -1,7 +1,7 @@
 {
   "name": "security-test-scanner",
   "description": "Automated security vulnerability testing covering OWASP Top 10, SQL injection, XSS, CSRF, and authentication issues",
-  "version": "1.0.0",
+  "version": "1.29.0",
   "category": "testing",
   "keywords": [
     "testing",

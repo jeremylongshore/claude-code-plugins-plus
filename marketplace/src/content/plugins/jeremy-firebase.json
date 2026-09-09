@@ -1,0 +1,33 @@
+{
+  "name": "jeremy-firebase",
+  "description": "Firebase platform expert for Firestore, Auth, Functions, and Vertex AI integration",
+  "version": "2.23.0",
+  "category": "other",
+  "keywords": [
+    "firebase",
+    "vertex-ai",
+    "gemini",
+    "authentication",
+    "storage",
+    "hosting",
+    "cloud-functions",
+    "analytics",
+    "ai-integration",
+    "google-cloud",
+    "embeddings",
+    "model-deployment",
+    "ai-powered",
+    "production-ready"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/community/jeremy-firebase",
+  "license": "MIT",
+  "installation": "/plugin install jeremy-firebase@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

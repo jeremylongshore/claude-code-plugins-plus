@@ -1,0 +1,43 @@
+{
+  "name": "tonone",
+  "description": "23-agent engineering + product team with 125 skills for Claude Code",
+  "version": "1.8.0",
+  "category": "business-tools",
+  "keywords": [
+    "agents",
+    "engineering-team",
+    "infrastructure",
+    "devops",
+    "backend",
+    "security",
+    "observability",
+    "frontend",
+    "ml",
+    "mobile",
+    "embedded",
+    "analytics",
+    "testing",
+    "platform",
+    "sales",
+    "revenue",
+    "customer-success",
+    "content-marketing",
+    "pr",
+    "community",
+    "finance",
+    "people",
+    "operations",
+    "support"
+  ],
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "featured": false,
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "installation": "/plugin install tonone@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

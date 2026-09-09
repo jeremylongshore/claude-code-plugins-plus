@@ -1,0 +1,24 @@
+{
+  "name": "portaljs",
+  "description": "Agent skills that build data portals — scaffold a portal, add datasets, charts and maps, connect CKAN, and generate DCAT/Croissant metadata",
+  "version": "0.1.0",
+  "category": "other",
+  "keywords": [
+    "portaljs",
+    "data-portal",
+    "ckan",
+    "nextjs",
+    "data-catalog"
+  ],
+  "author": {
+    "name": "Datopian",
+    "url": "https://www.datopian.com"
+  },
+  "featured": false,
+  "repository": "https://github.com/datopian/portaljs",
+  "license": "MIT",
+  "installation": "/plugin install portaljs@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

@@ -1,7 +1,7 @@
 {
   "name": "log-aggregation-setup",
   "description": "Set up log aggregation (ELK, Loki, Splunk)",
-  "version": "1.0.0",
+  "version": "1.26.0",
   "category": "devops",
   "keywords": [
     "logging",

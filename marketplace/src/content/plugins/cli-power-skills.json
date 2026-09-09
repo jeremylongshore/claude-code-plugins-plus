@@ -1,0 +1,26 @@
+{
+  "name": "cli-power-skills",
+  "description": "Agentic CLI tool skills — 7 domain-grouped skills covering 26 CLI tools",
+  "version": "1.0.0",
+  "category": "other",
+  "keywords": [
+    "cli-tools",
+    "agentic-skills",
+    "data-processing",
+    "security",
+    "web-crawling",
+    "python",
+    "ci-cd"
+  ],
+  "author": {
+    "name": "Yuriy Kotik",
+    "url": "https://github.com/ykotik"
+  },
+  "featured": false,
+  "repository": "https://github.com/ykotik/cli-power-skills",
+  "license": "MIT",
+  "installation": "/plugin install cli-power-skills@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

@@ -1,0 +1,27 @@
+{
+  "name": "databricks-workspace-mcp",
+  "description": "MCP server for the Databricks control plane — 8 read-only tools for cluster forensics, instance pools, DLT pipeline event logs, and Unity Catalog external locations / storage credentials. The endpoint families no managed Databricks MCP exposes; pairs with the managed SQL MCP for system.* reads.",
+  "version": "0.1.0",
+  "category": "other",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "databricks",
+    "lakehouse",
+    "unity-catalog",
+    "clusters",
+    "dlt",
+    "finops"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "installation": "/plugin install databricks-workspace-mcp@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

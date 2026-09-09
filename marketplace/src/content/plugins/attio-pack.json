@@ -1,0 +1,24 @@
+{
+  "name": "attio-pack",
+  "description": "Claude Code skill pack for Attio (18 skills)",
+  "version": "1.7.0",
+  "category": "other",
+  "keywords": [
+    "attio",
+    "saas",
+    "sdk",
+    "integration"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/saas-packs/attio-pack",
+  "license": "MIT",
+  "installation": "/plugin install attio-pack@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

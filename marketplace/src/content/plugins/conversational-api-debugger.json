@@ -1,8 +1,8 @@
 {
   "name": "conversational-api-debugger",
   "description": "Debug REST API failures using OpenAPI specs and HTTP logs (HAR) - root cause analysis with cURL generation",
-  "version": "1.0.0",
-  "category": "debugging",
+  "version": "1.14.0",
+  "category": "other",
   "keywords": [
     "mcp",
     "api",

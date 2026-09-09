@@ -1,7 +1,7 @@
 {
   "name": "nlp-text-analyzer",
   "description": "Natural language processing and text analysis",
-  "version": "1.0.0",
+  "version": "1.22.0",
   "category": "ai-ml-assistance",
   "keywords": [
     "nlp",

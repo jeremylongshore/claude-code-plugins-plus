@@ -1,7 +1,7 @@
 {
   "name": "fairdb-operations-kit",
   "description": "Complete operations kit for FairDB PostgreSQL as a Service - VPS setup, PostgreSQL management, customer provisioning, monitoring, and backup automation",
-  "version": "1.0.0",
+  "version": "1.26.0",
   "category": "devops",
   "keywords": [
     "fairdb",

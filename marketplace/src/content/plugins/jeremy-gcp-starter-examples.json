@@ -1,0 +1,27 @@
+{
+  "name": "jeremy-gcp-starter-examples",
+  "description": "Google Cloud starter kits and example code aggregator with ADK samples",
+  "version": "2.25.0",
+  "category": "ai-ml-assistance",
+  "keywords": [
+    "google-cloud",
+    "adk-samples",
+    "genkit-examples",
+    "vertex-ai",
+    "agent-starter-pack",
+    "code-examples",
+    "starter-kits",
+    "templates"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/jeremy-gcp-starter-examples",
+  "license": "MIT",
+  "installation": "/plugin install jeremy-gcp-starter-examples@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

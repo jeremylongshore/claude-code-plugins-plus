@@ -1,7 +1,7 @@
 {
   "name": "openbb-terminal",
   "description": "Open-source investment research terminal integration - comprehensive equity analysis, crypto tracking, macro indicators, portfolio optimization, and AI-powered financial insights using OpenBB Platform",
-  "version": "1.0.0",
+  "version": "1.6.0",
   "category": "other",
   "keywords": [
     "finance",
@@ -24,7 +24,7 @@
     "name": "Jeremy Longshore"
   },
   "featured": true,
-  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/finance/openbb-terminal",
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/business-tools/openbb-terminal",
   "license": "MIT",
   "installation": "/plugin install openbb-terminal@claude-code-plugins-plus",
   "features": [],

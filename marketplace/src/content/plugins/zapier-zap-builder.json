@@ -1,7 +1,7 @@
 {
   "name": "zapier-zap-builder",
   "description": "Create multi-step Zapier Zaps with filters, paths, and formatters",
-  "version": "1.0.0",
+  "version": "1.10.0",
   "category": "business-tools",
   "keywords": [
     "zapier",

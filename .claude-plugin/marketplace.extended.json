@@ -4783,15 +4783,10 @@
       "homepage": "https://promptbook.gg",
       "repository": "https://github.com/promptbookgg/claude-code-plugin",
       "license": "MIT",
+      "publication": "quarantined",
       "components": {
         "skills": 2,
         "hooks": 4
-      },
-      "verification": {
-        "score": 86,
-        "grade": "B",
-        "badge": "silver",
-        "lastValidated": "2026-09-05T00:00:00.000Z"
       }
     },
     {

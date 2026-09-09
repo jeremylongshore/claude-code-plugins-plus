@@ -1,0 +1,25 @@
+{
+  "name": "intent-labs-pack",
+  "description": "Labs skills for Intent Eval Platform dogfood: audit-tests (7-layer test auditor) and validate-skillmd (four-tier SKILL.md grader). Public checkout path for the nightly signed roster.",
+  "version": "7.2.0",
+  "category": "other",
+  "keywords": [
+    "audit-tests",
+    "validate-skillmd",
+    "testing",
+    "skill-validation",
+    "intent-eval",
+    "dogfood"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/productivity/intent-labs-pack",
+  "license": "MIT",
+  "installation": "/plugin install intent-labs-pack@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

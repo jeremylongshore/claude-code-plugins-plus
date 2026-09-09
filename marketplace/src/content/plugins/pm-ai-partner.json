@@ -1,0 +1,25 @@
+{
+  "name": "pm-ai-partner",
+  "description": "12 PM-specific agent skills, 6 workflow commands, 3 automation hooks for Product Managers",
+  "version": "1.10.0",
+  "category": "other",
+  "keywords": [
+    "product-management",
+    "pm",
+    "ai-partner",
+    "skills",
+    "commands",
+    "hooks"
+  ],
+  "author": {
+    "name": "Ahmed Khaled",
+    "email": "ahmd.khaled.a.mohamed@gmail.com"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/productivity/pm-ai-partner",
+  "license": "MIT",
+  "installation": "/plugin install pm-ai-partner@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

@@ -1,7 +1,7 @@
 {
   "name": "smoke-test-runner",
   "description": "Quick smoke test suites to verify critical functionality after deployments",
-  "version": "1.0.0",
+  "version": "1.20.0",
   "category": "testing",
   "keywords": [
     "testing",

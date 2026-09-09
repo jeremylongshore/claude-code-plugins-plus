@@ -1,0 +1,27 @@
+{
+  "name": "freshie-inventory-manager",
+  "description": "Interactive command center for the freshie ecosystem inventory database — conversational wizard with subagents for discovery scans, compliance grading, batch remediation, querying, reporting, and email PDF delivery across 50 tables of plugin/skill/pack metadata",
+  "version": "1.5.0",
+  "category": "other",
+  "keywords": [
+    "database",
+    "inventory",
+    "freshie",
+    "compliance",
+    "sqlite",
+    "ecosystem",
+    "audit",
+    "subagents"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/freshie-inventory-manager",
+  "license": "MIT",
+  "installation": "/plugin install freshie-inventory-manager@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

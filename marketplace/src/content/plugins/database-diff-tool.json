@@ -1,7 +1,7 @@
 {
   "name": "database-diff-tool",
   "description": "Database plugin for database-diff-tool",
-  "version": "1.0.0",
+  "version": "1.27.0",
   "category": "other",
   "keywords": [
     "database",

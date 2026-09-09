@@ -1,0 +1,25 @@
+{
+  "name": "jeremy-adk-terraform",
+  "description": "Terraform infrastructure as code for ADK and Vertex AI Agent Engine deployments",
+  "version": "2.22.0",
+  "category": "devops",
+  "keywords": [
+    "terraform",
+    "adk",
+    "agent-engine",
+    "vertex-ai",
+    "infrastructure",
+    "vpc-sc"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/devops/jeremy-adk-terraform",
+  "license": "MIT",
+  "installation": "/plugin install jeremy-adk-terraform@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

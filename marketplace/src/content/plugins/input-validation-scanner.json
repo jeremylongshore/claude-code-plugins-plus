@@ -1,7 +1,7 @@
 {
   "name": "input-validation-scanner",
   "description": "Scan input validation practices",
-  "version": "1.0.0",
+  "version": "1.25.0",
   "category": "security",
   "keywords": [
     "security",

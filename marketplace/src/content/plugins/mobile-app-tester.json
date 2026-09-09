@@ -1,7 +1,7 @@
 {
   "name": "mobile-app-tester",
   "description": "Mobile app test automation with Appium, Detox, XCUITest - test iOS and Android apps",
-  "version": "1.0.0",
+  "version": "1.21.0",
   "category": "testing",
   "keywords": [
     "testing",

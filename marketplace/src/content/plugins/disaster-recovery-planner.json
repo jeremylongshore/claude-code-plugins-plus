@@ -1,7 +1,7 @@
 {
   "name": "disaster-recovery-planner",
   "description": "Plan and implement disaster recovery procedures",
-  "version": "1.0.0",
+  "version": "1.25.0",
   "category": "devops",
   "keywords": [
     "disaster-recovery",

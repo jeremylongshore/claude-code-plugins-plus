@@ -1,7 +1,7 @@
 {
   "name": "authentication-validator",
   "description": "Validate authentication implementations",
-  "version": "1.0.0",
+  "version": "1.26.0",
   "category": "security",
   "keywords": [
     "security",

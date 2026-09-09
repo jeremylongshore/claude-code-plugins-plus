@@ -1,7 +1,7 @@
 {
   "name": "classification-model-builder",
   "description": "Build classification models",
-  "version": "1.0.0",
+  "version": "1.22.0",
   "category": "ai-ml-assistance",
   "keywords": [
     "classification",

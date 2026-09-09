@@ -1,7 +1,7 @@
 {
   "name": "service-mesh-configurator",
   "description": "Configure service mesh (Istio, Linkerd) for microservices",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "category": "devops",
   "keywords": [
     "service-mesh",

@@ -1,0 +1,27 @@
+{
+  "name": "agent-systems-toolkit",
+  "description": "Model-neutral workflows for creating, validating, and production-upgrading Agent Skills, agents, plugins, MCP integrations, hooks, and marketplaces with Beads-backed evidence and specialist review roles.",
+  "version": "1.0.0",
+  "category": "other",
+  "keywords": [
+    "agent-skills",
+    "skill-creation",
+    "plugin-development",
+    "agents",
+    "mcp",
+    "validation",
+    "production-upgrade",
+    "beads"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/skill-enhancers/agent-systems-toolkit",
+  "license": "MIT",
+  "installation": "/plugin install agent-systems-toolkit@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

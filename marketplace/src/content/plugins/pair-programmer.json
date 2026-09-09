@@ -1,0 +1,23 @@
+{
+  "name": "pair-programmer",
+  "description": "Graduated assistance framework to prevent skill atrophy when coding with AI",
+  "version": "1.0.0",
+  "category": "other",
+  "keywords": [
+    "pair-programming",
+    "coding",
+    "skill-development",
+    "graduated-assistance"
+  ],
+  "author": {
+    "name": "Alister Lewis-Bowen",
+    "url": "https://github.com/ali5ter"
+  },
+  "featured": false,
+  "repository": "https://github.com/ali5ter/pair-programmer",
+  "license": "MIT",
+  "installation": "/plugin install pair-programmer@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

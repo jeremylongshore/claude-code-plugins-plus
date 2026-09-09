@@ -1,0 +1,27 @@
+{
+  "name": "neurodivergent-visual-org",
+  "description": "Create ADHD-friendly visual organizational tools (Mermaid diagrams) optimized for neurodivergent thinking patterns with accessibility modes",
+  "version": "3.10.0",
+  "category": "other",
+  "keywords": [
+    "neurodivergent",
+    "adhd",
+    "autism",
+    "accessibility",
+    "mermaid-diagrams",
+    "visual-organization",
+    "task-breakdown",
+    "decision-trees"
+  ],
+  "author": {
+    "name": "Jack Reis",
+    "url": "https://github.com/JackReis"
+  },
+  "featured": false,
+  "repository": "https://github.com/JackReis/neurodivergent-visual-org",
+  "license": "MIT",
+  "installation": "/plugin install neurodivergent-visual-org@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

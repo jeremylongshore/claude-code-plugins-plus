@@ -1,7 +1,7 @@
 {
   "name": "liquidity-pool-analyzer",
   "description": "Analyze DeFi liquidity pools for impermanent loss, APY, and optimization opportunities",
-  "version": "1.0.0",
+  "version": "1.23.0",
   "category": "other",
   "keywords": [
     "liquidity",

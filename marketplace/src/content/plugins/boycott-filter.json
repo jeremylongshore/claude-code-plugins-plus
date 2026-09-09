@@ -1,0 +1,27 @@
+{
+  "name": "boycott-filter",
+  "description": "Personal boycott list managed conversationally by your AI agent. Chrome extension warns you on pages from brands you've decided to avoid.",
+  "version": "1.2.0",
+  "category": "other",
+  "keywords": [
+    "boycott",
+    "consumer",
+    "shopping",
+    "brands",
+    "chrome-extension",
+    "conversational",
+    "privacy",
+    "ethical-consumption"
+  ],
+  "author": {
+    "name": "Bubble Invest",
+    "email": "contact@bubbleinvest.com"
+  },
+  "featured": false,
+  "repository": "https://github.com/vdk888/boycott-filter",
+  "license": "MIT",
+  "installation": "/plugin install boycott-filter@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

@@ -1,0 +1,26 @@
+{
+  "name": "hermes-tweet",
+  "description": "Hermes Agent X/Twitter research, monitoring, drafts, exports, and approved actions",
+  "version": "0.1.6",
+  "category": "other",
+  "keywords": [
+    "hermes-agent",
+    "hermes-plugin",
+    "xquik",
+    "twitter",
+    "x",
+    "social-media",
+    "automation"
+  ],
+  "author": {
+    "name": "Xquik",
+    "url": "https://github.com/Xquik-dev"
+  },
+  "featured": false,
+  "repository": "https://github.com/Xquik-dev/hermes-tweet",
+  "license": "MIT",
+  "installation": "/plugin install hermes-tweet@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

@@ -1,7 +1,7 @@
 {
   "name": "environment-config-manager",
   "description": "Manage environment configurations and secrets across deployments",
-  "version": "1.0.0",
+  "version": "1.23.0",
   "category": "devops",
   "keywords": [
     "config",

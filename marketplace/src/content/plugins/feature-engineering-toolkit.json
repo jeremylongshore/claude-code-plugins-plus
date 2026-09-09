@@ -1,7 +1,7 @@
 {
   "name": "feature-engineering-toolkit",
   "description": "Feature creation, selection, and transformation tools",
-  "version": "1.0.0",
+  "version": "1.23.0",
   "category": "ai-ml-assistance",
   "keywords": [
     "features",

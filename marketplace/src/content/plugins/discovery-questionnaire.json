@@ -1,7 +1,7 @@
 {
   "name": "discovery-questionnaire",
   "description": "Generate custom discovery questionnaires for AI agency prospects",
-  "version": "1.0.0",
+  "version": "1.9.0",
   "category": "business-tools",
   "keywords": [
     "discovery",

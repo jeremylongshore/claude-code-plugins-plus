@@ -5,10 +5,10 @@
     "generator": "marketplace/scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 441,
-    "totalSkills": 2941,
+    "totalPlugins": 439,
+    "totalSkills": 2934,
     "totalDocs": 24,
-    "totalItems": 3406,
+    "totalItems": 3397,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -135,7 +135,6 @@
       "Bash(fd:*)",
       "Bash(ffmpeg:*)",
       "Bash(ffprobe:*)",
-      "Bash(file:*)",
       "Bash(find:*)",
       "Bash(flake8:*)",
       "Bash(fly:*)",
@@ -151,7 +150,6 @@
       "Bash(git:*)",
       "Bash(go:*)",
       "Bash(gocyclo:*)",
-      "Bash(gog:*)",
       "Bash(gpg:*)",
       "Bash(gradle:*)",
       "Bash(grep:*)",
@@ -183,7 +181,6 @@
       "Bash(logs:*)",
       "Bash(lokalise2:*)",
       "Bash(ls:*)",
-      "Bash(mcporter:*)",
       "Bash(memory:*)",
       "Bash(metrics:*)",
       "Bash(mkdir:*)",
@@ -202,7 +199,6 @@
       "Bash(nix:*)",
       "Bash(node*)",
       "Bash(node:*)",
-      "Bash(nohup:*)",
       "Bash(npm:*)",
       "Bash(npx playwright:*)",
       "Bash(npx supabase:*)",
@@ -213,7 +209,6 @@
       "Bash(ogr2ogr:*)",
       "Bash(ogrinfo:*)",
       "Bash(open:*)",
-      "Bash(openclaw:*)",
       "Bash(openssl:*)",
       "Bash(osascript:*)",
       "Bash(performance:*)",
@@ -272,7 +267,6 @@
       "Bash(sqlcmd:*)",
       "Bash(sqlite3:*)",
       "Bash(ssh:*)",
-      "Bash(stat:*)",
       "Bash(supabase:*)",
       "Bash(sw_vers:*)",
       "Bash(system:*)",
@@ -307,7 +301,6 @@
       "Bash(test:visual-*)",
       "Bash(testing:*)",
       "Bash(tippecanoe:*)",
-      "Bash(todoist-cli:*)",
       "Bash(top:*)",
       "Bash(traceroute:*)",
       "Bash(trivy*)",
@@ -559,7 +552,6 @@
       "budget",
       "bug-tracking",
       "bug-triage",
-      "builds",
       "bulk",
       "business-continuity",
       "cache",
@@ -828,7 +820,6 @@
       "example",
       "excel",
       "exceptions",
-      "executive-assistant",
       "experimentation",
       "experiments",
       "explain",
@@ -1102,7 +1093,6 @@
       "medicine",
       "meeting-intelligence",
       "meeting-notes",
-      "meeting-prep",
       "meeting-transcription",
       "meetings",
       "memory",
@@ -1545,7 +1535,6 @@
       "technical-analysis",
       "technical-debt",
       "techsmith",
-      "telemetry",
       "templates",
       "terminal",
       "terms-of-service",
@@ -1574,7 +1563,6 @@
       "timezone",
       "titles",
       "tms",
-      "todoist",
       "together",
       "together ai",
       "token-budget",
@@ -1706,12 +1694,12 @@
       "zod"
     ],
     "totalAgents": 352,
-    "totalHooks": 28,
+    "totalHooks": 29,
     "pluginsWithAgents": 91,
-    "pluginsWithHooks": 20,
+    "pluginsWithHooks": 21,
     "officialPlugins": 390,
-    "communityPlugins": 51,
-    "communityContributors": 40
+    "communityPlugins": 49,
+    "communityContributors": 38
   },
   "items": [
     {
@@ -7509,38 +7497,6 @@
       "badges": [],
       "skillCount": 0,
       "searchText": "project health auditor multi-dimensional code health analysis with complexity, churn, and test coverage - identifies technical debt hot spots mcp mcp code-quality technical-debt complexity git-churn test-coverage analytics"
-    },
-    {
-      "type": "plugin",
-      "id": "promptbook",
-      "slug": "promptbook",
-      "name": "promptbook",
-      "displayName": "promptbook",
-      "description": "Opt-in session analytics for Claude Code. After setup consent, tracks prompts, tokens, build time, and lines changed per session. Publishes shareable build cards on promptbook.gg. Strict consent gating — no data transmitted without explicit opt-in. Background submission after session end.",
-      "category": "business-tools",
-      "keywords": [
-        "analytics",
-        "telemetry",
-        "builds",
-        "portfolio",
-        "tracking",
-        "metrics",
-        "sessions"
-      ],
-      "author": {
-        "name": "Promptbook",
-        "email": "contact@promptbook.gg"
-      },
-      "authorType": "community",
-      "version": "1.4.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 2,
-      "verificationScore": 86,
-      "verificationGrade": "B",
-      "verificationBadge": "silver",
-      "searchText": "promptbook opt-in session analytics for claude code. after setup consent, tracks prompts, tokens, build time, and lines changed per session. publishes shareable build cards on promptbook.gg. strict consent gating — no data transmitted without explicit opt-in. background submission after session end. business-tools analytics telemetry builds portfolio tracking metrics sessions"
     },
     {
       "type": "plugin",
@@ -13716,38 +13672,6 @@
     },
     {
       "type": "plugin",
-      "id": "executive-assistant-skills",
-      "slug": "executive-assistant-skills",
-      "name": "executive-assistant-skills",
-      "displayName": "executive assistant skills",
-      "description": "AI-powered executive assistant skills that fully replace a human EA. Research meeting attendees, draft emails, create meeting briefs, and manage action items.",
-      "category": "business-tools",
-      "keywords": [
-        "executive-assistant",
-        "meeting-prep",
-        "email",
-        "productivity",
-        "automation",
-        "todoist"
-      ],
-      "author": {
-        "name": "Martin Gontovnikas",
-        "email": "gonto@hypergrowthpartners.com",
-        "url": "https://github.com/mgonto"
-      },
-      "authorType": "community",
-      "version": "1.8.0",
-      "isFeatured": true,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 5,
-      "verificationScore": 82,
-      "verificationGrade": "B",
-      "verificationBadge": "silver",
-      "searchText": "executive assistant skills ai-powered executive assistant skills that fully replace a human ea. research meeting attendees, draft emails, create meeting briefs, and manage action items. business-tools executive-assistant meeting-prep email productivity automation todoist"
-    },
-    {
-      "type": "plugin",
       "id": "box-cloud-filesystem",
       "slug": "box-cloud-filesystem",
       "name": "box-cloud-filesystem",
@@ -15700,33 +15624,6 @@
         "category": "mcp"
       },
       "searchText": "access manage slack channel access control — pairing, allowlist, channel opt-in. use when approving a pairing code, changing the dm policy, editing the user allowlist, or opting a channel in or out. trigger with \"/slack-channel:access\", \"pair my slack account\", \"add user to slack allowlist\", or \"opt in a slack channel\". mcp read write bash(chmod:*) bash(mv:*) "
-    },
-    {
-      "type": "skill",
-      "id": "action-items-todoist",
-      "slug": "action-items-todoist",
-      "name": "action-items-todoist",
-      "description": "Extract action items from today's Granola/Grain meetings, create Todoist tasks, complete fulfilled tasks, and draft meeting-triggered follow-up emails. Use when running the daily action items cron, post-meeting cron, or when user asks to process meeting action items. NOT for general email drafting without meeting context.",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Bash(gog:*)",
-        "Bash(mcporter:*)",
-        "Bash(todoist-cli:*)",
-        "Bash(python3:*)",
-        "Bash(source:*)",
-        "Bash(date:*)",
-        "Glob",
-        "Grep",
-        "Write"
-      ],
-      "compatibleWith": [],
-      "version": "1.8.0",
-      "parentPlugin": {
-        "name": "executive-assistant-skills",
-        "category": "business-tools"
-      },
-      "searchText": "action-items-todoist extract action items from today's granola/grain meetings, create todoist tasks, complete fulfilled tasks, and draft meeting-triggered follow-up emails. use when running the daily action items cron, post-meeting cron, or when user asks to process meeting action items. not for general email drafting without meeting context. business-tools read bash(gog:*) bash(mcporter:*) bash(todoist-cli:*) bash(python3:*) bash(source:*) bash(date:*) glob grep write "
     },
     {
       "type": "skill",
@@ -22949,18 +22846,20 @@
       "id": "boycott-filter",
       "slug": "boycott-filter",
       "name": "boycott-filter",
-      "description": "Personal boycott list — users can conversationally tell the agent which brands they want to avoid, and why. A local sync server exposes the list at http://127.0.0.1:7847, and a bundled Chrome extension warns the user when they land on pages from boycotted brands. Use when the user says things like \"I'm done with X\", \"boycott Y\", \"never buying from Z again\", \"remove X from my boycott list\", or asks to see their list. Trigger phrases: \"boycott\", \"never buying from\", \"sick of\", \"add to boycott\", \"show my boycott list\", \"remove from boycott\".",
+      "description": "Manage your personal boycott list. Add brands to avoid, track reasons, sync with Chrome extension. Use when the user complains about a brand, says \"never buying from X again\", wants to block a company, or mentions the boycott filter.",
       "category": "community",
       "allowedTools": [
-        "Bash(curl:*)"
+        "Bash",
+        "Read",
+        "Write"
       ],
       "compatibleWith": [],
-      "version": "1.2.0",
+      "version": "1.0.0",
       "parentPlugin": {
         "name": "boycott-filter",
         "category": "community"
       },
-      "searchText": "boycott-filter personal boycott list — users can conversationally tell the agent which brands they want to avoid, and why. a local sync server exposes the list at http://127.0.0.1:7847, and a bundled chrome extension warns the user when they land on pages from boycotted brands. use when the user says things like \"i'm done with x\", \"boycott y\", \"never buying from z again\", \"remove x from my boycott list\", or asks to see their list. trigger phrases: \"boycott\", \"never buying from\", \"sick of\", \"add to boycott\", \"show my boycott list\", \"remove from boycott\". community bash(curl:*) "
+      "searchText": "boycott-filter manage your personal boycott list. add brands to avoid, track reasons, sync with chrome extension. use when the user complains about a brand, says \"never buying from x again\", wants to block a company, or mentions the boycott filter. community bash read write "
     },
     {
       "type": "skill",
@@ -26230,22 +26129,16 @@
       "id": "claude-reflect",
       "slug": "claude-reflect",
       "name": "claude-reflect",
-      "description": "Execute self-learning system that captures corrections during sessions and syncs them to CLAUDE.md. Use when discussing learnings, corrections, or when the user mentions remembering something. Trigger with phrases like \"remember this\", \"don't forget\", \"use X not Y\", or \"actually...\".",
+      "description": "Self-learning system that captures corrections during sessions and reminds users to run /reflect to update CLAUDE.md. Use when discussing learnings, corrections, or when the user mentions remembering something for future sessions.",
       "category": "community",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(jq:*)",
-        "Bash(cat:*)"
-      ],
+      "allowedTools": [],
       "compatibleWith": [],
-      "version": "1.12.0",
+      "version": "1.0.0",
       "parentPlugin": {
         "name": "claude-reflect",
         "category": "community"
       },
-      "searchText": "claude-reflect execute self-learning system that captures corrections during sessions and syncs them to claude.md. use when discussing learnings, corrections, or when the user mentions remembering something. trigger with phrases like \"remember this\", \"don't forget\", \"use x not y\", or \"actually...\". community read write edit bash(jq:*) bash(cat:*) "
+      "searchText": "claude-reflect self-learning system that captures corrections during sessions and reminds users to run /reflect to update claude.md. use when discussing learnings, corrections, or when the user mentions remembering something for future sessions. community  "
     },
     {
       "type": "skill",
@@ -33426,29 +33319,6 @@
     },
     {
       "type": "skill",
-      "id": "doctor",
-      "slug": "doctor",
-      "name": "doctor",
-      "description": "Diagnose Promptbook setup — check config, hooks, API key, and session tracking health. Use when Promptbook seems broken or the user wants to verify their setup. Trigger with \"/doctor\" or \"check promptbook health\".",
-      "category": "business-tools",
-      "allowedTools": [
-        "Bash(node:*)",
-        "Bash(curl:*)",
-        "Bash(ls:*)",
-        "Bash(stat:*)",
-        "Bash(cat:*)",
-        "Read"
-      ],
-      "compatibleWith": [],
-      "version": "1.4.0",
-      "parentPlugin": {
-        "name": "promptbook",
-        "category": "business-tools"
-      },
-      "searchText": "doctor diagnose promptbook setup — check config, hooks, api key, and session tracking health. use when promptbook seems broken or the user wants to verify their setup. trigger with \"/doctor\" or \"check promptbook health\". business-tools bash(node:*) bash(curl:*) bash(ls:*) bash(stat:*) bash(cat:*) read "
-    },
-    {
-      "type": "skill",
       "id": "documenso-ci-integration",
       "slug": "documenso-ci-integration",
       "name": "documenso-ci-integration",
@@ -34712,30 +34582,6 @@
         "category": "saas-packs"
       },
       "searchText": "elevenlabs-webhooks-events implement elevenlabs webhook hmac signature verification and event handling. use when setting up webhook endpoints for transcription completion, call recording, or agent conversation events from elevenlabs. trigger with \"elevenlabs webhook\", \"elevenlabs events\", \"elevenlabs webhook signature\", \"handle elevenlabs notifications\", \"elevenlabs post-call webhook\", \"elevenlabs transcription webhook\". saas-packs read write edit bash(curl:*) "
-    },
-    {
-      "type": "skill",
-      "id": "email-drafting",
-      "slug": "email-drafting",
-      "name": "email-drafting",
-      "description": "Draft email replies for Gonto's Gmail accounts (m@gon.to, gonto@hypergrowthpartners.com). Handles intro acceptances, scheduling intent, thanks/ack, and positive short replies. Use when user asks to draft or reply to an email, or when Gmail webhook triggers arrive for auto-draft classification. Draft-only mode — never sends automatically.",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Bash(gog:*)",
-        "Bash(mcporter:*)",
-        "Bash(python3:*)",
-        "Glob",
-        "Grep",
-        "Write"
-      ],
-      "compatibleWith": [],
-      "version": "1.8.0",
-      "parentPlugin": {
-        "name": "executive-assistant-skills",
-        "category": "business-tools"
-      },
-      "searchText": "email-drafting draft email replies for gonto's gmail accounts (m@gon.to, gonto@hypergrowthpartners.com). handles intro acceptances, scheduling intent, thanks/ack, and positive short replies. use when user asks to draft or reply to an email, or when gmail webhook triggers arrive for auto-draft classification. draft-only mode — never sends automatically. business-tools read bash(gog:*) bash(mcporter:*) bash(python3:*) glob grep write "
     },
     {
       "type": "skill",
@@ -36114,33 +35960,6 @@
         "category": "business-tools"
       },
       "searchText": "excel-variance-analyzer analyze budget vs actual variances in excel with drill-down and root cause analysis. use when performing variance analysis or explaining budget differences. trigger with phrases like 'excel variance', 'analyze budget variance', 'actual vs budget'. business-tools read write edit grep glob bash(cmd:*) "
-    },
-    {
-      "type": "skill",
-      "id": "executive-digest",
-      "slug": "executive-digest",
-      "name": "executive-digest",
-      "description": "Generate the daily executive digest — a single WhatsApp summary of everything needing attention: stalled scheduling, pending intros, unanswered emails, promised follow-ups, open Todoist tasks, and upcoming calendar events. Use when running the daily digest cron, or when user asks for a status digest, daily summary, \"what's pending\", or \"catch me up\".",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Bash(gog:*)",
-        "Bash(mcporter:*)",
-        "Bash(todoist-cli:*)",
-        "Bash(python3:*)",
-        "Bash(source:*)",
-        "Bash(curl:*)",
-        "Glob",
-        "Grep",
-        "Write"
-      ],
-      "compatibleWith": [],
-      "version": "1.8.0",
-      "parentPlugin": {
-        "name": "executive-assistant-skills",
-        "category": "business-tools"
-      },
-      "searchText": "executive-digest generate the daily executive digest — a single whatsapp summary of everything needing attention: stalled scheduling, pending intros, unanswered emails, promised follow-ups, open todoist tasks, and upcoming calendar events. use when running the daily digest cron, or when user asks for a status digest, daily summary, \"what's pending\", or \"catch me up\". business-tools read bash(gog:*) bash(mcporter:*) bash(todoist-cli:*) bash(python3:*) bash(source:*) bash(curl:*) glob grep write "
     },
     {
       "type": "skill",
@@ -46232,18 +46051,16 @@
       "id": "hyperfocus",
       "slug": "hyperfocus",
       "name": "hyperfocus",
-      "description": "ADHD-friendly output formatting for Claude Code. Restructures responses with evidence-based cognitive accessibility: chunking, visual hierarchy, front-loaded key points, and progressive disclosure. Three modes: clean, flow (default), zen. Use when user says \"hyperfocus\", \"focus mode\", \"adhd mode\", \"adhd friendly\", or invokes /hyperfocus.",
+      "description": "ADHD-friendly output formatting. Restructures responses with chunking, visual hierarchy, and front-loaded key points. Modes: clean, flow (default), zen. Use when user says \"hyperfocus\", \"focus mode\", \"adhd mode\", \"adhd friendly\", or invokes /hyperfocus.",
       "category": "productivity",
-      "allowedTools": [
-        "Read"
-      ],
+      "allowedTools": [],
       "compatibleWith": [],
-      "version": "0.2.0",
+      "version": "1.0.0",
       "parentPlugin": {
         "name": "hyperfocus",
         "category": "productivity"
       },
-      "searchText": "hyperfocus adhd-friendly output formatting for claude code. restructures responses with evidence-based cognitive accessibility: chunking, visual hierarchy, front-loaded key points, and progressive disclosure. three modes: clean, flow (default), zen. use when user says \"hyperfocus\", \"focus mode\", \"adhd mode\", \"adhd friendly\", or invokes /hyperfocus. productivity read "
+      "searchText": "hyperfocus adhd-friendly output formatting. restructures responses with chunking, visual hierarchy, and front-loaded key points. modes: clean, flow (default), zen. use when user says \"hyperfocus\", \"focus mode\", \"adhd mode\", \"adhd friendly\", or invokes /hyperfocus. productivity  "
     },
     {
       "type": "skill",
@@ -52892,21 +52709,20 @@
       "id": "local-tts",
       "slug": "local-tts",
       "name": "local-tts",
-      "description": "Generate speech locally from text using VoxCPM2 (2B params, Apache-2.0). 30 languages, voice design (describe a voice), voice cloning (from 3-10s reference). Runs 100% offline on Apple Silicon via Metal (MPS). Zero API calls, zero cost. Use when user asks to \"say\" or \"speak\" something, wants a voiceover, wants to clone a voice, or wants to generate audio from text. Trigger phrases: \"say this\", \"read out loud\", \"clone my voice\", \"generate voiceover\", \"text to speech\", \"TTS\".",
+      "description": "Generate speech from text locally using VoxCPM2 (Apache-2.0, 30 languages, voice design, voice cloning). Use when the user asks to \"say\" or \"speak\" something, wants a voiceover or narration, wants to clone a voice, or wants to generate audio from text. Free, runs locally, no API calls. Output is a 48 kHz wav file.",
       "category": "ai-ml",
       "allowedTools": [
+        "Bash",
         "Read",
-        "Bash(python3:*)",
-        "Bash(file:*)",
-        "Bash(ls:*)"
+        "Write"
       ],
       "compatibleWith": [],
-      "version": "1.3.0",
+      "version": "1.0.0",
       "parentPlugin": {
         "name": "local-tts",
         "category": "ai-ml"
       },
-      "searchText": "local-tts generate speech locally from text using voxcpm2 (2b params, apache-2.0). 30 languages, voice design (describe a voice), voice cloning (from 3-10s reference). runs 100% offline on apple silicon via metal (mps). zero api calls, zero cost. use when user asks to \"say\" or \"speak\" something, wants a voiceover, wants to clone a voice, or wants to generate audio from text. trigger phrases: \"say this\", \"read out loud\", \"clone my voice\", \"generate voiceover\", \"text to speech\", \"tts\". ai-ml read bash(python3:*) bash(file:*) bash(ls:*) "
+      "searchText": "local-tts generate speech from text locally using voxcpm2 (apache-2.0, 30 languages, voice design, voice cloning). use when the user asks to \"say\" or \"speak\" something, wants a voiceover or narration, wants to clone a voice, or wants to generate audio from text. free, runs locally, no api calls. output is a 48 khz wav file. ai-ml bash read write "
     },
     {
       "type": "skill",
@@ -54922,33 +54738,6 @@
       "type": "skill",
       "id": "meeting-prep",
       "slug": "meeting-prep",
-      "name": "meeting-prep",
-      "description": "Prepare briefings for today's meetings — attendee research, email history, past meeting notes, LinkedIn, and company context. Use when running the daily meeting prep cron, or when user asks to prepare for meetings, review who they're meeting with, or get context on upcoming calls.",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Bash(gog:*)",
-        "Bash(mcporter:*)",
-        "Bash(python3:*)",
-        "Bash(openclaw:*)",
-        "Bash(curl:*)",
-        "Glob",
-        "Grep",
-        "Write",
-        "WebSearch"
-      ],
-      "compatibleWith": [],
-      "version": "1.8.0",
-      "parentPlugin": {
-        "name": "executive-assistant-skills",
-        "category": "business-tools"
-      },
-      "searchText": "meeting-prep prepare briefings for today's meetings — attendee research, email history, past meeting notes, linkedin, and company context. use when running the daily meeting prep cron, or when user asks to prepare for meetings, review who they're meeting with, or get context on upcoming calls. business-tools read bash(gog:*) bash(mcporter:*) bash(python3:*) bash(openclaw:*) bash(curl:*) glob grep write websearch "
-    },
-    {
-      "type": "skill",
-      "id": "meeting-prep-2",
-      "slug": "meeting-prep-2",
       "name": "meeting-prep",
       "description": "Meeting preparation assistant for Product Managers. Use when the user needs to prepare a meeting, create talking points, anticipate questions, or structure a decision. Trigger with \"prepare for meeting\", \"meeting prep\", \"talking points\", \"get ready for\", or \"1:1 prep\".",
       "category": "productivity",
@@ -71134,34 +70923,6 @@
     },
     {
       "type": "skill",
-      "id": "setup",
-      "slug": "setup",
-      "name": "setup",
-      "description": "Set up Promptbook — connect your account to start tracking builds. Use when the user wants to enable session analytics on promptbook.gg. Trigger with \"/setup\" or \"set up promptbook\".",
-      "category": "business-tools",
-      "allowedTools": [
-        "Bash(curl:*)",
-        "Bash(open:*)",
-        "Bash(xdg-open:*)",
-        "Bash(mkdir:*)",
-        "Bash(cat:*)",
-        "Bash(chmod:*)",
-        "Bash(node:*)",
-        "Bash(nohup:*)",
-        "Bash(find:*)",
-        "Bash(wc:*)",
-        "Read"
-      ],
-      "compatibleWith": [],
-      "version": "1.4.0",
-      "parentPlugin": {
-        "name": "promptbook",
-        "category": "business-tools"
-      },
-      "searchText": "setup set up promptbook — connect your account to start tracking builds. use when the user wants to enable session analytics on promptbook.gg. trigger with \"/setup\" or \"set up promptbook\". business-tools bash(curl:*) bash(open:*) bash(xdg-open:*) bash(mkdir:*) bash(cat:*) bash(chmod:*) bash(node:*) bash(nohup:*) bash(find:*) bash(wc:*) read "
-    },
-    {
-      "type": "skill",
       "id": "shipwright-pipeline",
       "slug": "shipwright-pipeline",
       "name": "shipwright-pipeline",
@@ -74888,32 +74649,6 @@
         "category": "api-development"
       },
       "searchText": "throttling-apis implement api throttling policies to protect backend services from overload. use when controlling api request rates. trigger with phrases like \"throttle api\", \"control request rate\", or \"add throttling\". api-development read write edit grep glob bash(api:throttle-*) "
-    },
-    {
-      "type": "skill",
-      "id": "todoist-due-drafts",
-      "slug": "todoist-due-drafts",
-      "name": "todoist-due-drafts",
-      "description": "Check Todoist for tasks due today (and overdue) that involve pinging, emailing, or following up with someone. Auto-draft the emails using meeting context and notify via WhatsApp. Use when running the daily due-drafts cron, or when user asks to process email tasks from Todoist.",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Bash(gog:*)",
-        "Bash(mcporter:*)",
-        "Bash(todoist-cli:*)",
-        "Bash(python3:*)",
-        "Bash(source:*)",
-        "Glob",
-        "Grep",
-        "Write"
-      ],
-      "compatibleWith": [],
-      "version": "1.8.0",
-      "parentPlugin": {
-        "name": "executive-assistant-skills",
-        "category": "business-tools"
-      },
-      "searchText": "todoist-due-drafts check todoist for tasks due today (and overdue) that involve pinging, emailing, or following up with someone. auto-draft the emails using meeting context and notify via whatsapp. use when running the daily due-drafts cron, or when user asks to process email tasks from todoist. business-tools read bash(gog:*) bash(mcporter:*) bash(todoist-cli:*) bash(python3:*) bash(source:*) glob grep write "
     },
     {
       "type": "skill",

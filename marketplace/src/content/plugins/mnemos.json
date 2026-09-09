@@ -1,0 +1,32 @@
+{
+  "name": "mnemos",
+  "description": "Persistent memory for Claude Code — capture, digest, and recall project knowledge across sessions with a dependency-free Go CLI and hook integration.",
+  "version": "0.9.0",
+  "category": "other",
+  "keywords": [
+    "memory",
+    "mcp",
+    "claude-code",
+    "persistent-memory",
+    "agent-memory",
+    "knowledge-graph",
+    "context",
+    "skill",
+    "observations",
+    "provenance",
+    "learning-loop",
+    "golang"
+  ],
+  "author": {
+    "name": "André Figueira",
+    "email": "andre@polyxmedia.com",
+    "url": "https://polyxmedia.com"
+  },
+  "featured": false,
+  "repository": "https://github.com/polyxmedia/mnemos",
+  "license": "MIT",
+  "installation": "/plugin install mnemos@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

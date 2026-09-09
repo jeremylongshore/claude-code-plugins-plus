@@ -1,0 +1,28 @@
+{
+  "name": "clerk-pack",
+  "description": "Complete Clerk integration skill pack with 24 skills covering authentication, user management, embeddable UIs, and identity platform. Flagship tier vendor pack.",
+  "version": "1.14.0",
+  "category": "other",
+  "keywords": [
+    "clerk",
+    "authentication",
+    "auth",
+    "users",
+    "identity",
+    "sso",
+    "embeddable-ui",
+    "user-management"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/saas-packs/clerk-pack",
+  "license": "MIT",
+  "installation": "/plugin install clerk-pack@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

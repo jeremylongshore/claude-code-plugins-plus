@@ -1,7 +1,7 @@
 {
   "name": "market-movers-scanner",
   "description": "Scan for top market movers - gainers, losers, volume spikes, and unusual activity",
-  "version": "1.0.0",
+  "version": "1.27.0",
   "category": "other",
   "keywords": [
     "market",

@@ -1,0 +1,36 @@
+{
+  "name": "jeremy-firestore",
+  "description": "Firestore database specialist for schema design, queries, and real-time sync",
+  "version": "2.20.0",
+  "category": "other",
+  "keywords": [
+    "firebase",
+    "firestore",
+    "database",
+    "crud",
+    "security-rules",
+    "cloud-functions",
+    "batch-operations",
+    "data-migration",
+    "performance",
+    "cost-optimization",
+    "nosql",
+    "google-cloud",
+    "a2a",
+    "agent-to-agent",
+    "mcp",
+    "cloud-run",
+    "vertex-ai"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "url": "https://intentsolutions.io"
+  },
+  "featured": true,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/community/jeremy-firestore",
+  "license": "MIT",
+  "installation": "/plugin install jeremy-firestore@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

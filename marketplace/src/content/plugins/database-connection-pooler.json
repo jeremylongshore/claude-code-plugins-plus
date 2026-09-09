@@ -1,7 +1,7 @@
 {
   "name": "database-connection-pooler",
   "description": "Implement and optimize database connection pooling for improved performance and resource management",
-  "version": "1.0.0",
+  "version": "1.23.0",
   "category": "other",
   "keywords": [
     "connection-pool",

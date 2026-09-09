@@ -1,7 +1,7 @@
 {
   "name": "database-test-manager",
   "description": "Database testing utilities with test data setup, transaction rollback, and schema validation",
-  "version": "1.0.0",
+  "version": "1.26.0",
   "category": "testing",
   "keywords": [
     "testing",

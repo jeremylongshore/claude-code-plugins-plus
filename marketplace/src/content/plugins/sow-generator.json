@@ -1,7 +1,7 @@
 {
   "name": "sow-generator",
   "description": "Generate professional Statements of Work for AI projects",
-  "version": "1.0.0",
+  "version": "1.9.0",
   "category": "business-tools",
   "keywords": [
     "sow",

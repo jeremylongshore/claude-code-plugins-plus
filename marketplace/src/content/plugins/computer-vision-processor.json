@@ -1,7 +1,7 @@
 {
   "name": "computer-vision-processor",
   "description": "Computer vision image processing and analysis",
-  "version": "1.0.0",
+  "version": "1.21.0",
   "category": "ai-ml-assistance",
   "keywords": [
     "cv",

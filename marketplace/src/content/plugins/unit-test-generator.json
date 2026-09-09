@@ -1,7 +1,7 @@
 {
   "name": "unit-test-generator",
   "description": "Automatically generate comprehensive unit tests from source code with multiple testing framework support",
-  "version": "1.0.0",
+  "version": "1.21.0",
   "category": "testing",
   "keywords": [
     "testing",

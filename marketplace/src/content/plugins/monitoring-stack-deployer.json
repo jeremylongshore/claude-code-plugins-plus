@@ -1,7 +1,7 @@
 {
   "name": "monitoring-stack-deployer",
   "description": "Deploy monitoring stacks (Prometheus, Grafana, Datadog)",
-  "version": "1.0.0",
+  "version": "1.26.0",
   "category": "devops",
   "keywords": [
     "monitoring",

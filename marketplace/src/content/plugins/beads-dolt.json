@@ -1,0 +1,27 @@
+{
+  "name": "beads-dolt",
+  "description": "⚠️ Renamed to dolt-mcp-vcs. Deprecated alias — kept so existing `beads-dolt` installs keep resolving; please install dolt-mcp-vcs instead. Same plugin: a Dolt/DoltHub version-control toolkit shipping the beads (bd) task-tracker adapter.",
+  "version": "0.1.0",
+  "category": "other",
+  "keywords": [
+    "beads",
+    "bd",
+    "dolt",
+    "dolthub",
+    "task-tracking",
+    "mcp",
+    "version-control",
+    "sql"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/dolt-mcp-vcs",
+  "license": "Apache-2.0",
+  "installation": "/plugin install beads-dolt@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

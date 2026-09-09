@@ -1,0 +1,26 @@
+{
+  "name": "brand-forge",
+  "description": "Generate on-brand logos, social templates, and marketing graphics from a saved brand profile; vector output runs locally, AI imagery is opt-in.",
+  "version": "0.5.1",
+  "category": "other",
+  "keywords": [
+    "branding",
+    "logo",
+    "brand-identity",
+    "design",
+    "svg",
+    "templates",
+    "image-generation"
+  ],
+  "author": {
+    "name": "localplugins",
+    "email": "localplugins@proton.me"
+  },
+  "featured": false,
+  "repository": "https://github.com/localplugins/plugins",
+  "license": "MIT",
+  "installation": "/plugin install brand-forge@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

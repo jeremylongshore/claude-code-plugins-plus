@@ -1,0 +1,26 @@
+{
+  "name": "b12-claude-plugin",
+  "description": "B12 Website Generator — an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
+  "version": "1.9.0",
+  "category": "other",
+  "keywords": [
+    "website",
+    "b12",
+    "hosting",
+    "web-design",
+    "ai-website",
+    "website-generator",
+    "saas"
+  ],
+  "author": {
+    "name": "B12.io",
+    "url": "https://github.com/b12io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/community/b12-claude-plugin",
+  "license": "MIT",
+  "installation": "/plugin install b12-claude-plugin@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

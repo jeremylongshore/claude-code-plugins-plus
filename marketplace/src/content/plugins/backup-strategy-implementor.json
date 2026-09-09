@@ -1,7 +1,7 @@
 {
   "name": "backup-strategy-implementor",
   "description": "Implement backup strategies for databases and applications",
-  "version": "1.0.0",
+  "version": "1.25.0",
   "category": "devops",
   "keywords": [
     "backup",

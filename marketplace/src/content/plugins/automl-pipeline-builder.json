@@ -1,7 +1,7 @@
 {
   "name": "automl-pipeline-builder",
   "description": "Build AutoML pipelines",
-  "version": "1.0.0",
+  "version": "1.25.0",
   "category": "ai-ml-assistance",
   "keywords": [
     "automl",

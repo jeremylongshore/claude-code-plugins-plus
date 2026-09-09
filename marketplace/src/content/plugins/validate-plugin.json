@@ -1,0 +1,23 @@
+{
+  "name": "validate-plugin",
+  "description": "Validate Claude Code plugin structure against official Anthropic spec and Intent Solutions enterprise standard with 100-point grading.",
+  "version": "1.8.0",
+  "category": "other",
+  "keywords": [
+    "validation",
+    "plugin-development",
+    "quality-assurance",
+    "linting"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/skill-enhancers/validate-plugin",
+  "license": "MIT",
+  "installation": "/plugin install validate-plugin@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

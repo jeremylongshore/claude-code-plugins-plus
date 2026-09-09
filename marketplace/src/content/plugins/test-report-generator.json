@@ -1,7 +1,7 @@
 {
   "name": "test-report-generator",
   "description": "Generate comprehensive test reports with coverage, trends, and stakeholder-friendly formats",
-  "version": "1.0.0",
+  "version": "1.23.0",
   "category": "testing",
   "keywords": [
     "testing",

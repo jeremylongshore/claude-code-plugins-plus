@@ -1,7 +1,7 @@
 {
   "name": "model-deployment-helper",
   "description": "Deploy ML models to production",
-  "version": "1.0.0",
+  "version": "1.19.0",
   "category": "ai-ml-assistance",
   "keywords": [
     "deployment",

@@ -1,0 +1,32 @@
+{
+  "name": "axiom",
+  "description": "Battle-tested Claude Code skills for modern xOS (iOS, iPadOS, watchOS, tvOS) development - 13 production-ready skills covering debugging, concurrency, persistence, UI, and performance",
+  "version": "0.3.0",
+  "category": "other",
+  "keywords": [
+    "ios",
+    "debugging",
+    "swift",
+    "persistence",
+    "testing",
+    "performance",
+    "xcode",
+    "concurrency",
+    "database",
+    "swiftdata",
+    "grdb",
+    "liquid-glass",
+    "swiftui"
+  ],
+  "author": {
+    "name": "Charles Wiltgen",
+    "url": "https://github.com/CharlesWiltgen"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/skill-enhancers/axiom",
+  "license": "MIT",
+  "installation": "/plugin install axiom@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}
