@@ -1,10 +1,10 @@
 ---
 name: product-brief
 description: Structured product brief and PRD creation assistant. Use when the user
-  needs to write a product brief, PRD, feature spec, or any document that defines
-  what to build and why. Triggers include "product brief", "PRD", "spec", "feature
-  doc", "write a brief", "define this feature", or when scoping work for engineering.
-version: 1.8.0
+  needs to create a product brief, PRD, or feature spec that defines what to build
+  and why. Trigger with "product brief", "PRD", "spec", "feature doc", "write a
+  brief", or "define this feature".
+version: 1.9.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep
@@ -13,8 +13,20 @@ tags:
 - productivity
 - product-brief
 compatibility: Designed for Claude Code
+model: inherit
+effort: medium
+user-invocable: true
 ---
 # Product Brief Skill
+
+## Overview
+
+Create a decision-ready brief that ties a verified user problem to scope, measurable outcomes,
+risks, and open decisions. Run the
+[evidence and review checklist](references/evidence-and-review.md) before treating a draft as
+ready for engineering.
+
+Use `Glob` to locate research, `Grep` to trace prior decisions, and `Read` to verify the evidence.
 
 ## Instructions
 
@@ -37,7 +49,8 @@ Guide the creation of clear, actionable product briefs that engineering can use 
 
 ## Brief Structure
 
-Every product brief should include:
+Every product brief should include the decision-relevant sections below. Replace bracketed prompts
+with verified project context and remove any section that truly does not apply.
 
 ```markdown
 # [Feature Name]
@@ -71,7 +84,7 @@ Why will users care? What's the benefit?
 - Other teams, systems, or work this depends on
 
 ## Timeline
-- Target dates (if known), or "TBD pending scoping"
+- Target dates when known, or "set after engineering scoping"
 ```
 
 ### Advanced Patterns
@@ -172,8 +185,8 @@ Core functionality:
 ## Timeline
 
 - Scoping: 1 week
-- Implementation: TBD pending scoping
-- Target: Q2 2026
+- Implementation: set after engineering scoping
+- Target: confirmed launch window
 
 ---
 
@@ -241,10 +254,6 @@ Options presented to user:
 ---
 
 Anything to adjust or add?
-
-## Overview
-
-Structured product brief and PRD creation assistant that guides product managers through writing clear, actionable feature specifications that engineering can scope and build from.
 
 ## Prerequisites
 

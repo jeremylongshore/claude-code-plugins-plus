@@ -10159,7 +10159,7 @@
       "name": "pm-ai-partner",
       "source": "./plugins/productivity/pm-ai-partner",
       "description": "12 PM-specific agent skills, 6 workflow commands, 3 automation hooks for Product Managers",
-      "version": "1.8.0",
+      "version": "1.9.0",
       "category": "productivity",
       "keywords": [
         "product-management",
@@ -10180,10 +10180,10 @@
         "total": 21
       },
       "verification": {
-        "score": 82,
-        "grade": "B",
-        "badge": "silver",
-        "lastValidated": "2026-09-05T00:00:00.000Z"
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-09-09T00:00:00.000Z"
       }
     },
     {

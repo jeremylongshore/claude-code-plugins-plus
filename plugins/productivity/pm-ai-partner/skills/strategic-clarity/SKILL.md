@@ -1,11 +1,10 @@
 ---
 name: strategic-clarity
-description: Guided workflow for establishing team identity, boundaries, and strategic
-  clarity. Use when starting a new role, inheriting ambiguity, when a team lacks clear
-  identity, or when you need to define "what we own" vs "what we don't". Triggers
-  include "strategic clarity", "team identity", "new role", "inherited ambiguity",
+description: Analyze and audit team context to establish identity, boundaries, and strategic
+  clarity. Use when starting a new role, inheriting ambiguity, or defining ownership.
+  Trigger with "strategic clarity", "team identity", "new role", "inherited ambiguity",
   "what does my team own", or "define our boundaries".
-version: 1.8.0
+version: 1.9.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep
@@ -15,12 +14,19 @@ tags:
 - workflow
 - strategic-clarity
 compatibility: Designed for Claude Code
+model: inherit
+effort: medium
+user-invocable: true
 ---
 # Strategic Clarity Workflow
 
 ## Overview
 
-A 4-phase workflow for establishing team identity and strategic positioning.
+A 4-phase workflow for establishing team identity and strategic positioning. Adapt the depth of
+each phase to the decision and apply the
+[evidence and review checklist](references/evidence-and-review.md) before aligning stakeholders.
+
+Use `Glob` to locate charters, `Grep` to trace ownership claims, and `Read` to verify authority.
 
 ```
 +---------+    +---------+    +-----------+    +---------+
@@ -291,7 +297,10 @@ I'll guide you through the appropriate phase.
 
 ## Instructions
 
-Guide the user through the 4-phase strategic clarity workflow (Absorb, Audit, Articulate, Align) as described in the phases above. Determine which phase the user is in, ask context-gathering questions, and produce the appropriate deliverables for that phase.
+1. Determine whether the user is in Absorb, Audit, Articulate, or Align.
+2. Gather only the missing context required for that phase.
+3. Run the phase activities and produce its named deliverables.
+4. Validate the result against the phase checklist before advancing.
 
 ## Examples
 
