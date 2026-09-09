@@ -97,7 +97,7 @@ Across **393 published packages** in the [claude-code-plugins](https://www.npmjs
 | 9   | [`@intentsolutionsio/openbb-terminal`](https://www.npmjs.com/package/@intentsolutionsio/openbb-terminal)                 |      116 |
 | 10  | [`@intentsolutionsio/penetration-tester`](https://www.npmjs.com/package/@intentsolutionsio/penetration-tester)           |      113 |
 
-<sub>Last refreshed 2026-09-08T01:29:49.047Z.</sub>
+<sub>Last refreshed 2026-09-09T01:28:45.548Z.</sub>
 
 <!-- NPM-STATS:END -->
 
