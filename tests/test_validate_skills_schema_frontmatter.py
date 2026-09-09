@@ -45,7 +45,7 @@ def test_schema_version_records_current_agent_contract():
     # plugin-manifest lane (impossible 224.1% rates); 4.0.1 added the portable
     # ${SKILL_DIR}/${PLUGIN_ROOT} spellings. The fail-closed allowed-tools
     # semantics this test pins are unchanged from 4.0.0.
-    assert validator.SCHEMA_VERSION == "4.2.0"
+    assert validator.SCHEMA_VERSION == "4.1.0"
 
 
 def test_current_skill_model_and_background_fields_are_accepted():

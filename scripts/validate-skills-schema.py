@@ -208,7 +208,7 @@ except ImportError:
 #                       at every tier; unknown but well-formed names remain
 #                       advisory. Approved by ratified blueprint 727 E1.11 and
 #                       the owner's written execution directive.
-# 4.2.0 (2026-09-09)  — current Anthropic subagent contract: recognize the
+# 4.1.0 (2026-09-09 amendment) — current Anthropic subagent contract: recognize the
 #                       optional experimental object and validate cacheTtl as
 #                       5m|1h; accept permissionMode: manual and documented full
 #                       Claude model IDs. Required fields and tier semantics are

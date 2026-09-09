@@ -150,7 +150,7 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
-## [4.2.0] — 2026-09-09
+## [4.1.0] — 2026-09-09 compatibility amendment
 
 ### Added
 
