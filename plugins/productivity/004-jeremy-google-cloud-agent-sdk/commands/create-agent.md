@@ -10,7 +10,6 @@ model: sonnet
 Use Google's maintained `agents-cli` to create or enhance an Agent Development
 Kit (ADK) application.
 
-
 ## Important Scope Check
 
 This command creates a runnable Google agent application. It does **not** create

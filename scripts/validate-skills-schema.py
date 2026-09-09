@@ -214,7 +214,7 @@ except ImportError:
 #                       Claude model IDs. Required fields and tier semantics are
 #                       unchanged. Source: code.claude.com/docs/en/sub-agents.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "4.2.0"
+SCHEMA_VERSION = "4.1.0"
 
 
 def compute_compliance_rate(compliant_count: int, total_count: int) -> float:

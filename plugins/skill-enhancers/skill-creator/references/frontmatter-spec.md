@@ -123,15 +123,6 @@ version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 ```
 
-### compatibility
-
-- **Type**: string, maximum 500 characters
-- **Purpose**: State environment or product requirements in prose
-
-```yaml
-compatibility: Requires Claude Code 2.1.248+ and Python 3.11+.
-```
-
 ### tags
 
 - **Type**: array of strings

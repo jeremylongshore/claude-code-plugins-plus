@@ -1847,7 +1847,7 @@
         "email": "jeremy@intentsolutions.io"
       },
       "authorType": "official",
-      "version": "2.25.0",
+      "version": "2.26.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -9847,7 +9847,7 @@
         "email": "jeremy@intentsolutions.io"
       },
       "authorType": "official",
-      "version": "5.21.0",
+      "version": "5.22.0",
       "isFeatured": true,
       "isNew": false,
       "badges": [],
@@ -16537,7 +16537,7 @@
         "Agent"
       ],
       "compatibleWith": [],
-      "version": "5.21.0",
+      "version": "5.22.0",
       "parentPlugin": {
         "name": "skill-creator",
         "category": "skill-enhancers"
@@ -43653,7 +43653,7 @@
         "WebSearch"
       ],
       "compatibleWith": [],
-      "version": "2.25.0",
+      "version": "2.26.0",
       "parentPlugin": {
         "name": "004-jeremy-google-cloud-agent-sdk",
         "category": "productivity"
@@ -72058,7 +72058,7 @@
         "AskUserQuestion"
       ],
       "compatibleWith": [],
-      "version": "5.21.0",
+      "version": "5.22.0",
       "parentPlugin": {
         "name": "skill-creator",
         "category": "skill-enhancers"

@@ -209,7 +209,6 @@ agent: Explore          # Fast codebase exploration
 
 ### background
 
-
 - **Type**: boolean
 - **Default**: true when `context: fork`
 - **Purpose**: Set `false` to wait for a forked skill's result in the invoking turn
