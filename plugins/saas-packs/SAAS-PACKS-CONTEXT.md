@@ -23,7 +23,7 @@ bd blocked | head -20
 
 | Tier | Vendors | Skills Each | Total |
 |------|---------|-------------|-------|
-| Flagship+ | 5 | 30 | 150 |
+| Flagship+ | 4 | 30 | 120 |
 | Flagship | 8 | 24 | 192 |
 | Pro | 22 | 18 | 396 |
 | Standard | 15 | 12 | 180 |
