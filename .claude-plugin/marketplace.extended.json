@@ -11800,13 +11800,7 @@
       },
       "homepage": "https://github.com/hashgraph-online/hol-guard",
       "repository": "https://github.com/hashgraph-online/hol-guard-plugin",
-      "license": "Apache-2.0",
-      "verification": {
-        "score": 90,
-        "grade": "A",
-        "badge": "gold",
-        "lastValidated": "2026-09-08T00:00:00.000Z"
-      }
+      "license": "Apache-2.0"
     }
   ]
 }
