@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/004-jeremy-google-cloud-agent-sdk",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Build, evaluate, deploy, publish, and migrate Google ADK applications with Google's maintained agents-cli workflow.",
   "keywords": [
     "agent-development-kit",

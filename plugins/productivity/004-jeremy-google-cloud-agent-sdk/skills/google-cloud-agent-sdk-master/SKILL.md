@@ -10,7 +10,7 @@ description: >-
   "migrate Agent Starter Pack".
 argument-hint: "<build|enhance|evaluate|deploy|publish|migrate> [project-path]"
 allowed-tools: Read,Glob,Grep,WebFetch,WebSearch
-version: 2.25.0
+version: 2.26.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

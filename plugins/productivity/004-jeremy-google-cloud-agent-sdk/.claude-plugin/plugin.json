@@ -1,6 +1,6 @@
 {
   "name": "004-jeremy-google-cloud-agent-sdk",
-  "version": "2.25.0",
+  "version": "2.26.0",
   "description": "Build, evaluate, deploy, publish, and migrate Google ADK applications with Google's maintained agents-cli workflow for Agent Runtime, Cloud Run, GKE, and Gemini Enterprise.",
   "author": {
     "name": "Jeremy Longshore",
