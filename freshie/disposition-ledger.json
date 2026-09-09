@@ -3,7 +3,7 @@
   "authority": "Blueprint 727 §8; Freshie graded export",
   "source": {
     "path": "freshie/grades.csv",
-    "sha256": "90c9fdb157b656dbfd210a9e20bebdf6a9bd2ad5694fb77e0519c7910d2d40c0",
+    "sha256": "dd599166cab2489e8c3a7533771bc2ec4d9f5ff7eae8c78d8118fdcfeddcf3b5",
     "artifact_count": 3532
   },
   "rule_order": [
@@ -9320,8 +9320,8 @@
     },
     {
       "path": "plugins/productivity/pm-ai-partner/skills/builder/SKILL.md",
-      "grade": "B",
-      "score": 80,
+      "grade": "A",
+      "score": 94,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -9331,8 +9331,8 @@
     },
     {
       "path": "plugins/productivity/pm-ai-partner/skills/competitor-analyst/SKILL.md",
-      "grade": "B",
-      "score": 84,
+      "grade": "A",
+      "score": 94,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -9342,8 +9342,8 @@
     },
     {
       "path": "plugins/productivity/pm-ai-partner/skills/data-analyst/SKILL.md",
-      "grade": "B",
-      "score": 82,
+      "grade": "A",
+      "score": 96,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -9353,8 +9353,8 @@
     },
     {
       "path": "plugins/productivity/pm-ai-partner/skills/devil-advocate/SKILL.md",
-      "grade": "B",
-      "score": 88,
+      "grade": "A",
+      "score": 94,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -9364,8 +9364,8 @@
     },
     {
       "path": "plugins/productivity/pm-ai-partner/skills/hypothesis-tester/SKILL.md",
-      "grade": "B",
-      "score": 83,
+      "grade": "A",
+      "score": 92,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -9375,8 +9375,8 @@
     },
     {
       "path": "plugins/productivity/pm-ai-partner/skills/meeting-prep/SKILL.md",
-      "grade": "C",
-      "score": 79,
+      "grade": "A",
+      "score": 93,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -9386,8 +9386,8 @@
     },
     {
       "path": "plugins/productivity/pm-ai-partner/skills/product-brief/SKILL.md",
-      "grade": "C",
-      "score": 76,
+      "grade": "A",
+      "score": 92,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -9397,8 +9397,8 @@
     },
     {
       "path": "plugins/productivity/pm-ai-partner/skills/stakeholder-update/SKILL.md",
-      "grade": "B",
-      "score": 80,
+      "grade": "A",
+      "score": 95,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -9408,8 +9408,8 @@
     },
     {
       "path": "plugins/productivity/pm-ai-partner/skills/strategic-clarity/SKILL.md",
-      "grade": "C",
-      "score": 75,
+      "grade": "A",
+      "score": 92,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -9419,8 +9419,8 @@
     },
     {
       "path": "plugins/productivity/pm-ai-partner/skills/technical-analyst/SKILL.md",
-      "grade": "B",
-      "score": 84,
+      "grade": "A",
+      "score": 95,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -9430,8 +9430,8 @@
     },
     {
       "path": "plugins/productivity/pm-ai-partner/skills/thought-partner/SKILL.md",
-      "grade": "B",
-      "score": 88,
+      "grade": "A",
+      "score": 98,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
@@ -9441,8 +9441,8 @@
     },
     {
       "path": "plugins/productivity/pm-ai-partner/skills/writer/SKILL.md",
-      "grade": "B",
-      "score": 86,
+      "grade": "A",
+      "score": 96,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
