@@ -58,6 +58,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+function hasPathSegment(filePath: string, segment: string): boolean {
+  return filePath.replaceAll('\\', '/').split('/').includes(segment);
+}
+
 function validateStringArray(value: unknown, field: string): string[] {
   if (!Array.isArray(value)) {
     return [`Field '${field}' must be an array`];
@@ -324,9 +328,9 @@ export async function validateFrontmatterFile(
     errors: [],
   };
 
-  if (filePath.includes('/commands/')) {
+  if (hasPathSegment(filePath, 'commands')) {
     result.fileType = 'command';
-  } else if (filePath.includes('/agents/')) {
+  } else if (hasPathSegment(filePath, 'agents')) {
     result.fileType = 'agent';
   }
 
@@ -373,7 +377,7 @@ export async function findFrontmatterFiles(baseDir: string): Promise<string[]> {
         if (entry.isDirectory()) {
           await walkDir(fullPath);
         } else if (entry.name.endsWith('.md')) {
-          if (fullPath.includes('/commands/') || fullPath.includes('/agents/')) {
+          if (hasPathSegment(fullPath, 'commands') || hasPathSegment(fullPath, 'agents')) {
             files.push(fullPath);
           }
         }

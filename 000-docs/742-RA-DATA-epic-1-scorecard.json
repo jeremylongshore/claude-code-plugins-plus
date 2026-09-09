@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 352,
         "raw_tracked_plugin_skill_files": 3032,
-        "tracked_files": 23977
+        "tracked_files": 23978
       }
     },
     "2": {
@@ -286,7 +286,7 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "distinct_values": 61,
+        "distinct_values": 62,
         "invalid_or_empty": 0,
         "target_free_text_values": 0,
         "values": [
@@ -367,12 +367,16 @@
             "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18, a persistent local filesystem (the observe-decide-act loop passes state through local turn files), and ~/.kobiton/.credentials written by /automate:setup — scripts/appium.js reads that file directly and never calls the MCP getCredential tool, so it is required, not a fallback. An authenticated Kobiton MCP connection is additionally useful for device selection."
           },
           {
-            "count": 3197,
+            "count": 3196,
             "value": "Designed for Claude Code"
           },
           {
             "count": 1,
             "value": "Designed for Claude Code and Continue"
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code and other Agent Skills clients; commands require Python 3.11+, uv, and Node.js"
           },
           {
             "count": 1,
@@ -1956,7 +1960,7 @@
         "invalid_patterns": 0,
         "invisible_files": 5,
         "target_invisible_files": 0,
-        "tracked_files": 23977
+        "tracked_files": 23978
       }
     },
     "47": {

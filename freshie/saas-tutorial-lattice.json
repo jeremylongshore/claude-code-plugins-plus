@@ -4,10 +4,10 @@
   "semantics": "Family-name matches are review candidates, not automatic quality or retirement verdicts.",
   "sources": {
     "catalog": ".claude-plugin/marketplace.extended.json",
-    "catalog_sha256": "5e57a1cb12b880d2cebf41b9d45f59d53462da1fb718cf827c71b21bd4589951",
+    "catalog_sha256": "c9e9f9b6669a46d2ae5687441ee7f97eacb933d386cf7176bff9170aec2009c5",
     "curated_manifest": "skills/.curated/MANIFEST.json",
     "curated_manifest_sha256": "b9eb4b4ff1681f910a76cfde923e57963ca0a07ff7eb46b9c8b30b823405d787",
-    "tracked_inventory_sha256": "2111d77abc4aa664f88fa148e9da3b99cb8ac9ee9033f79e798581c0aba39b4a"
+    "tracked_inventory_sha256": "a7bbb1839a00393e52ef5fe2b1395f3512c3ed3bccb2f99b46672c01bfc3b6f3"
   },
   "family_definition": [
     "advanced-troubleshooting",
