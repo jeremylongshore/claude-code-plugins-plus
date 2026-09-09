@@ -123,14 +123,13 @@ version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 ```
 
-### compatible-with
+### compatibility
 
-- **Type**: string (comma-separated)
-- **Purpose**: Platforms this skill is compatible with
-- **Valid values**: `claude-code`, `codex`, `openclaw`, `aider`, `continue`, `cursor`, `windsurf`
+- **Type**: string, maximum 500 characters
+- **Purpose**: State environment or product requirements in prose
 
 ```yaml
-compatible-with: claude-code, codex, openclaw
+compatibility: Requires Claude Code 2.1.248+ and Python 3.11+.
 ```
 
 ### tags
@@ -159,7 +158,7 @@ metadata:
 - **Type**: string (comma or space-delimited)
 - **Purpose**: Pre-approved tools the skill can use without user confirmation
 - **Status**: Experimental in AgentSkills.io; widely used in Claude Code
-- **Valid tools**: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch, Task, NotebookEdit, AskUserQuestion, Skill
+- **Common built-ins**: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch, Agent, NotebookEdit, AskUserQuestion, Skill. Consult the official tools reference or the validator's `VALID_TOOLS` registry for the current complete set.
 - **MCP tools**: `ServerName:tool_name` format
 
 ```yaml
@@ -229,7 +228,7 @@ user-invocable: true   # Visible in / menu (default)
 
 - **Type**: string
 - **Default**: inherit (uses parent/caller model)
-- **Values**: `inherit`, `sonnet`, `haiku`, `opus`, or specific model ID
+- **Values**: `inherit`, `sonnet`, `haiku`, `opus`, `fable`, or a supported full model ID
 
 ```yaml
 model: inherit                    # Use caller's model (recommended)
@@ -244,9 +243,9 @@ model: sonnet                     # Use Sonnet for balanced tasks
 
 - **Type**: string
 - **Default**: (inherits from caller)
-- **Values**: `low`, `medium`, `high`, `max`
+- **Values**: `low`, `medium`, `high`, `xhigh`, `max`
 - **Purpose**: Override model reasoning effort level
-- **Note**: `max` is only available with Opus 4.6
+- **Note**: Available levels depend on the selected model
 - **Added**: v2.1.80 (March 2026)
 
 ```yaml
@@ -297,11 +296,12 @@ hooks:
 
 | Field | Status | Migration |
 |-------|--------|-----------|
-| `when_to_use` | Deprecated | Move content to `description` |
 | `mode` | Deprecated | Use `disable-model-invocation` instead |
+| `compatible-with` | Deprecated | Replace with Agent Skills `compatibility` prose |
 
-**Note**: `version`, `author`, `license`, `tags`, and `compatible-with` are valid TOP-LEVEL fields.
-The marketplace 100-point validator scores them at top-level. Do NOT nest them under `metadata:`.
+**Note**: `version`, `author`, `license`, `compatibility`, and `tags` are valid
+top-level fields. The marketplace validator scores them at top level. Keep
+`metadata` as a map for custom data rather than duplicating those fields.
 
 ---
 
@@ -332,8 +332,7 @@ agent: general-purpose
 disable-model-invocation: false
 user-invocable: true
 
-# Discovery (optional)
-compatible-with: claude-code, codex, openclaw
+# Marketplace discovery
 tags: [devops, automation]
 
 # Optional spec fields
