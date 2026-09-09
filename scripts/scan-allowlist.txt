@@ -73,6 +73,18 @@ plugins/mcp/a2a-client/dist/index.js:secret-exfil-cooccur  A2A reads only its ex
 plugins/mcp/a2a-client/dist/index.js:dynamic-exec  generated AJV schema compiler code from fixed MCP SDK schemas; no untrusted source text reaches the constructor; reviewed bundle and 126-test lane 2026-09-01
 plugins/mcp/a2a-client/dist/index.js:long-base64-blob  bundled dependency WASM payload from the pinned A2A and MCP dependency graph; npm provenance, audit, deterministic bundle, and package smoke reviewed 2026-09-01
 
+# ── exact-pinned external mirrors recovered 2026-09-09. ──
+# Boycott Filter probes only its loopback health endpoint. Claude Reflect and
+# Hyperfocus hooks execute fixed, in-plugin scripts with no dynamic command
+# construction; their upstream suites pass at the pinned commits recorded in
+# the nearest .source.json markers.
+plugins/community/boycott-filter/scripts/setup.sh:outbound-network  both curl calls probe only http://127.0.0.1:7847/health for the local server started by this script; reviewed at upstream 680f7978b8eabcae8d1ed4f6ee125f1be42cedfb with 5 tests passing
+plugins/community/claude-reflect/DISTRIBUTION.md:hook-definition  documentation describes the same fixed in-plugin Python hooks declared below; reviewed at upstream 8dc9db43c9bfaa53b567d63f3f48385bcf3d3084 with 222 tests passing
+plugins/community/claude-reflect/hooks/hooks.json:hook-definition  four lifecycle hooks invoke only fixed Python files beneath CLAUDE_PLUGIN_ROOT; no network, credentials, or dynamic command construction; reviewed at upstream 8dc9db43c9bfaa53b567d63f3f48385bcf3d3084 with 222 tests passing
+plugins/productivity/hyperfocus/.claude-plugin/plugin.json:hook-definition  manifest references the fixed local hook contract; no network or credential surface; reviewed at upstream f69200e5a3ff32fd929405033c442f250fdf78e1 with 22 tests passing
+plugins/productivity/hyperfocus/.codex-plugin/plugin.json:hook-definition  manifest references the fixed local hook contract; no network or credential surface; reviewed at upstream f69200e5a3ff32fd929405033c442f250fdf78e1 with 22 tests passing
+plugins/productivity/hyperfocus/hooks/hooks.json:hook-definition  SessionStart invokes only the fixed in-plugin hyperfocus-hook.sh with bounded data/root/project arguments; no network, credentials, or dynamic command construction; reviewed at upstream f69200e5a3ff32fd929405033c442f250fdf78e1 with 22 tests passing
+
 # ── agent-systems-toolkit — offline evidence-manifest validation. ──
 plugins/skill-enhancers/agent-systems-toolkit/skills/production-upgrade/scripts/audit_evidence.py:outbound-network  imports urllib.parse.urlsplit solely for offline HTTPS URL validation; contains no request client, socket use, or command execution — reviewed 2026-09-05
 
