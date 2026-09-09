@@ -7,7 +7,7 @@ description: >-
   or prepare an analytics report. Trigger with "/analytics", "check my analytics",
   "how's my traffic", "site stats", "traffic report", or "analytics brief".
 allowed-tools: Read, Bash(date:*), Bash(curl:*), Bash(python3:*), Bash(source:*), Agent
-version: 1.4.0
+version: 1.5.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:
