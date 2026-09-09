@@ -689,8 +689,8 @@
     {
       "slug": "agent-creator",
       "name": "agent-creator",
-      "description": "Create production-grade agent .md files aligned with the Anthropic 2026 spec (16-field schema). Also validates existing agents against the marketplace compliance rules. Use when building custom subagents, reviewing agent quality, or creating parallel agent architectures for orchestrator skills. Trigger with \"/agent-creator\", \"create an agent\", \"build a subagent\", or \"validate my agent\". Make sure to use this skill whenever creating agents/*.md files for plugins or standalone use.",
-      "version": "5.20.0",
+      "description": "Create production-grade agent .md files aligned with the current Anthropic 17-field subagent schema. Also validates existing agents against the marketplace compliance rules. Use when building custom subagents, reviewing agent quality, or creating parallel agent architectures for orchestrator skills. Trigger with \"/agent-creator\", \"create an agent\", \"build a subagent\", or \"validate my agent\". Make sure to use this skill whenever creating agents/*.md files for plugins or standalone use.",
+      "version": "5.22.0",
       "category": "skill-enhancers",
       "parentPlugin": "skill-creator",
       "requires_env": [],
@@ -15485,8 +15485,8 @@
     {
       "slug": "google-cloud-agent-sdk-master",
       "name": "google-cloud-agent-sdk-master",
-      "description": "Execute automatic activation for all google cloud agent development kit (adk) Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.",
-      "version": "2.24.0",
+      "description": "Build, evaluate, deploy, publish, or modernize Google ADK agent applications with Google's maintained agents-cli workflow. Use when a request mentions Google Agent Development Kit, agents-cli, Gemini Enterprise Agent Platform, Agent Runtime, Cloud Run or GKE agent deployment, or migration from Agent Starter Pack. For Claude Code agents/*.md definitions, use agent-creator instead. Trigger with \"build a Google ADK agent\", \"deploy this ADK app\", or \"migrate Agent Starter Pack\".",
+      "version": "2.26.0",
       "category": "productivity",
       "parentPlugin": "004-jeremy-google-cloud-agent-sdk",
       "requires_env": [],
@@ -30858,7 +30858,7 @@
       "slug": "skill-creator",
       "name": "skill-creator",
       "description": "Create production-grade agent skills aligned with the 2026 AgentSkills.io spec and Anthropic best practices (2026). Also validates existing skills against the Intent Solutions 100-point rubric. Use when building, testing, validating, or optimizing Claude Code skills. Trigger with \"/skill-creator\", \"create a skill\", \"validate my skill\", or \"check skill quality\". Make sure to use this skill whenever creating a new skill, slash command, or agent capability.",
-      "version": "5.20.0",
+      "version": "5.22.0",
       "category": "skill-enhancers",
       "parentPlugin": "skill-creator",
       "requires_env": [],
@@ -35296,7 +35296,7 @@
     }
   ],
   "count": 2941,
-  "generatedAt": "2026-09-07T04:55:33.464Z",
+  "generatedAt": "2026-09-09T06:02:34.958Z",
   "categories": [
     "ai-agency",
     "ai-ml",
