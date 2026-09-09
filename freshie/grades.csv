@@ -279,7 +279,7 @@ plugins/ai-ml/regression-analysis-tool/skills/performing-regression-analysis,A,9
 plugins/ai-ml/sentiment-analysis-tool/skills/analyzing-text-sentiment,A,94
 plugins/ai-ml/time-series-forecaster/skills/forecasting-time-series-data,A,94
 plugins/ai-ml/transfer-learning-adapter/skills/adapting-transfer-learning-models,A,97
-plugins/analytics/web-analytics/skills/web-analytics,C,78
+plugins/analytics/web-analytics/skills/web-analytics,A,99
 plugins/api-development/api-authentication-builder/skills/building-api-authentication,A,98
 plugins/api-development/api-batch-processor/skills/processing-api-batches,A,98
 plugins/api-development/api-cache-manager/skills/managing-api-cache,A,100
