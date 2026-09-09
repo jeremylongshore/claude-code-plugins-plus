@@ -39,8 +39,9 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SPOTLIGHTS = join(ROOT, 'marketplace', 'src', 'data', 'spotlights.json');
 const RENDERER = join(ROOT, 'scripts', 'render-spotlight.mjs');
 

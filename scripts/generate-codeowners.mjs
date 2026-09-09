@@ -32,8 +32,9 @@
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CATALOG = join(ROOT, '.claude-plugin', 'marketplace.extended.json');
 const CODEOWNERS = join(ROOT, '.github', 'CODEOWNERS');
 

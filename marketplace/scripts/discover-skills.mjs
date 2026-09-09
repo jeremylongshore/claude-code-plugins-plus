@@ -49,7 +49,8 @@
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { createRequire } from 'node:module';
-import { join, dirname, relative } from 'path';
+import * as nodePath from 'node:path';
+import { join, dirname, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import {
   assertGeneratedContentCurrent,
@@ -240,8 +241,16 @@ function generateSlug(name) {
 /**
  * Extract category from plugin path
  */
-function extractCategory(pluginPath) {
-  const parts = pluginPath.split('/');
+export function normalizePortablePath(candidate, pathApi = nodePath) {
+  return String(candidate).split(pathApi.sep).join('/');
+}
+
+export function repositoryRelativePath(root, candidate, pathApi = nodePath) {
+  return normalizePortablePath(pathApi.relative(root, candidate), pathApi);
+}
+
+export function extractCategory(pluginPath, pathApi = nodePath) {
+  const parts = normalizePortablePath(pluginPath, pathApi).split('/');
   const pluginsIndex = parts.indexOf('plugins');
   if (pluginsIndex >= 0 && parts.length > pluginsIndex + 1) {
     return parts[pluginsIndex + 1];
@@ -252,8 +261,8 @@ function extractCategory(pluginPath) {
 /**
  * Extract plugin name from path
  */
-function extractPluginName(pluginPath) {
-  const parts = pluginPath.split('/');
+export function extractPluginName(pluginPath, pathApi = nodePath) {
+  const parts = normalizePortablePath(pluginPath, pathApi).split('/');
   return parts[parts.length - 1] || 'unknown';
 }
 
@@ -430,7 +439,7 @@ function processSkillFile(filePath, opts = {}) {
         //   .../plugin/skills/foo/...               → reject (inside skills/)
         //   .../plugin/skills/foo/sub/...           → reject
         //   .../plugin/                             → accept (no skills/ above)
-        const relFromRoot = relative(ROOT_DIR, currentDir);
+        const relFromRoot = repositoryRelativePath(ROOT_DIR, currentDir);
         const skillsIdx = relFromRoot.split('/').indexOf('skills');
         // Reject if `skills` appears anywhere BEFORE the leaf — that means
         // we're inside the skills/ subtree of a higher-level plugin.
@@ -447,7 +456,7 @@ function processSkillFile(filePath, opts = {}) {
     // If no .claude-plugin found, use the directory structure to infer plugin dir
     // Skills are typically in plugins/category/plugin-name/skills/skill-name/SKILL.md
     if (!pluginDir) {
-      const parts = filePath.split('/');
+      const parts = normalizePortablePath(filePath).split('/');
       const skillsIndex = parts.findIndex(p => p === 'skills');
       if (skillsIndex >= 2) {
         // Go up to plugin-name level (2 levels before 'skills')
@@ -462,7 +471,7 @@ function processSkillFile(filePath, opts = {}) {
 
     const category = extractCategory(pluginDir);
     const pluginMetadata = getPluginMetadata(pluginDir);
-    const relativePath = relative(ROOT_DIR, filePath);
+    const relativePath = repositoryRelativePath(ROOT_DIR, filePath);
 
     // Generate slug from name
     const name = optionalStringField(frontmatter, 'name', 'Unnamed Skill');
@@ -504,7 +513,7 @@ function processSkillFile(filePath, opts = {}) {
       parentPlugin: {
         name: pluginMetadata.name,
         category: category,
-        path: relative(ROOT_DIR, pluginDir),
+        path: repositoryRelativePath(ROOT_DIR, pluginDir),
         version: pluginMetadata.version,
         description: pluginMetadata.description
       },

@@ -26,9 +26,10 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { MODEL_ID, classifyModelToken } from './lib/model-id-classifier.mjs';
 
-const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 export function isCanonicalLayer(path) {
   if (path.startsWith('scripts/adapters/')) return false;

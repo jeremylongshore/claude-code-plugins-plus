@@ -30,3 +30,11 @@ test('red run: every source needs a dated verification receipt', () => {
   delete registry.harnesses[0].sourceVerifiedAt;
   assert.match(validateRegistry(registry).join('\n'), /sourceVerifiedAt must be an ISO date/);
 });
+
+test('red run: registry v1 cannot silently inherit the v2 source authority', () => {
+  const registry = readRegistry();
+  registry.schemaVersion = 1;
+  registry.portableArtifact.source = 'skills/';
+  assert.match(validateRegistry(registry).join('\n'), /schemaVersion must be 2/);
+  assert.match(validateRegistry(registry).join('\n'), /canonical plugin skill tree/);
+});

@@ -26,6 +26,7 @@ CI invokes ``tests/ci/``, and a regression test that never executes is not
 coverage.
 """
 
+import re
 import shutil
 import subprocess
 import tempfile
@@ -37,14 +38,37 @@ PACKAGE_JSON_GENERATOR = REPO_ROOT / "scripts" / "generate-plugin-package-jsons.
 TOC_GENERATOR = REPO_ROOT / "scripts" / "generate-readme-toc.mjs"
 
 # Exactly the two scripts `npm run sync-marketplace` invokes after
-# sync-marketplace.cjs. The wider `.pathname` usage elsewhere in scripts/ is
-# deliberately out of scope here -- see the issue thread.
+# sync-marketplace.cjs. These retain the original #1436 chain-specific checks;
+# the repository-wide regression below covers the follow-on audit surface.
 CHAIN_GENERATORS = (PACKAGE_JSON_GENERATOR, TOC_GENERATOR)
 
 PATHNAME_FORM = "new URL(import.meta.url).pathname"
 CORRECT_FORM = "fileURLToPath(import.meta.url)"
 
 NODE = shutil.which("node")
+
+FIRST_PARTY_CODE_ROOTS = (
+    REPO_ROOT / "scripts",
+    REPO_ROOT / "packages",
+    REPO_ROOT / "marketplace",
+    REPO_ROOT / "tests",
+)
+JS_FAMILY_SUFFIXES = {
+    ".astro",
+    ".cjs",
+    ".cts",
+    ".js",
+    ".jsx",
+    ".mjs",
+    ".mts",
+    ".ts",
+    ".tsx",
+}
+IGNORED_PARTS = {"node_modules", "dist", "fixtures"}
+IMPORT_META_PATHNAME = re.compile(
+    r"(?:new\s+URL\s*\([^)]*import\.meta\.url[^)]*\)|import\.meta\.url)\s*\.pathname",
+    re.DOTALL,
+)
 
 
 class RootDerivationTests(unittest.TestCase):
@@ -96,6 +120,35 @@ class RootDerivationTests(unittest.TestCase):
                     [],
                     f"{generator.name}: URL.pathname is back in executable code",
                 )
+
+    def test_first_party_code_has_no_import_meta_url_pathname_filesystem_conversion(
+        self,
+    ) -> None:
+        """Inventory the wider #1436 surface, not only the original chain.
+
+        ``URL.pathname`` is useful for URL logic, but converting ``import.meta.url``
+        to a filesystem path through it is wrong on Windows. Source-owned plugin
+        mirrors are excluded because their bytes must be fixed upstream.
+        """
+        offenders = []
+        for root in FIRST_PARTY_CODE_ROOTS:
+            for candidate in root.rglob("*"):
+                if (
+                    not candidate.is_file()
+                    or candidate.suffix not in JS_FAMILY_SUFFIXES
+                    or any(part in IGNORED_PARTS for part in candidate.parts)
+                ):
+                    continue
+                source = candidate.read_text(encoding="utf-8")
+                if IMPORT_META_PATHNAME.search(source):
+                    offenders.append(candidate.relative_to(REPO_ROOT).as_posix())
+
+        self.assertEqual(
+            offenders,
+            [],
+            "first-party filesystem code must use fileURLToPath(import.meta.url): "
+            + ", ".join(offenders),
+        )
 
 
 @unittest.skipIf(NODE is None, "node is not on PATH")

@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-// Official Link Allowlist Validation Gate
-// Purpose: Enforce 3-domain allowlist for external links across markdown files
+// Official Link Blocklist Validation Gate
+// Purpose: Refuse invalid URLs and configured blocked domains across markdown files
 // Exit codes: 0 = All links allowed, 1 = Disallowed links found
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,18 +19,20 @@ const BLOCKED_DOMAINS = [
   // Example: 'malicious-site.com',
 ];
 
-// Additional allowed patterns (for development/relative links)
-const ALLOWED_PATTERNS = [
-  /^https?:\/\/localhost/,
-  /^https?:\/\/127\.0\.0\.1/,
-  /^https?:\/\/0\.0\.0\.0/,
-  /^https?:\/\/\[::1\]/, // IPv6 localhost
-  /^https?:\/\/.*\.local/, // Local network devices (.local domains)
-  /^https?:\/\/example\.com/, // Reserved documentation domain
-  /^https?:\/\/.*example\.com/, // Subdomains of example.com
-  /\[REGION\]/, // Placeholder URLs with template variables
-  /\[PROJECT/, // Placeholder URLs with template variables
-];
+// Additional allowed hosts for development/relative links. These are checked
+// against URL.hostname below, so ports, paths, queries, and fragments do not
+// affect the decision, while lookalike domains and URL credentials do.
+const EXACT_DEVELOPMENT_HOSTS = new Set([
+  'localhost',
+  '127.0.0.1',
+  '0.0.0.0',
+  '[::1]', // IPv6 localhost; Node's URL.hostname retains the brackets.
+]);
+
+const DEVELOPMENT_HOST_SUFFIXES = ['.local'];
+const RESERVED_DOCUMENTATION_HOST = 'example.com';
+const PLACEHOLDER_PATTERN = /\[(?:REGION|PROJECT[A-Z0-9_]*)\]/g;
+const RAW_URL_TRAILING_DELIMITERS = new Set([',', ';', ']', "'", '"', '`']);
 
 // NOTE: This validator is configured to BLOCK known bad domains
 // rather than ALLOW only specific domains, since this is an open-source
@@ -51,13 +53,111 @@ function log(message, color = 'reset') {
 }
 
 // Check if domain is blocked
-function isDomainBlocked(hostname) {
-  for (const blockedDomain of BLOCKED_DOMAINS) {
-    if (hostname === blockedDomain || hostname.endsWith(`.${blockedDomain}`)) {
+function normalizeHostname(hostname) {
+  return hostname.toLowerCase().replace(/\.+$/, '');
+}
+
+function isDomainBlocked(hostname, blockedDomains = BLOCKED_DOMAINS) {
+  const normalizedHostname = normalizeHostname(hostname);
+  for (const blockedDomain of blockedDomains) {
+    const normalizedBlockedDomain = normalizeHostname(blockedDomain);
+    if (
+      normalizedBlockedDomain &&
+      (normalizedHostname === normalizedBlockedDomain ||
+        normalizedHostname.endsWith(`.${normalizedBlockedDomain}`))
+    ) {
       return true;
     }
   }
   return false;
+}
+
+function isDevelopmentHostnameAllowed(hostname) {
+  const normalizedHostname = normalizeHostname(hostname);
+
+  if (EXACT_DEVELOPMENT_HOSTS.has(normalizedHostname)) {
+    return true;
+  }
+
+  if (
+    DEVELOPMENT_HOST_SUFFIXES.some(
+      (suffix) => normalizedHostname.endsWith(suffix) && normalizedHostname.length > suffix.length,
+    )
+  ) {
+    return true;
+  }
+
+  return (
+    normalizedHostname === RESERVED_DOCUMENTATION_HOST ||
+    normalizedHostname.endsWith(`.${RESERVED_DOCUMENTATION_HOST}`)
+  );
+}
+
+function parseHttpUrl(url) {
+  try {
+    return new URL(url);
+  } catch {
+    // Continue below for raw Markdown/code-sample delimiters.
+  }
+
+  let candidate = url;
+
+  // Raw URLs in Markdown prose can include a closing quote, backtick, or
+  // comma that belongs to the surrounding sentence/code sample. Retry only
+  // after URL parsing fails, and only for those unambiguous delimiters.
+  while (candidate.length > 0 && RAW_URL_TRAILING_DELIMITERS.has(candidate.at(-1))) {
+    candidate = candidate.slice(0, -1);
+  }
+
+  if (candidate === url) {
+    return null;
+  }
+
+  try {
+    return new URL(candidate);
+  } catch {
+    return null;
+  }
+}
+
+function resolveHttpUrl(url) {
+  let hasPlaceholder = false;
+  const substitutedUrl = url.replace(PLACEHOLDER_PATTERN, () => {
+    hasPlaceholder = true;
+    return 'placeholder';
+  });
+  const parsedUrl = parseHttpUrl(url);
+  const placeholderUrl = !parsedUrl && hasPlaceholder ? parseHttpUrl(substitutedUrl) : null;
+  const effectiveUrl = parsedUrl ?? placeholderUrl;
+
+  return { effectiveUrl, hasPlaceholder };
+}
+
+function classifyDevelopmentUrl({ effectiveUrl, hasPlaceholder }) {
+  // Do not let userinfo disguise a lookalike host or turn an allowed host into
+  // a credential sink, including when placeholders make the original URL
+  // intentionally unparsable.
+  if (effectiveUrl && (effectiveUrl.username || effectiveUrl.password)) {
+    return { allowed: false, reason: 'credentials' };
+  }
+
+  if (hasPlaceholder && effectiveUrl) {
+    return { allowed: true, reason: 'development' };
+  }
+
+  if (!effectiveUrl) {
+    return { allowed: false, reason: 'invalid-url' };
+  }
+
+  if (isDevelopmentHostnameAllowed(effectiveUrl.hostname)) {
+    return { allowed: true, reason: 'development' };
+  }
+
+  return { allowed: false, reason: 'not-development-host' };
+}
+
+function isDevelopmentUrlAllowed(url) {
+  return classifyDevelopmentUrl(resolveHttpUrl(url));
 }
 
 function findMarkdownFiles() {
@@ -148,7 +248,7 @@ function extractLinks(markdown) {
   return links;
 }
 
-function isLinkAllowed(url) {
+export function isLinkAllowed(url, blockedDomains = BLOCKED_DOMAINS) {
   // Relative links
   if (url.startsWith('./') || url.startsWith('../') || url.startsWith('#')) {
     return { allowed: true, reason: 'relative' };
@@ -159,29 +259,28 @@ function isLinkAllowed(url) {
     return { allowed: true, reason: 'non-http' };
   }
 
-  // Development patterns
-  for (const pattern of ALLOWED_PATTERNS) {
-    if (pattern.test(url)) {
-      return { allowed: true, reason: 'development' };
-    }
+  const resolvedUrl = resolveHttpUrl(url);
+  const developmentResult = classifyDevelopmentUrl(resolvedUrl);
+  if (developmentResult.reason === 'credentials') return developmentResult;
+  if (!resolvedUrl.effectiveUrl) {
+    return { allowed: false, reason: 'invalid-url', error: 'Invalid URL' };
   }
 
-  // Check against blocklist
-  try {
-    const urlObj = new URL(url);
-    const hostname = urlObj.hostname;
+  const hostname = resolvedUrl.effectiveUrl.hostname;
 
-    // Block malicious domains
-    if (isDomainBlocked(hostname)) {
-      return { allowed: false, reason: 'blocked-domain', domain: hostname };
-    }
-
-    // Allow all other domains
-    return { allowed: true, reason: 'default-allow' };
-  } catch (error) {
-    return { allowed: false, reason: 'invalid-url', error: error.message };
+  // The blocklist always takes precedence, including for development and
+  // placeholder URLs.
+  if (isDomainBlocked(hostname, blockedDomains)) {
+    return { allowed: false, reason: 'blocked-domain', domain: hostname };
   }
+
+  if (developmentResult.allowed) return developmentResult;
+
+  // Allow all other domains
+  return { allowed: true, reason: 'default-allow' };
 }
+
+export { isDevelopmentHostnameAllowed, isDevelopmentUrlAllowed, isDomainBlocked };
 
 function main() {
   const startTime = Date.now();
@@ -279,4 +378,6 @@ function main() {
   }
 }
 
-main();
+if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
+  main();
+}
