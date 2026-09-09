@@ -22,9 +22,9 @@
     "AUTO-MIGRATE": 437,
     "CERTIFY": 0,
     "CERTIFY-PENDING-EVIDENCE": 2748,
-    "CERTIFY-UPSTREAM": 0,
+    "CERTIFY-UPSTREAM": 2,
     "DEEP-REMEDIATE": 2,
-    "QUARANTINE": 347
+    "QUARANTINE": 345
   },
   "artifacts": [
     {
@@ -37264,10 +37264,10 @@
       "grade": "A",
       "score": 90,
       "diagnostics": [],
-      "disposition": "QUARANTINE",
-      "gate": "G1",
+      "disposition": "CERTIFY-UPSTREAM",
+      "gate": "G3",
       "reason_codes": [
-        "SOURCE_COMMIT_UNPINNED"
+        "MIRROR_CLEAN"
       ]
     },
     {
@@ -37275,10 +37275,10 @@
       "grade": "A",
       "score": 90,
       "diagnostics": [],
-      "disposition": "QUARANTINE",
-      "gate": "G1",
+      "disposition": "CERTIFY-UPSTREAM",
+      "gate": "G3",
       "reason_codes": [
-        "SOURCE_COMMIT_UNPINNED"
+        "MIRROR_CLEAN"
       ]
     },
     {

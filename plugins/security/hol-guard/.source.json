@@ -2,7 +2,8 @@
   "synced_from": {
     "repo": "hashgraph-online/hol-guard-plugin",
     "path": "distributions/tons-of-skills-marketplace",
-    "branch": "main"
+    "branch": "main",
+    "source_commit": "8e8d190fdef125d7d09e7da499338cc35bdad08f"
   },
   "last_sync": "2026-09-08T08:33:11.316Z",
   "author": {
