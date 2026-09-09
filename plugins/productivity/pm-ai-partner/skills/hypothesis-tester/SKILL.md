@@ -4,7 +4,7 @@ description: Structured hypothesis formulation, experiment design, and results i
   for Product Managers. Use when the user needs to validate an assumption, design
   an A/B test, or evaluate results. Trigger with "hypothesis", "A/B test", "experiment",
   "validate assumption", "test this", or "should we ship".
-version: 1.9.0
+version: 1.10.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep

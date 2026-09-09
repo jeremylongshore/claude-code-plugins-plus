@@ -4,7 +4,7 @@ description: Collaborative thinking partner for exploring ideas, challenges, and
   Use when the user needs to analyze ambiguity, test assumptions, or compare options.
   Trigger with "think through", "explore", "brainstorm", "help me figure out",
   or an open-ended strategy or priority question.
-version: 1.9.0
+version: 1.10.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep

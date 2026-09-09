@@ -4,7 +4,7 @@ description: Data exploration and analysis partner for Product Managers. Use whe
   the user needs to query data, analyze metrics, create dashboards, or extract insights.
   Trigger with "query", "analyze data", "metrics", "BigQuery", "SQL", "dashboard",
   or "what does the data say".
-version: 1.9.0
+version: 1.10.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Grep, Glob, Bash(npm:*), Bash(node:*)

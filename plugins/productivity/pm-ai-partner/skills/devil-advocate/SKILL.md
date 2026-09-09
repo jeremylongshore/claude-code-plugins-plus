@@ -4,7 +4,7 @@ description: Constructive critic and stress-tester for ideas and proposals. Use 
   the user needs to challenge assumptions, find weaknesses, anticipate objections,
   or strengthen an argument. Trigger with "challenge", "critique", "push back",
   "poke holes", "stress test", "what am I missing", or "play devil's advocate".
-version: 1.9.0
+version: 1.10.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep

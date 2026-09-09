@@ -4,7 +4,7 @@ description: Competitive analysis and market positioning partner for Product Man
   Use when the user needs to analyze competitors, map positioning, or identify feature
   gaps. Trigger with "competitor", "competitive analysis", "market map", "feature
   comparison", "how does X compare", or "positioning".
-version: 1.9.0
+version: 1.10.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep

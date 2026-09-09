@@ -4,7 +4,7 @@ description: Technical analysis translator for Product Managers. Use when the us
   needs to analyze a system, codebase, API, or technical concept in PM-friendly terms.
   Trigger with "understand system", "explain code", "technical analysis", "how does
   X work", or "what does this service do".
-version: 1.9.0
+version: 1.10.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Grep, Glob, Bash(git:*)

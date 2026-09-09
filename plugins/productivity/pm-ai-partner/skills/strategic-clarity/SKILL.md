@@ -4,7 +4,7 @@ description: Analyze and audit team context to establish identity, boundaries, a
   clarity. Use when starting a new role, inheriting ambiguity, or defining ownership.
   Trigger with "strategic clarity", "team identity", "new role", "inherited ambiguity",
   "what does my team own", or "define our boundaries".
-version: 1.9.0
+version: 1.10.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep

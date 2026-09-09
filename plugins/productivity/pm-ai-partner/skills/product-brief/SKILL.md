@@ -4,7 +4,7 @@ description: Structured product brief and PRD creation assistant. Use when the u
   needs to create a product brief, PRD, or feature spec that defines what to build
   and why. Trigger with "product brief", "PRD", "spec", "feature doc", "write a
   brief", or "define this feature".
-version: 1.9.0
+version: 1.10.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep

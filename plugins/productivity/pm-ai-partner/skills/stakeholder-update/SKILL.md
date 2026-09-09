@@ -4,7 +4,7 @@ description: Create and review stakeholder status updates, progress reports, and
   summaries. Use when the user needs to write concise upward communication.
   Trigger with "stakeholder update", "status update", "progress report", "update
   leadership", "weekly update", or "executive summary".
-version: 1.9.0
+version: 1.10.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep

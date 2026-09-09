@@ -3,7 +3,7 @@ name: builder
 description: "Hands-on implementation partner for creating tools, scripts, dashboards,\
   \ and prototypes. Use when the user wants working software. Trigger with \"build\",\
   \ \"create tool\", \"make app\", \"implement\", \"prototype\", or \"automate\"."
-version: 1.9.0
+version: 1.10.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npm:*), Bash(node:*)
