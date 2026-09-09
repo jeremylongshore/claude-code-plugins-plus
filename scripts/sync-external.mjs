@@ -116,57 +116,6 @@ function logVerbose(message) {
 }
 
 /**
- * Open a path for descriptor-bound replacement, creating it exclusively when
- * absent. Keeping the read/compare/write operations on one descriptor avoids
- * following a different file if the pathname changes during a sync.
- */
-export function openForUpdateOrCreate(filePath, mode = 0o644) {
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  try {
-    return { fd: fs.openSync(filePath, 'r+'), created: false };
-  } catch (error) {
-    if (error?.code !== 'ENOENT') throw error;
-  }
-
-  try {
-    return { fd: fs.openSync(filePath, 'wx', mode), created: true };
-  } catch (error) {
-    // Another writer may have created the path after the failed r+ open. Open
-    // that exact file once; do not truncate or follow a pre-check result.
-    if (error?.code === 'EEXIST') {
-      return { fd: fs.openSync(filePath, 'r+'), created: false };
-    }
-    throw error;
-  }
-}
-
-/** Read bytes and metadata from one descriptor, or return null when absent. */
-export function readFileSnapshot(filePath) {
-  let fd;
-  try {
-    fd = fs.openSync(filePath, 'r');
-  } catch (error) {
-    if (error?.code === 'ENOENT') return null;
-    throw error;
-  }
-  try {
-    const metadata = fs.fstatSync(fd);
-    if (!metadata.isFile()) throw new Error(`${filePath} must be a regular file`);
-    return { content: fs.readFileSync(fd), mode: metadata.mode };
-  } finally {
-    fs.closeSync(fd);
-  }
-}
-
-/** Replace the bytes and mode attached to an already-open descriptor. */
-export function replaceOpenFile(fd, content, mode = null) {
-  const bytes = Buffer.isBuffer(content) ? content : Buffer.from(content);
-  fs.ftruncateSync(fd, 0);
-  if (bytes.length > 0) fs.writeSync(fd, bytes, 0, bytes.length, 0);
-  if (typeof mode === 'number') fs.fchmodSync(fd, mode);
-}
-
-/**
  * Sparse-clone a repo into a temp dir and return the local path.
  * The clone uses --depth=1 --filter=blob:none, then sparse-checkout
  * restricts blob materialization to the source_path subtree. Result:
@@ -389,6 +338,34 @@ export function safeHttpUrl(value) {
 function ensurePluginJson(source) {
   const pluginJsonPath = path.join(ROOT_DIR, source.target_path, '.claude-plugin', 'plugin.json');
 
+  if (fs.existsSync(pluginJsonPath)) {
+    // License metadata is a projection of the reviewed sources.yaml contract.
+    // Preserve upstream fields, but never retain a contradictory license claim
+    // after the source record has been corrected.
+    try {
+      const existing = JSON.parse(fs.readFileSync(pluginJsonPath, 'utf8'));
+      if (source.license && existing.license !== source.license) {
+        if (options.dryRun) {
+          log(`   📋 Would reconcile plugin.json license: ${source.license}`, colors.yellow);
+          return false;
+        }
+        existing.license = source.license;
+        fs.writeFileSync(pluginJsonPath, JSON.stringify(existing, null, 2) + '\n');
+        log(`   📋 Reconciled plugin.json license: ${source.license}`, colors.green);
+        return true;
+      }
+    } catch {
+      // Existing malformed manifests are handled by the normal validators;
+      // never rewrite an unreadable upstream-owned file during sync.
+    }
+    return false;
+  }
+
+  if (options.dryRun) {
+    log(`   📋 Would synthesize .claude-plugin/plugin.json`, colors.yellow);
+    return false;
+  }
+
   const minimalPlugin = {
     name: source.name,
     version: '0.1.0',
@@ -404,50 +381,11 @@ function ensurePluginJson(source) {
     ...(source.repo ? { repository: `https://github.com/${source.repo}` } : {}),
   };
 
-  if (options.dryRun) {
-    const snapshot = readFileSnapshot(pluginJsonPath);
-    if (snapshot === null) {
-      log(`   📋 Would synthesize .claude-plugin/plugin.json`, colors.yellow);
-      return false;
-    }
-    try {
-      const existing = JSON.parse(snapshot.content.toString('utf8'));
-      if (source.license && existing.license !== source.license) {
-        log(`   📋 Would reconcile plugin.json license: ${source.license}`, colors.yellow);
-      }
-    } catch {
-      // Existing malformed manifests are handled by the normal validators.
-    }
-    return false;
-  }
-
-  const opened = openForUpdateOrCreate(pluginJsonPath);
-  try {
-    if (opened.created) {
-      replaceOpenFile(opened.fd, JSON.stringify(minimalPlugin, null, 2) + '\n');
-      log(`   📋 Synthesized .claude-plugin/plugin.json (upstream had none)`, colors.green);
-      return true;
-    }
-
-    // License metadata is a projection of the reviewed sources.yaml contract.
-    // Preserve upstream fields, but never retain a contradictory license claim
-    // after the source record has been corrected.
-    try {
-      const existing = JSON.parse(fs.readFileSync(opened.fd, 'utf8'));
-      if (source.license && existing.license !== source.license) {
-        existing.license = source.license;
-        replaceOpenFile(opened.fd, JSON.stringify(existing, null, 2) + '\n');
-        log(`   📋 Reconciled plugin.json license: ${source.license}`, colors.green);
-        return true;
-      }
-    } catch {
-      // Existing malformed manifests are handled by the normal validators;
-      // never rewrite an unreadable upstream-owned file during sync.
-    }
-    return false;
-  } finally {
-    fs.closeSync(opened.fd);
-  }
+  const dir = path.dirname(pluginJsonPath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(pluginJsonPath, JSON.stringify(minimalPlugin, null, 2) + '\n');
+  log(`   📋 Synthesized .claude-plugin/plugin.json (upstream had none)`, colors.green);
+  return true;
 }
 
 /**
@@ -468,8 +406,11 @@ function ensurePluginJson(source) {
 function ensureReadme(source) {
   const readmePath = path.join(ROOT_DIR, source.target_path, 'README.md');
 
+  if (fs.existsSync(readmePath)) {
+    return false; // upstream provided one, or earlier sync wrote one
+  }
+
   if (options.dryRun) {
-    if (readFileSnapshot(readmePath) !== null) return false;
     log(`   📋 Would synthesize README.md`, colors.yellow);
     return false;
   }
@@ -477,10 +418,9 @@ function ensureReadme(source) {
   // Try to use the upstream SKILL.md content as the README body if one
   // is present at the plugin root. Falls back to a minimal stub.
   const skillPath = path.join(ROOT_DIR, source.target_path, 'SKILL.md');
-  const skillSnapshot = readFileSnapshot(skillPath);
   let body = '';
-  if (skillSnapshot !== null) {
-    body = skillSnapshot.content.toString('utf8');
+  if (fs.existsSync(skillPath)) {
+    body = fs.readFileSync(skillPath, 'utf8');
     // Strip the YAML frontmatter (lines between two `---` lines at start)
     body = body.replace(/^---\n[\s\S]*?\n---\n+/, '');
   } else {
@@ -502,19 +442,9 @@ ${body}
 ${source.license ? `  \n**License:** ${source.license}` : ''}
 `;
 
-  fs.mkdirSync(path.dirname(readmePath), { recursive: true });
-  let fd;
-  try {
-    fd = fs.openSync(readmePath, 'wx', 0o644);
-  } catch (error) {
-    if (error?.code === 'EEXIST') return false; // upstream or another sync won
-    throw error;
-  }
-  try {
-    replaceOpenFile(fd, readme);
-  } finally {
-    fs.closeSync(fd);
-  }
+  const dir = path.dirname(readmePath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(readmePath, readme);
   log(`   📋 Synthesized README.md (upstream had none)`, colors.green);
   return true;
 }
@@ -762,11 +692,12 @@ async function syncSource(source, config, lock) {
     }
     const licenseSourcePath = path.resolve(tmpdir, licensePath);
     const checkoutRoot = path.resolve(tmpdir);
-    const licenseSnapshot =
-      licenseSourcePath !== checkoutRoot && licenseSourcePath.startsWith(checkoutRoot + path.sep)
-        ? readFileSnapshot(licenseSourcePath)
-        : null;
-    if (licenseSnapshot === null) {
+    if (
+      licenseSourcePath === checkoutRoot ||
+      !licenseSourcePath.startsWith(checkoutRoot + path.sep) ||
+      !fs.existsSync(licenseSourcePath) ||
+      !fs.statSync(licenseSourcePath).isFile()
+    ) {
       throw new Error(
         `upstream license file "${licensePath}" is unavailable; refusing sync rather than distributing bytes without license text`,
       );
@@ -780,8 +711,8 @@ async function syncSource(source, config, lock) {
     if (!filteredFiles.some((file) => isRootLicenseFile(file.path))) {
       filteredFiles.push({
         path: licenseName,
-        content: licenseSnapshot.content,
-        mode: licenseSnapshot.mode,
+        content: fs.readFileSync(licenseSourcePath),
+        mode: fs.statSync(licenseSourcePath).mode,
       });
     }
     if (!filteredFiles.some((file) => isRootLicenseFile(file.path))) {
@@ -897,57 +828,52 @@ async function syncSource(source, config, lock) {
 
     for (const file of filteredFiles) {
       const targetPath = path.join(ROOT_DIR, source.target_path, file.path);
-      let opened = null;
-      let existingContent = null;
-      let existingMode = null;
+      const targetDir = path.dirname(targetPath);
 
-      if (options.dryRun) {
-        const snapshot = readFileSnapshot(targetPath);
-        existingContent = snapshot?.content ?? null;
-        existingMode = snapshot?.mode ?? null;
-      } else {
-        opened = openForUpdateOrCreate(targetPath);
-        if (!opened.created) {
-          existingMode = fs.fstatSync(opened.fd).mode;
-          existingContent = fs.readFileSync(opened.fd);
-        }
-      }
+      let needsUpdate = false;
+      let reason = 'new';
 
-      try {
+      if (fs.existsSync(targetPath)) {
         // Buffer-to-Buffer compare. file.content is now a Buffer; comparing it
         // against a utf8 string would ALWAYS be unequal, marking every synced
         // file "modified" on every run (churning all sources + bloating diffs).
-        const reason =
-          existingContent === null
-            ? 'new'
-            : !existingContent.equals(file.content)
-              ? 'modified'
-              : typeof file.mode === 'number' && (existingMode & 0o111) !== (file.mode & 0o111)
-                ? 'mode'
-                : null;
-        const needsUpdate = reason !== null;
-
-        if (needsUpdate || options.force) {
-          if (options.dryRun) {
-            log(
-              `   📝 Would ${reason === 'new' ? 'create' : 'update'}: ${file.path}`,
-              colors.yellow,
-            );
-          } else {
-            // Collapse to git's two canonical modes (0755 / 0644) keyed on the
-            // upstream executable bit, so the result is stable across the
-            // runner's and a dev's umask.
-            const canonicalMode =
-              typeof file.mode === 'number' && file.mode & 0o111 ? 0o755 : 0o644;
-            replaceOpenFile(opened.fd, file.content, canonicalMode);
-            log(`   ✅ ${reason === 'new' ? 'Created' : 'Updated'}: ${file.path}`, colors.green);
-          }
-          changes.push({ path: file.path, action: reason ?? 'forced' });
-        } else {
-          logVerbose(`Unchanged: ${file.path}`);
+        const existingContent = fs.readFileSync(targetPath);
+        if (!existingContent.equals(file.content)) {
+          needsUpdate = true;
+          reason = 'modified';
+        } else if (
+          typeof file.mode === 'number' &&
+          (fs.statSync(targetPath).mode & 0o111) !== (file.mode & 0o111)
+        ) {
+          // Same content, different executable bit — self-heal a stale mode
+          // (e.g. a script previously synced 0644 while upstream is now 0755).
+          needsUpdate = true;
+          reason = 'mode';
         }
-      } finally {
-        if (opened !== null) fs.closeSync(opened.fd);
+      } else {
+        needsUpdate = true;
+      }
+
+      if (needsUpdate || options.force) {
+        if (options.dryRun) {
+          log(`   📝 Would ${reason === 'new' ? 'create' : 'update'}: ${file.path}`, colors.yellow);
+        } else {
+          if (!fs.existsSync(targetDir)) {
+            fs.mkdirSync(targetDir, { recursive: true });
+          }
+          fs.writeFileSync(targetPath, file.content);
+          // Collapse to git's two canonical modes (0755 / 0644) keyed on the
+          // upstream executable bit, so the result is stable across the runner's
+          // and a dev's umask: executable scripts stay 100755 (the structure
+          // gate requires it); everything else is 0644.
+          if (typeof file.mode === 'number') {
+            fs.chmodSync(targetPath, file.mode & 0o111 ? 0o755 : 0o644);
+          }
+          log(`   ✅ ${reason === 'new' ? 'Created' : 'Updated'}: ${file.path}`, colors.green);
+        }
+        changes.push({ path: file.path, action: reason });
+      } else {
+        logVerbose(`Unchanged: ${file.path}`);
       }
     }
 
