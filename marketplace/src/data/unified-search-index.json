@@ -5,10 +5,10 @@
     "generator": "marketplace/scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 441,
-    "totalSkills": 2941,
+    "totalPlugins": 442,
+    "totalSkills": 2943,
     "totalDocs": 24,
-    "totalItems": 3406,
+    "totalItems": 3409,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -95,6 +95,7 @@
       "Bash(clickhouse-client:*)",
       "Bash(cmd:*)",
       "Bash(code-scan:*)",
+      "Bash(command -v plugin-scanner) Bash(pipx install plugin-scanner==3.0.123) Bash(plugin-scanner scan:*) Bash(plugin-scanner lint:*) Bash(plugin-scanner verify:*)",
       "Bash(command:*)",
       "Bash(compliance-check:*)",
       "Bash(config-scan:*)",
@@ -160,6 +161,7 @@
       "Bash(head:*)",
       "Bash(helm:*)",
       "Bash(heroku:*)",
+      "Bash(hol-guard status:*) Bash(hol-guard detect:*) Bash(hol-guard bootstrap:*) Bash(hol-guard install:*) Bash(hol-guard run:*) Bash(hol-guard approvals:*) Bash(hol-guard receipts:*) Bash(pipx install hol-guard==3.0.46)",
       "Bash(httpx*)",
       "Bash(hurl*)",
       "Bash(iac-check:*)",
@@ -411,6 +413,7 @@
       "agent-monitoring",
       "agent-protocol",
       "agent-safety",
+      "agent-security",
       "agent-skill",
       "agent-skills",
       "agent-starter-pack",
@@ -445,6 +448,7 @@
       "ai-safety",
       "ai-sdk",
       "ai-search",
+      "ai-security",
       "ai-slop-prevention",
       "ai-travel",
       "ai-tutor",
@@ -954,6 +958,7 @@
       "high-availability",
       "hipaa",
       "historical",
+      "hol-guard",
       "hook",
       "hooks",
       "hootsuite",
@@ -1095,6 +1100,7 @@
       "marketplace",
       "mcp",
       "mcp-directories",
+      "mcp-security",
       "media",
       "media-production",
       "medical-ai",
@@ -1254,6 +1260,7 @@
       "plugin-development",
       "plugin-intelligence",
       "plugin-management",
+      "plugin-security",
       "plugins",
       "pm",
       "podium",
@@ -1517,6 +1524,7 @@
       "summarization",
       "supabase",
       "supervised",
+      "supply-chain-security",
       "support",
       "svelte",
       "sveltekit",
@@ -1708,8 +1716,8 @@
     "pluginsWithAgents": 91,
     "pluginsWithHooks": 20,
     "officialPlugins": 390,
-    "communityPlugins": 51,
-    "communityContributors": 40
+    "communityPlugins": 52,
+    "communityContributors": 41
   },
   "items": [
     {
@@ -15284,6 +15292,34 @@
       "verificationGrade": "A",
       "verificationBadge": "gold",
       "searchText": "claude pack claude code skill pack for building with the claude api and anthropic sdk. saas-packs claude anthropic ai sdk messages-api"
+    },
+    {
+      "type": "plugin",
+      "id": "hol-guard",
+      "slug": "hol-guard",
+      "name": "hol-guard",
+      "displayName": "hol guard",
+      "description": "Local pre-execution security controls and pre-install scanning for AI agent tools, packages, skills, plugins, and MCP servers.",
+      "category": "security",
+      "keywords": [
+        "hol-guard",
+        "ai-security",
+        "agent-security",
+        "plugin-security",
+        "mcp-security",
+        "supply-chain-security"
+      ],
+      "author": {
+        "name": "Hashgraph Online",
+        "url": "https://github.com/hashgraph-online"
+      },
+      "authorType": "community",
+      "version": "0.1.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 2,
+      "searchText": "hol guard local pre-execution security controls and pre-install scanning for ai agent tools, packages, skills, plugins, and mcp servers. security hol-guard ai-security agent-security plugin-security mcp-security supply-chain-security"
     },
     {
       "type": "skill",
@@ -45616,6 +45652,24 @@
     },
     {
       "type": "skill",
+      "id": "hol-guard",
+      "slug": "hol-guard",
+      "name": "hol-guard",
+      "description": "Protects local AI coding-agent workflows with HOL Guard pre-execution controls, approvals, receipts, and verification. Use when enabling Guard for a supported local harness, reviewing a Guard block, or validating protection before trusted tool execution. Trigger with \"hol guard\", \"protect this workspace\", \"review guard approvals\", or \"check guard status\".",
+      "category": "security",
+      "allowedTools": [
+        "Bash(hol-guard status:*) Bash(hol-guard detect:*) Bash(hol-guard bootstrap:*) Bash(hol-guard install:*) Bash(hol-guard run:*) Bash(hol-guard approvals:*) Bash(hol-guard receipts:*) Bash(pipx install hol-guard==3.0.46)"
+      ],
+      "compatibleWith": [],
+      "version": "0.1.2",
+      "parentPlugin": {
+        "name": "hol-guard",
+        "category": "security"
+      },
+      "searchText": "hol-guard protects local ai coding-agent workflows with hol guard pre-execution controls, approvals, receipts, and verification. use when enabling guard for a supported local harness, reviewing a guard block, or validating protection before trusted tool execution. trigger with \"hol guard\", \"protect this workspace\", \"review guard approvals\", or \"check guard status\". security bash(hol-guard status:*) bash(hol-guard detect:*) bash(hol-guard bootstrap:*) bash(hol-guard install:*) bash(hol-guard run:*) bash(hol-guard approvals:*) bash(hol-guard receipts:*) bash(pipx install hol-guard==3.0.46) "
+    },
+    {
+      "type": "skill",
       "id": "hootsuite-ci-integration",
       "slug": "hootsuite-ci-integration",
       "name": "hootsuite-ci-integration",
@@ -62588,6 +62642,24 @@
         "category": "examples"
       },
       "searchText": "plugin-creator create automatically creates new ai assistant code plugins with proper structure, validation, and marketplace integration when user mentions creating a plugin, new plugin, or plugin from template. specific to ai assistant-code-plugins repository workflow. use when generating or creating new content. trigger with phrases like 'generate', 'create', or 'scaffold'. examples write read grep bash(cmd:*) "
+    },
+    {
+      "type": "skill",
+      "id": "plugin-scanner",
+      "slug": "plugin-scanner",
+      "name": "plugin-scanner",
+      "description": "Scan AI agent skills, plugins, MCP servers, and agent tooling for prompt injection, unsafe commands, secret exposure, and supply-chain risks before installing or trusting them. Use when evaluating agent ecosystem content before installation, publication, or use. Trigger with \"scan this skill\", \"check this MCP server\", \"audit this agent plugin\", or \"verify this AI tool\".",
+      "category": "security",
+      "allowedTools": [
+        "Bash(command -v plugin-scanner) Bash(pipx install plugin-scanner==3.0.123) Bash(plugin-scanner scan:*) Bash(plugin-scanner lint:*) Bash(plugin-scanner verify:*)"
+      ],
+      "compatibleWith": [],
+      "version": "0.1.0",
+      "parentPlugin": {
+        "name": "hol-guard",
+        "category": "security"
+      },
+      "searchText": "plugin-scanner scan ai agent skills, plugins, mcp servers, and agent tooling for prompt injection, unsafe commands, secret exposure, and supply-chain risks before installing or trusting them. use when evaluating agent ecosystem content before installation, publication, or use. trigger with \"scan this skill\", \"check this mcp server\", \"audit this agent plugin\", or \"verify this ai tool\". security bash(command -v plugin-scanner) bash(pipx install plugin-scanner==3.0.123) bash(plugin-scanner scan:*) bash(plugin-scanner lint:*) bash(plugin-scanner verify:*) "
     },
     {
       "type": "skill",

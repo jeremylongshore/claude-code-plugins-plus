@@ -22,13 +22,13 @@
       "error_files": 719,
       "error_total": 3702,
       "grade_distribution": {
-        "A": 1885,
+        "A": 1887,
         "B": 1076,
         "C": 409,
         "D": 157,
         "F": 5
       },
-      "rows": 3532
+      "rows": 3534
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 352,
-        "raw_tracked_plugin_skill_files": 3032,
-        "tracked_files": 23977
+        "raw_tracked_plugin_skill_files": 3034,
+        "tracked_files": 23985
       }
     },
     "2": {
@@ -53,9 +53,9 @@
       "status": "measured",
       "target_status": "pass",
       "values": {
-        "distinct_names": 444,
+        "distinct_names": 445,
         "duplicate_names": [],
-        "entries": 444
+        "entries": 445
       }
     },
     "3": {
@@ -80,27 +80,27 @@
       "values": {
         "agent_lane": {
           "error_total_all_validated_surfaces": 236,
-          "fully_compliant_surfaces": 776,
+          "fully_compliant_surfaces": 777,
           "terminal_denominator": {
             "agents": 363,
-            "files": 958,
+            "files": 959,
             "label": "agents_plus_plugin_manifests",
-            "plugin_manifests": 595
+            "plugin_manifests": 596
           },
           "validator_reported_mixed_denominator_percent": 81
         },
         "marketplace_terminal": {
           "error_total_all_validated_surfaces": 3939,
-          "fully_compliant_surfaces": 1154,
+          "fully_compliant_surfaces": 1155,
           "terminal_denominator": {
             "agents": 363,
             "commands": 373,
-            "files": 4863,
+            "files": 4866,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
-            "plugin_manifests": 595,
-            "skills": 3532
+            "plugin_manifests": 596,
+            "skills": 3534
           },
-          "validated_plugin_manifests": 603,
+          "validated_plugin_manifests": 604,
           "validator_reported_mixed_denominator_percent": 23.7
         },
         "skill_rows": {
@@ -112,13 +112,13 @@
           "error_files": 719,
           "error_total": 3702,
           "grade_distribution": {
-            "A": 1885,
+            "A": 1887,
             "B": 1076,
             "C": 409,
             "D": 157,
             "F": 5
           },
-          "rows": 3532
+          "rows": 3534
         }
       }
     },
@@ -131,7 +131,7 @@
       "values": {
         "average_score": 87.5,
         "grade_distribution": {
-          "A": 1885,
+          "A": 1887,
           "B": 1076,
           "C": 409,
           "D": 157,
@@ -139,12 +139,12 @@
         },
         "grade_percentages": {
           "A": 53.4,
-          "B": 30.5,
+          "B": 30.4,
           "C": 11.6,
           "D": 4.4,
           "F": 0.1
         },
-        "rows": 3532
+        "rows": 3534
       }
     },
     "6": {
@@ -161,7 +161,7 @@
         "b_error_total": 568,
         "b_failing": 276,
         "certified_target": 0,
-        "skill_summary_rows": 3532
+        "skill_summary_rows": 3534
       }
     },
     "7": {
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3521,
+        "declared": 3523,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 11,
-        "rows": 3532,
+        "rows": 3534,
         "target_malformed": 0
       }
     },
@@ -286,7 +286,7 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "distinct_values": 61,
+        "distinct_values": 63,
         "invalid_or_empty": 0,
         "target_free_text_values": 0,
         "values": [
@@ -508,6 +508,10 @@
           },
           {
             "count": 1,
+            "value": "Requires a local Python CLI environment with pipx for optional installation; scans local agent skills, plugins, MCP servers, packages, and repositories without executing the target."
+          },
+          {
+            "count": 1,
             "value": "Requires internet access to call the first-party Xquik REST API."
           },
           {
@@ -521,6 +525,10 @@
           {
             "count": 1,
             "value": "Runs on any MCP-aware host, including hosts with no local filesystem — this is the plugin's only pure-MCP skill, needing no local file, binary, or shell. Uses the Kobiton MCP tools createTestRun, getTestCase/getTestSuite, listDevices, and getOrgSettings; requires an authenticated Kobiton MCP connection. Delegates monitoring to the monitor-test-run skill (same plugin), which does need a local poller — so on a filesystem-less host, create the run and report its id rather than offering to watch it."
+          },
+          {
+            "count": 1,
+            "value": "Supports local harness workflows including Claude Code, Codex, Copilot CLI, Cursor, Gemini CLI, Hermes, OpenClaw, OpenCode, and Antigravity; requires a local Python CLI environment with pipx for optional HOL Guard installation."
           },
           {
             "count": 1,
@@ -1228,11 +1236,11 @@
           },
           {
             "cohort": "graded",
-            "value": 3532
+            "value": 3534
           },
           {
             "cohort": "marketplace-visible",
-            "value": 2941
+            "value": 2943
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1293,10 +1301,10 @@
       "source": ["sources.lock.json", "sources.yaml"],
       "status": "measured",
       "values": {
-        "lock_keys": 37,
+        "lock_keys": 38,
         "lock_only": [],
         "target_equal": true,
-        "yaml_keys": 37,
+        "yaml_keys": 38,
         "yaml_only": []
       }
     },
@@ -1340,22 +1348,23 @@
         "plugins/productivity/publishing-skills/.source.json",
         "plugins/productivity/schedule-after-usage-reset/.source.json",
         "plugins/productivity/skyvern/.source.json",
+        "plugins/security/hol-guard/.source.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/kobiton-automate/.source.json"
       ],
       "status": "measured",
       "values": {
-        "mirrors_shipping_license_text": 37,
+        "mirrors_shipping_license_text": 38,
         "missing_license_text": [],
-        "provenance_marked_mirrors": 37,
-        "target_shipping_license_text": 37
+        "provenance_marked_mirrors": 38,
+        "target_shipping_license_text": 38
       }
     },
     "29": {
       "cohort": "provenance-marked mirrors",
       "dimension": "Mirror SKILL.md contradicting upstream license",
       "measured_proxy": {
-        "local_source_records_with_parseable_json": 37
+        "local_source_records_with_parseable_json": 38
       },
       "reason_code": "MISSING_PINNED_UPSTREAM_LICENSE_EVIDENCE",
       "reproduce": "pnpm run measure:e1 --row=29 --stdout",
@@ -1399,6 +1408,7 @@
         "plugins/productivity/publishing-skills/.source.json",
         "plugins/productivity/schedule-after-usage-reset/.source.json",
         "plugins/productivity/skyvern/.source.json",
+        "plugins/security/hol-guard/.source.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/kobiton-automate/.source.json"
       ],
@@ -1483,6 +1493,8 @@
         "plugins/productivity/schedule-after-usage-reset/package.json",
         "plugins/productivity/skyvern/.source.json",
         "plugins/productivity/skyvern/package.json",
+        "plugins/security/hol-guard/.source.json",
+        "plugins/security/hol-guard/package.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/cli-ux-tester/package.json",
         "plugins/testing/kobiton-automate/.source.json",
@@ -1491,9 +1503,9 @@
       "status": "partial",
       "values": {
         "non_private": [],
-        "private_packages": 37,
-        "repository_package_mirrors": 37,
-        "scoped_packages": 32,
+        "private_packages": 38,
+        "repository_package_mirrors": 38,
+        "scoped_packages": 33,
         "target_publishable": 0
       }
     },
@@ -1575,6 +1587,8 @@
         "plugins/productivity/schedule-after-usage-reset/package.json",
         "plugins/productivity/skyvern/.source.json",
         "plugins/productivity/skyvern/package.json",
+        "plugins/security/hol-guard/.source.json",
+        "plugins/security/hol-guard/package.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/cli-ux-tester/package.json",
         "plugins/testing/kobiton-automate/.source.json",
@@ -1956,7 +1970,7 @@
         "invalid_patterns": 0,
         "invisible_files": 5,
         "target_invisible_files": 0,
-        "tracked_files": 23977
+        "tracked_files": 23985
       }
     },
     "47": {
@@ -2041,17 +2055,17 @@
       "dimension": "Inventory header versus rows",
       "reproduce": "pnpm run measure:e1 --row=52 --stdout",
       "source": [
-        "freshie/reports/run-delta-38.json",
+        "freshie/reports/run-delta-39.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py"
       ],
       "status": "target_met",
       "values": {
-        "dolt_commit": "mloo02400hqu0enp02e26trkt0ukqesk",
-        "header_total_skills": 2954,
-        "run_id": 38,
+        "dolt_commit": "hgl1u03vq0pd8f6lvucvg3k02vj6a158",
+        "header_total_skills": 2956,
+        "run_id": 39,
         "skill_row_delta": 0,
-        "skill_rows": 2954,
+        "skill_rows": 2956,
         "target_skill_row_delta": 0
       }
     },
@@ -2062,32 +2076,32 @@
       "source": [
         "freshie/grade-histogram.json",
         "freshie/grades.csv",
-        "freshie/reports/run-delta-38.json"
+        "freshie/reports/run-delta-39.json"
       ],
       "status": "target_met",
       "values": {
-        "compliance_rows": 3532,
-        "export_dolt_commit": "mloo02400hqu0enp02e26trkt0ukqesk",
-        "export_run_id": 38,
-        "grades_csv_rows": 3532,
-        "grades_csv_sha256": "80abbda92b5938a6ee091dbb602183ed49bdedbc905675117e856f46857c7227",
+        "compliance_rows": 3534,
+        "export_dolt_commit": "hgl1u03vq0pd8f6lvucvg3k02vj6a158",
+        "export_run_id": 39,
+        "grades_csv_rows": 3534,
+        "grades_csv_sha256": "4f5b4582b5712ebc9a631dfd2d2eb3321b457bf5dbe906c73287d6d9a21d41cc",
         "histogram_grades": {
-          "A": 1885,
+          "A": 1887,
           "B": 1076,
           "C": 409,
           "D": 157,
           "F": 5
         },
-        "histogram_total": 3532,
+        "histogram_total": 3534,
         "immutable_grade_counts": {
-          "A": 1885,
+          "A": 1887,
           "B": 1076,
           "C": 409,
           "D": 157,
           "F": 5
         },
-        "inventory_dolt_commit": "mloo02400hqu0enp02e26trkt0ukqesk",
-        "inventory_run_id": 38,
+        "inventory_dolt_commit": "hgl1u03vq0pd8f6lvucvg3k02vj6a158",
+        "inventory_run_id": 39,
         "target_lag_runs": 0
       }
     },
@@ -2098,7 +2112,7 @@
       "source": [
         "freshie/reports/legacy-forge-proofs-demotion.json",
         "freshie/reports/run-delta-19.json",
-        "freshie/reports/run-delta-38.json",
+        "freshie/reports/run-delta-39.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py",
         "scripts/record-jrig-proofs.mjs"
@@ -2111,7 +2125,7 @@
           "E2": 0,
           "E3": 0
         },
-        "current_run_id": 38,
+        "current_run_id": 39,
         "invalid_identities": 0,
         "legacy_e0_records": 3,
         "retained_e2_e3": 0,
@@ -2136,7 +2150,7 @@
         "000-docs/807-DR-STND-evaluation-evidence.md",
         "freshie/reports/legacy-forge-proofs-demotion.json",
         "freshie/reports/run-delta-19.json",
-        "freshie/reports/run-delta-38.json",
+        "freshie/reports/run-delta-39.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py"
       ],
@@ -2239,9 +2253,9 @@
       ],
       "status": "measured",
       "values": {
-        "adoption_percent": 1.06,
+        "adoption_percent": 1.05,
         "curated_copies": 32,
-        "plugin_skill_rows": 3032,
+        "plugin_skill_rows": 3034,
         "source_eval_specs": 32,
         "tracked_eval_specs": 64
       }

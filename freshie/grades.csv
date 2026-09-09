@@ -2946,6 +2946,8 @@ plugins/security/dependency-checker/skills/analyzing-dependencies,A,100
 plugins/security/encryption-tool/skills/encrypting-and-decrypting-data,A,98
 plugins/security/gdpr-compliance-scanner/skills/scanning-for-gdpr-compliance,A,97
 plugins/security/hipaa-compliance-checker/skills/checking-hipaa-compliance,A,97
+plugins/security/hol-guard/skills/hol-guard,A,90
+plugins/security/hol-guard/skills/plugin-scanner,A,90
 plugins/security/input-validation-scanner/skills/scanning-input-validation-practices,A,99
 plugins/security/owasp-compliance-checker/skills/checking-owasp-compliance,A,98
 plugins/security/pci-dss-validator/skills/validating-pci-dss-compliance,A,97
