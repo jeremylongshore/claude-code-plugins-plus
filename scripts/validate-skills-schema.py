@@ -2226,8 +2226,7 @@ def validate_agent(path: Path) -> Dict[str, Any]:
                 continue
             if not isinstance(server, dict) or len(server) != 1:
                 errors.append(
-                    f"[agent] 'mcpServers[{i}]' must be a server-name string "
-                    "or a one-key inline server definition"
+                    f"[agent] 'mcpServers[{i}]' must be a server-name string or a one-key inline server definition"
                 )
 
     if "experimental" in fm and isinstance(fm["experimental"], dict):
@@ -2235,9 +2234,7 @@ def validate_agent(path: Path) -> Dict[str, Any]:
         if "cacheTtl" in experimental and experimental["cacheTtl"] not in {"5m", "1h"}:
             errors.append("[agent] 'experimental.cacheTtl' must be one of: 5m, 1h")
         for key in sorted(set(experimental) - {"cacheTtl"}):
-            warnings.append(
-                f"[agent] Unknown experimental field: '{key}' (Claude Code currently ignores it)"
-            )
+            warnings.append(f"[agent] Unknown experimental field: '{key}' (Claude Code currently ignores it)")
 
     # tags — required array; every entry must be a string (kernel is-overlay
     # agent-definition: tags = array of strings).
@@ -2727,9 +2724,7 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
             )
 
     if "background" in fm and not isinstance(fm["background"], bool):
-        errors.append(
-            f"[frontmatter] 'background' must be boolean, got: {type(fm['background']).__name__}"
-        )
+        errors.append(f"[frontmatter] 'background' must be boolean, got: {type(fm['background']).__name__}")
 
     # disable-model-invocation field
     if "disable-model-invocation" in fm:

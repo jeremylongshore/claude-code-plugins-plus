@@ -131,7 +131,7 @@
       "name": "004-jeremy-google-cloud-agent-sdk",
       "displayName": "google cloud agent sdk",
       "description": "Build, evaluate, deploy, publish, and migrate Google ADK applications with Google's maintained agents-cli workflow for Agent Runtime, Cloud Run, GKE, and Gemini Enterprise.",
-      "version": "2.25.0",
+      "version": "2.26.0",
       "category": "productivity",
       "keywords": [
         "agent-development-kit",
@@ -7154,7 +7154,7 @@
       "name": "skill-creator",
       "displayName": "skill creator",
       "description": "Create and validate production-grade agent skills with 100-point marketplace grading. Supports creation workflows, eval-driven development, and auto-fix for spec compliance.",
-      "version": "5.21.0",
+      "version": "5.22.0",
       "category": "skill-enhancers",
       "keywords": [
         "skill-creation",
