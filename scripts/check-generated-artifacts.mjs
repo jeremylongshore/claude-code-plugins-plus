@@ -17,8 +17,9 @@
  * Exit 0 = clean. Exit 1 = a projection is tracked (each one named).
  */
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import * as nodePath from 'node:path';
 import { basename, isAbsolute, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -43,6 +44,23 @@ function normalizeRepositoryPath(candidate) {
     throw new Error(`generated-artifact path escapes repository: ${candidate}`);
   }
   return path;
+}
+
+export function repositoryRootContains(
+  topLevel,
+  root,
+  { pathApi = nodePath, canonicalize = realpathSync.native } = {},
+) {
+  // Git may print a Windows root with forward slashes while Node uses native
+  // separators or an 8.3 short-name alias. Canonicalize both existing paths,
+  // then preserve the old fail-closed root invariant as a boundary check that
+  // also permits deliberate invocation from a nested repository directory.
+  const repositoryRoot = pathApi.resolve(canonicalize(topLevel));
+  const requestedRoot = pathApi.resolve(canonicalize(root));
+  const rel = pathApi.relative(repositoryRoot, requestedRoot);
+  return (
+    rel === '' || (rel !== '..' && !rel.startsWith(`..${pathApi.sep}`) && !pathApi.isAbsolute(rel))
+  );
 }
 
 export function readIndexedArtifact(candidate, { root = process.cwd() } = {}) {
@@ -123,6 +141,7 @@ export function assertGeneratedContentCurrent(candidates, { root = process.cwd()
 }
 
 export function checkUntrackedProjections({ root = process.cwd() } = {}) {
+  let repositoryRoot;
   try {
     const topLevel = execFileSync('git', ['rev-parse', '--show-toplevel'], {
       ...BUF,
@@ -131,7 +150,10 @@ export function checkUntrackedProjections({ root = process.cwd() } = {}) {
     })
       .toString()
       .trim();
-    if (topLevel !== resolve(root)) throw new Error(`repository root is ${topLevel}`);
+    if (!repositoryRootContains(topLevel, root)) {
+      throw new Error(`requested root ${resolve(root)} is outside repository ${topLevel}`);
+    }
+    repositoryRoot = resolve(topLevel);
   } catch (error) {
     throw new Error(
       `generated-artifacts refuses to pass without Git evidence: ${error instanceof Error ? error.message : String(error)}`,
@@ -144,7 +166,7 @@ export function checkUntrackedProjections({ root = process.cwd() } = {}) {
     try {
       tracked = execFileSync('git', ['ls-files', '--', p.pathspec], {
         ...BUF,
-        cwd: root,
+        cwd: repositoryRoot,
       })
         .toString()
         .trim();

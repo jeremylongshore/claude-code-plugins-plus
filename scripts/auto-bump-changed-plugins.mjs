@@ -42,7 +42,7 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 // Circular import by design: reconstruct-versions.mjs imports parseVersion/
 // compareVersion from this module. Both modules only export hoisted function
 // declarations and neither runs main() on import, so the cycle is safe.
@@ -52,7 +52,7 @@ import {
   findSkillFiles,
 } from './reconstruct-versions.mjs';
 
-const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SCOPE = '@intentsolutionsio/';
 const EXTENDED_CATALOG = join(ROOT, '.claude-plugin', 'marketplace.extended.json');
 const CLI_CATALOG = join(ROOT, '.claude-plugin', 'marketplace.json');

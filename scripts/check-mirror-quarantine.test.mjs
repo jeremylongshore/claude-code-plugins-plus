@@ -4,8 +4,10 @@ import { createRequire } from 'node:module';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 
 import { checkMirrorQuarantine } from './check-mirror-quarantine.mjs';
+import { isWithinPluginsDir } from './build-cowork-zips.mjs';
 import {
   assertCatalogPublicationParity,
   ensureCatalogEntry,
@@ -216,7 +218,7 @@ test('catalog publication policy omits quarantine and refuses unknown states', (
 });
 
 test('every install and download projection consumes the canonical publication policy', () => {
-  const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+  const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
   for (const relativePath of [
     'scripts/sync-marketplace.cjs',
     'scripts/corpus-resolver.mjs',
@@ -233,4 +235,22 @@ test('every install and download projection consumes the canonical publication p
     assert.match(source, /publication-policy\.cjs/);
     assert.match(source, /publishedPlugins\(/);
   }
+});
+
+test('Cowork containment accepts Windows descendants but rejects adjacent paths', () => {
+  const pluginsDir = String.raw`C:\repo\plugins`;
+  assert.equal(
+    isWithinPluginsDir(String.raw`C:\repo\plugins\security\safe`, {
+      pluginsDir,
+      pathApi: path.win32,
+    }),
+    true,
+  );
+  assert.equal(
+    isWithinPluginsDir(String.raw`C:\repo\plugins-archive\security\unsafe`, {
+      pluginsDir,
+      pathApi: path.win32,
+    }),
+    false,
+  );
 });

@@ -126,6 +126,7 @@
     "plugins/community/mnemos/**",
     "plugins/community/portaljs/**",
     "plugins/community/quit-sponsor/**",
+    "plugins/community/skillcrossroads/**",
     "plugins/community/skills-janitor/**",
     "plugins/crypto/aomi/**",
     "plugins/design/brand-forge/**",

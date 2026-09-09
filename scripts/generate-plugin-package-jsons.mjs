@@ -16,7 +16,8 @@
  */
 
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
-import { dirname, join, relative, resolve } from 'node:path';
+import * as nodePath from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 // `URL.pathname` is platform-independent and keeps a leading slash before a
@@ -44,7 +45,14 @@ const EXCLUDE_PREFIXES = [
 ];
 
 function isExcluded(pluginDir) {
-  return EXCLUDE_PREFIXES.some((p) => pluginDir === p || pluginDir.startsWith(p + '/'));
+  return EXCLUDE_PREFIXES.some((prefix) => isPathAtOrBelow(prefix, pluginDir));
+}
+
+export function isPathAtOrBelow(parent, candidate, pathApi = nodePath) {
+  const rel = pathApi.relative(parent, candidate);
+  return (
+    rel === '' || (rel !== '..' && !rel.startsWith(`..${pathApi.sep}`) && !pathApi.isAbsolute(rel))
+  );
 }
 
 function walkPluginDirs(root) {
@@ -100,8 +108,14 @@ function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf-8'));
 }
 
-function slugFromPath(pluginDir) {
-  return pluginDir.split('/').pop();
+export function slugFromPath(pluginDir, pathApi = nodePath) {
+  return pathApi.basename(pluginDir);
+}
+
+export function repositoryRelativePath(root, candidate, pathApi = nodePath) {
+  // package.json repository.directory is a URL-like repository path, so keep
+  // it slash-stable even when the filesystem path API uses backslashes.
+  return pathApi.relative(root, candidate).split(pathApi.sep).join('/');
 }
 
 function scopedName(slug) {
@@ -118,7 +132,7 @@ function isValidNpmName(name) {
 
 export function buildPackageJson(pluginDir, pluginJson, { sourceOwned = false } = {}) {
   const slug = slugFromPath(pluginDir);
-  const relDir = relative(ROOT, pluginDir);
+  const relDir = repositoryRelativePath(ROOT, pluginDir);
   const name = scopedName(slug);
   const description = (pluginJson.description || `Claude Code plugin: ${slug}`)
     .replace(/\s+/g, ' ')
@@ -308,9 +322,13 @@ async function main() {
       const packagePath = join(pluginDir, 'package.json');
       const source = readFileSync(packagePath, 'utf-8');
       const pkg = JSON.parse(source);
-      const reconciled = reconcileGeneratedPackageMetadata(pkg, relative(ROOT, pluginDir), {
-        sourceOwned: existsSync(join(pluginDir, '.source.json')),
-      });
+      const reconciled = reconcileGeneratedPackageMetadata(
+        pkg,
+        repositoryRelativePath(ROOT, pluginDir),
+        {
+          sourceOwned: existsSync(join(pluginDir, '.source.json')),
+        },
+      );
       existing.push(pluginDir);
       if (reconciled.changed) {
         metadataUpdates.push({ packagePath, source: rewriteLegacyRepositoryUrls(source) });
@@ -339,7 +357,7 @@ async function main() {
   console.log(`Skipped (excluded/invalid):         ${skipped.length}`);
   if (skipped.length) {
     for (const s of skipped) {
-      console.log(`  - ${relative(ROOT, s.pluginDir)}: ${s.reason}`);
+      console.log(`  - ${repositoryRelativePath(ROOT, s.pluginDir)}: ${s.reason}`);
     }
   }
 

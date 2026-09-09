@@ -125,6 +125,17 @@ export function fileClass(relPath) {
 
 const isScript = (cls) => cls === 'shell' || cls === 'python' || cls === 'js';
 
+export function normalizeScanPath(candidate, pathApi = path) {
+  return String(candidate).split(pathApi.sep).join('/');
+}
+
+export function isScannablePath(candidate, pathApi = path) {
+  const rel = normalizeScanPath(candidate, pathApi);
+  const ext = path.posix.extname(rel).toLowerCase();
+  const inHooks = /(?:^|\/)hooks\//.test(rel);
+  return SCANNABLE_EXT.has(ext) || inHooks;
+}
+
 // A malicious-pattern grade: REFUSE when it can auto-execute (a script, or a
 // hook/MCP JSON/YAML config), CHALLENGE when it only appears in PROSE (a doc) —
 // a reverse-shell string inside a README does not auto-run and is often
@@ -1192,11 +1203,13 @@ function collectTargets(opts) {
     walk(path.join(ROOT_DIR, DEFAULT_SCAN_ROOT), DEFAULT_SCAN_ROOT, acc);
     rels = acc;
   }
+  // Git paths and scanner policy are repository-relative POSIX paths. Convert
+  // native Windows `path.relative()` results before extensionless hook checks.
+  rels = rels.map((rel) => normalizeScanPath(rel));
+
   // Keep only existing, scannable files.
   return rels.filter((rel) => {
-    const ext = path.extname(rel).toLowerCase();
-    const inHooks = /(?:^|\/)hooks\//.test(rel);
-    if (!SCANNABLE_EXT.has(ext) && !inHooks) return false;
+    if (!isScannablePath(rel)) return false;
     return fs.existsSync(path.resolve(ROOT_DIR, rel));
   });
 }

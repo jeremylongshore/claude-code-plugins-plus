@@ -1,9 +1,13 @@
 import assert from 'node:assert/strict';
+import { win32 } from 'node:path';
 import test from 'node:test';
 
 import {
   buildPackageJson,
+  isPathAtOrBelow,
   reconcileGeneratedPackageMetadata,
+  repositoryRelativePath,
+  slugFromPath,
 } from './generate-plugin-package-jsons.mjs';
 
 const canonicalRepository = {
@@ -11,6 +15,24 @@ const canonicalRepository = {
   url: 'git+https://github.com/jeremylongshore/tons-of-skills-marketplace.git',
   directory: 'plugins/testing/example-plugin',
 };
+
+test('derives Windows plugin slugs without leaking an absolute path into the npm name', () => {
+  const pluginDir = String.raw`C:\repo\plugins\saas-packs\skill-databases\windsurf`;
+  assert.equal(slugFromPath(pluginDir, win32), 'windsurf');
+});
+
+test('normalizes Windows repository directories to portable package metadata paths', () => {
+  const root = String.raw`C:\repo`;
+  const pluginDir = String.raw`C:\repo\plugins\security\example-plugin`;
+  assert.equal(repositoryRelativePath(root, pluginDir, win32), 'plugins/security/example-plugin');
+});
+
+test('matches excluded Windows subtrees on path boundaries only', () => {
+  const excluded = String.raw`C:\repo\plugins\saas-packs\skill-databases`;
+  assert.equal(isPathAtOrBelow(excluded, excluded, win32), true);
+  assert.equal(isPathAtOrBelow(excluded, `${excluded}\\windsurf`, win32), true);
+  assert.equal(isPathAtOrBelow(excluded, `${excluded}-archive\\windsurf`, win32), false);
+});
 
 test('reconciles stale repository metadata on generated package manifests', () => {
   const input = {

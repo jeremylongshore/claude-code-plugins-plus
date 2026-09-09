@@ -14,6 +14,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { win32 } from 'node:path';
 
 import {
   scanContent,
@@ -26,13 +27,22 @@ import {
   normalizeLines,
   fileClass,
   GRADE,
+  isScannablePath,
   isVersionOnlyChange,
+  normalizeScanPath,
 } from './scan-synced-content.mjs';
 
 const grades = (findings) => findings.map((f) => f.grade);
 const ids = (findings) => findings.map((f) => f.id);
 const hasRefuse = (f) => f.some((x) => x.grade === GRADE.REFUSE);
 const hasChallenge = (f) => f.some((x) => x.grade === GRADE.CHALLENGE);
+
+test('normalizes Windows paths before extensionless hook classification', () => {
+  const hook = String.raw`plugins\community\evil\hooks\pre-tool-use`;
+  assert.equal(normalizeScanPath(hook, win32), 'plugins/community/evil/hooks/pre-tool-use');
+  assert.equal(isScannablePath(hook, win32), true);
+  assert.equal(isScannablePath(String.raw`plugins\community\evil\notes\README`, win32), false);
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 1. MALICIOUS fixtures → REFUSE (exit 2). Each is placed in an EXECUTABLE

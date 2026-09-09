@@ -6,51 +6,53 @@ Fast reference for running tests on the web-to-github-issue plugin.
 
 ```bash
 # Run all tests (single run)
-npm test
+pnpm test
 
 # Run tests in watch mode (auto-rerun on file changes)
-npm run test:watch
+pnpm run test:watch
 
 # Run tests with interactive UI (browser-based)
-npm run test:ui
+pnpm run test:ui
 
 # Generate coverage report
-npm run test:coverage
+pnpm run test:coverage
 
 # Generate coverage with interactive UI
-npm run test:coverage:ui
+pnpm run test:coverage:ui
 ```
 
 ## Current Status
 
 ✅ **118 tests passing**
-✅ **100% code coverage** (statements, functions, lines)
-✅ **98.8% branch coverage**
+✅ **96.08% statement and line coverage**
+✅ **93.2% branch coverage and 100% function coverage**
 ✅ **Zero failures**
-✅ **Fast execution** (~1.5 seconds)
+✅ **Fast local execution**
 
 ## Test Files
 
 | File | Tests | Coverage | Focus Area |
 |------|-------|----------|-----------|
-| `github-client.test.js` | 23 | 100% | GitHub API client, auth, error handling |
+| `github-client.test.js` | 23 | 90.85% statements/lines | GitHub API client, auth, error handling |
 | `parser.test.js` | 46 | 100% | Search result parsing, edge cases |
 | `formatter.test.js` | 49 | 100% | Markdown formatting, title/label logic |
 
 ## Coverage Thresholds
 
-All thresholds **PASSING**:
+All configured suite-wide thresholds **PASSING**. Vitest does not enable
+`perFile`, so individual-file percentages are diagnostic rather than separate
+gates:
 
-- ✅ Statements: 100% (threshold: 80%)
-- ✅ Branches: 98.8% (threshold: 80%)
+- ✅ Statements: 96.08% (threshold: 80%)
+- ✅ Branches: 93.2% (threshold: 80%)
 - ✅ Functions: 100% (threshold: 80%)
-- ✅ Lines: 100% (threshold: 80%)
+- ✅ Lines: 96.08% (threshold: 80%)
 
 ## View Coverage Reports
 
 ```bash
 # Generate coverage
-npm run test:coverage
+pnpm run test:coverage
 
 # Open HTML report in browser
 open coverage/index.html
@@ -63,24 +65,22 @@ xdg-open coverage/index.html  # Linux
 ### Tests not running?
 
 ```bash
-# Reinstall dependencies
-rm -rf node_modules package-lock.json
-npm install
+# Reproduce the locked standalone install
+pnpm install --ignore-workspace --frozen-lockfile
 ```
 
 ### Coverage files missing?
 
 ```bash
-# Clean and regenerate
-rm -rf coverage/
-npm run test:coverage
+# Regenerate the coverage report
+pnpm run test:coverage
 ```
 
 ### Need verbose output?
 
 ```bash
 # Run with reporter
-npm test -- --reporter=verbose
+pnpm test -- --reporter=verbose
 ```
 
 ## CI Integration
@@ -89,8 +89,9 @@ For continuous integration pipelines:
 
 ```yaml
 # GitHub Actions
-- run: npm test
-- run: npm run test:coverage
+- run: pnpm install --ignore-workspace --frozen-lockfile
+- run: pnpm test
+- run: pnpm run test:coverage
 - uses: codecov/codecov-action@v3
   with:
     files: ./coverage/lcov.info
@@ -101,7 +102,7 @@ For continuous integration pipelines:
 Always run:
 
 ```bash
-npm run test:coverage
+pnpm run test:coverage
 ```
 
 Ensure:
@@ -118,6 +119,6 @@ Ensure:
 
 ---
 
-**Framework**: Vitest 3.2.4
-**Last Updated**: January 2025
+**Framework**: Vitest 3.2.7
+**Last Verified**: September 2026
 **Status**: ✅ All systems green

@@ -4,9 +4,10 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 
-const installer = new URL('../ops/install-skill-redirects.sh', import.meta.url).pathname;
-const source = new URL('../ops/snowflake-v2-redirects.caddy', import.meta.url).pathname;
+const installer = fileURLToPath(new URL('../ops/install-skill-redirects.sh', import.meta.url));
+const source = fileURLToPath(new URL('../ops/snowflake-v2-redirects.caddy', import.meta.url));
 
 function fixture() {
   const directory = mkdtempSync(join(tmpdir(), 'skill-redirect-install-'));

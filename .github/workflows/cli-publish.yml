@@ -35,6 +35,9 @@ jobs:
       - name: Run TypeScript type check
         run: pnpm -C packages/cli typecheck
 
+      - name: Run CLI contract and unit tests
+        run: pnpm -C packages/cli test
+
       - name: Build CLI
         run: pnpm -C packages/cli build
 

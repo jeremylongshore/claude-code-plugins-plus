@@ -30,9 +30,9 @@ function collectMetrics() {
   return JSON.parse(output);
 }
 
-function skillPath(member) {
+export function skillPath(member) {
   const separator = member.lastIndexOf('::');
-  if (separator <= 0 || separator === member.length - 2) {
+  if (separator < 1 || separator + 2 >= member.length) {
     throw new Error(`structural-ratchet: malformed validator member: ${member}`);
   }
   return member.slice(0, separator);
