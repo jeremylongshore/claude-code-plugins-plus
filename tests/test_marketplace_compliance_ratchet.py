@@ -49,6 +49,70 @@ class MarketplaceComplianceRatchetTests(unittest.TestCase):
             ["b/SKILL.md :: E-MISSING-REQUIRED-FIELD :: author"],
         )
 
+    def test_zero_channel_mirror_debt_is_reported_but_not_accepted_as_marketplace_debt(self):
+        baseline = {
+            "schema_version": "4.1.0",
+            "entries": ["plugins/mirror/SKILL.md :: E-OLD :: name"],
+            "rule_inventory": ["E-OLD"],
+        }
+        current = {
+            "schema_version": "4.1.0",
+            "entries": ["plugins/mirror/SKILL.md :: E-UPSTREAM-NEW :: body"],
+            "rule_inventory": ["E-UPSTREAM-NEW"],
+        }
+        roots = ("plugins/mirror",)
+        self.assertEqual(self.ratchet.compare(baseline, current, roots), [])
+        self.assertEqual(self.ratchet.metadata_drift(baseline, current, roots), [])
+
+    def test_quarantine_does_not_hide_a_rule_that_also_occurs_in_enforceable_content(self):
+        baseline = {
+            "schema_version": "4.1.0",
+            "entries": ["plugins/owned/SKILL.md :: E-OLD :: name"],
+            "rule_inventory": ["E-OLD"],
+        }
+        current = {
+            "schema_version": "4.1.0",
+            "entries": [
+                "plugins/mirror/SKILL.md :: E-NEW :: body",
+                "plugins/owned/SKILL.md :: E-NEW :: body",
+            ],
+            "rule_inventory": ["E-NEW"],
+        }
+        self.assertEqual(
+            self.ratchet.metadata_drift(baseline, current, ("plugins/mirror",)),
+            [
+                "unknown live rule id(s): E-NEW",
+                "baseline rule id(s) absent from live inventory: E-OLD",
+            ],
+        )
+
+    def test_quarantined_roots_require_catalog_state_and_regular_machine_provenance(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            catalog = root / ".claude-plugin" / "marketplace.extended.json"
+            marker = root / "plugins" / "mirror" / ".source.json"
+            catalog.parent.mkdir(parents=True)
+            marker.parent.mkdir(parents=True)
+            catalog.write_text(
+                json.dumps(
+                    {
+                        "plugins": [
+                            {
+                                "name": "mirror",
+                                "source": "./plugins/mirror",
+                                "publication": "quarantined",
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            marker.write_text(json.dumps({"synced_from": {"repo": "owner/repo"}}), encoding="utf-8")
+            self.assertEqual(self.ratchet.quarantined_mirror_roots(root), ("plugins/mirror",))
+            marker.unlink()
+            with self.assertRaisesRegex(ValueError, "no provenance marker"):
+                self.ratchet.quarantined_mirror_roots(root)
+
     def test_malformed_entries_fail_closed(self):
         with self.assertRaises(ValueError):
             self.ratchet.compare({"entries": "not-a-list"}, {"entries": []})

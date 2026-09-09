@@ -12,6 +12,7 @@ import argparse
 import json
 import math
 import re
+import stat
 import subprocess
 import sys
 from pathlib import Path
@@ -28,19 +29,96 @@ CAPTURE_JOB_NAME = "capture-baseline-artifact"
 MONOTONE_TOTAL_FIELDS = {"errors", "grade_A_plus_B_pct"}
 
 
-def entries(payload: dict[str, Any]) -> set[str]:
+def entry_parts(value: str) -> tuple[str, str, str]:
+    parts = value.split(" :: ", 2)
+    if len(parts) != 3 or not all(parts):
+        raise ValueError(f"baseline entry is not a path/rule/field triple: {value!r}")
+    return parts[0], parts[1], parts[2]
+
+
+def is_excluded_path(path: str, excluded_roots: tuple[str, ...]) -> bool:
+    return any(path == root or path.startswith(f"{root}/") for root in excluded_roots)
+
+
+def entries(payload: dict[str, Any], excluded_roots: tuple[str, ...] = ()) -> set[str]:
     values = payload.get("entries")
     if not isinstance(values, list) or not all(isinstance(value, str) for value in values):
         raise ValueError("baseline entries must be a list of triple-key strings")
-    return set(values)
+    parsed = [(value, entry_parts(value)) for value in values]
+    return {value for value, (path, _rule, _field) in parsed if not is_excluded_path(path, excluded_roots)}
 
 
-def compare(baseline: dict[str, Any], current: dict[str, Any]) -> list[str]:
+def quarantined_mirror_roots(repo_root: Path) -> tuple[str, ...]:
+    """Return catalog-quarantined roots only when machine provenance is present.
+
+    A zero-channel external mirror is retained for exact-byte audit and upstream
+    repair, not accepted as marketplace compliance debt. The catalog state and
+    provenance marker are both required so a first-party plugin cannot escape
+    the ratchet by setting either signal alone.
+    """
+
+    catalog_path = repo_root / ".claude-plugin" / "marketplace.extended.json"
+    catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+    plugins = catalog.get("plugins")
+    if not isinstance(plugins, list):
+        raise ValueError("marketplace catalog has no plugins array")
+
+    roots: set[str] = set()
+    for index, plugin in enumerate(plugins):
+        if not isinstance(plugin, dict) or plugin.get("publication") != "quarantined":
+            continue
+        source = plugin.get("source")
+        if not isinstance(source, str) or not source:
+            raise ValueError(f"quarantined catalog plugin {index} has no source path")
+        normalized = source.removeprefix("./").replace("\\", "/")
+        if (
+            not normalized.startswith("plugins/")
+            or Path(normalized).is_absolute()
+            or ".." in normalized.split("/")
+            or "//" in normalized
+        ):
+            raise ValueError(f"quarantined catalog source escapes plugins/: {source}")
+        marker = repo_root / normalized / ".source.json"
+        try:
+            marker_stat = marker.lstat()
+        except OSError as error:
+            raise ValueError(f"quarantined catalog source has no provenance marker: {normalized}") from error
+        if stat.S_ISLNK(marker_stat.st_mode) or not stat.S_ISREG(marker_stat.st_mode):
+            raise ValueError(f"quarantined catalog provenance marker is not a regular file: {normalized}")
+        record = json.loads(marker.read_text(encoding="utf-8"))
+        synced_from = record.get("synced_from") if isinstance(record, dict) else None
+        if not isinstance(synced_from, dict) or not isinstance(synced_from.get("repo"), str):
+            raise ValueError(f"quarantined catalog provenance marker is malformed: {normalized}")
+        roots.add(normalized.rstrip("/"))
+    return tuple(sorted(roots))
+
+
+def effective_rule_inventory(payload: dict[str, Any], excluded_roots: tuple[str, ...]) -> set[str]:
+    declared = payload.get("rule_inventory")
+    if not isinstance(declared, list) or not all(isinstance(rule, str) for rule in declared):
+        raise ValueError("rule_inventory must be a list of rule ids")
+    if not excluded_roots:
+        return set(declared)
+
+    included_rules: set[str] = set()
+    excluded_rules: set[str] = set()
+    values = payload.get("entries")
+    if not isinstance(values, list) or not all(isinstance(value, str) for value in values):
+        raise ValueError("baseline entries must be a list of triple-key strings")
+    for value in values:
+        path, rule, _field = entry_parts(value)
+        (excluded_rules if is_excluded_path(path, excluded_roots) else included_rules).add(rule)
+    return set(declared) - (excluded_rules - included_rules)
+
+
+def compare(baseline: dict[str, Any], current: dict[str, Any], excluded_roots: tuple[str, ...] = ()) -> list[str]:
     """Return sorted live triples absent from the pinned baseline."""
-    return sorted(entries(current) - entries(baseline))
+    return sorted(entries(current, excluded_roots) - entries(baseline, excluded_roots))
 
 
-def metadata_drift(baseline: dict[str, Any], current: dict[str, Any]) -> list[str]:
+def metadata_drift(
+    baseline: dict[str, Any], current: dict[str, Any], excluded_roots: tuple[str, ...] = ()
+) -> list[str]:
     """Return baseline-contract changes that require a conscious re-baseline.
 
     Triple comparison alone cannot distinguish an intentional validator-rule
@@ -62,9 +140,11 @@ def metadata_drift(baseline: dict[str, Any], current: dict[str, Any]) -> list[st
         errors.append("baseline rule_inventory must be a list of rule ids")
     elif not isinstance(current_rules, list) or not all(isinstance(rule, str) for rule in current_rules):
         errors.append("live rule_inventory must be a list of rule ids")
-    elif set(baseline_rules) != set(current_rules):
-        added = sorted(set(current_rules) - set(baseline_rules))
-        removed = sorted(set(baseline_rules) - set(current_rules))
+    else:
+        baseline_effective = effective_rule_inventory(baseline, excluded_roots)
+        current_effective = effective_rule_inventory(current, excluded_roots)
+        added = sorted(current_effective - baseline_effective)
+        removed = sorted(baseline_effective - current_effective)
         if added:
             errors.append(f"unknown live rule id(s): {', '.join(added)}")
         if removed:
@@ -421,8 +501,9 @@ def main() -> int:
             return 0
         baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
         current = json.loads(args.current.read_text(encoding="utf-8")) if args.current else emit_current(repo_root)
-        drift = metadata_drift(baseline, current)
-        newcomers = compare(baseline, current)
+        excluded_roots = quarantined_mirror_roots(repo_root)
+        drift = metadata_drift(baseline, current, excluded_roots)
+        newcomers = compare(baseline, current, excluded_roots)
     except (OSError, ValueError, json.JSONDecodeError, RuntimeError) as error:
         print(f"marketplace-compliance-ratchet: ERROR: {error}", file=sys.stderr)
         return 2
@@ -446,7 +527,11 @@ def main() -> int:
             print(f"  {entry}", file=sys.stderr)
         return 1
 
-    print(f"marketplace-compliance-ratchet: OK ({len(entries(current))} live triples; no entries outside baseline)")
+    print(
+        "marketplace-compliance-ratchet: OK "
+        f"({len(entries(current, excluded_roots))} enforceable live triples; "
+        f"{len(excluded_roots)} zero-channel mirror roots reported separately; no entries outside baseline)"
+    )
     return 0
 
 

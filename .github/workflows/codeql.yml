@@ -10,6 +10,8 @@ on:
   pull_request:
     branches: ['main']
     paths:
+      - '.github/codeql-config.yml'
+      - '.github/workflows/codeql.yml'
       - 'packages/**'
       - 'marketplace/src/**'
       - 'scripts/**'
@@ -40,6 +42,7 @@ jobs:
         uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
+          config-file: ./.github/codeql-config.yml
           # Queries to run (security-extended includes more checks)
           queries: security-extended,security-and-quality
 

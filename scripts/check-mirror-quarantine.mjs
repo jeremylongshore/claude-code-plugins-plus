@@ -197,6 +197,22 @@ export function checkMirrorQuarantine({ root = process.cwd() } = {}) {
     }
   }
 
+  for (const [artifactPath, reasonCodes] of declared) {
+    const row = rows.get(artifactPath);
+    if (!row) fail(`publication disposition has no live ledger finding: ${artifactPath}`);
+    const provenance = resolvePluginProvenance(path.posix.dirname(artifactPath), { root });
+    if (provenance.status !== 'mirror') {
+      fail(`first-party finding must be remediated, not dispositioned: ${artifactPath}`);
+    }
+    if (
+      row.disposition !== 'QUARANTINE' ||
+      !Array.isArray(row.reason_codes) ||
+      !sameStrings(reasonCodes, row.reason_codes)
+    ) {
+      fail(`publication disposition contradicts the ledger: ${artifactPath}`);
+    }
+  }
+
   const g0Mirrors = [];
   for (const row of ledger.artifacts.filter((artifact) => artifact?.gate === 'G0')) {
     const provenance = resolvePluginProvenance(path.posix.dirname(row.path), { root });
@@ -206,24 +222,12 @@ export function checkMirrorQuarantine({ root = process.cwd() } = {}) {
     g0Mirrors.push(row.path);
     const reasonCodes = declared.get(row.path);
     if (!reasonCodes) fail(`G0 mirror has no source publication disposition: ${row.path}`);
-    if (
-      row.disposition !== 'QUARANTINE' ||
-      !Array.isArray(row.reason_codes) ||
-      !sameStrings(reasonCodes, row.reason_codes)
-    ) {
-      fail(`G0 mirror disposition contradicts the ledger: ${row.path}`);
-    }
-  }
-  const staleDeclarations = [...declared.keys()].filter(
-    (artifact) => !g0Mirrors.includes(artifact),
-  );
-  if (staleDeclarations.length) {
-    fail(`publication disposition has no live G0 finding: ${staleDeclarations.join(', ')}`);
   }
 
   return {
     mirrors: mirrors.length,
     quarantined: mirrors.filter((skill) => rows.get(skill)?.disposition === 'QUARANTINE').length,
+    publicationQuarantined: declared.size,
     g0Quarantined: g0Mirrors.length,
   };
 }
@@ -233,7 +237,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     const result = checkMirrorQuarantine();
     console.log(
       `mirror quarantine: OK (${result.quarantined}/${result.mirrors} quarantined; ` +
-        `${result.g0Quarantined} G0 findings have zero publication channels)`,
+        `${result.publicationQuarantined} publication findings have zero channels, ` +
+        `${result.g0Quarantined} at G0)`,
     );
   } catch (error) {
     console.error(error.message);

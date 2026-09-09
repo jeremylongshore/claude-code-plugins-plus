@@ -5,10 +5,10 @@
     "generator": "marketplace/scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 439,
-    "totalSkills": 2934,
+    "totalPlugins": 435,
+    "totalSkills": 2930,
     "totalDocs": 24,
-    "totalItems": 3397,
+    "totalItems": 3389,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -368,7 +368,6 @@
     ],
     "allKeywords": [
       "50+",
-      "CLAUDE.md",
       "CLI",
       "GDPR",
       "HIPAA",
@@ -473,7 +472,6 @@
       "appium",
       "apple notes",
       "apple-notes",
-      "apple-silicon",
       "apy",
       "arbitrage",
       "architecture",
@@ -535,14 +533,12 @@
       "bottleneck",
       "box",
       "box-cli",
-      "boycott",
       "brain",
       "brand-guidelines",
       "brand-identity",
       "brand-strategy",
       "brand-voice",
       "branding",
-      "brands",
       "bridge",
       "bright data",
       "brightdata",
@@ -580,7 +576,6 @@
       "chatops",
       "checkpointing",
       "chromatic",
-      "chrome-extension",
       "ci-cd",
       "cicd",
       "citations",
@@ -620,7 +615,6 @@
       "codegen",
       "coderabbit",
       "coding",
-      "cognitive-accessibility",
       "cohere",
       "cohort-retention",
       "cold-email",
@@ -642,7 +636,6 @@
       "connection-pool",
       "consistency",
       "consulting",
-      "consumer",
       "consumer-driven",
       "contabo",
       "contacts",
@@ -666,14 +659,12 @@
       "conventional-commits",
       "conversation",
       "conversation-intelligence",
-      "conversational",
       "conversational-ai",
       "conversion",
       "coordination",
       "copilot-alternative",
       "coreweave",
       "corpus-linguistics",
-      "corrections",
       "correlation",
       "cost",
       "cost-optimization",
@@ -806,7 +797,6 @@
       "espresso",
       "ethereum",
       "etherscan",
-      "ethical-consumption",
       "ethics",
       "etl",
       "eval-guided",
@@ -1040,7 +1030,6 @@
       "learning",
       "learning-loop",
       "learning-rate",
-      "learnings",
       "legal",
       "license-compliance",
       "lifo",
@@ -1139,7 +1128,6 @@
       "mutation-testing",
       "mvp",
       "n8n",
-      "narration",
       "navan",
       "nda",
       "network",
@@ -1170,7 +1158,6 @@
       "observability",
       "observations",
       "obsidian",
-      "offline",
       "oidc",
       "ollama",
       "on-chain",
@@ -1335,7 +1322,6 @@
       "react",
       "react-agents",
       "react-pattern",
-      "readability",
       "real-device",
       "real-time",
       "realtime",
@@ -1418,7 +1404,6 @@
       "selenium",
       "self-hosted",
       "self-iterating",
-      "self-learning",
       "semantic-search",
       "sentiment",
       "sentry",
@@ -1442,7 +1427,6 @@
       "shap",
       "sharding",
       "shopify",
-      "shopping",
       "signals",
       "signature",
       "simulation",
@@ -1553,7 +1537,6 @@
       "testing",
       "text",
       "text-to-image",
-      "text-to-speech",
       "text-to-video",
       "tfidf",
       "throttling",
@@ -1587,7 +1570,6 @@
       "triage",
       "trip-planning",
       "trivy",
-      "tts",
       "tui",
       "tuning",
       "tutorial",
@@ -1640,10 +1622,7 @@
       "vitest",
       "voice",
       "voice-ai",
-      "voice-cloning",
-      "voice-design",
       "volume",
-      "voxcpm",
       "vpc-sc",
       "vps",
       "vscode-fork",
@@ -1698,8 +1677,8 @@
     "pluginsWithAgents": 91,
     "pluginsWithHooks": 21,
     "officialPlugins": 390,
-    "communityPlugins": 49,
-    "communityContributors": 38
+    "communityPlugins": 45,
+    "communityContributors": 35
   },
   "items": [
     {
@@ -11507,39 +11486,6 @@
     },
     {
       "type": "plugin",
-      "id": "claude-reflect",
-      "slug": "claude-reflect",
-      "name": "claude-reflect",
-      "displayName": "claude reflect",
-      "description": "Self-learning system for Claude Code that captures corrections and updates CLAUDE.md automatically",
-      "category": "community",
-      "keywords": [
-        "claude-code",
-        "self-learning",
-        "corrections",
-        "CLAUDE.md",
-        "memory",
-        "learnings",
-        "hooks",
-        "automation"
-      ],
-      "author": {
-        "name": "Bayram Annakov",
-        "url": "https://github.com/bayramannakov"
-      },
-      "authorType": "community",
-      "version": "1.12.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 88,
-      "verificationGrade": "B",
-      "verificationBadge": "silver",
-      "searchText": "claude reflect self-learning system for claude code that captures corrections and updates claude.md automatically community claude-code self-learning corrections claude.md memory learnings hooks automation"
-    },
-    {
-      "type": "plugin",
       "id": "contributing-clanker",
       "slug": "contributing-clanker",
       "name": "contributing-clanker",
@@ -13924,38 +13870,6 @@
     },
     {
       "type": "plugin",
-      "id": "hyperfocus",
-      "slug": "hyperfocus",
-      "name": "hyperfocus",
-      "displayName": "hyperfocus",
-      "description": "ADHD-friendly output formatting for Claude Code. Restructures responses with evidence-based cognitive accessibility: chunking, visual hierarchy, front-loaded key points, and progressive disclosure.",
-      "category": "productivity",
-      "keywords": [
-        "accessibility",
-        "adhd",
-        "neurodivergent",
-        "formatting",
-        "readability",
-        "productivity",
-        "cognitive-accessibility"
-      ],
-      "author": {
-        "name": "Nestor Magalhaes",
-        "email": "nestor.magalhaes@appex.world"
-      },
-      "authorType": "community",
-      "version": "0.2.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 87,
-      "verificationGrade": "B",
-      "verificationBadge": "silver",
-      "searchText": "hyperfocus adhd-friendly output formatting for claude code. restructures responses with evidence-based cognitive accessibility: chunking, visual hierarchy, front-loaded key points, and progressive disclosure. productivity accessibility adhd neurodivergent formatting readability productivity cognitive-accessibility"
-    },
-    {
-      "type": "plugin",
       "id": "plane",
       "slug": "plane",
       "name": "plane",
@@ -13985,74 +13899,6 @@
       "verificationGrade": "A",
       "verificationBadge": "gold",
       "searchText": "plane plane is a team behavior observatory — synthesizes plane api data into observations about how teams actually behave under pressure (cycle velocity vs. plan, ownership churn, reviewer gate strength, priority drift, cross-project load). reads from the live mcp__plane mcp server. productivity plane project-management team-behavior observability productivity agent-skills forge-generated"
-    },
-    {
-      "type": "plugin",
-      "id": "local-tts",
-      "slug": "local-tts",
-      "name": "local-tts",
-      "displayName": "local tts",
-      "description": "Offline text-to-speech via VoxCPM2 — 30 languages, voice design, voice cloning. Runs locally on Apple Silicon.",
-      "category": "ai-ml",
-      "keywords": [
-        "tts",
-        "text-to-speech",
-        "voice",
-        "voice-cloning",
-        "voice-design",
-        "offline",
-        "voxcpm",
-        "apple-silicon",
-        "audio",
-        "narration"
-      ],
-      "author": {
-        "name": "Bubble Invest",
-        "email": "contact@bubbleinvest.com"
-      },
-      "authorType": "community",
-      "version": "1.3.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 87,
-      "verificationGrade": "B",
-      "verificationBadge": "silver",
-      "searchText": "local tts offline text-to-speech via voxcpm2 — 30 languages, voice design, voice cloning. runs locally on apple silicon. ai-ml tts text-to-speech voice voice-cloning voice-design offline voxcpm apple-silicon audio narration"
-    },
-    {
-      "type": "plugin",
-      "id": "boycott-filter",
-      "slug": "boycott-filter",
-      "name": "boycott-filter",
-      "displayName": "boycott filter",
-      "description": "Personal boycott list managed conversationally by your AI agent. Chrome extension warns you on pages from brands you've decided to avoid.",
-      "category": "community",
-      "keywords": [
-        "boycott",
-        "consumer",
-        "shopping",
-        "brands",
-        "chrome-extension",
-        "conversational",
-        "privacy",
-        "ethical-consumption"
-      ],
-      "author": {
-        "name": "Bubble Invest",
-        "email": "contact@bubbleinvest.com"
-      },
-      "authorType": "community",
-      "version": "1.2.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 86,
-      "verificationGrade": "B",
-      "verificationBadge": "silver",
-      "searchText": "boycott filter personal boycott list managed conversationally by your ai agent. chrome extension warns you on pages from brands you've decided to avoid. community boycott consumer shopping brands chrome-extension conversational privacy ethical-consumption"
     },
     {
       "type": "plugin",
@@ -22843,26 +22689,6 @@
     },
     {
       "type": "skill",
-      "id": "boycott-filter",
-      "slug": "boycott-filter",
-      "name": "boycott-filter",
-      "description": "Manage your personal boycott list. Add brands to avoid, track reasons, sync with Chrome extension. Use when the user complains about a brand, says \"never buying from X again\", wants to block a company, or mentions the boycott filter.",
-      "category": "community",
-      "allowedTools": [
-        "Bash",
-        "Read",
-        "Write"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "boycott-filter",
-        "category": "community"
-      },
-      "searchText": "boycott-filter manage your personal boycott list. add brands to avoid, track reasons, sync with chrome extension. use when the user complains about a brand, says \"never buying from x again\", wants to block a company, or mentions the boycott filter. community bash read write "
-    },
-    {
-      "type": "skill",
       "id": "brain",
       "slug": "brain",
       "name": "brain",
@@ -26123,22 +25949,6 @@
         "category": "saas-packs"
       },
       "searchText": "clari-webhooks-events monitor clari forecast changes using export job polling and change detection. use when tracking forecast submission changes, building alerts for significant forecast movements, or syncing clari data in near-real-time. trigger with phrases like \"clari webhooks\", \"clari notifications\", \"clari forecast alerts\", \"clari change detection\". saas-packs read write edit bash(curl:*) bash(python3:*) "
-    },
-    {
-      "type": "skill",
-      "id": "claude-reflect",
-      "slug": "claude-reflect",
-      "name": "claude-reflect",
-      "description": "Self-learning system that captures corrections during sessions and reminds users to run /reflect to update CLAUDE.md. Use when discussing learnings, corrections, or when the user mentions remembering something for future sessions.",
-      "category": "community",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-reflect",
-        "category": "community"
-      },
-      "searchText": "claude-reflect self-learning system that captures corrections during sessions and reminds users to run /reflect to update claude.md. use when discussing learnings, corrections, or when the user mentions remembering something for future sessions. community  "
     },
     {
       "type": "skill",
@@ -46048,22 +45858,6 @@
     },
     {
       "type": "skill",
-      "id": "hyperfocus",
-      "slug": "hyperfocus",
-      "name": "hyperfocus",
-      "description": "ADHD-friendly output formatting. Restructures responses with chunking, visual hierarchy, and front-loaded key points. Modes: clean, flow (default), zen. Use when user says \"hyperfocus\", \"focus mode\", \"adhd mode\", \"adhd friendly\", or invokes /hyperfocus.",
-      "category": "productivity",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hyperfocus",
-        "category": "productivity"
-      },
-      "searchText": "hyperfocus adhd-friendly output formatting. restructures responses with chunking, visual hierarchy, and front-loaded key points. modes: clean, flow (default), zen. use when user says \"hyperfocus\", \"focus mode\", \"adhd mode\", \"adhd friendly\", or invokes /hyperfocus. productivity  "
-    },
-    {
-      "type": "skill",
       "id": "hypothesis-tester",
       "slug": "hypothesis-tester",
       "name": "hypothesis-tester",
@@ -52703,26 +52497,6 @@
         "category": "api-development"
       },
       "searchText": "load-testing-apis execute comprehensive load and stress testing to validate api performance and scalability. use when validating api performance under load. trigger with phrases like \"load test the api\", \"stress test api\", or \"benchmark api performance\". api-development read write edit grep glob bash(api:load-*) "
-    },
-    {
-      "type": "skill",
-      "id": "local-tts",
-      "slug": "local-tts",
-      "name": "local-tts",
-      "description": "Generate speech from text locally using VoxCPM2 (Apache-2.0, 30 languages, voice design, voice cloning). Use when the user asks to \"say\" or \"speak\" something, wants a voiceover or narration, wants to clone a voice, or wants to generate audio from text. Free, runs locally, no API calls. Output is a 48 kHz wav file.",
-      "category": "ai-ml",
-      "allowedTools": [
-        "Bash",
-        "Read",
-        "Write"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "local-tts",
-        "category": "ai-ml"
-      },
-      "searchText": "local-tts generate speech from text locally using voxcpm2 (apache-2.0, 30 languages, voice design, voice cloning). use when the user asks to \"say\" or \"speak\" something, wants a voiceover or narration, wants to clone a voice, or wants to generate audio from text. free, runs locally, no api calls. output is a 48 khz wav file. ai-ml bash read write "
     },
     {
       "type": "skill",

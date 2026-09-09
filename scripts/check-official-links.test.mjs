@@ -21,6 +21,7 @@ test('allows intended development hosts with valid ports and paths', () => {
     'http://localhost:3000/health?ready=1#top',
     "http://localhost:5678',",
     'http://127.0.0.1:7847`',
+    'http://127.0.0.1:7847`:',
     "https://example.com'];",
     'https://127.0.0.1:8443/api',
     'http://0.0.0.0:8080/',

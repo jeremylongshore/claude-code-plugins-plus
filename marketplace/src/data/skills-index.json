@@ -4179,18 +4179,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "boycott-filter",
-      "name": "boycott-filter",
-      "description": "Manage your personal boycott list. Add brands to avoid, track reasons, sync with Chrome extension. Use when the user complains about a brand, says \"never buying from X again\", wants to block a company, or mentions the boycott filter.",
-      "version": "1.0.0",
-      "category": "community",
-      "parentPlugin": "boycott-filter",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "brain",
       "name": "brain",
       "description": "Answers questions about your own systems, notes, decisions, runbooks, and conventions from your governed knowledge brain, returning a qmd:// citation for every claim — receipts, not recall. Use when you want to know what your brain has captured about your own architecture, infrastructure, decisions, or conventions (e.g. \"what does my system map say about the proxy\", \"why did I pick Apache-2.0\", \"what's my deploy runbook\"). Trigger with \"/brain\", \"ask the brain\", \"what do I know about\", or \"check my knowledge base\".",
@@ -5997,18 +5985,6 @@
       "version": "1.6.0",
       "category": "saas-packs",
       "parentPlugin": "clari-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "claude-reflect",
-      "name": "claude-reflect",
-      "description": "Self-learning system that captures corrections during sessions and reminds users to run /reflect to update CLAUDE.md. Use when discussing learnings, corrections, or when the user mentions remembering something for future sessions.",
-      "version": "1.0.0",
-      "category": "community",
-      "parentPlugin": "claude-reflect",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -16863,18 +16839,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "hyperfocus",
-      "name": "hyperfocus",
-      "description": "ADHD-friendly output formatting. Restructures responses with chunking, visual hierarchy, and front-loaded key points. Modes: clean, flow (default), zen. Use when user says \"hyperfocus\", \"focus mode\", \"adhd mode\", \"adhd friendly\", or invokes /hyperfocus.",
-      "version": "1.0.0",
-      "category": "productivity",
-      "parentPlugin": "hyperfocus",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "hypothesis-tester",
       "name": "hypothesis-tester",
       "description": "Structured hypothesis formulation, experiment design, and results interpretation for Product Managers. Use when the user needs to validate an assumption, design an A/B test, or evaluate results. Trigger with \"hypothesis\", \"A/B test\", \"experiment\", \"validate assumption\", \"test this\", or \"should we ship\".",
@@ -20553,18 +20517,6 @@
       "version": "1.24.0",
       "category": "api-development",
       "parentPlugin": "api-load-tester",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "local-tts",
-      "name": "local-tts",
-      "description": "Generate speech from text locally using VoxCPM2 (Apache-2.0, 30 languages, voice design, voice cloning). Use when the user asks to \"say\" or \"speak\" something, wants a voiceover or narration, wants to clone a voice, or wants to generate audio from text. Free, runs locally, no API calls. Output is a 48 kHz wav file.",
-      "version": "1.0.0",
-      "category": "ai-ml",
-      "parentPlugin": "local-tts",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -35211,8 +35163,8 @@
       "fallback_for_tools": []
     }
   ],
-  "count": 2934,
-  "generatedAt": "2026-09-09T22:37:19.265Z",
+  "count": 2930,
+  "generatedAt": "2026-09-09T23:28:14.360Z",
   "categories": [
     "ai-agency",
     "ai-ml",

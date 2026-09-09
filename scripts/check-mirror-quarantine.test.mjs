@@ -80,7 +80,39 @@ test('G0 mirror findings require exact no-channel source dispositions', () => {
   assert.deepEqual(checkMirrorQuarantine({ root }), {
     mirrors: 1,
     quarantined: 1,
+    publicationQuarantined: 1,
     g0Quarantined: 1,
+  });
+});
+
+test('quality-quarantined mirror findings may have exact no-channel source dispositions', () => {
+  const { root, skill } = fixture();
+  write(
+    root,
+    'freshie/disposition-ledger.json',
+    JSON.stringify({
+      schema_version: 'disposition-ledger/v1',
+      artifacts: [
+        {
+          path: skill,
+          disposition: 'QUARANTINE',
+          gate: 'G3',
+          reason_codes: ['MIRROR_NOT_CLEAN'],
+        },
+      ],
+    }),
+  );
+  write(
+    root,
+    'sources.yaml',
+    `sources:\n  - name: mirror\n    target_path: plugins/community/mirror\n    publication_disposition:\n      status: quarantined\n      channels: []\n      artifacts:\n        - path: ${skill}\n          reason_codes: [MIRROR_NOT_CLEAN]\n      rationale: Retain for provenance and upstream repair only.\n`,
+  );
+
+  assert.deepEqual(checkMirrorQuarantine({ root }), {
+    mirrors: 1,
+    quarantined: 1,
+    publicationQuarantined: 1,
+    g0Quarantined: 0,
   });
 });
 

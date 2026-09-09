@@ -1283,6 +1283,14 @@ sources:
     license: Apache-2.0
     category: ai-ml
     verified: false
+    publication_disposition:
+      status: quarantined
+      channels: []
+      artifacts:
+        - path: plugins/ai-ml/local-tts/skills/local-tts/SKILL.md
+          reason_codes:
+            - MIRROR_NOT_CLEAN
+      rationale: Upstream skill content is preserved byte-for-byte but does not meet the marketplace Grade-A and Tier-2 publication floor; retain it for provenance and upstream remediation with no publication channel.
     include:
       - '/.claude-plugin/**'
       - '/CHANGELOG.md'
@@ -1348,6 +1356,14 @@ sources:
     license: MIT
     category: community
     verified: false
+    publication_disposition:
+      status: quarantined
+      channels: []
+      artifacts:
+        - path: plugins/community/boycott-filter/skills/boycott-filter/SKILL.md
+          reason_codes:
+            - MIRROR_NOT_CLEAN
+      rationale: Upstream skill content is preserved byte-for-byte but does not meet the marketplace Grade-A and Tier-2 publication floor; retain it for provenance and upstream remediation with no publication channel.
     include:
       - '/.claude-plugin/**'
       - '/CHANGELOG.md'
@@ -1373,6 +1389,14 @@ sources:
     license: MIT
     category: community
     verified: false
+    publication_disposition:
+      status: quarantined
+      channels: []
+      artifacts:
+        - path: plugins/community/claude-reflect/SKILL.md
+          reason_codes:
+            - MIRROR_NOT_CLEAN
+      rationale: Upstream skill content is preserved byte-for-byte but does not meet the marketplace Grade-A and Tier-2 publication floor; retain it for provenance and upstream remediation with no publication channel.
     include:
       - '/.claude-plugin/**'
       - '/CHANGELOG.md'
@@ -1405,6 +1429,14 @@ sources:
     license: MIT
     category: productivity
     verified: false
+    publication_disposition:
+      status: quarantined
+      channels: []
+      artifacts:
+        - path: plugins/productivity/hyperfocus/skills/hyperfocus/SKILL.md
+          reason_codes:
+            - MIRROR_NOT_CLEAN
+      rationale: Upstream skill content is preserved byte-for-byte but does not meet the marketplace Grade-A and Tier-2 publication floor; retain it for provenance and upstream remediation with no publication channel.
     include:
       - '/.agents/**'
       - '/.claude-plugin/**'

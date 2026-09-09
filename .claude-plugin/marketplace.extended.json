@@ -8286,16 +8286,11 @@
         "url": "https://github.com/bayramannakov"
       },
       "repository": "https://github.com/bayramannakov/claude-reflect",
+      "publication": "quarantined",
       "components": {
         "commands": 3,
         "skills": 1,
         "hooks": 2
-      },
-      "verification": {
-        "score": 88,
-        "grade": "B",
-        "badge": "silver",
-        "lastValidated": "2026-09-05T00:00:00.000Z"
       }
     },
     {
@@ -10556,17 +10551,12 @@
       "repository": "https://github.com/nextor2k/hyperfocus",
       "homepage": "https://github.com/nextor2k/hyperfocus",
       "license": "MIT",
+      "publication": "quarantined",
       "featured": false,
       "pricing": "free",
       "components": {
         "skills": 1,
         "agents": 0
-      },
-      "verification": {
-        "score": 87,
-        "grade": "B",
-        "badge": "silver",
-        "lastValidated": "2026-09-05T00:00:00.000Z"
       }
     },
     {
@@ -10626,12 +10616,7 @@
       },
       "license": "Apache-2.0",
       "repository": "https://github.com/vdk888/local-tts",
-      "verification": {
-        "score": 87,
-        "grade": "B",
-        "badge": "silver",
-        "lastValidated": "2026-09-05T00:00:00.000Z"
-      }
+      "publication": "quarantined"
     },
     {
       "name": "boycott-filter",
@@ -10655,12 +10640,7 @@
       },
       "license": "MIT",
       "repository": "https://github.com/vdk888/boycott-filter",
-      "verification": {
-        "score": 86,
-        "grade": "B",
-        "badge": "silver",
-        "lastValidated": "2026-09-05T00:00:00.000Z"
-      }
+      "publication": "quarantined"
     },
     {
       "name": "web-analytics",

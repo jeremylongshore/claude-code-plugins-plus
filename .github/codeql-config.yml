@@ -1,0 +1,10 @@
+name: 'First-party application and automation code'
+
+# Plugin trees include exact-byte third-party mirrors. Their findings remain
+# visible through the intake scanner and Freshie disposition ledger, while PR
+# CodeQL analyzes the same first-party app, package, and automation roots that
+# can trigger codeql.yml.
+paths:
+  - marketplace/src/**
+  - packages/**
+  - scripts/**

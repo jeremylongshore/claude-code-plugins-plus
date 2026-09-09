@@ -32,7 +32,7 @@ const EXACT_DEVELOPMENT_HOSTS = new Set([
 const DEVELOPMENT_HOST_SUFFIXES = ['.local'];
 const RESERVED_DOCUMENTATION_HOST = 'example.com';
 const PLACEHOLDER_PATTERN = /\[(?:REGION|PROJECT[A-Z0-9_]*)\]/g;
-const RAW_URL_TRAILING_DELIMITERS = new Set([',', ';', ']', "'", '"', '`']);
+const RAW_URL_TRAILING_DELIMITERS = new Set([',', ':', ';', ']', "'", '"', '`']);
 
 // NOTE: This validator is configured to BLOCK known bad domains
 // rather than ALLOW only specific domains, since this is an open-source
