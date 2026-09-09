@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/executive-assistant-skills",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Mirrored upstream executive-assistant skills for meeting prep, email drafting, daily digests, action items, and writing review.",
   "keywords": [
     "executive-assistant",
