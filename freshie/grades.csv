@@ -363,6 +363,7 @@ plugins/community/portaljs/skills/portaljs-deploy,A,98
 plugins/community/portaljs/skills/portaljs-migrate,A,99
 plugins/community/portaljs/skills/portaljs-new-portal,A,100
 plugins/community/quit-sponsor,F,53
+plugins/community/skillcrossroads/skills/audit-skill,A,100
 plugins/community/skills-janitor/skills/janitor-discover,A,93
 plugins/community/skills-janitor/skills/janitor-fix,A,93
 plugins/community/skills-janitor/skills/janitor-report,A,94

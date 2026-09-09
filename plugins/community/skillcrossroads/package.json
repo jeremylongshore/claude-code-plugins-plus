@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/skillcrossroads",
+  "version": "0.11.4",
+  "private": true,
+  "description": "Audit Claude Code artifacts from inside Claude Code: the audit-skill runs the free skillcrossroads CLI to grade skills, subagents, slash commands, MCP configs, and plugins with an evidence-cited file:",
+  "keywords": [
+    "audit",
+    "quality",
+    "linter",
+    "scorecard",
+    "skills",
+    "agent-skills",
+    "ci",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/community/skillcrossroads"
+  },
+  "homepage": "https://tonsofskills.com/plugins/skillcrossroads",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Steve Harlow",
+    "email": "sgharlow@users.noreply.github.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install skillcrossroads\\\\n  or /plugin install skillcrossroads@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

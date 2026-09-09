@@ -1239,6 +1239,34 @@ sources:
       - '**/node_modules/**'
       - '**/*.log'
 
+  # ============================================================
+  # Skill Crossroads (Steve Harlow)
+  # https://github.com/sgharlow/skillcrossroads
+  # ============================================================
+
+  - name: skillcrossroads
+    description: Audit Claude Code artifacts from inside Claude Code - grade skills, subagents, slash commands, MCP configs and plugins with an evidence-cited file:line scorecard, then walk the ranked fix list until the grade stops improving.
+    repo: sgharlow/skillcrossroads
+    source_path: plugin
+    target_path: plugins/community/skillcrossroads
+    author:
+      name: Steve Harlow
+      github: sgharlow
+      email: sgharlow@users.noreply.github.com
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - '/.claude-plugin/plugin.json'
+      - '/README.md'
+      - '/LICENSE'
+      - '/docs/**'
+      - '/skills/**'
+    exclude:
+      - '/.git/**'
+      - '**/node_modules/**'
+      - '**/*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)

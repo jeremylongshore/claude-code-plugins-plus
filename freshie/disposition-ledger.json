@@ -3,8 +3,8 @@
   "authority": "Blueprint 727 §8; Freshie graded export",
   "source": {
     "path": "freshie/grades.csv",
-    "sha256": "25405a1c192609d289986f78c8b493fd4f05d6383001b365875625a8ef0f97ae",
-    "artifact_count": 3531
+    "sha256": "80abbda92b5938a6ee091dbb602183ed49bdedbc905675117e856f46857c7227",
+    "artifact_count": 3532
   },
   "rule_order": [
     "G0",
@@ -24,7 +24,7 @@
     "CERTIFY-PENDING-EVIDENCE": 2748,
     "CERTIFY-UPSTREAM": 0,
     "DEEP-REMEDIATE": 2,
-    "QUARANTINE": 344
+    "QUARANTINE": 345
   },
   "artifacts": [
     {
@@ -6821,6 +6821,17 @@
         "[frontmatter] Missing required field: 'tags' (marketplace)",
         "[frontmatter] Missing required field: 'version' (marketplace)"
       ],
+      "disposition": "QUARANTINE",
+      "gate": "G1",
+      "reason_codes": [
+        "SOURCE_COMMIT_UNPINNED"
+      ]
+    },
+    {
+      "path": "plugins/community/skillcrossroads/skills/audit-skill/SKILL.md",
+      "grade": "A",
+      "score": 100,
+      "diagnostics": [],
       "disposition": "QUARANTINE",
       "gate": "G1",
       "reason_codes": [

@@ -3795,6 +3795,18 @@
       "fallback_for_tools": []
     },
     {
+      "slug": "audit-skill",
+      "name": "audit-skill",
+      "description": "Audit and improve a Claude Code skill using Skill Crossroads. Use when the user says \"audit my skill\", \"grade my skill\", \"check my skill quality\", \"why doesn't my skill trigger\", or \"lint my SKILL.md\" — or before publishing any skill, to get an evidence-cited quality score, ranked fix list, and badge. Trigger with \"audit my skill\".",
+      "version": "0.11.4",
+      "category": "community",
+      "parentPlugin": "skillcrossroads",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
       "slug": "audit-standards",
       "name": "audit-standards",
       "description": "Audits the current project against the development standards defined in ~/.claude/CLAUDE.md. Documents non-compliant findings as GitHub issues and writes a prioritised fix plan to the project CLAUDE.md. Use when the user says audit against settings, audit standards, check standards compliance, or audit this project.",
@@ -35283,8 +35295,8 @@
       "fallback_for_tools": []
     }
   ],
-  "count": 2940,
-  "generatedAt": "2026-09-05T21:34:35.617Z",
+  "count": 2941,
+  "generatedAt": "2026-09-07T04:55:33.464Z",
   "categories": [
     "ai-agency",
     "ai-ml",
