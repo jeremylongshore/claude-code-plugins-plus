@@ -24,9 +24,10 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { KNOWN_HARNESSES } from './lib/harness-lexicon.mjs';
 
-const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 // Re-exported for existing consumers; the definition lives in scripts/lib/.
 export { KNOWN_HARNESSES };

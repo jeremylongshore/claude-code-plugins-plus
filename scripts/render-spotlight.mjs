@@ -25,7 +25,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import prettier from 'prettier';
 
-const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SPOTLIGHTS = join(ROOT, 'marketplace', 'src', 'data', 'spotlights.json');
 const README = join(ROOT, 'README.md');
 

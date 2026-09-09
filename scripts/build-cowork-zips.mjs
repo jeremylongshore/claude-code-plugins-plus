@@ -34,11 +34,13 @@ import {
   statSync,
   writeFileSync,
 } from 'node:fs';
+import * as nodePath from 'node:path';
 import { dirname, join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 // Resolve archiver — available in both root and marketplace node_modules
 const require = createRequire(join(ROOT, 'marketplace', 'package.json'));
@@ -153,9 +155,14 @@ function shouldInclude(entryName) {
  * Validate that a resolved path is within the allowed plugins directory.
  * Prevents path traversal attacks from malicious catalog entries.
  */
-function isWithinPluginsDir(resolvedPath) {
-  const normalized = resolve(resolvedPath);
-  return normalized.startsWith(PLUGINS_DIR + '/') || normalized === PLUGINS_DIR;
+export function isWithinPluginsDir(
+  resolvedPath,
+  { pluginsDir = PLUGINS_DIR, pathApi = nodePath } = {},
+) {
+  const rel = pathApi.relative(pathApi.resolve(pluginsDir), pathApi.resolve(resolvedPath));
+  return (
+    rel === '' || (rel !== '..' && !rel.startsWith(`..${pathApi.sep}`) && !pathApi.isAbsolute(rel))
+  );
 }
 
 /**
@@ -462,7 +469,9 @@ async function main() {
   }
 }
 
-main().catch((err) => {
-  console.error('Fatal error:', err);
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  main().catch((err) => {
+    console.error('Fatal error:', err);
+    process.exit(1);
+  });
+}
