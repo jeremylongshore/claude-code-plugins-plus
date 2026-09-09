@@ -15292,6 +15292,9 @@
       "isNew": false,
       "badges": [],
       "skillCount": 2,
+      "verificationScore": 90,
+      "verificationGrade": "A",
+      "verificationBadge": "gold",
       "searchText": "hol guard local pre-execution security controls and pre-install scanning for ai agent tools, packages, skills, plugins, and mcp servers. security hol-guard ai-security agent-security plugin-security mcp-security supply-chain-security"
     },
     {
