@@ -1,0 +1,36 @@
+{
+  "name": "hyperfocus",
+  "version": "0.3.0",
+  "description": "ADHD-friendly output formatting. Restructures responses with evidence-based cognitive accessibility.",
+  "author": {
+    "name": "Nestor Magalhaes",
+    "url": "https://github.com/nextor2k"
+  },
+  "homepage": "https://github.com/nextor2k/hyperfocus",
+  "repository": "https://github.com/nextor2k/hyperfocus",
+  "license": "MIT",
+  "keywords": [
+    "accessibility",
+    "adhd",
+    "neurodivergent",
+    "formatting",
+    "readability"
+  ],
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json",
+  "interface": {
+    "displayName": "Hyperfocus",
+    "shortDescription": "ADHD-friendly output. Clear structure, visual hierarchy, front-loaded answers.",
+    "longDescription": "ADHD-optimized output formatting for Codex. Restructures responses with chunking, visual hierarchy, and progressive disclosure. Three modes: clean, flow, zen.",
+    "developerName": "Nestor Magalhaes",
+    "category": "Accessibility",
+    "capabilities": [
+      "Write"
+    ],
+    "websiteURL": "https://github.com/nextor2k/hyperfocus",
+    "defaultPrompt": [
+      "Use hyperfocus mode. Structure output for ADHD-friendly reading."
+    ],
+    "brandColor": "#7C3AED"
+  }
+}

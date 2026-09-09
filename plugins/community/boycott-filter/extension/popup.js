@@ -4,22 +4,6 @@
 
 const SERVER = 'http://127.0.0.1:7847';
 
-/**
- * HTML-escape user-controlled values before innerHTML interpolation.
- * Same XSS surface as content.js — boycott list entries come from an
- * unauthenticated local server endpoint. We additionally escape quotes
- * so values are safe inside HTML attributes (e.g. data-name="...").
- */
-function esc(s) {
-  if (s === null || s === undefined) return '';
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
 const listEl = document.getElementById('list');
 const statusDot = document.getElementById('status-dot');
 const statusText = document.getElementById('status-text');
@@ -65,13 +49,13 @@ function renderList(companies) {
   }
 
   listEl.innerHTML = companies.map(c => `
-    <div class="company" data-name="${esc(c.name)}">
+    <div class="company" data-name="${c.name}">
       <div class="company-info">
-        <h3>${esc(c.name)}</h3>
-        ${c.reason ? `<div class="reason">${esc(c.reason)}</div>` : ''}
-        ${c.aliases?.length ? `<div class="aliases">Also: ${esc(c.aliases.join(', '))}</div>` : ''}
+        <h3>${c.name}</h3>
+        ${c.reason ? `<div class="reason">${c.reason}</div>` : ''}
+        ${c.aliases?.length ? `<div class="aliases">Also: ${c.aliases.join(', ')}</div>` : ''}
       </div>
-      <button class="remove-btn" data-name="${esc(c.name)}">✕</button>
+      <button class="remove-btn" data-name="${c.name}">✕</button>
     </div>
   `).join('');
 

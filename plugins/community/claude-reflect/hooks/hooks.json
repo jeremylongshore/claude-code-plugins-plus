@@ -1,12 +1,23 @@
 {
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/capture_learning.py\""
+          }
+        ]
+      }
+    ],
     "PreCompact": [
       {
         "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check-learnings.sh"
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/check_learnings.py\""
           }
         ]
       }
@@ -14,11 +25,21 @@
     "PostToolUse": [
       {
         "matcher": "Bash",
-        "if": "Bash(git commit*)",
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/post-commit-reminder.sh"
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/post_commit_reminder.py\""
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/session_start_reminder.py\""
           }
         ]
       }

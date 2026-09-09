@@ -1267,6 +1267,150 @@ sources:
       - '**/node_modules/**'
       - '**/*.log'
 
+  # ============================================================
+  # Recovered public plugin mirrors (provenance audit 2026-09-09)
+  # ============================================================
+
+  - name: local-tts
+    description: Local text-to-speech via VoxCPM2 with voice design and cloning
+    repo: vdk888/local-tts
+    source_path: .
+    target_path: plugins/ai-ml/local-tts
+    author:
+      name: Bubble Invest
+      github: vdk888
+      email: contact@bubbleinvest.com
+    license: Apache-2.0
+    category: ai-ml
+    verified: false
+    include:
+      - '/.claude-plugin/**'
+      - '/CHANGELOG.md'
+      - '/LICENSE'
+      - '/README.md'
+      - '/scripts/**'
+      - '/skills/**'
+      - '/tests/**'
+    exclude:
+      - '/.git/**'
+      - '**/node_modules/**'
+      - '**/*.log'
+
+  - name: promptbook
+    description: Opt-in Claude Code session analytics and shareable build cards
+    repo: promptbookgg/claude-code-plugin
+    source_path: plugins/promptbook
+    target_path: plugins/business-tools/promptbook
+    author:
+      name: Promptbook
+      github: promptbookgg
+      email: contact@promptbook.gg
+    license: MIT
+    category: business-tools
+    verified: false
+    include:
+      - '/.claude-plugin/**'
+      - '/LICENSE'
+      - '/README.md'
+      - '/hooks/**'
+      - '/scripts/**'
+      - '/skills/**'
+    exclude:
+      - '/.git/**'
+      # Upstream only prints a curl-to-shell update hint; it does not execute it.
+      # Keep the reviewed current byte in-tree, but exclude it from unattended
+      # sync because the intake scanner deliberately refuses that pattern in
+      # executable files.
+      - '/scripts/submit.js'
+      - '**/node_modules/**'
+      - '**/*.log'
+
+  - name: boycott-filter
+    description: Personal boycott list with conversational management and a Chrome extension
+    repo: vdk888/boycott-filter
+    source_path: .
+    target_path: plugins/community/boycott-filter
+    author:
+      name: Bubble Invest
+      github: vdk888
+      email: contact@bubbleinvest.com
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - '/.claude-plugin/**'
+      - '/CHANGELOG.md'
+      - '/LICENSE'
+      - '/README.md'
+      - '/extension/**'
+      - '/scripts/**'
+      - '/skills/**'
+      - '/tests/**'
+    exclude:
+      - '/.git/**'
+      - '**/node_modules/**'
+      - '**/*.log'
+
+  - name: claude-reflect
+    description: Self-learning Claude Code system that captures corrections for reviewed memory updates
+    repo: bayramannakov/claude-reflect
+    source_path: .
+    target_path: plugins/community/claude-reflect
+    author:
+      name: Bayram Annakov
+      github: bayramannakov
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - '/.claude-plugin/**'
+      - '/CHANGELOG.md'
+      - '/CLAUDE.md'
+      - '/DISTRIBUTION.md'
+      - '/LICENSE'
+      - '/README.md'
+      - '/RELEASING.md'
+      - '/assets/**'
+      - '/commands/**'
+      - '/hooks/**'
+      - '/scripts/**'
+      - '/SKILL.md'
+      - '/tests/**'
+    exclude:
+      - '/.git/**'
+      - '/.github/**'
+      - '**/node_modules/**'
+      - '**/*.log'
+
+  - name: hyperfocus
+    description: ADHD-friendly response formatting with clean, flow, and zen modes
+    repo: nextor2k/hyperfocus
+    source_path: .
+    target_path: plugins/productivity/hyperfocus
+    author:
+      name: Nestor Magalhaes
+      github: nextor2k
+      email: nestor.magalhaes@appex.world
+    license: MIT
+    category: productivity
+    verified: false
+    include:
+      - '/.agents/**'
+      - '/.claude-plugin/**'
+      - '/.codex-plugin/**'
+      - '/CHANGELOG.md'
+      - '/LICENSE'
+      - '/README.md'
+      - '/hooks/**'
+      - '/scripts/**'
+      - '/skills/**'
+      - '/tests/**'
+    exclude:
+      - '/.git/**'
+      - '/.github/**'
+      - '**/node_modules/**'
+      - '**/*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)

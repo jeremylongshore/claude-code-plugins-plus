@@ -1,177 +1,82 @@
-# Boycott Filter — Your AI Agent Remembers Why You Hate Them
+# Boycott Filter — Claude Code Plugin
 
-**Tell your Claude agent which brands to avoid. Chrome extension warns you on any page from those brands — with your own reasons displayed.**
+Personal boycott list managed by your AI agent. Chrome extension warns you when you visit brands you've decided to avoid — with your own reasons.
 
-The problem: you decide to boycott a brand. Two weeks later, you've forgotten why, and you click "buy". This plugin fixes that. You complain to your agent once, the extension reminds you forever.
+## Why this exists
 
----
+Ads on YouTube, Disney+, and every other platform have become so intrusive and omnipresent that they achieve the opposite of their goal — they make you want to *never* buy the product, just to spite the aggressive ad stuffing. So we built a tool to enforce that instinct and actually make it count. When you're fed up with a brand's marketing practices, you tell your AI agent, and from that point on you're reminded every time you're about to give them money. Turn your frustration into a real impact on their sales.
 
 ## How it works
 
-1. Tell Claude conversationally: *"Never buying from Temu again, cheap garbage everywhere."*
-2. Claude extracts the brand + your reason, adds it to your local boycott list.
-3. Chrome extension reads the list, scans every page you visit.
-4. On match: red warning banner at the top of the page, with the brand name and **your own words** as the reason.
-
-All local. No cloud. No tracking. Your list never leaves your machine.
-
----
+1. Tell your Claude agent: *"Never buying from Temu again, cheap garbage everywhere"*
+2. Agent adds Temu to your boycott list with your reason
+3. Next time you visit a page with Temu products, a red banner reminds you why you hate them
 
 ## Features
 
 | Feature | Description |
 |---------|-------------|
-| **Conversational management** | Complain naturally, agent handles the list |
-| **Reason tracking** | Your own words shown back to you as a reminder |
-| **Brand aliases** | Boycott a parent company, catch all subsidiaries (Nestlé → Nespresso, KitKat, Purina, etc.) |
-| **Red warning banner** | Slides in at top of matching pages, hard to miss |
-| **Extension icon badge** | Match count visible at a glance |
-| **Offline capable** | Extension caches the list, works without the server |
-| **Popup UI** | Quick manual add/remove from the extension icon |
-| **100% local** | Nothing leaves your Mac |
-
----
+| **Conversational management** | Just complain to your agent — it handles the rest |
+| **Reason tracking** | Your own words are shown back to you as a reminder |
+| **Brand aliases** | Boycott a parent company and catch all subsidiaries |
+| **Chrome extension** | Red warning banner + badge on every matching page |
+| **Offline capable** | Extension caches the list locally, works without the server |
+| **Local & private** | Everything runs on your machine. No cloud, no tracking |
 
 ## Installation
 
-```bash
-/plugin install boycott-filter@claude-code-plugins-plus
-```
-
-### First-run setup
+### As a Claude Code Plugin
 
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/scripts/setup.sh
+/plugin marketplace add vdk888/boycott-filter
+
+/plugin install boycott-filter@boycott-filter-marketplace
 ```
 
-This starts the local sync server on port 7847 and creates an empty boycott list.
+### Setup
 
-### Chrome extension (one-time manual load)
-
-Browser extensions can't be auto-installed from a Claude plugin. One-time manual load:
-
-1. Open `chrome://extensions`
-2. Enable **Developer mode** (toggle top right)
-3. Click **Load unpacked**
-4. Select the `extension/` folder inside this plugin directory
-
-The plugin path is typically:
-
-```
-~/.claude/plugins/cache/claude-code-plugins-plus/boycott-filter/1.0.0/extension/
+```bash
+/boycott-filter:boycott-filter
 ```
 
----
+Claude will start the local server and guide you through loading the Chrome extension.
 
-## Requirements
+Or manually:
 
-- **Node.js 18+** (for the sync server)
-- **Chrome browser** (or Chromium / Brave / Edge — any Manifest V3 browser)
-- That's it. No API keys, no accounts, no cloud.
+```bash
+# Start the server
+node scripts/server.js &
 
----
+# Load extension in Chrome:
+# chrome://extensions → Developer mode → Load unpacked → select extension/
+```
+
+### Requirements
+
+- Node.js 18+
+- Chrome browser
+- That's it.
 
 ## Usage
 
-### Conversational examples
+Just talk to your agent naturally:
 
-Say things like:
-
-- *"Boycott Nestlé, their water practices are criminal."*
-- *"I'm done with Shein — fast fashion, can't support it."*
-- *"Add all Nestlé brands — Nespresso, KitKat, Purina, Perrier."*
+- *"Boycott Nestl, their water practices are awful"*
+- *"I'm done with Shein, add them to the list"*
 - *"What's on my boycott list?"*
-- *"Remove Amazon from the list."*
+- *"Remove Amazon from the boycott list"*
+- *"Add all Nestl brands — Nespresso, KitKat, Purina"*
 
-The agent calls the local API at `http://127.0.0.1:7847` to read/write the list.
+## API
 
-### Manual via curl
+The local server runs on `http://127.0.0.1:7847`:
 
-```bash
-# Add
-curl -X POST http://127.0.0.1:7847/add \
-  -H 'Content-Type: application/json' \
-  -d '{"name":"Temu","reason":"Cheap garbage","aliases":["temu.com"]}'
-
-# List
-curl http://127.0.0.1:7847/list
-
-# Remove
-curl -X DELETE http://127.0.0.1:7847/remove \
-  -H 'Content-Type: application/json' \
-  -d '{"name":"Temu"}'
-```
-
-### Manual via extension popup
-
-Click the extension icon → add/remove brands directly. Useful when the server isn't running (popup falls back to `chrome.storage`).
-
----
-
-## How the warning looks
-
-When you land on a page where a boycotted brand's name, domain, or alias appears, a red banner slides in at the top:
-
-```
-⛔ BOYCOTT ALERT — Temu
-"Cheap garbage, ads everywhere"                               [X dismiss]
-```
-
-The reason is YOUR text. In your voice. That's the whole point.
-
-The extension also sets a badge on its icon with the count of matches on the current page.
-
----
-
-## Architecture
-
-```
-┌────────────────┐        ┌────────────────────┐        ┌─────────────────┐
-│ Claude Code    │◄──────►│ Local sync server  │◄──────►│ Chrome extension│
-│ (SKILL.md)     │  HTTP  │ (Node.js, :7847)   │  HTTP  │ (polls /list)   │
-└────────────────┘        └────────────────────┘        └─────────────────┘
-                                     │
-                                     ▼
-                          boycott-list.json
-                          (local file, never leaves)
-```
-
-- **Server** (`scripts/server.js`): tiny Node HTTP server on port 7847. Stores the list as JSON. CORS-enabled so the Chrome extension can read it.
-- **Skill** (`skills/boycott-filter/SKILL.md`): tells Claude how to add/remove brands when you mention them.
-- **Extension** (`extension/`): content script scans every page, shows the banner. Background service worker syncs the list every 30s.
-
----
-
-## API reference
-
-| Method | Endpoint | Body | Description |
-|--------|----------|------|-------------|
-| GET | `/list` | — | Full boycott list |
-| POST | `/add` | `{"name","reason","aliases":[]}` | Add a brand |
-| DELETE | `/remove` | `{"name"}` | Remove a brand |
-| GET | `/health` | — | Server status |
-
----
-
-## Privacy
-
-Everything runs locally:
-
-- The list lives in `boycott-list.json` inside the plugin directory
-- The sync server only listens on `127.0.0.1` — not reachable from other machines
-- The Chrome extension never calls any external server
-- No analytics, no telemetry, no cloud
-
----
-
-## Demo
-
-See a 28-second video demo at:
-
-- https://github.com/vdk888/boycott-filter/blob/main/demo.mp4
-- https://bubble-sentinel.netlify.app/boycott-filter.html (landing page)
-
----
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/list` | Get boycott list |
+| POST | `/add` | Add company `{"name":"X","reason":"...","aliases":["Y"]}` |
+| DELETE | `/remove` | Remove company `{"name":"X"}` |
+| GET | `/health` | Server status |
 
 ## License
 

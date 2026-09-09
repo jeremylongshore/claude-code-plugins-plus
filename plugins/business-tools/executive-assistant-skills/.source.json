@@ -1,0 +1,32 @@
+{
+  "synced_from": {
+    "repo": "mgonto/executive-assistant-skills",
+    "path": ".",
+    "branch": "main",
+    "source_commit": "28f5065274b43360d7f564f5833c97f9377d3313"
+  },
+  "last_sync": "2026-09-09T21:59:56.000Z",
+  "author": {
+    "name": "Martin Gontovnikas",
+    "github": "mgonto"
+  },
+  "license": "NOASSERTION",
+  "sync_policy": {
+    "mode": "manual-path-map",
+    "reason": "Upstream keeps skill directories at repository root, while the marketplace plugin contract maps them beneath skills/. Automated publication is quarantined until upstream publishes a license."
+  },
+  "files_synced": 11,
+  "files": [
+    "README.md",
+    "config/DEBUG_LOGGING.md",
+    "config/user.example.json",
+    "docs/crons.md",
+    "docs/setup.md",
+    "skills/action-items-todoist/SKILL.md",
+    "skills/email-drafting/SKILL.md",
+    "skills/executive-digest/SKILL.md",
+    "skills/humanizer/SKILL.md",
+    "skills/meeting-prep/SKILL.md",
+    "skills/todoist-due-drafts/SKILL.md"
+  ]
+}

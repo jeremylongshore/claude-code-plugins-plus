@@ -1,0 +1,27 @@
+{
+  "synced_from": {
+    "repo": "vdk888/local-tts",
+    "path": ".",
+    "branch": "main",
+    "source_commit": "9ac4bdfff741427972ad7616d44ad18d907095f1"
+  },
+  "last_sync": "2026-09-09T22:04:03.307Z",
+  "author": {
+    "name": "Bubble Invest",
+    "github": "vdk888",
+    "email": "contact@bubbleinvest.com"
+  },
+  "license": "Apache-2.0",
+  "files_synced": 9,
+  "files": [
+    ".claude-plugin/marketplace.json",
+    ".claude-plugin/plugin.json",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md",
+    "scripts/generate.py",
+    "scripts/setup.sh",
+    "skills/local-tts/SKILL.md",
+    "tests/test_generate.py"
+  ]
+}

@@ -1,209 +1,64 @@
 ---
 name: boycott-filter
-description: "Personal boycott list \u2014 users can conversationally tell the agent\
-  \ which brands they\nwant to avoid, and why. A local sync server exposes the list\
-  \ at http://127.0.0.1:7847,\nand a bundled Chrome extension warns the user when\
-  \ they land on pages from boycotted\nbrands. Use when the user says things like\
-  \ \"I'm done with X\", \"boycott Y\", \"never\nbuying from Z again\", \"remove X\
-  \ from my boycott list\", or asks to see their list.\nTrigger phrases: \"boycott\"\
-  , \"never buying from\", \"sick of\", \"add to boycott\",\n\"show my boycott list\"\
-  , \"remove from boycott\".\n"
-allowed-tools: Bash(curl:*)
-version: 1.2.0
-author: Bubble Invest <contact@bubbleinvest.com>
+description: Manage your personal boycott list. Add brands to avoid, track reasons, sync with Chrome extension. Use when the user complains about a brand, says "never buying from X again", wants to block a company, or mentions the boycott filter.
+version: 1.0.0
+author: Bubble Invest
 license: MIT
-tags:
-- boycott
-- consumer
-- shopping
-- brands
-- chrome-extension
-- productivity
-- ethical-consumption
 user-invocable: true
-compatibility: Designed for Claude Code
+allowed-tools:
+  - Bash
+  - Read
+  - Write
 ---
+
 # Boycott Filter
 
-Manage a personal boycott list conversationally. Users complain about brands, the agent adds them to a local list with their reason, and a Chrome extension warns them on any page from those brands — displaying their own words back to them.
+Personal boycott list managed conversationally through Claude Code, synced to a Chrome extension that warns you when you visit boycotted brands.
 
-## Overview
+## When to use
 
-This skill is the conversational layer of a 3-part system:
+- User says "never buying from X again", "I hate X", "boycott X", "block X"
+- User complains about a brand, company, or product they want to avoid
+- User asks to see, add, remove, or update their boycott list
+- User asks about the Chrome extension or boycott filter status
 
-1. **This skill** (Claude Code) — understands user intent, calls the local API
-2. **Local sync server** (`scripts/server.js`, port 7847) — stores the list, serves it to the extension
-3. **Chrome extension** (`extension/`) — scans pages, shows the warning banner
+## How it works
 
-The user's value: they complain ONCE, they're reminded FOREVER — in their own voice, with their own reason. No more accidental clicks on brands they'd decided to stop supporting.
+1. User tells you about a brand they want to avoid (casually or explicitly)
+2. You extract: **company name**, **reason** (from their complaint), and **aliases** (known sub-brands)
+3. You add it to the boycott list via the local sync server
+4. Chrome extension picks it up within 30 seconds and warns on matching pages
 
-## Prerequisites
+## Server
 
-- Node.js 18+ installed
-- Chrome (or any Manifest V3 browser) with the bundled extension loaded manually (see README)
-- The local sync server must be running on port 7847
+The boycott filter runs a local HTTP server on port 7847.
 
-Check with:
-
-```bash
-curl -s http://127.0.0.1:7847/health
-```
-
-If not running, ask the user to run setup once in a terminal (the skill itself only has `curl` permission, by design — see README for security rationale):
+### Start the server
 
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/scripts/setup.sh
+node ~/.claude/plugins/cache/boycott-filter-marketplace/boycott-filter/1.0.0/scripts/server.js &
 ```
 
-Tell the user: "The boycott server isn't running. Open a terminal and run: `bash ${CLAUDE_PLUGIN_ROOT}/scripts/setup.sh` — that starts the local server and shows you how to load the Chrome extension. Then ask me again."
+### API
 
-## Instructions
+**Base URL:** `http://127.0.0.1:7847`
 
-### When the user wants to ADD a brand
+| Method | Endpoint | Body | Description |
+|--------|----------|------|-------------|
+| GET | `/list` | — | Get the full boycott list |
+| POST | `/add` | `{"name":"X","reason":"...","aliases":["Y","Z"]}` | Add a company |
+| DELETE | `/remove` | `{"name":"X"}` | Remove a company |
+| GET | `/health` | — | Check server status |
 
-Detect phrases like:
-
-- "I'm done with X"
-- "Never buying from X again"
-- "Boycott X"
-- "Add X to my boycott list"
-- "Sick of X"
-
-Extract:
-
-- **Brand name** (the thing they want to avoid)
-- **Reason** (their own words — critical, this is what will be shown back to them)
-- **Aliases** (optional — if you know subsidiaries, offer them: Nestlé → Nespresso, KitKat, Purina, etc.)
-
-Then call:
+### Add a company
 
 ```bash
 curl -s -X POST http://127.0.0.1:7847/add \
   -H 'Content-Type: application/json' \
-  -d '{"name":"BRAND","reason":"USER_REASON","aliases":["alias1","alias2"]}'
+  -d '{"name":"Temu","reason":"Cheap garbage, ads everywhere","aliases":["temu.com"]}'
 ```
 
-Keep the reason in the user's voice — don't paraphrase into corporate language. If they said "cheap garbage everywhere", store "cheap garbage everywhere" — not "low quality products with aggressive advertising".
-
-If the user didn't give a reason, ask: "Got it. Any specific reason you want to remember why you decided to boycott?"
-
-### When the user wants to REMOVE a brand
-
-Detect phrases like:
-
-- "Remove X from my boycott list"
-- "Unban X"
-- "Actually I'm fine with X now"
-
-Call:
-
-```bash
-curl -s -X DELETE http://127.0.0.1:7847/remove \
-  -H 'Content-Type: application/json' \
-  -d '{"name":"BRAND"}'
-```
-
-### When the user wants to SEE their list
-
-```bash
-curl -s http://127.0.0.1:7847/list
-```
-
-Display the brands and reasons nicely:
-
-- "You're currently boycotting N brands:"
-- `- Temu: "Cheap garbage everywhere"`
-- `- Shein: "Fast fashion, not supporting"`
-- `- Nestlé (+ Nespresso, KitKat): "Water extraction in drought zones"`
-
-### When the user asks about the extension
-
-Explain that the Chrome extension needs to be loaded manually once:
-
-1. Open `chrome://extensions`
-2. Enable Developer mode
-3. Click "Load unpacked"
-4. Select: `${CLAUDE_PLUGIN_ROOT}/extension/`
-
-After that, it auto-syncs every 30 seconds from the local server.
-
-## Output
-
-- **Confirmation messages** for add/remove actions — include the exact reason captured
-- **List displays** grouped by company with reasons visible
-- **Server status** if asked
-
-For add, confirm like:
-> "Added Temu to your boycott list. Reason: *cheap garbage, ads everywhere*. You'll see a red banner next time you land on temu.com or any page mentioning Temu."
-
-## API reference (the local server)
-
-| Method | Endpoint | Body | Returns |
-|--------|----------|------|---------|
-| GET | `/list` | — | `{"companies":[...], "updated_at":"..."}` |
-| POST | `/add` | `{"name","reason","aliases":[]}` | `{"ok":true, "list":{...}}` |
-| DELETE | `/remove` | `{"name"}` | `{"ok":true, "list":{...}}` |
-| GET | `/health` | — | `{"status":"ok", "companies":N}` |
-
-## Error Handling
-
-- **Server not running** (connection refused on port 7847): run the setup script. Don't silently fail — tell the user.
-- **Brand already on list**: server returns 409, tell the user gracefully ("Already on your list, reason: ...").
-- **Brand not found on removal**: server returns 404, tell the user it wasn't on the list.
-- **Invalid JSON**: server returns 400. Should not happen if the skill constructs the body correctly.
-
-## Examples
-
-**Example 1: Add with reason (most common)**
-
-User: *"Ugh, another Shein ad. Never buying from them, fast fashion is killing everything."*
-
-Agent action:
-
-```bash
-curl -s -X POST http://127.0.0.1:7847/add \
-  -H 'Content-Type: application/json' \
-  -d '{"name":"Shein","reason":"fast fashion is killing everything","aliases":["shein.com","SHEIN"]}'
-```
-
-Response: "Added Shein. Next time you land on a page mentioning them, you'll see your reason: *'fast fashion is killing everything'*."
-
-**Example 2: Parent + subsidiaries**
-
-User: *"Boycott Nestlé, their water extraction practices in drought zones are criminal."*
-
-Agent action:
-
-```bash
-curl -s -X POST http://127.0.0.1:7847/add \
-  -H 'Content-Type: application/json' \
-  -d '{"name":"Nestlé","reason":"water extraction practices in drought zones are criminal","aliases":["Nestle","Nespresso","KitKat","Purina","Perrier","San Pellegrino"]}'
-```
-
-Response: "Added Nestlé with their main subsidiaries (Nespresso, KitKat, Purina, Perrier, San Pellegrino). The extension will match any of these. Want me to add more? Nestlé owns ~2,000 brands."
-
-**Example 3: List view**
-
-User: *"What's on my boycott list?"*
-
-Agent action:
-
-```bash
-curl -s http://127.0.0.1:7847/list
-```
-
-Response formatting:
-> You're currently boycotting 3 brands:
->
-> - **Temu** — *"Cheap garbage, ads everywhere"*
-> - **Shein** — *"Fast fashion is killing everything"*
-> - **Nestlé** (+ Nespresso, KitKat, Purina, Perrier) — *"Water extraction practices in drought zones are criminal"*
-
-**Example 4: Remove**
-
-User: *"Actually remove Temu, I need something urgent from there."*
-
-Agent action:
+### Remove a company
 
 ```bash
 curl -s -X DELETE http://127.0.0.1:7847/remove \
@@ -211,13 +66,69 @@ curl -s -X DELETE http://127.0.0.1:7847/remove \
   -d '{"name":"Temu"}'
 ```
 
-Response: "Removed Temu from your list. You won't get the warning anymore. (No judgment — but you can always add it back later.)"
+### List all boycotted companies
 
-## Resources
+```bash
+curl -s http://127.0.0.1:7847/list
+```
 
-- **Server source**: `scripts/server.js` (bundled with this plugin)
-- **Chrome extension**: `extension/` (bundled with this plugin, load manually once)
-- **Setup script**: `scripts/setup.sh`
-- **GitHub repo**: https://github.com/vdk888/boycott-filter (full source)
-- **Landing page demo**: https://bubble-sentinel.netlify.app/boycott-filter.html
-- **Video demo**: https://github.com/vdk888/boycott-filter/blob/main/demo.mp4
+## Chrome Extension
+
+The extension must be loaded manually (one-time setup):
+
+1. Open `chrome://extensions`
+2. Enable **Developer mode** (toggle top right)
+3. Click **Load unpacked**
+4. Select the `extension/` folder from this plugin directory
+
+The extension:
+- Polls the server every 30 seconds for list updates
+- Scans every page for boycotted company names and aliases
+- Shows a red warning banner at the top with the company name and **your reason**
+- Badge on the extension icon shows match count
+- Works offline (falls back to cached list in chrome.storage)
+- Popup UI for quick add/remove
+
+## Conversational patterns
+
+When the user says something like:
+- "Ugh, another Shein ad. Never buying from them." → Add Shein with reason "Sick of their ads"
+- "Boycott Nestlé, their water practices are criminal" → Add Nestlé with reason "Criminal water practices", aliases: ["Nestle", "Nespresso", "KitKat", "Purina"]
+- "Remove Temu from my boycott list" → Remove Temu
+- "What's on my boycott list?" → GET /list and display
+
+**Always capture the reason** — it's the key feature. The user's own words remind them why they decided to boycott when they encounter the brand later.
+
+**Suggest aliases** when you know them — parent companies own many brands. Ask the user if they want to include subsidiaries.
+
+## Data
+
+The boycott list is stored at:
+```
+~/.claude/plugins/cache/boycott-filter-marketplace/boycott-filter/1.0.0/boycott-list.json
+```
+
+Format:
+```json
+{
+  "companies": [
+    {
+      "name": "Temu",
+      "reason": "Cheap garbage, ads everywhere",
+      "aliases": ["temu.com"],
+      "added_at": "2026-04-12T15:00:00Z"
+    }
+  ],
+  "updated_at": "2026-04-12T15:00:00Z"
+}
+```
+
+## Setup
+
+On first use, start the server:
+
+```bash
+bash ~/.claude/plugins/cache/boycott-filter-marketplace/boycott-filter/1.0.0/scripts/setup.sh
+```
+
+Then load the Chrome extension manually (see above).

@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/hyperfocus-hook.sh",
+            "args": ["--data", "${CLAUDE_PLUGIN_DATA}", "--root", "${CLAUDE_PLUGIN_ROOT}", "--project", "${CLAUDE_PROJECT_DIR}"],
+            "statusMessage": "Checking hyperfocus persistent mode"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,220 @@
+#!/bin/sh
+# hyperfocus-state: manage hyperfocus persistent-mode state files.
+# POSIX sh, no jq, no eval. Args are never interpolated into commands.
+
+prog=hyperfocus-state
+
+usage() {
+  cat <<EOF
+Usage:
+  $prog status
+  $prog enable [clean|flow|zen] [--project]
+  $prog disable [--project|--all]
+  $prog set-mode <clean|flow|zen> [--project]
+EOF
+}
+
+valid_mode() {
+  case "$1" in
+    clean|flow|zen) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+global_state_path() {
+  if [ -n "$CLAUDE_PLUGIN_DATA" ]; then
+    printf '%s/state' "$CLAUDE_PLUGIN_DATA"
+  elif [ -n "$PLUGIN_DATA" ]; then
+    printf '%s/state' "$PLUGIN_DATA"
+  else
+    printf '%s/.claude/plugins/data/hyperfocus/state' "$HOME"
+  fi
+}
+
+project_state_path() {
+  if [ -n "$CLAUDE_PROJECT_DIR" ]; then
+    printf '%s/.claude/hyperfocus.state' "$CLAUDE_PROJECT_DIR"
+  fi
+}
+
+# Sets R_ENABLED / R_MODE. Returns 1 if file missing/unreadable.
+read_state() {
+  R_ENABLED=
+  R_MODE=
+  file="$1"
+  [ -r "$file" ] || return 1
+  while IFS='=' read -r key value || [ -n "$key" ]; do
+    case "$key" in
+      enabled) R_ENABLED=$value ;;
+      mode) R_MODE=$value ;;
+    esac
+  done < "$file"
+  return 0
+}
+
+write_state() {
+  path="$1"
+  enabled_val="$2"
+  mode_val="$3"
+  dir=$(dirname "$path")
+  mkdir -p "$dir" || { echo "$prog: cannot create $dir" >&2; return 1; }
+  chmod 0755 "$dir" 2>/dev/null
+  tmp="$path.tmp.$$"
+  {
+    printf 'version=1\n'
+    printf 'enabled=%s\n' "$enabled_val"
+    printf 'mode=%s\n' "$mode_val"
+  } > "$tmp" || { rm -f "$tmp"; return 1; }
+  chmod 0644 "$tmp" 2>/dev/null
+  mv "$tmp" "$path" || { rm -f "$tmp"; return 1; }
+}
+
+disable_scope() {
+  path="$1"
+  label="$2"
+  if [ -f "$path" ]; then
+    mode=flow
+    if read_state "$path" && valid_mode "$R_MODE"; then
+      mode=$R_MODE
+    fi
+    write_state "$path" false "$mode" || return 1
+    echo "Disabled $label: $path"
+  fi
+}
+
+global_state=$(global_state_path)
+project_state=$(project_state_path)
+
+cmd=${1:-}
+[ -n "$cmd" ] || { usage >&2; exit 1; }
+shift
+
+case "$cmd" in
+  status)
+    echo "Global state: $global_state"
+    if read_state "$global_state"; then
+      mode=$R_MODE
+      valid_mode "$mode" || mode=flow
+      echo "  enabled=${R_ENABLED:-false} mode=$mode"
+    else
+      echo "  (absent)"
+    fi
+
+    if [ -n "$project_state" ]; then
+      echo "Project state: $project_state"
+      if read_state "$project_state"; then
+        mode=$R_MODE
+        valid_mode "$mode" || mode=flow
+        echo "  enabled=${R_ENABLED:-false} mode=$mode"
+      else
+        echo "  (absent)"
+      fi
+    else
+      echo "Project state: unavailable (CLAUDE_PROJECT_DIR unset)"
+    fi
+
+    if [ -n "$project_state" ] && [ -f "$project_state" ]; then
+      effective_state=$project_state
+      effective_source=project
+    else
+      effective_state=$global_state
+      effective_source=global
+    fi
+    if read_state "$effective_state"; then
+      effective_enabled=${R_ENABLED:-false}
+      effective_mode=$R_MODE
+    else
+      effective_enabled=false
+      effective_mode=flow
+      effective_source=none
+    fi
+    valid_mode "$effective_mode" || effective_mode=flow
+    [ "$effective_enabled" = "true" ] || effective_enabled=false
+    echo "Effective: enabled=$effective_enabled mode=$effective_mode source=$effective_source"
+    ;;
+
+  enable)
+    mode=flow
+    project_flag=0
+    for arg in "$@"; do
+      case "$arg" in
+        --project) project_flag=1 ;;
+        clean|flow|zen) mode=$arg ;;
+        *)
+          echo "$prog: unknown argument '$arg'" >&2
+          exit 1
+          ;;
+      esac
+    done
+    if [ "$project_flag" -eq 1 ]; then
+      [ -n "$project_state" ] || { echo "$prog: no project dir available (CLAUDE_PROJECT_DIR unset)" >&2; exit 1; }
+      write_state "$project_state" true "$mode" || exit 1
+      echo "Hyperfocus enabled (project, mode=$mode): $project_state"
+    else
+      write_state "$global_state" true "$mode" || exit 1
+      echo "Hyperfocus enabled (global, mode=$mode): $global_state"
+    fi
+    ;;
+
+  disable)
+    scope=--all
+    if [ "$#" -gt 0 ]; then
+      case "$1" in
+        --project|--all) scope=$1 ;;
+        *)
+          echo "$prog: unknown argument '$1'" >&2
+          exit 1
+          ;;
+      esac
+    fi
+    case "$scope" in
+      --all)
+        disable_scope "$global_state" global
+        [ -n "$project_state" ] && disable_scope "$project_state" project
+        ;;
+      --project)
+        if [ -n "$project_state" ]; then
+          disable_scope "$project_state" project
+        else
+          echo "$prog: no project dir available (CLAUDE_PROJECT_DIR unset)" >&2
+        fi
+        ;;
+    esac
+    ;;
+
+  set-mode)
+    mode=${1:-}
+    if ! valid_mode "$mode"; then
+      echo "$prog: invalid mode '$mode' (expected clean|flow|zen)" >&2
+      exit 1
+    fi
+    shift
+    project_flag=0
+    for arg in "$@"; do
+      case "$arg" in
+        --project) project_flag=1 ;;
+        *)
+          echo "$prog: unknown argument '$arg'" >&2
+          exit 1
+          ;;
+      esac
+    done
+    if [ "$project_flag" -eq 1 ]; then
+      [ -n "$project_state" ] || { echo "$prog: no project dir available (CLAUDE_PROJECT_DIR unset)" >&2; exit 1; }
+      enabled=false
+      read_state "$project_state" && [ "$R_ENABLED" = "true" ] && enabled=true
+      write_state "$project_state" "$enabled" "$mode" || exit 1
+      echo "Project mode set to $mode"
+    else
+      enabled=false
+      read_state "$global_state" && [ "$R_ENABLED" = "true" ] && enabled=true
+      write_state "$global_state" "$enabled" "$mode" || exit 1
+      echo "Global mode set to $mode"
+    fi
+    ;;
+
+  *)
+    usage >&2
+    exit 1
+    ;;
+esac

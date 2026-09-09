@@ -1,0 +1,34 @@
+{
+  "synced_from": {
+    "repo": "nextor2k/hyperfocus",
+    "path": ".",
+    "branch": "main",
+    "source_commit": "f69200e5a3ff32fd929405033c442f250fdf78e1"
+  },
+  "last_sync": "2026-09-09T22:04:10.494Z",
+  "author": {
+    "name": "Nestor Magalhaes",
+    "github": "nextor2k",
+    "email": "nestor.magalhaes@appex.world"
+  },
+  "license": "MIT",
+  "files_synced": 16,
+  "files": [
+    ".agents/plugins/marketplace.json",
+    ".claude-plugin/marketplace.json",
+    ".claude-plugin/plugin.json",
+    ".codex-plugin/plugin.json",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md",
+    "hooks/hooks.json",
+    "scripts/hyperfocus-hook.sh",
+    "scripts/hyperfocus-state",
+    "skills/hyperfocus/SKILL.md",
+    "skills/hyperfocus/references/clean.md",
+    "skills/hyperfocus/references/core.md",
+    "skills/hyperfocus/references/flow.md",
+    "skills/hyperfocus/references/zen.md",
+    "tests/run.sh"
+  ]
+}

@@ -80,6 +80,31 @@
         "skills/box-cloud-filesystem/references/sync-pattern.md": "sha256:fb7fb82b3e3e9834b886448b598fc0b2d66ba0e3a736521570c1e7ff29e603f9"
       }
     },
+    "boycott-filter": {
+      "repo": "vdk888/boycott-filter",
+      "resolved_ref": "680f7978b8eabcae8d1ed4f6ee125f1be42cedfb",
+      "locked_at": "2026-09-09T21:59:15.286Z",
+      "files": {
+        ".claude-plugin/marketplace.json": "sha256:ba11308d9234cbd8abdc01a177b395c78c899ea27be77a7ae807a5919d2a36a0",
+        ".claude-plugin/plugin.json": "sha256:904b3dd615378edc89d3a319ed559512e42cb1af63b128751da17c4080df752e",
+        "CHANGELOG.md": "sha256:f1ccce51a104563e77c47bde93ac6e444522b346dbdb48ad596cb3ec273039db",
+        "LICENSE": "sha256:3a75d24a9248731961c64cb0343a96d054eb17c526bf327f2f81d21767f8ef3d",
+        "README.md": "sha256:b278a96e831f056b996c86628b0ae93e33db094a4f98ca4c1fb8bed528f557eb",
+        "extension/background.js": "sha256:897cad3a1241a7d9005616754c865a0d34ac56b3eab76a99d8841c92b975394a",
+        "extension/banner.css": "sha256:06deb5bed6b5b99fc065c78f9b8e1b8a4b5a241e7a79c5ef11addd4865f8fe91",
+        "extension/content.js": "sha256:093f0a4d30d8db1c64b05cfbbd16db702bbc3ddb2d27206fa78503363ee77a27",
+        "extension/icons/icon128.png": "sha256:97f8a6b5974c42b52d25b0591d98beb5ce5b092b1bc86a646524b60575f7bdd9",
+        "extension/icons/icon16.png": "sha256:dbf06f9e6a20fb0dd53a3a0204891dcadbf1698a27f4eab407dc392da27ced2e",
+        "extension/icons/icon48.png": "sha256:2ae8b75304f38a7257dbd2c375a0debd17da6778e1d6f94a95a4825990ce5e02",
+        "extension/manifest.json": "sha256:914919c9afc244d8ee5e36fac0db1c5697c0b42bc2aead60584a0882f3e72320",
+        "extension/popup.html": "sha256:7340ee882e970995d1501807d7c88e2cc93d9885c061e3f50f7477f3cc46c38b",
+        "extension/popup.js": "sha256:59d812139afbd147250337e283a4e70556b3a396bae8427961b4bd4e56d54b7b",
+        "scripts/server.js": "sha256:173e20b58cd6dab0d650c5b9d1f4bc3e832ec4e9720c2fe7951dac53e1014dc5",
+        "scripts/setup.sh": "sha256:da71edbb2318b794d0630960cc7bd330e290866085a5db479ed3dd1ad5cf2817",
+        "skills/boycott-filter/SKILL.md": "sha256:495c89da2d752fb282bebb98e75c129196f9d37689b65bd7a6593251aa0b87ae",
+        "tests/test_plugin.py": "sha256:a581362dc14fb429e87ee7c24a7da420dd56b28f3189bd9da781c3e45588e8b6"
+      }
+    },
     "brand-forge": {
       "repo": "localplugins/plugins",
       "resolved_ref": "fe2f4fa2a5bd98adcfc5b84bfd4e3e4fa593e1d6",
@@ -124,6 +149,51 @@
         "templates/brand/color-system.json": "sha256:771d16dd3e8d72e081b8718df80008e2b27955bd5de7415230c1093dcc22ff92",
         "templates/brand/typography.json": "sha256:5fcfb6391e2b47fd6599c96ecca5c3a780ae06eb1953401464beddc03cb9ec0c",
         "templates/brand/visual-identity.md": "sha256:9b2e76e2bbabc1d91cb08ea30b653d297291a4f91ee07f9181ea57198071f77d"
+      }
+    },
+    "claude-reflect": {
+      "repo": "bayramannakov/claude-reflect",
+      "resolved_ref": "8dc9db43c9bfaa53b567d63f3f48385bcf3d3084",
+      "locked_at": "2026-09-09T21:59:17.019Z",
+      "files": {
+        ".claude-plugin/marketplace.json": "sha256:b5e811acf68f0ce4a93c38cf62840d4eab7722ce9458bc92db33dc64727f330d",
+        ".claude-plugin/plugin.json": "sha256:d7311722a41178e781cd4283ee5f764c17299a2934d9c1f2c26eb10ef41032f0",
+        "CHANGELOG.md": "sha256:22c2b906346a341ba27eb86771234aaf8712187cdfacdf97332f3c1a43f1634b",
+        "CLAUDE.md": "sha256:9504b497181b24079c9d817e35dc606c3b061bbd8ea14479337f4e05aefe4580",
+        "DISTRIBUTION.md": "sha256:21ec5bdfdd7e78f3826c28903c5735c5d03dbe8b1d46d202cbdec2a1f3feb8ab",
+        "LICENSE": "sha256:07c3c5e50be442e05ab3e0e5328090cf1aa4faf9e57f5422cf395a98a4e2a673",
+        "README.md": "sha256:6d53b10e67678daa8464738c6e6e990fac698732f8e2da075ffbb8b6012f5674",
+        "RELEASING.md": "sha256:6bae9a1a2bd1f5ec2cc87327d21ad4e18a65f6287f01851b9b64bed2eeea18f4",
+        "SKILL.md": "sha256:7d035c84ea96ba9808bc9731533e1bafdbbdf113317ef151ead458d18242067b",
+        "assets/reflect-demo.jpg": "sha256:b8e023362bc6daa52d5054682d354c840d74d8e2ef6f0a75b24eafeb0e3dfd3c",
+        "commands/reflect-skills.md": "sha256:3088a46bc74e264be7eb6ed3c3511424f6157de88b8ecd2a41e590542cdc0ba1",
+        "commands/reflect.md": "sha256:a7b585bba8e98349a22c563b21d2af17f81f8a097bf4e52bce89a83f7483fecf",
+        "commands/skip-reflect.md": "sha256:36a8e8899df8c54efe3cbe791aefcffa5efc812b31b76e13c519ec51853f00ad",
+        "commands/view-queue.md": "sha256:d953e3bfe6bfd2f7e18ec97a04dfb92f049b67722e47cde945082f18ad3ff371",
+        "hooks/hooks.json": "sha256:58184664390e9a4c5309f0eece8e2ec146226100fef9837725ffc5533614ef9e",
+        "scripts/capture_learning.py": "sha256:2ef34cc643a090d3b359bc292d34630a667f2e443fd06d72c5bbb1a5e793a42c",
+        "scripts/check_learnings.py": "sha256:bc7752317b1022b4ed056ab8f3b554b0b918fbf9c2f083d2cdd4575c4df92b76",
+        "scripts/compare_detection.py": "sha256:da5954af5a0863cdf304253fd5a40a88e87ef67be0ec774fbfedf673d18e2b7b",
+        "scripts/extract_session_learnings.py": "sha256:7c7e51df4965202cf9b184a4af45b5bcae950592891b23087d644a297397b091",
+        "scripts/extract_tool_errors.py": "sha256:2fc1c1b6da24beae81bef1859179f92a7bed61d7896d5fd775c0fb878b49f7fc",
+        "scripts/extract_tool_rejections.py": "sha256:bdf4c36432df0d1c173eeaf0df41416a8f57b0d12a3065a23e12c83ea8932af4",
+        "scripts/legacy/capture-learning.sh": "sha256:b7f04e94c30d4eaef26decde938cc3b3888b13d5e4a19a82ee008d89cbe895e7",
+        "scripts/legacy/check-learnings.sh": "sha256:3a416ae63ced2dee8554cbfa1654e5094950457e0ab3bb163a89b25e9e48a399",
+        "scripts/legacy/extract-session-learnings.sh": "sha256:42a8f6ce5c30a4a635a2278a45ccdf4a34780be9d258328bfa7aa354873d4cef",
+        "scripts/legacy/extract-tool-rejections.sh": "sha256:d98d6624c8d72756fe01f6eaca46bd39711ef805898919f17edfb84a989cb785",
+        "scripts/legacy/post-commit-reminder.sh": "sha256:4123e2955d069fd2683d36996e2c77c049a1820d4c59a5295b982da668f97fcd",
+        "scripts/lib/__init__.py": "sha256:8c06b919dca34bacb54f357d9a5aa10e6ee7c3e0020a47177d3dec0a4342a03f",
+        "scripts/lib/reflect_utils.py": "sha256:40fe7172c876cdacef903eb55e9daaa23ddcaa01ecec7c38da58d9b220a26e64",
+        "scripts/lib/semantic_detector.py": "sha256:e72f51e452b2cbf880d2e6f0c7c461903cfe3220e1729c917c35007d652b59df",
+        "scripts/post_commit_reminder.py": "sha256:5147022b71b744b4eadf395eeac51431fcf44159b6c3cf97eefe4ffb90cf6371",
+        "scripts/read_queue.py": "sha256:56629bb5632f7e48c6caa9770ea886ff5e0a56a2829576aca6bd74427c671c69",
+        "scripts/session_start_reminder.py": "sha256:f4fee69998dc02c3332995da50e4648a727ed5bf4194175fdcf0e81778709d42",
+        "tests/__init__.py": "sha256:dc4c4862fe6f2cfc661b845b69d046ba6e9cb0393209437b58f787f2d08ed424",
+        "tests/test_integration.py": "sha256:ffc845f9dd920d5c0614d2da77f58089b2f7be6828c9b851b994ba86171e526b",
+        "tests/test_memory_hierarchy.py": "sha256:337dcaa02cefa4b9444aab157957b32fee107245913f8b0e624149c6cf67f0bc",
+        "tests/test_reflect_utils.py": "sha256:c004273a25d68f2eb507c8c29a98065f864aa5727bbd26dfe5929cd5b766067b",
+        "tests/test_semantic_detector.py": "sha256:8a032514591909f406e629ab8eddcdb043e96ed69f6fb60ddcff47598f5d8f62",
+        "tests/test_tool_errors.py": "sha256:30c7de59d315e22a44b071bf679c22e3b0b00140cbd41ea1ab4261a4ccf984f8"
       }
     },
     "claude-workflow-skills": {
@@ -505,6 +575,29 @@
         "templates/antigravity/skills/hyperflow-trace/SKILL.md": "sha256:31e5fc907c5772d906d5b7cee1fe24ac11a918f94d84a314f2c4fe5098a73098"
       }
     },
+    "hyperfocus": {
+      "repo": "nextor2k/hyperfocus",
+      "resolved_ref": "f69200e5a3ff32fd929405033c442f250fdf78e1",
+      "locked_at": "2026-09-09T21:59:18.389Z",
+      "files": {
+        ".agents/plugins/marketplace.json": "sha256:93bbd03293e8a48437b2de62192ee9865d599fd5c49811918d321911af251e20",
+        ".claude-plugin/marketplace.json": "sha256:99f2cfebb551d5e60db6d6866b7a5b9e2ec13f95ef6bd7ee5f0cc4d7c9a84745",
+        ".claude-plugin/plugin.json": "sha256:cbdb41c197e749e1581d5d38817f352fdac2895dfeca0c68aedc4d03d20db06e",
+        ".codex-plugin/plugin.json": "sha256:40405f30ea9e92c386ef1f65997445b5d87d1518a493b723d1644bbc0e40fb5f",
+        "CHANGELOG.md": "sha256:552305c7fe64d0ab287b3fb36a0e4cdc6cca3f197d9a155fbac5f6a7f611351c",
+        "LICENSE": "sha256:b656c46a2df2eea07932f289da34cc0814345a055b61f862e130c259e28fcc8c",
+        "README.md": "sha256:10cb31012af0d05f6339cb3dc07c504cb99d51c00d04a3942734c0ed9ea703e7",
+        "hooks/hooks.json": "sha256:7b4204606675820e562b25ba00fea4115a660d7fda94052ac41c7b9a741a46c1",
+        "scripts/hyperfocus-hook.sh": "sha256:3606e0b1cc3c49f8fdc779fb036c6622c70d7a54407b587aa79386974b2d1422",
+        "scripts/hyperfocus-state": "sha256:aae9d94ce81a40f1b6faeb7dc53e3a1698d588ee3faa1f419c7c5d883f0ba173",
+        "skills/hyperfocus/SKILL.md": "sha256:dec27d693ec939a624400367d7180e7493a5ceda328474790288a2fc4416fab8",
+        "skills/hyperfocus/references/clean.md": "sha256:48bfddcb9b414f15fce7fbd2292549e821962c6cafcf5eb03912fc48a376d270",
+        "skills/hyperfocus/references/core.md": "sha256:2311188f037f0c217e25855bc799596c7b536194a3c4a32050a77cbf5a98e273",
+        "skills/hyperfocus/references/flow.md": "sha256:c0c2a11d4a4f25360c0bc985ca9361359915a39029020aba7a9acc4bca2459ee",
+        "skills/hyperfocus/references/zen.md": "sha256:dd715bcb5f17d0b3b2eedf0a7b38cd1af11a6dc386a5eefa88887b3a076ac975",
+        "tests/run.sh": "sha256:24b03c798a8dc6ee245403a26f272e359b95a590242ac7da53232e7facba638c"
+      }
+    },
     "kobiton-automate": {
       "repo": "kobiton/automate",
       "resolved_ref": "416240349b7c1337c7b8938e23c62f7fac5a018a",
@@ -562,6 +655,22 @@
         "commands/list-nodes.md": "sha256:656762d5e9d185f00cfd383c6e575eb0c6dffd3232a3ef0af0b65b0a864cafbf",
         "commands/run-workflow.md": "sha256:ab0fb5b7bcca69d312c831e2f4ca9a741bd6829e0768b4ac30f00378274c2ab7",
         "skills/setup/SKILL.md": "sha256:454375710727d477f16c60a647e3e7a1145b170f30da8ea42ec52233bc227c80"
+      }
+    },
+    "local-tts": {
+      "repo": "vdk888/local-tts",
+      "resolved_ref": "9ac4bdfff741427972ad7616d44ad18d907095f1",
+      "locked_at": "2026-09-09T21:57:47.357Z",
+      "files": {
+        ".claude-plugin/marketplace.json": "sha256:ac2accd8d02c316942692d659895820fba8fad1185d67962a402b0d045a866ad",
+        ".claude-plugin/plugin.json": "sha256:d4fde0fb508b916d4d51c53f078a21cdebd5e4dba7d49b67d3950e4c892cc973",
+        "CHANGELOG.md": "sha256:5b103f119ef8f1703daa04e13a8879c2e058ad5caa59d489586f023575c5a882",
+        "LICENSE": "sha256:ad7cecc9a207798adb7bf2a828fe72d3de5708d761035ebdb530e16d4bf90703",
+        "README.md": "sha256:4a5bdc570fb3c702b03a20450d5135248acf88ac468262b4c8b4ee144e466290",
+        "scripts/generate.py": "sha256:29bd39de33dd2dd6b6f07564ce3d42e9b866c45a62f02ede1845d92412ce1c5e",
+        "scripts/setup.sh": "sha256:8a6edb7d310f59e8ed5467f4cb8b836a1e5cfe143a9d2b270697f90266bb7bc7",
+        "skills/local-tts/SKILL.md": "sha256:d992b52747b0e1a37e3a407de84e1791bc58eef6b71d913f8a1659a122c1805c",
+        "tests/test_generate.py": "sha256:2a1759ab7bcb806c098e666c0f4ea5f8745100083e93d62ce8b7a813ad1039a3"
       }
     },
     "mnemos": {
@@ -664,6 +773,28 @@
         "LICENSE": "sha256:34b2d4ddc849022f69796f7951544e2a4e42a745ac30964e9c0926229c6babd2",
         "README.md": "sha256:9be2ff69bb022a22ebd498e53942dce0abdefa6af80a1b8fb6827b01a52163ff",
         "src/servers/pr-spec-analyzer.ts": "sha256:bc2b65b02914d292f358f28dcaa4431b7e48527e0e510d724a1b3d2e5f1ef239"
+      }
+    },
+    "promptbook": {
+      "repo": "promptbookgg/claude-code-plugin",
+      "resolved_ref": "67b4216174820128c4d2b82c0f5c7619877db5a0",
+      "locked_at": "2026-09-09T21:59:13.677Z",
+      "files": {
+        ".claude-plugin/plugin.json": "sha256:2c7c9bd4e4d09d2ebb1f51465b8278f3b9ad7b6fa87d1c1bb3b8008af7237a4e",
+        "LICENSE": "sha256:0d24457c445ca7bf4def74168fb3bfc58b2f32bac45e748e63d4740741b3d123",
+        "README.md": "sha256:4475ad3ae62fd5a354120e8e81a0c9cda3b45194d9c63395cfa6c544e5fc4703",
+        "hooks/hooks.json": "sha256:6e299954737b872b78383eba58aeab724f3e52ce7afd3f4a69875cd41f9f0cfe",
+        "scripts/backfill-history.js": "sha256:572659ad6fc8bf74e78dd0b72d86ea071c5c373d276d89f48e9ed219049ec4ba",
+        "scripts/lib/io.js": "sha256:40a7c776b080805fe05840c30b408553c108c42c8413f627d2f0dd12bc9a992e",
+        "scripts/lib/language.js": "sha256:293e9482e078dde62485f651e30db59de1f6e516661cbe7a7674945fb88179ce",
+        "scripts/lib/summary.js": "sha256:c41eb6938f297ff2a939e83ef1cba5ae76b1229afc56c6bbdb181eec594ee304",
+        "scripts/lib/transcript.js": "sha256:b5f7532ad5bcf1ab1a769600fb9c6ff5d1d0f75e5c4ff097a038bc27b795550c",
+        "scripts/prompt-count.js": "sha256:2605976c1f62e6f79b55fec79794e7893d317c8d1c1a277dcff56cde10516f81",
+        "scripts/session-end.js": "sha256:44344166bc9b6393966170740de93eeb4dbc21702dc68ad49f07c37d238d9017",
+        "scripts/session-start.js": "sha256:c5625e69593c97bc31f7b45b3fe9da9472f0bf3d51c3636493aecf966cbc5048",
+        "scripts/track-edits.js": "sha256:4bed7ca2f90c237feccfd36c10be114881e1a3a6b3ea0185b7be37cef745f5d7",
+        "skills/doctor/SKILL.md": "sha256:bcb60cc6fb55f8ec43d68c2647f8baeaaf3e4594a25fd4d0e8a04738a1b07867",
+        "skills/setup/SKILL.md": "sha256:f4a4c4a9c1ef0985670ba74c65e4a23f2f4abf48df0ac25d6f2c71b0cca6ba1e"
       }
     },
     "publishing-skills": {

@@ -1,0 +1,14 @@
+{
+  "name": "claude-reflect-marketplace",
+  "description": "Official marketplace for claude-reflect, a self-learning plugin for Claude Code",
+  "owner": {
+    "name": "Bayram Annakov"
+  },
+  "plugins": [
+    {
+      "name": "claude-reflect",
+      "source": "./",
+      "description": "Self-learning system that captures corrections and updates CLAUDE.md"
+    }
+  ]
+}

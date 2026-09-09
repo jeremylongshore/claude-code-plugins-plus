@@ -1,0 +1,33 @@
+{
+  "synced_from": {
+    "repo": "promptbookgg/claude-code-plugin",
+    "path": "plugins/promptbook",
+    "branch": "main",
+    "source_commit": "67b4216174820128c4d2b82c0f5c7619877db5a0"
+  },
+  "last_sync": "2026-09-09T22:04:04.820Z",
+  "author": {
+    "name": "Promptbook",
+    "github": "promptbookgg",
+    "email": "contact@promptbook.gg"
+  },
+  "license": "MIT",
+  "files_synced": 15,
+  "files": [
+    ".claude-plugin/plugin.json",
+    "LICENSE",
+    "README.md",
+    "hooks/hooks.json",
+    "scripts/backfill-history.js",
+    "scripts/lib/io.js",
+    "scripts/lib/language.js",
+    "scripts/lib/summary.js",
+    "scripts/lib/transcript.js",
+    "scripts/prompt-count.js",
+    "scripts/session-end.js",
+    "scripts/session-start.js",
+    "scripts/track-edits.js",
+    "skills/doctor/SKILL.md",
+    "skills/setup/SKILL.md"
+  ]
+}

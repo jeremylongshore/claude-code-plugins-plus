@@ -1,0 +1,36 @@
+{
+  "synced_from": {
+    "repo": "vdk888/boycott-filter",
+    "path": ".",
+    "branch": "main",
+    "source_commit": "680f7978b8eabcae8d1ed4f6ee125f1be42cedfb"
+  },
+  "last_sync": "2026-09-09T22:04:06.520Z",
+  "author": {
+    "name": "Bubble Invest",
+    "github": "vdk888",
+    "email": "contact@bubbleinvest.com"
+  },
+  "license": "MIT",
+  "files_synced": 18,
+  "files": [
+    ".claude-plugin/marketplace.json",
+    ".claude-plugin/plugin.json",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md",
+    "extension/background.js",
+    "extension/banner.css",
+    "extension/content.js",
+    "extension/icons/icon128.png",
+    "extension/icons/icon16.png",
+    "extension/icons/icon48.png",
+    "extension/manifest.json",
+    "extension/popup.html",
+    "extension/popup.js",
+    "scripts/server.js",
+    "scripts/setup.sh",
+    "skills/boycott-filter/SKILL.md",
+    "tests/test_plugin.py"
+  ]
+}

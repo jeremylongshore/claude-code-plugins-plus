@@ -1,7 +1,7 @@
 {
   "name": "@intentsolutionsio/executive-assistant-skills",
   "version": "1.0.4",
-  "description": "AI-powered executive assistant skills that fully replace a human EA. Research meeting attendees, draft emails, create meeting briefs, and manage action items.",
+  "description": "Mirrored upstream executive-assistant skills for meeting prep, email drafting, daily digests, action items, and writing review.",
   "keywords": [
     "executive-assistant",
     "meeting-prep",
@@ -20,7 +20,7 @@
   },
   "homepage": "https://tonsofskills.com/plugins/executive-assistant-skills",
   "bugs": "https://github.com/jeremylongshore/tons-of-skills-marketplace/issues",
-  "license": "MIT",
+  "license": "NOASSERTION",
   "author": {
     "name": "Martin Gontovnikas",
     "email": "gonto@hypergrowthpartners.com"
@@ -30,7 +30,10 @@
   },
   "files": [
     "README.md",
+    "LICENSE",
     ".claude-plugin",
+    "config",
+    "docs",
     "skills"
   ],
   "scripts": {

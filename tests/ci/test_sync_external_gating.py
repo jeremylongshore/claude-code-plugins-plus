@@ -167,6 +167,20 @@ def test_quarantined_result_reports_no_changes() -> None:
     )
 
 
+def test_written_source_record_pins_resolved_commit() -> None:
+    """A mirrored tree must retain the exact upstream commit used for its bytes."""
+    src = _engine_source()
+    marker_write = src.find("const sourceJson = {")
+    assert marker_write != -1, "Could not find the .source.json writer."
+    marker_end = src.find("fs.writeFileSync(sourceJsonPath", marker_write)
+    assert marker_end != -1, "Could not find the .source.json write call."
+    marker_body = src[marker_write:marker_end]
+    assert "source_commit: resolvedRef" in marker_body, (
+        ".source.json must pin the exact resolved upstream commit; otherwise the "
+        "disposition ledger quarantines every newly synced mirror as SOURCE_COMMIT_UNPINNED."
+    )
+
+
 def test_commit_and_pr_steps_are_not_gated_on_quarantine_count() -> None:
     """Drift must quarantine one source, not halt the whole run.
 

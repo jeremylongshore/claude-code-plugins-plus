@@ -1,12 +1,10 @@
 ---
-name: skip-reflect
 description: Discard queued learnings without processing
 allowed-tools: Bash
 ---
 
 ## Context
-
-- Queue count: !`jq 'length' ~/.claude/learnings-queue.json 2>/dev/null || echo 0`
+- Queue count: !`python3 scripts/read_queue.py 2>/dev/null | python3 -c "import sys,json;print(len(json.load(sys.stdin)))" 2>/dev/null || echo 0`
 
 ## Your Task
 
@@ -20,18 +18,20 @@ allowed-tools: Bash
    - Ask: "Are you sure? [y/n]"
 
 3. If user confirms (y/yes):
-   - Clear the queue:
-
+   - Clear the project queue:
    ```bash
-   echo "[]" > ~/.claude/learnings-queue.json
+   python3 -c "
+   import sys, os
+   sys.path.insert(0, os.path.join(os.environ.get('CLAUDE_PLUGIN_ROOT', '.'), 'scripts'))
+   from lib.reflect_utils import save_queue
+   save_queue([])
+   "
    ```
-
    - Output: "Discarded [count] learnings. Queue cleared."
 
 4. If user declines (n/no):
    - Output: "Aborted. Run /reflect to process learnings instead."
 
 ## Note
-
 This is an escape hatch for when auto-detection captures false positives
 or learnings aren't worth saving. Use sparingly.

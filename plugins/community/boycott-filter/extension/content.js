@@ -7,25 +7,6 @@
 
 const BANNER_ID = 'boycott-filter-banner';
 
-/**
- * HTML-escape user-controlled values before interpolating into innerHTML.
- * The boycott list is writable via the local server's /add endpoint, which is
- * unauthenticated by design (extension talks to it). Without escaping, any
- * process on the user's machine could inject XSS payloads via company name
- * or reason fields, which would then execute on every page (content script
- * runs on <all_urls>). Also encodes quotes so values are safe inside HTML
- * attributes. See: https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/520
- */
-function esc(s) {
-  if (s === null || s === undefined) return '';
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
 // Build search terms from company list
 function getSearchTerms(companies) {
   const terms = [];
@@ -75,10 +56,10 @@ function showBanner(matches) {
   const banner = document.createElement('div');
   banner.id = BANNER_ID;
 
-  const names = matches.map(m => esc(m.name)).join(', ');
+  const names = matches.map(m => m.name).join(', ');
   const reasons = matches
     .filter(m => m.reason)
-    .map(m => `<span class="boycott-reason"><strong>${esc(m.name)}:</strong> ${esc(m.reason)}</span>`)
+    .map(m => `<span class="boycott-reason"><strong>${m.name}:</strong> ${m.reason}</span>`)
     .join(' · ');
 
   banner.innerHTML = `

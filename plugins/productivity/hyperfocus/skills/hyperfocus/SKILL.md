@@ -1,99 +1,51 @@
 ---
 name: hyperfocus
-version: 0.2.0
-description: 'ADHD-friendly output formatting for Claude Code. Restructures responses
-  with evidence-based cognitive accessibility: chunking, visual hierarchy, front-loaded
-  key points, and progressive disclosure. Three modes: clean, flow (default), zen.
-  Use when user says "hyperfocus", "focus mode", "adhd mode", "adhd friendly", or
-  invokes /hyperfocus.
-
-  '
-author: Nestor Magalhaes
-license: MIT
-tags:
-- accessibility
-- adhd
-- neurodivergent
-- formatting
-compatibility: Designed for Claude Code
-allowed-tools: Read
+description: >
+  ADHD-friendly output formatting. Restructures responses with chunking, visual
+  hierarchy, and front-loaded key points. Modes: clean, flow (default), zen.
+  Use when user says "hyperfocus", "focus mode", "adhd mode", "adhd friendly",
+  or invokes /hyperfocus.
+argument-hint: "[clean|flow|zen|off|persistent [project] [mode]|disable|status]"
 ---
-# Hyperfocus
 
-## Overview
+Format responses for ADHD-optimized reading: structure beats brevity. Parse `$ARGUMENTS` against the table below.
 
-Format responses for ADHD-optimized reading. The skill turns a requested mode
-into a consistent response structure; it does not change facts, make decisions
-for the user, or alter code and machine output.
+## Commands
 
-## Prerequisites
+| Argument | Effect |
+|----------|--------|
+| *(none)*, `clean`, `flow`, or `zen` | Activate/switch mode for this session only. Default mode: flow |
+| `off` | Deactivate hyperfocus for this session |
+| `persistent [mode]` | Enable global auto-injection at every future session start (default mode: flow) |
+| `persistent project [mode]` | Same, scoped to this project only |
+| `disable` | Turn off persistent mode in both global and project state, wherever present |
+| `status` | Report session mode plus persistent state |
 
-Use this skill only when the user asks for Hyperfocus formatting or invokes
-`/hyperfocus`. Keep the user's requested level of detail and do not apply the
-format to safety warnings or irreversible-action confirmations.
+Plain "stop hyperfocus" or "normal mode" is equivalent to `off`.
 
-## Instructions
+## Session activation
 
-Format all responses for ADHD-optimized reading. Structure beats brevity — clarity is the goal, not compression.
+On activation or mode switch, read `references/core.md` and `references/<mode>.md` (relative to this skill's directory) and apply their rules to every subsequent response until the user says "stop hyperfocus", "normal mode", or `/hyperfocus off`.
 
-Default: **flow**. Switch: `/hyperfocus clean|flow|zen`.
+## Persistent, disable, status
 
-CRITICAL: Apply these rules to EVERY response in this conversation — not just the first. This is permanent until the user says "stop hyperfocus" or "normal mode".
+Run `scripts/hyperfocus-state`, resolved at `${CLAUDE_PLUGIN_ROOT}/scripts/hyperfocus-state` when installed as a plugin:
 
-## Core Rules (all modes)
+- `persistent [mode]` → `hyperfocus-state enable [mode]`
+- `persistent project [mode]` → `hyperfocus-state enable [mode] --project`
+- `disable` → `hyperfocus-state disable --all`
+- `status` → `hyperfocus-state status`
 
-- One idea per paragraph. Max 4 sentences (clean), 3 (flow), 2 (zen)
-- Sentences: target 15 words, hard max 25. Active voice. Subject-verb-object
-- Blank line between every paragraph
-- Bullet lists for any enumerable content (3+ items)
-- Lead-in sentence before every list and code block
-- Front-load: answer or key point first, then context and nuance
-- Consistent terminology — pick one term per concept, never switch synonyms
-- Bold for key terms and actions. Never use italics for emphasis
+If `${CLAUDE_PLUGIN_ROOT}` is unset (standalone skill install, no plugin root), there is no hook to attach persistence to: tell the user persistent mode isn't available in this install, and apply the requested mode for the current session only.
 
-## Modes
+## Legacy migration (≤0.2)
 
-| Aspect | clean | flow *(default)* | zen |
-|--------|-------|-------------------|-----|
-| Subheadings | Every 4–5 paragraphs | Every 2–3 ¶, outcome-focused | Every 1–2 ¶ |
-| Lists | Enumerable content | + comparisons, options | Nearly everything |
-| Bold | Key terms only | + action items | + all concepts |
-| Structure | Natural flow + breaks | What → Why → How | TL;DR top, self-contained sections |
-| Recap | — | End of dense sections | End of every section |
-| Tone | Professional, tight | Accessible, structured | Maximum scaffolding |
-
-## Auto-Clarity
-
-Drop hyperfocus formatting for: security warnings, irreversible action confirmations, multi-step sequences where structure risks misread. Resume after the critical section.
+Check for `~/.claude/hyperfocus-rules.txt` or a `settings.json` hook whose command contains `hyperfocus-rules`. If found, tell the user it's a leftover from hyperfocus ≤0.2 and offer to remove it. Only edit settings.json after the user confirms.
 
 ## Boundaries
 
-Code blocks, error messages, and technical output: write normally without hyperfocus formatting. Hyperfocus rules apply to prose and explanatory text only.
+Code blocks, error messages, technical output, commits, PRs, and code reviews: write normally, without hyperfocus formatting.
 
-Git commits, PRs, and code reviews: write normally.
+## Auto-Clarity
 
-"stop hyperfocus" or "normal mode": revert immediately. Mode persists until changed or session ends.
-
-## Output
-
-Return the requested answer in the selected clean, flow, or zen structure.
-Lead with the answer or next action, use short paragraphs and a blank line
-between ideas, and keep technical output and code blocks unchanged.
-
-## Error Handling
-
-If the requested mode would obscure a security warning, an irreversible
-confirmation, or exact machine output, present that material normally and
-resume the selected mode after the critical section. If the mode is unclear,
-use flow and state that it is the default.
-
-## Examples
-
-For `/hyperfocus zen`, start with a one-line answer, then short labeled blocks
-for context and next action. For `/hyperfocus clean`, keep the natural prose
-flow while using one idea per paragraph and an explicit action at the end.
-
-## Resources
-
-- `/hyperfocus clean|flow|zen` — selects the active response format
-- `"stop hyperfocus"` or `"normal mode"` — ends formatting for the session
+Drop hyperfocus formatting for security warnings and irreversible-action confirmations — use full prose. Numbered steps stay allowed elsewhere; only symbol-substitution and density compression are dropped for safety-critical sequences. Resume formatting after.

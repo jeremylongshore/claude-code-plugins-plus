@@ -10250,7 +10250,7 @@
       "name": "executive-assistant-skills",
       "source": "./plugins/business-tools/executive-assistant-skills",
       "version": "1.8.0",
-      "description": "AI-powered executive assistant skills that fully replace a human EA. Research meeting attendees, draft emails, create meeting briefs, and manage action items.",
+      "description": "Mirrored upstream executive-assistant skills for meeting prep, email drafting, daily digests, action items, and writing review.",
       "author": {
         "name": "Martin Gontovnikas",
         "email": "gonto@hypergrowthpartners.com",
@@ -10265,17 +10265,11 @@
         "automation",
         "todoist"
       ],
-      "license": "MIT",
+      "license": "NOASSERTION",
       "repository": "https://github.com/mgonto/executive-assistant-skills",
-      "featured": true,
+      "publication": "quarantined",
       "components": {
-        "skills": 5
-      },
-      "verification": {
-        "score": 82,
-        "grade": "B",
-        "badge": "silver",
-        "lastValidated": "2026-09-05T00:00:00.000Z"
+        "skills": 6
       }
     },
     {

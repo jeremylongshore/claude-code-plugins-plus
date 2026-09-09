@@ -1,0 +1,17 @@
+{
+  "_comment": "Copy this file to user.json and fill in your values. user.json is gitignored.",
+  "name": "YourName",
+  "full_name": "Your Full Name",
+  "whatsapp": "+1234567890",
+  "timezone": "America/New_York",
+  "work_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+  "availability_window": "09:00-18:00",
+  "primary_email": "you@example.com",
+  "work_email": "you@yourcompany.com",
+  "scheduling_cc": "assistant@yourcompany.com",
+  "scheduling_silent_cc": "colleague@yourcompany.com",
+  "slack_username": "yourusername",
+  "calendar_id": "primary",
+  "signature": "--yourname",
+  "workspace": "/home/youruser/.openclaw/workspace"
+}

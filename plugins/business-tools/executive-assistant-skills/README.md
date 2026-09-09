@@ -1,51 +1,108 @@
-# Executive Assistant Skills
+# executive-assistant-skills
 
-AI-powered executive assistant skills for Claude Code that **fully replace a human EA**. These skills were born from a real experiment by Martin Gontovnikas ([@mgonto](https://github.com/mgonto)), Auth0's former VP of Marketing/Growth, who discovered that a set of well-crafted Claude Code skills could handle everything his executive assistant used to do — meeting prep, email drafting, action item tracking, and daily digests.
+OpenClaw skills that replace a human executive assistant.
 
-The result: a suite of 5 skills that autonomously research attendees before meetings, draft personalized emails, extract and manage action items in Todoist, and deliver a morning executive briefing — all without human intervention.
+After setting up these skills with [OpenClaw](https://docs.openclaw.ai/), I let go of my human EA and replaced her entirely with my Claw. These five skills handle the core of what an executive assistant does: prepping for meetings, following up on action items, drafting emails, and keeping you on top of everything.
 
-## Skills
+## What's included
 
-| Skill | Description |
-|-------|-------------|
-| **meeting-prep** | Researches upcoming meeting attendees via OpenClaw, compiles background briefs with talking points, and surfaces relevant context from past interactions. |
-| **action-items-todoist** | Extracts action items from meeting transcripts (Granola/Grain) and creates structured Todoist tasks with due dates, priorities, and project assignments. |
-| **email-drafting** | Drafts context-aware emails using your communication style, past threads, and meeting notes. Sends via the `gog` Gmail CLI. |
-| **executive-digest** | Generates a daily morning briefing covering your calendar, pending action items, priority emails, and key context for the day ahead. |
-| **todoist-due-drafts** | Reviews Todoist tasks approaching their due dates, drafts follow-up emails or messages for items that need outreach, and queues them for review. |
+| Skill | What it replaces |
+|-------|-----------------|
+| `meeting-prep` | EA researching attendees, pulling email history, and briefing you before each call |
+| `action-items-todoist` | EA reviewing meeting notes, creating follow-up tasks, and drafting emails you promised to send |
+| `email-drafting` | EA drafting replies, intro emails, scheduling responses, and thank-you notes in your voice |
+| `executive-digest` | EA giving you a morning status update: stalled threads, pending intros, overdue tasks, calendar conflicts |
+| `todoist-due-drafts` | EA checking your task list each morning, drafting follow-up/ping emails for anything due today, and notifying you to review |
+| `humanizer` | Making sure nothing your Claw writes sounds like AI wrote it (originally by [biostartechnology](https://clawhub.ai/biostartechnology/humanizer)) |
 
-> **Note:** The original repo includes a "humanizer" skill (originally by [biostartechnology](https://github.com/biostartechnology)) for rewriting AI-generated text in a more natural voice. It has been excluded from this plugin as it is a third-party contribution with a separate origin.
+## How it works
+
+Each skill is a markdown file (`SKILL.md`) that tells your Claw exactly how to do the job. Your Claw reads the skill, follows the instructions, and delivers results to WhatsApp (or Slack, Telegram, etc.).
+
+Skills run on cron schedules — meeting prep fires before your first meeting, action items run after your last meeting, and the digest hits every morning. You can also trigger any skill manually by asking your Claw.
+
+All personal config (email accounts, timezone, work schedule, etc.) lives in a single `config/user.json` that's gitignored and never committed.
 
 ## Prerequisites
 
-These skills rely on several external tools and services:
+- [OpenClaw](https://docs.openclaw.ai/) running (local or server)
+- Two Gmail accounts connected via [gog](https://github.com/xhit/gog) CLI
+- [Granola](https://granola.ai/) or [Grain](https://grain.com/) for meeting transcripts (via mcporter MCP)
+- [Todoist CLI](https://github.com/joelhoelting/todoist-cli) for task management
+- A `style/` directory in your OpenClaw workspace with email style guides (see `docs/setup.md`)
 
-- **[OpenClaw](https://openclaw.com)** — People research API used by meeting-prep to look up attendee backgrounds, company info, and social profiles.
-- **gog CLI** — Gmail on the Go, a CLI for sending and reading Gmail. Used by email-drafting and executive-digest.
-- **[Granola](https://granola.ai) or [Grain](https://grain.com)** — Meeting transcript sources. Action-items-todoist parses transcripts from these tools to extract tasks.
-- **[Todoist CLI](https://github.com/sachaos/todoist)** — Command-line interface for Todoist. Used by action-items-todoist and todoist-due-drafts to create and query tasks.
+---
 
-## Important: Configuration Required
+## Quick setup
 
-These skills are **deeply personalized** to mgonto's specific workflow, integrations, and preferences. They will not work out of the box for other users.
+### 1. Clone the repo
 
-To adapt them for your own use, you must create a `config/user.json` file in the plugin directory with your own settings, including:
+```bash
+git clone https://github.com/mgonto/executive-assistant-skills.git ~/executive-assistant-skills
+```
 
-- **Timezone** and locale
-- **Email accounts** (personal, work, aliases)
-- **Todoist project mappings** (which projects map to which areas of your life)
-- **Meeting tools** configuration (Granola vs Grain, calendar source)
-- **Communication style** preferences and signature
-- **OpenClaw API key**
+### 2. Create your config
 
-Each skill reads from this config to personalize its behavior. Without it, the skills will fall back to mgonto's defaults, which almost certainly won't match your setup.
+```bash
+cp ~/executive-assistant-skills/config/user.example.json ~/executive-assistant-skills/config/user.json
+# Edit user.json with your values — it's gitignored
+```
 
-See the [original repository](https://github.com/mgonto/executive-assistant-skills) for the full setup guide and example configuration.
+### 3. Tell OpenClaw to load these skills
 
-## Author
+Edit `~/.openclaw/openclaw.json`:
 
-**Martin Gontovnikas** ([@mgonto](https://github.com/mgonto)) — Auth0's former VP of Marketing/Growth, now at [Hypergrowth Partners](https://hypergrowthpartners.com). Martin built these skills after realizing that Claude Code, given the right instructions and tool access, could handle the full scope of executive assistant work autonomously.
+```json
+{
+  "skills": {
+    "load": {
+      "extraDirs": ["~/executive-assistant-skills"]
+    }
+  }
+}
+```
 
-## License
+### 4. Restart
 
-MIT
+```bash
+openclaw gateway restart
+```
+
+### 5. Set up crons
+
+See `docs/crons.md` for ready-to-paste cron job configs.
+
+---
+
+## Config fields
+
+See `config/user.example.json` for the full template:
+
+| Field | Example | Used for |
+|-------|---------|----------|
+| `name` | `"YourName"` | Meeting transcript queries, task attribution |
+| `primary_email` | `"you@gmail.com"` | Gmail account 1 |
+| `work_email` | `"you@company.com"` | Gmail account 2 |
+| `whatsapp` | `"+1234567890"` | Digest and alert delivery |
+| `timezone` | `"America/New_York"` | Meeting times, cron scheduling |
+| `scheduling_cc` | `"assistant@company.com"` | CC on scheduling emails |
+| `scheduling_silent_cc` | `"colleague@company.com"` | Silent CC (not mentioned in body) |
+| `slack_username` | `"yourname"` | Slack DM for meeting briefs |
+| `signature` | `"--yourname"` | Email sign-off |
+| `workspace` | `"/home/user/.openclaw/workspace"` | Absolute path to your OpenClaw workspace |
+
+---
+
+## Full setup guide
+
+- `docs/setup.md` — complete setup (mcporter, OAuth, gog, Todoist CLI)
+- `docs/crons.md` — cron job templates for all skills
+
+---
+
+## Repository conventions
+
+- `config/user.json` is **gitignored** — each person creates their own
+- `config/user.example.json` is the committed template
+- `state/` and `logs/` are gitignored (machine-local)
+- Skills reference workspace files (`style/`, `state/`, `scripts/`) via `{user.workspace}/` prefix for portability

@@ -1,0 +1,27 @@
+{
+  "name": "local-tts-marketplace",
+  "owner": {
+    "name": "Bubble Invest",
+    "email": "contact@bubbleinvest.com"
+  },
+  "metadata": {
+    "description": "Local TTS plugin for Claude Code — voice synthesis, design, and cloning powered by VoxCPM2",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "local-tts",
+      "source": "./",
+      "description": "Local text-to-speech — 30 languages, voice design, voice cloning. Free, offline, Apple Silicon.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Bubble Invest",
+        "email": "contact@bubbleinvest.com"
+      },
+      "homepage": "https://github.com/vdk888/local-tts",
+      "license": "Apache-2.0",
+      "category": "media",
+      "tags": ["tts", "voice", "audio", "cloning", "offline", "voxcpm"]
+    }
+  ]
+}

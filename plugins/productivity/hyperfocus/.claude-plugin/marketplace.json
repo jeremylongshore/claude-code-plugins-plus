@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "hyperfocus",
+  "description": "ADHD-friendly output formatting for Claude Code. Restructures responses with evidence-based cognitive accessibility.",
+  "owner": {
+    "name": "Nestor Magalhaes",
+    "url": "https://github.com/nextor2k"
+  },
+  "plugins": [
+    {
+      "name": "hyperfocus",
+      "description": "ADHD-optimized output. Clear structure, visual hierarchy, front-loaded answers. Three modes: clean, flow, zen.",
+      "source": "./",
+      "category": "Accessibility"
+    }
+  ]
+}

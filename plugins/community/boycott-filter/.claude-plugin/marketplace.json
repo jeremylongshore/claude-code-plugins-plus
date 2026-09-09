@@ -1,0 +1,27 @@
+{
+  "name": "boycott-filter-marketplace",
+  "owner": {
+    "name": "Bubble Invest",
+    "email": "contact@bubbleinvest.com"
+  },
+  "metadata": {
+    "description": "Personal boycott filter — conversational brand management + Chrome extension warnings",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "boycott-filter",
+      "source": "./",
+      "description": "Tell your AI agent which brands to avoid. Chrome extension warns you with your own reasons when you land on their pages.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Bubble Invest",
+        "email": "contact@bubbleinvest.com"
+      },
+      "homepage": "https://github.com/vdk888/boycott-filter",
+      "license": "MIT",
+      "category": "productivity",
+      "tags": ["boycott", "chrome-extension", "shopping", "consumer", "brands"]
+    }
+  ]
+}

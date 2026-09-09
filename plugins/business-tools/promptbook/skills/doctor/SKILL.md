@@ -1,42 +1,26 @@
 ---
 name: doctor
-description: "Diagnose Promptbook setup \u2014 check config, hooks, API key, and session\
-  \ tracking health.\nUse when Promptbook seems broken or the user wants to verify\
-  \ their setup.\nTrigger with \"/doctor\" or \"check promptbook health\".\n"
+description: Diagnose Promptbook setup — check config, hooks, API key, and session tracking health
 version: 1.4.0
-author: Promptbook <contact@promptbook.gg>
+author: Promptbook
 license: MIT
-allowed-tools: Bash(node:*), Bash(curl:*), Bash(ls:*), Bash(stat:*), Bash(cat:*),
-  Read
-tags:
-- analytics
-- telemetry
-- diagnostics
-- health-check
-compatibility: Designed for Claude Code
+allowed-tools: Bash
 ---
+
 # Promptbook Doctor
 
-## Overview
+Run diagnostics to check if Promptbook is set up correctly. Execute each check via Bash and report the results.
 
-Run diagnostics to verify Promptbook is set up correctly. Checks config, consent, API key validity, and recent session activity. Presents a clear pass/fail report.
+## Checks
 
-## Prerequisites
-
-- Promptbook must have been set up via `/setup` first
-- Node.js installed (used for config parsing)
-- Internet access (for API key verification)
-
-## Instructions
-
-Run these checks in order via Bash and report each result.
+Run these checks in order and report each result:
 
 ### 1. Config file exists
 
 ```bash
 if [ -f "$HOME/.promptbook/config.json" ]; then
   echo "CONFIG_FOUND"
-  # Check permissions — should be 600 for security
+  # Check permissions (should be 600)
   stat -f "%Lp" "$HOME/.promptbook/config.json" 2>/dev/null || stat -c "%a" "$HOME/.promptbook/config.json" 2>/dev/null
   # Check required fields exist (without displaying values)
   node -e "const c=JSON.parse(require('fs').readFileSync('$HOME/.promptbook/config.json','utf8'));console.log('has_api_key:',!!c.api_key);console.log('has_api_url:',!!c.api_url);console.log('auto_summary:',c.auto_summary);console.log('telemetry_consent:',c.telemetry_consent===true)"
@@ -48,8 +32,7 @@ fi
 If no config file found or `telemetry_consent` is false: tell the user to run `/setup` first.
 
 ### 2. API key is valid
-
-Test the API key without displaying it:
+Use the config file to test the API key without displaying it:
 
 ```bash
 API_KEY=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$HOME/.promptbook/config.json','utf8')).api_key)")
@@ -62,8 +45,7 @@ curl -sL -o /dev/null -w "%{http_code}" -X POST "https://promptbook.gg/api/auth/
 - Other = network issue — suggest checking connectivity
 
 ### 3. Last session activity
-
-Check for recent session data files to verify hooks are firing:
+Check for recent session data files to see if hooks are actually firing:
 
 ```bash
 ls -lt ~/.promptbook/sessions/ 2>/dev/null | head -5
@@ -71,9 +53,9 @@ ls -lt ~/.promptbook/sessions/ 2>/dev/null | head -5
 
 If no session files found: hooks may not be firing. Suggest starting a new Claude Code session.
 
-## Output
+## Report Format
 
-Present results as a clear diagnostic report:
+Present results as a clear diagnostic:
 
 ```
 Promptbook Doctor
@@ -84,32 +66,10 @@ Promptbook Doctor
 ✓ Activity:  Last session 2 hours ago
 ```
 
-Use `✓` for passing checks, `✗` for failures, `⚠` for warnings.
+Use ✓ for passing checks, ✗ for failures, ⚠ for warnings.
 
-## Error Handling
-
-- If config file is missing, report `✗ Config` and direct user to `/setup`
-- If consent is false, report `✗ Consent` and direct user to `/setup`
-- If API key returns 401, report `✗ API Key` and suggest re-running `/setup`
-- If no session files exist, report `⚠ Activity` and suggest starting a new session
-- Never display the API key in the report
-
-## Examples
-
-```
-User: /doctor
-Agent: Promptbook Doctor
-       ─────────────────
-       ✓ Config:    Found (~/.promptbook/config.json), permissions 600
-       ✓ Consent:   Granted during setup
-       ✓ API Key:   Valid and verified (HTTP 200)
-       ✗ Activity:  No recent sessions found
-       
-       Everything looks good except no sessions have been tracked yet.
-       Start a new Claude Code session to see your first build.
-```
-
-## Resources
-
-- [Promptbook website](https://promptbook.gg)
-- [Plugin repository](https://github.com/promptbookgg/claude-code-plugin)
+## Important
+- Run all commands via Bash — the user just reads the report.
+- Never display the API key.
+- If everything passes, tell the user their setup is healthy.
+- If checks fail, give specific actionable steps to fix each issue.

@@ -971,6 +971,7 @@ async function syncSource(source, config, lock) {
           repo: source.repo,
           path: source.source_path,
           branch,
+          ...(resolvedRef ? { source_commit: resolvedRef } : {}),
         },
         last_sync: new Date().toISOString(),
         author: source.author,
