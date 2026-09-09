@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 352,
         "raw_tracked_plugin_skill_files": 3033,
-        "tracked_files": 24307
+        "tracked_files": 24304
       }
     },
     "2": {
@@ -1236,7 +1236,7 @@
           },
           {
             "cohort": "marketplace-visible",
-            "value": 2934
+            "value": 2930
           }
         ],
         "distinct_numeric_answers": 5,
@@ -2003,7 +2003,7 @@
         "invalid_patterns": 0,
         "invisible_files": 5,
         "target_invisible_files": 0,
-        "tracked_files": 24307
+        "tracked_files": 24304
       }
     },
     "47": {
