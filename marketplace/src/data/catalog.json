@@ -10922,7 +10922,7 @@
       "name": "web-analytics",
       "displayName": "web analytics",
       "description": "Push-based web analytics intelligence team — self-hosted Umami via MCP (primary) + GA4 (fallback). 9 specialist agents fetch data, detect anomalies, analyze funnels, verify claims adversarially, and deliver narrative reports across your entire site portfolio. Three tiers: 30-second pulse, 2-min brief, 5-min full deep-dive. Console / email / Slack delivery.",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "category": "analytics",
       "keywords": [
         "analytics",

@@ -1,252 +1,158 @@
 ---
 name: web-analytics
-description: 'Push-based web analytics intelligence for your entire site portfolio.
-  Fetches data from
-
-  Umami (primary) and GA4 (fallback), runs specialist analysis agents in parallel,
-  and
-
-  delivers actionable insights. Three tiers: mini (30s pulse), medium (2min brief),
-
-  full (5min deep dive). Supports console, email, and Slack delivery.
-
-  Trigger with "/analytics", "check my analytics", "how''s my traffic", "site stats",
-
-  "traffic report", "analytics brief", "daily brief".
-
-  '
-allowed-tools: Read,Glob,Grep,Bash(date:*),Bash(node:*),Bash(curl:*),Bash(python3:*),Bash(source:*),Task,AskUserQuestion
-version: 1.4.0
+description: >-
+  Analyze Umami or GA4 traffic with evidence-backed specialist reviews and deliver a
+  concise portfolio pulse, decision brief, or deep dive. Use when the user asks to
+  check analytics, explain a traffic change, inspect funnels, compare site performance,
+  or prepare an analytics report. Trigger with "/analytics", "check my analytics",
+  "how's my traffic", "site stats", "traffic report", or "analytics brief".
+allowed-tools: Read, Bash(date:*), Bash(curl:*), Bash(python3:*), Bash(source:*), Agent
+version: 1.5.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:
-- analytics
-- umami
-- traffic
-- reporting
-- intelligence
+  - analytics
+  - umami
+  - traffic
+  - reporting
+  - intelligence
 argument-hint: '[mini|medium|full] [--site=name] [--period=7d] [--email] [--slack]'
 compatibility: Designed for Claude Code
+model: inherit
+effort: high
+user-invocable: true
 ---
-# Web Analytics Intelligence
 
-Orchestrates a team of specialist agents to deliver business-grade analytics insights
-across your entire site portfolio. Not a dashboard replacement — a push-based analytics
-team that surfaces what matters.
+# Web Analytics Intelligence
 
 ## Overview
 
-This skill routes analytics requests to the right combination of specialist agents based
-on the requested tier, compiles their outputs into a cohesive narrative, and delivers
-via console, email, or Slack.
+Turn portfolio analytics into a decision-ready report by collecting a bounded dataset, preserving
+the comparison window, separating observed facts from hypotheses, and routing deeper requests
+through specialist agents. This is a push-based analysis workflow, not a dashboard replacement.
 
-**Architecture:** Orchestrator (this skill) → Data Collector → Specialist Agents (parallel) → Reporter
+Read the [operating contract](references/operating-contract.md) before making authenticated
+requests or delivering a report.
 
 ## Prerequisites
 
-- Umami credentials in `~/.env` (UMAMI_PASSWORD for the admin user)
-- Sites configured in `${CLAUDE_SKILL_DIR}/references/site-registry.md`
-- For email delivery: `/email` skill working
-- For Slack delivery: `/slack` skill working
+- Configure sites and thresholds in `${CLAUDE_PLUGIN_ROOT}/references/site-registry.md`.
+- Store Umami credentials in the operator's approved secret store; this installation uses
+  `UMAMI_PASSWORD` from `~/.env`.
+- Confirm `/email` or `/slack` independently before requesting those delivery channels.
+- Use `${CLAUDE_PLUGIN_ROOT}/references/reporting-tiers.md` and
+  `${CLAUDE_PLUGIN_ROOT}/references/interpretation-guide.md` for medium and full reports.
 
-## Data Access
+## Authentication and Safety
 
-The skill uses **direct Umami REST API calls** (more reliable than MCP):
+1. Confirm the analytics base URL is the expected operator-controlled host before sending a
+   credential.
+2. Load `UMAMI_PASSWORD` only for the command that needs it. Never print, log, persist, or pass
+   the password or bearer token to a specialist agent.
+3. Use `curl --fail-with-body --silent --show-error`; stop if authentication fails or the token
+   is empty.
+4. Treat email and Slack delivery as external side effects. Preview the destination and report,
+   and obtain confirmation when the user has not explicitly requested delivery.
+5. Never send messages, modify analytics configuration, or write baseline state during a read-only
+   request. A full-tier memory update requires an explicit writable scope.
+
+## Workflow
+
+### 1. Parse the Request
+
+| Parameter | Default | Accepted values |
+|---|---|---|
+| Tier | `mini` | `mini`, `medium`, `full` |
+| Site | `all` | Registry name or `all` |
+| Period | `7d` | `today`, `yesterday`, `7d`, `30d`, `mtd`, `qtd` |
+| Delivery | `console` | `console`, `email`, `slack`, `all` |
+| Compare | prior equivalent | An explicit comparison window |
+
+Use defaults when they preserve the user's intent. Ask before continuing if the site, time window,
+or external destination would materially change the result.
+
+### 2. Load Configuration
+
+Read only the files needed for the selected tier:
+
+1. `${CLAUDE_PLUGIN_ROOT}/references/site-registry.md` for site IDs, baselines, and thresholds.
+2. `${CLAUDE_PLUGIN_ROOT}/references/mcp-tool-reference.md` for supported data operations.
+3. `${CLAUDE_PLUGIN_ROOT}/references/reporting-tiers.md` for output contracts.
+4. `${CLAUDE_PLUGIN_ROOT}/references/interpretation-guide.md` for evidence language.
+
+### 3. Collect the Minimum Dataset
+
+For direct Umami access, authenticate and fail closed:
 
 ```bash
-# Get auth token
-TOKEN=$(curl -s "https://analytics.intentsolutions.io/api/auth/login" \
+set -euo pipefail
+source ~/.env
+analytics_url="https://analytics.intentsolutions.io"
+token=$(curl --fail-with-body --silent --show-error "${analytics_url}/api/auth/login" \
   -X POST -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"'"$UMAMI_PASSWORD"'"}' | \
-  python3 -c "import sys,json; print(json.load(sys.stdin).get('token',''))")
-
-# Get stats (uses epoch ms, compare=prev for prior period)
-curl -s "https://analytics.intentsolutions.io/api/websites/{SITE_ID}/stats?startAt={START_MS}&endAt={END_MS}&compare=prev" \
-  -H "Authorization: Bearer $TOKEN"
-
-# Get active visitors
-curl -s "https://analytics.intentsolutions.io/api/websites/{SITE_ID}/active" \
-  -H "Authorization: Bearer $TOKEN"
-
-# Get daily pageviews
-curl -s "https://analytics.intentsolutions.io/api/websites/{SITE_ID}/pageviews?startAt={START_MS}&endAt={END_MS}&unit=day&timezone=America%2FNew_York" \
-  -H "Authorization: Bearer $TOKEN"
+  -d '{"username":"admin","password":"'"${UMAMI_PASSWORD}"'"}' | \
+  python3 -c "import json,sys; print(json.load(sys.stdin).get('token',''))")
+test -n "${token}" || { printf 'Umami authentication returned no token\n' >&2; exit 1; }
+curl --fail-with-body --silent --show-error \
+  "${analytics_url}/api/websites/<site-id>/stats?startAt=<start-ms>&endAt=<end-ms>&compare=prev" \
+  -H "Authorization: Bearer ${token}"
+unset token UMAMI_PASSWORD
 ```
 
-## Instructions
+Record the source, site, timezone, exact start and end timestamps, comparison window, and any
+missing endpoint. Do not infer missing values as zero.
 
-### Step 1: Parse Request
+### 4. Route by Tier
 
-Extract from `$ARGUMENTS` or conversation context:
+- **Mini:** Collect aggregate stats and active visitors inline. Return totals, per-site metrics,
+  comparison deltas, and one material signal in at most 15 lines.
+- **Medium:** Use `Agent` to run `data-collector`; after it returns, run `traffic-intelligence`,
+  `content-seo`, and `anomaly-detector` concurrently. Give `reporting-narrative` their outputs,
+  the exact period, and the requested delivery format.
+- **Full:** Run `data-collector` for aggregate, event, technology, and geography data. Then run all
+  five analysis specialists concurrently, pass their claims to `verification-agent`, and compile
+  only verified or explicitly qualified findings with `reporting-narrative`.
 
-| Parameter | Default | Options |
-|-----------|---------|---------|
-| Tier | mini | `mini`, `medium`, `full` |
-| Site | all | Site name from registry, or `all` |
-| Period | 7d | `today`, `yesterday`, `7d`, `30d`, `mtd`, `qtd` |
-| Delivery | console | `--email`, `--slack`, `--all` |
-| Compare | auto | Previous equivalent period |
+Agent definitions live under `${CLAUDE_PLUGIN_ROOT}/agents/`. Give agents collected results, not
+credentials. Bound every assignment to the requested sites and period. If an agent fails, report
+that coverage gap and continue only when the remaining evidence can support the requested output.
 
-Examples:
+### 5. Verify and Deliver
 
-- `/analytics` → mini tier, all sites, 7d, console
-- `/analytics medium --site=tonsofskills` → medium tier, one site, 7d, console
-- `/analytics full --period=30d --email` → full tier, all sites, 30d, email delivery
-- `how's my traffic today?` → mini tier, all sites, today, console
+Before delivery, apply the [operating contract](references/operating-contract.md):
 
-### Step 2: Load Configuration
+1. Recalculate headline deltas from the raw totals.
+2. Label each statement as observation, comparison, hypothesis, or recommendation.
+3. Check anomaly claims against baselines and low-volume noise.
+4. Name unavailable sources and incomplete windows.
+5. Preview external destinations, then invoke `/email` or `/slack` only when authorized.
 
-Read these reference files for context:
+For a full-tier report, run `memory-agent` only if the user authorized baseline-state updates.
+Persist the period, source, and evidence receipt so a later report can reproduce the comparison.
 
-1. `${CLAUDE_SKILL_DIR}/references/site-registry.md` — site config, baselines, thresholds
-2. `${CLAUDE_SKILL_DIR}/references/mcp-tool-reference.md` — MCP tool signatures
-3. `${CLAUDE_SKILL_DIR}/references/reporting-tiers.md` — output format specs (medium/full tiers)
-4. `${CLAUDE_SKILL_DIR}/references/interpretation-guide.md` — advisory voice standards
+## Error Handling
 
-### Step 3: Route by Tier
-
-#### Mini Tier (inline — no subagents)
-
-For mini tier, handle data collection inline to minimize latency:
-
-1. Source `~/.env` to get UMAMI_PASSWORD, then get auth token via curl
-2. Calculate time range as epoch milliseconds (use `date -d "2026-04-30" +%s` then append `000`)
-3. For each site (or specified site):
-   - Call `/api/websites/{ID}/stats?startAt=...&endAt=...&compare=prev` for aggregate metrics
-   - Call `/api/websites/{ID}/active` for real-time visitor count
-4. Compute deltas using the `comparison` block returned by `get_stats`
-5. Format as mini pulse:
-
-```
-## Analytics Pulse — {date}
-
-**Portfolio:** {total_visitors} visitors across {n} sites ({+/-n%} vs prior {period})
-
-| Site | Visitors | Pageviews | Bounce | Trend |
-|------|----------|-----------|--------|-------|
-| {site} | {n} | {n} | {n%} | {↑↓→ n%} |
-
-**Top Signal:** {most notable change across all sites}
-**Active Now:** {n} visitors
-```
-
-Keep it under 15 lines. No analysis, just the numbers and one signal.
-
-#### Medium Tier (4 agents)
-
-Launch these agents using the Agent tool with subagent_type:
-
-**Phase A — Data Collection:**
-
-1. Spawn `data-collector` agent with instructions:
-   - Sites: {sites from request}
-   - Period: {calculated time range}
-   - Data needed: stats, referrers, top pages, time series
-   - Provide the full content of `${CLAUDE_SKILL_DIR}/references/mcp-tool-reference.md`
-   - Provide the full content of `${CLAUDE_SKILL_DIR}/references/site-registry.md`
-
-**Phase B — Parallel Analysis (after data returns):**
-2. Spawn `traffic-intelligence` agent with data-collector output
-3. Spawn `content-seo` agent with data-collector output (if available)
-4. Spawn `anomaly-detector` agent with data-collector output (if available)
-
-**Phase C — Compilation:**
-5. Spawn `reporting-narrative` agent with all specialist outputs
-
-- Tier: medium
-- Delivery format: {console/email/slack}
-
-#### Full Tier (all agents)
-
-**Phase A — Data Collection:**
-
-1. Spawn `data-collector` agent — request ALL data types including events, tech, geo
-
-**Phase B — Parallel Analysis:**
-2. Spawn ALL specialist agents in parallel:
-
-- `traffic-intelligence` — channel/source analysis
-- `content-seo` — page performance
-- `anomaly-detector` — spike/drop detection
-- `conversion-funnel` — event/goal analysis
-- `audience-segmentation` — cohort/geo analysis
-
-**Phase C — Verification:**
-3. Spawn `verification-agent` with all specialist outputs — adversarial quality check
-
-**Phase D — Compilation:**
-4. Spawn `reporting-narrative` agent with all outputs + verification notes
-
-- Tier: full
-- Delivery format: {console/email/slack}
-
-### Step 4: Deliver
-
-**Console (default):** Display the narrative report directly.
-
-**Email (`--email`):** Invoke the `/email` skill with:
-
-- To: jeremy@intentsolutions.io
-- Subject: "Analytics {Tier} — {date} — {headline}"
-- Body: Report content (formatted for email)
-
-**Slack (`--slack`):** Invoke the `/slack` skill with:
-
-- Channel: #operation-hired
-- Message: Report content (formatted for Slack, respect 3000-char limit)
-
-**All (`--all`):** Console + email + Slack.
-
-### Step 5: Memory Update (Full Tier Only)
-
-For full-tier reports, spawn the `memory-agent` to:
-
-- Record this period's baselines for future comparison
-- Note any new referral sources or traffic patterns
-- Update seasonal adjustment data if applicable
-
-## Agent Roster
-
-| Agent | File | Tier | Purpose |
-|-------|------|------|---------|
-| data-collector | `${CLAUDE_SKILL_DIR}/agents/data-collector.md` | All | MCP data fetching |
-| traffic-intelligence | `${CLAUDE_SKILL_DIR}/agents/traffic-intelligence.md` | Medium+ | Source attribution |
-| content-seo | `${CLAUDE_SKILL_DIR}/agents/content-seo.md` | Medium+ | Page performance |
-| anomaly-detector | `${CLAUDE_SKILL_DIR}/agents/anomaly-detector.md` | Medium+ | Spike/drop detection |
-| conversion-funnel | `${CLAUDE_SKILL_DIR}/agents/conversion-funnel.md` | Full | Event/goal analysis |
-| audience-segmentation | `${CLAUDE_SKILL_DIR}/agents/audience-segmentation.md` | Full | Cohort analysis |
-| verification-agent | `${CLAUDE_SKILL_DIR}/agents/verification-agent.md` | Full | Output quality check |
-| reporting-narrative | `${CLAUDE_SKILL_DIR}/agents/reporting-narrative.md` | Medium+ | Narrative compilation |
-| memory-agent | `${CLAUDE_SKILL_DIR}/agents/memory-agent.md` | Full | Rolling context |
-
-## Troubleshooting
-
-| Issue | Resolution |
-|-------|-----------|
-| "Umami MCP not connected" | Run `/mcp` to check server status. Ensure `umami-analytics` is in settings.json |
-| Empty data for a site | Verify site ID in site-registry.md matches Umami. Run `mcp__umami__get_websites` to list. If all sites show zero, the tracker `<script>` likely isn't installed on the site (see site-registry per-site repo paths). |
-| Slow response (>5min) | Switch to lower tier. Mini tier bypasses all subagents. |
-| Email/Slack delivery fails | Test `/email` and `/slack` independently first |
-| Stale baselines | Run `/analytics full` to trigger memory-agent baseline update |
+Stop without exposing secret material when authentication fails. For partial endpoint, site, agent,
+or delivery failures, retain successful evidence, name the exact coverage gap, and avoid complete-
+portfolio or trend claims that the remaining data cannot support. The operating contract defines
+the required fallback for each failure class.
 
 ## Output
 
-Return a tier-appropriate analytics brief. Mini reports contain the portfolio
-total, per-site visitors and pageviews, the comparison-period delta, and the
-strongest signal in no more than 15 lines. Medium and full reports retain the
-requested period, data sources consulted, material anomalies, prioritized
-actions, and any delivery result for console, email, or Slack.
+Return the tier, sites, exact period, comparison window, sources consulted, coverage gaps, and
+delivery result. Lead with the strongest verified signal, show the supporting metrics, distinguish
+hypotheses from facts, and end with prioritized actions that each have an owner or next check.
 
 ## Examples
 
-For a daily pulse, use `/analytics --period=today`; the result should identify
-the current visitor count and any site whose change materially differs from
-the previous day. For an executive review, use `/analytics full --period=30d
---email`; the report should separate observed traffic movement from hypotheses
-and include the next action owner for each significant issue.
+- `/analytics --period=today` produces a mini console pulse for every configured site.
+- `/analytics medium --site=tonsofskills --period=7d` explains material traffic and content shifts.
+- `/analytics full --period=30d --email` previews an evidence-checked deep dive before email delivery.
 
 ## Resources
 
-- `${CLAUDE_SKILL_DIR}/references/site-registry.md` — site IDs, baselines, and thresholds
-- `${CLAUDE_SKILL_DIR}/references/reporting-tiers.md` — tier-specific report contracts
-- `${CLAUDE_SKILL_DIR}/references/interpretation-guide.md` — evidence and advisory-language rules
+- [Operating contract](references/operating-contract.md) — auth, evidence, failure, and delivery gates.
+- `${CLAUDE_PLUGIN_ROOT}/references/site-registry.md` — configured properties and thresholds.
+- `${CLAUDE_PLUGIN_ROOT}/references/reporting-tiers.md` — detailed report schemas.
+- `${CLAUDE_PLUGIN_ROOT}/references/interpretation-guide.md` — analytical voice and caveats.
+- `${CLAUDE_PLUGIN_ROOT}/references/delivery-channels.md` — email and Slack adapters.

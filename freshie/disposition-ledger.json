@@ -3,7 +3,7 @@
   "authority": "Blueprint 727 §8; Freshie graded export",
   "source": {
     "path": "freshie/grades.csv",
-    "sha256": "dd599166cab2489e8c3a7533771bc2ec4d9f5ff7eae8c78d8118fdcfeddcf3b5",
+    "sha256": "0217da9d276ad664196c8e9d604bc44d6fee1c04e7681a3b710c4262aa661216",
     "artifact_count": 3532
   },
   "rule_order": [
@@ -5844,8 +5844,8 @@
     },
     {
       "path": "plugins/analytics/web-analytics/skills/web-analytics/SKILL.md",
-      "grade": "C",
-      "score": 78,
+      "grade": "A",
+      "score": 99,
       "diagnostics": [],
       "disposition": "CERTIFY-PENDING-EVIDENCE",
       "gate": "G7",
