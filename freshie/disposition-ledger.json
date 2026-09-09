@@ -3,8 +3,8 @@
   "authority": "Blueprint 727 §8; Freshie graded export",
   "source": {
     "path": "freshie/grades.csv",
-    "sha256": "80abbda92b5938a6ee091dbb602183ed49bdedbc905675117e856f46857c7227",
-    "artifact_count": 3532
+    "sha256": "4f5b4582b5712ebc9a631dfd2d2eb3321b457bf5dbe906c73287d6d9a21d41cc",
+    "artifact_count": 3534
   },
   "rule_order": [
     "G0",
@@ -24,7 +24,7 @@
     "CERTIFY-PENDING-EVIDENCE": 2748,
     "CERTIFY-UPSTREAM": 0,
     "DEEP-REMEDIATE": 2,
-    "QUARANTINE": 345
+    "QUARANTINE": 347
   },
   "artifacts": [
     {
@@ -37257,6 +37257,28 @@
       "gate": "G7",
       "reason_codes": [
         "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
+      ]
+    },
+    {
+      "path": "plugins/security/hol-guard/skills/hol-guard/SKILL.md",
+      "grade": "A",
+      "score": 90,
+      "diagnostics": [],
+      "disposition": "QUARANTINE",
+      "gate": "G1",
+      "reason_codes": [
+        "SOURCE_COMMIT_UNPINNED"
+      ]
+    },
+    {
+      "path": "plugins/security/hol-guard/skills/plugin-scanner/SKILL.md",
+      "grade": "A",
+      "score": 90,
+      "diagnostics": [],
+      "disposition": "QUARANTINE",
+      "gate": "G1",
+      "reason_codes": [
+        "SOURCE_COMMIT_UNPINNED"
       ]
     },
     {
