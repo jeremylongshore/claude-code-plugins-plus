@@ -617,7 +617,6 @@
       "clustering",
       "clusters",
       "cmms",
-      "code-completion",
       "code-coverage",
       "code-editor",
       "code-examples",
@@ -627,7 +626,6 @@
       "code-quality",
       "code-review",
       "codegen",
-      "codeium",
       "coderabbit",
       "coding",
       "cognitive-accessibility",
@@ -750,6 +748,7 @@
       "development",
       "development-workflow",
       "devices",
+      "devin-desktop",
       "devops",
       "devsecops",
       "dex",
@@ -1392,6 +1391,7 @@
       "routing",
       "row-level-security",
       "rugpull",
+      "rules",
       "rum",
       "runtime-inspector",
       "runway",
@@ -10529,16 +10529,16 @@
       "slug": "windsurf-pack",
       "name": "windsurf-pack",
       "displayName": "windsurf pack",
-      "description": "Complete Windsurf integration skill pack with 30 skills covering AI code editing, Cascade workflows, codebase understanding, and developer productivity. Flagship+ tier vendor pack.",
+      "description": "Current Devin Desktop (formerly Windsurf) operations pack with 30 Grade-A skills for Cascade, Rules, Skills, Workflows, Hooks, MCP, quota governance, security, and enterprise rollout.",
       "category": "saas-packs",
       "keywords": [
         "windsurf",
+        "devin-desktop",
         "ai-editor",
         "cascade",
-        "codeium",
         "ai-coding",
-        "code-completion",
-        "refactoring"
+        "rules",
+        "quota"
       ],
       "author": {
         "name": "Jeremy Longshore",
@@ -10546,15 +10546,15 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.11.0",
+      "version": "1.12.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
       "skillCount": 30,
-      "verificationScore": 85,
-      "verificationGrade": "B",
-      "verificationBadge": "silver",
-      "searchText": "windsurf pack complete windsurf integration skill pack with 30 skills covering ai code editing, cascade workflows, codebase understanding, and developer productivity. flagship+ tier vendor pack. saas-packs windsurf ai-editor cascade codeium ai-coding code-completion refactoring"
+      "verificationScore": 96,
+      "verificationGrade": "A",
+      "verificationBadge": "gold",
+      "searchText": "windsurf pack current devin desktop (formerly windsurf) operations pack with 30 grade-a skills for cascade, rules, skills, workflows, hooks, mcp, quota governance, security, and enterprise rollout. saas-packs windsurf devin-desktop ai-editor cascade ai-coding rules quota"
     },
     {
       "type": "plugin",
@@ -79128,7 +79128,7 @@
       "id": "windsurf-advanced-troubleshooting",
       "slug": "windsurf-advanced-troubleshooting",
       "name": "windsurf-advanced-troubleshooting",
-      "description": "Advanced Windsurf debugging for hard-to-diagnose IDE, Cascade, and indexing issues. Use when standard troubleshooting fails, Cascade produces consistently wrong output, or investigating deep configuration problems. Trigger with phrases like \"windsurf deep debug\", \"windsurf mystery error\", \"windsurf impossible to fix\", \"cascade keeps failing\", \"windsurf advanced debug\".",
+      "description": "Advanced Devin Desktop (formerly Windsurf) debugging for hard-to-diagnose IDE, Cascade, and indexing issues. Use when standard troubleshooting fails, Cascade produces consistently wrong output, or investigating deep configuration problems. Trigger with phrases like \"windsurf deep debug\", \"windsurf mystery error\", \"windsurf impossible to fix\", \"cascade keeps failing\", \"windsurf advanced debug\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79138,38 +79138,38 @@
         "Bash(find:*)"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-advanced-troubleshooting advanced windsurf debugging for hard-to-diagnose ide, cascade, and indexing issues. use when standard troubleshooting fails, cascade produces consistently wrong output, or investigating deep configuration problems. trigger with phrases like \"windsurf deep debug\", \"windsurf mystery error\", \"windsurf impossible to fix\", \"cascade keeps failing\", \"windsurf advanced debug\". saas-packs read grep bash(ls:*) bash(curl:*) bash(find:*) "
+      "searchText": "windsurf-advanced-troubleshooting advanced devin desktop (formerly windsurf) debugging for hard-to-diagnose ide, cascade, and indexing issues. use when standard troubleshooting fails, cascade produces consistently wrong output, or investigating deep configuration problems. trigger with phrases like \"windsurf deep debug\", \"windsurf mystery error\", \"windsurf impossible to fix\", \"cascade keeps failing\", \"windsurf advanced debug\". saas-packs read grep bash(ls:*) bash(curl:*) bash(find:*) "
     },
     {
       "type": "skill",
       "id": "windsurf-architecture-variants",
       "slug": "windsurf-architecture-variants",
       "name": "windsurf-architecture-variants",
-      "description": "Choose workspace architectures for different project scales in Windsurf. Use when deciding how to structure Windsurf workspaces for monorepos, multi-service setups, or polyglot codebases. Trigger with phrases like \"windsurf workspace strategy\", \"windsurf monorepo\", \"windsurf project layout\", \"windsurf multi-service\", \"windsurf workspace size\".",
+      "description": "Choose workspace architectures for different project scales in Devin Desktop (formerly Windsurf). Use when deciding how to structure Windsurf workspaces for monorepos, multi-service setups, or polyglot codebases. Trigger with phrases like \"windsurf workspace strategy\", \"windsurf monorepo\", \"windsurf project layout\", \"windsurf multi-service\", \"windsurf workspace size\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-architecture-variants choose workspace architectures for different project scales in windsurf. use when deciding how to structure windsurf workspaces for monorepos, multi-service setups, or polyglot codebases. trigger with phrases like \"windsurf workspace strategy\", \"windsurf monorepo\", \"windsurf project layout\", \"windsurf multi-service\", \"windsurf workspace size\". saas-packs read grep "
+      "searchText": "windsurf-architecture-variants choose workspace architectures for different project scales in devin desktop (formerly windsurf). use when deciding how to structure windsurf workspaces for monorepos, multi-service setups, or polyglot codebases. trigger with phrases like \"windsurf workspace strategy\", \"windsurf monorepo\", \"windsurf project layout\", \"windsurf multi-service\", \"windsurf workspace size\". saas-packs read grep "
     },
     {
       "type": "skill",
       "id": "windsurf-ci-integration",
       "slug": "windsurf-ci-integration",
       "name": "windsurf-ci-integration",
-      "description": "Integrate Windsurf Cascade workflows into CI/CD pipelines and team automation. Use when automating Cascade tasks in GitHub Actions, enforcing AI code quality gates, or setting up Windsurf config validation in CI. Trigger with phrases like \"windsurf CI\", \"windsurf GitHub Actions\", \"windsurf automation\", \"cascade CI\", \"windsurf pipeline\".",
+      "description": "Analyze and integrate Devin Desktop (formerly Windsurf) Cascade workflows into CI/CD pipelines and team automation. Use when automating Cascade tasks in GitHub Actions, enforcing AI code quality gates, or setting up Windsurf config validation in CI. Trigger with phrases like \"windsurf CI\", \"windsurf GitHub Actions\", \"windsurf automation\", \"cascade CI\", \"windsurf pipeline\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79178,19 +79178,19 @@
         "Bash(gh:*)"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-ci-integration integrate windsurf cascade workflows into ci/cd pipelines and team automation. use when automating cascade tasks in github actions, enforcing ai code quality gates, or setting up windsurf config validation in ci. trigger with phrases like \"windsurf ci\", \"windsurf github actions\", \"windsurf automation\", \"cascade ci\", \"windsurf pipeline\". saas-packs read write edit bash(gh:*) "
+      "searchText": "windsurf-ci-integration analyze and integrate devin desktop (formerly windsurf) cascade workflows into ci/cd pipelines and team automation. use when automating cascade tasks in github actions, enforcing ai code quality gates, or setting up windsurf config validation in ci. trigger with phrases like \"windsurf ci\", \"windsurf github actions\", \"windsurf automation\", \"cascade ci\", \"windsurf pipeline\". saas-packs read write edit bash(gh:*) "
     },
     {
       "type": "skill",
       "id": "windsurf-common-errors",
       "slug": "windsurf-common-errors",
       "name": "windsurf-common-errors",
-      "description": "Diagnose and fix common Windsurf IDE and Cascade errors. Use when Cascade stops working, Supercomplete fails, indexing hangs, or encountering Windsurf-specific issues. Trigger with phrases like \"windsurf error\", \"fix windsurf\", \"windsurf not working\", \"cascade broken\", \"windsurf slow\".",
+      "description": "Diagnose and fix common Devin Desktop (formerly Windsurf) IDE and Cascade errors. Use when Cascade stops working, Supercomplete fails, indexing hangs, or encountering Windsurf-specific issues. Trigger with phrases like \"windsurf error\", \"fix windsurf\", \"windsurf not working\", \"cascade broken\", \"windsurf slow\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79198,19 +79198,19 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-common-errors diagnose and fix common windsurf ide and cascade errors. use when cascade stops working, supercomplete fails, indexing hangs, or encountering windsurf-specific issues. trigger with phrases like \"windsurf error\", \"fix windsurf\", \"windsurf not working\", \"cascade broken\", \"windsurf slow\". saas-packs read grep bash(curl:*) "
+      "searchText": "windsurf-common-errors diagnose and fix common devin desktop (formerly windsurf) ide and cascade errors. use when cascade stops working, supercomplete fails, indexing hangs, or encountering windsurf-specific issues. trigger with phrases like \"windsurf error\", \"fix windsurf\", \"windsurf not working\", \"cascade broken\", \"windsurf slow\". saas-packs read grep bash(curl:*) "
     },
     {
       "type": "skill",
       "id": "windsurf-core-workflow-a",
       "slug": "windsurf-core-workflow-a",
       "name": "windsurf-core-workflow-a",
-      "description": "Execute Windsurf's primary workflow: Cascade Write mode for multi-file agentic coding. Use when building features, refactoring across files, or performing complex code tasks. Trigger with phrases like \"windsurf cascade write\", \"windsurf agentic coding\", \"windsurf multi-file edit\", \"cascade write mode\", \"windsurf build feature\".",
+      "description": "Execute Devin Desktop's primary workflow: Cascade Code mode for multi-file agentic coding. Use when building features, refactoring across files, or performing complex code tasks. Trigger with phrases like \"windsurf cascade write\", \"windsurf agentic coding\", \"windsurf multi-file edit\", \"cascade code mode\", \"windsurf build feature\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79220,19 +79220,19 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-core-workflow-a execute windsurf's primary workflow: cascade write mode for multi-file agentic coding. use when building features, refactoring across files, or performing complex code tasks. trigger with phrases like \"windsurf cascade write\", \"windsurf agentic coding\", \"windsurf multi-file edit\", \"cascade write mode\", \"windsurf build feature\". saas-packs read write edit bash(npm:*) grep "
+      "searchText": "windsurf-core-workflow-a execute devin desktop's primary workflow: cascade code mode for multi-file agentic coding. use when building features, refactoring across files, or performing complex code tasks. trigger with phrases like \"windsurf cascade write\", \"windsurf agentic coding\", \"windsurf multi-file edit\", \"cascade code mode\", \"windsurf build feature\". saas-packs read write edit bash(npm:*) grep "
     },
     {
       "type": "skill",
       "id": "windsurf-core-workflow-b",
       "slug": "windsurf-core-workflow-b",
       "name": "windsurf-core-workflow-b",
-      "description": "Execute Windsurf's secondary workflow: Workflows, Memories, and reusable automation. Use when creating reusable Cascade workflows, managing persistent memories, or automating repetitive development tasks. Trigger with phrases like \"windsurf workflow\", \"windsurf automation\", \"windsurf memories\", \"cascade workflow\", \"windsurf slash command\".",
+      "description": "Choose and create Devin Desktop customizations: Rules, AGENTS.md, Workflows, Skills, and Memories. Use when making Cascade behavior reusable or deciding how a procedure should activate. Trigger with \"windsurf workflow\", \"Cascade skill\", \"windsurf rule\", \"AGENTS.md\", or \"Cascade memory\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79242,38 +79242,38 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-core-workflow-b execute windsurf's secondary workflow: workflows, memories, and reusable automation. use when creating reusable cascade workflows, managing persistent memories, or automating repetitive development tasks. trigger with phrases like \"windsurf workflow\", \"windsurf automation\", \"windsurf memories\", \"cascade workflow\", \"windsurf slash command\". saas-packs read write edit bash(npm:*) grep "
+      "searchText": "windsurf-core-workflow-b choose and create devin desktop customizations: rules, agents.md, workflows, skills, and memories. use when making cascade behavior reusable or deciding how a procedure should activate. trigger with \"windsurf workflow\", \"cascade skill\", \"windsurf rule\", \"agents.md\", or \"cascade memory\". saas-packs read write edit bash(npm:*) grep "
     },
     {
       "type": "skill",
       "id": "windsurf-cost-tuning",
       "slug": "windsurf-cost-tuning",
       "name": "windsurf-cost-tuning",
-      "description": "Optimize Windsurf licensing costs through seat management, tier selection, and credit monitoring. Use when analyzing Windsurf billing, reducing per-seat costs, or implementing usage monitoring and budget controls. Trigger with phrases like \"windsurf cost\", \"windsurf billing\", \"reduce windsurf costs\", \"windsurf pricing\", \"windsurf budget\".",
+      "description": "Optimize Devin Desktop (formerly Windsurf) licensing through current plan, seat, quota, and extra-usage analysis. Use when right-sizing a team, forecasting usage, or reducing spend. Trigger with \"windsurf cost\", \"windsurf billing\", \"seat audit\", \"extra usage\", or \"windsurf budget\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-cost-tuning optimize windsurf licensing costs through seat management, tier selection, and credit monitoring. use when analyzing windsurf billing, reducing per-seat costs, or implementing usage monitoring and budget controls. trigger with phrases like \"windsurf cost\", \"windsurf billing\", \"reduce windsurf costs\", \"windsurf pricing\", \"windsurf budget\". saas-packs read grep "
+      "searchText": "windsurf-cost-tuning optimize devin desktop (formerly windsurf) licensing through current plan, seat, quota, and extra-usage analysis. use when right-sizing a team, forecasting usage, or reducing spend. trigger with \"windsurf cost\", \"windsurf billing\", \"seat audit\", \"extra usage\", or \"windsurf budget\". saas-packs read grep "
     },
     {
       "type": "skill",
       "id": "windsurf-data-handling",
       "slug": "windsurf-data-handling",
       "name": "windsurf-data-handling",
-      "description": "Control what code and data Windsurf AI can access and process in your workspace. Use when handling sensitive data, implementing data exclusion patterns, or ensuring compliance with privacy regulations in Windsurf environments. Trigger with phrases like \"windsurf data privacy\", \"windsurf PII\", \"windsurf GDPR\", \"windsurf compliance\", \"codeium data\", \"windsurf telemetry\".",
+      "description": "Govern data processed through Devin Desktop (formerly Windsurf). Use when mapping sensitive data, configuring context exclusions, reviewing vendor controls, or preparing regulated-workload evidence. Trigger with \"windsurf data privacy\", \"windsurf PII\", \"GDPR\", \"data residency\", or \"AI data boundary\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79281,19 +79281,19 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-data-handling control what code and data windsurf ai can access and process in your workspace. use when handling sensitive data, implementing data exclusion patterns, or ensuring compliance with privacy regulations in windsurf environments. trigger with phrases like \"windsurf data privacy\", \"windsurf pii\", \"windsurf gdpr\", \"windsurf compliance\", \"codeium data\", \"windsurf telemetry\". saas-packs read write edit "
+      "searchText": "windsurf-data-handling govern data processed through devin desktop (formerly windsurf). use when mapping sensitive data, configuring context exclusions, reviewing vendor controls, or preparing regulated-workload evidence. trigger with \"windsurf data privacy\", \"windsurf pii\", \"gdpr\", \"data residency\", or \"ai data boundary\". saas-packs read write edit "
     },
     {
       "type": "skill",
       "id": "windsurf-debug-bundle",
       "slug": "windsurf-debug-bundle",
       "name": "windsurf-debug-bundle",
-      "description": "Collect Windsurf diagnostic information for troubleshooting and support tickets. Use when encountering persistent issues, preparing support tickets, or collecting diagnostic data for Windsurf problems. Trigger with phrases like \"windsurf debug\", \"windsurf support\", \"windsurf diagnostic\", \"windsurf logs\", \"windsurf not working\".",
+      "description": "Collect Devin Desktop (formerly Windsurf) diagnostic information for troubleshooting and support tickets. Use when encountering persistent issues, preparing support tickets, or collecting diagnostic data for Windsurf problems. Trigger with phrases like \"windsurf debug\", \"windsurf support\", \"windsurf diagnostic\", \"windsurf logs\", \"windsurf not working\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79303,19 +79303,19 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-debug-bundle collect windsurf diagnostic information for troubleshooting and support tickets. use when encountering persistent issues, preparing support tickets, or collecting diagnostic data for windsurf problems. trigger with phrases like \"windsurf debug\", \"windsurf support\", \"windsurf diagnostic\", \"windsurf logs\", \"windsurf not working\". saas-packs read bash(grep:*) bash(ls:*) bash(tar:*) grep "
+      "searchText": "windsurf-debug-bundle collect devin desktop (formerly windsurf) diagnostic information for troubleshooting and support tickets. use when encountering persistent issues, preparing support tickets, or collecting diagnostic data for windsurf problems. trigger with phrases like \"windsurf debug\", \"windsurf support\", \"windsurf diagnostic\", \"windsurf logs\", \"windsurf not working\". saas-packs read bash(grep:*) bash(ls:*) bash(tar:*) grep "
     },
     {
       "type": "skill",
       "id": "windsurf-deploy-integration",
       "slug": "windsurf-deploy-integration",
       "name": "windsurf-deploy-integration",
-      "description": "Deploy applications using Windsurf's built-in deployment features and Cascade automation. Use when deploying apps from Windsurf, configuring Netlify/Vercel integration, or building deployment workflows with Cascade. Trigger with phrases like \"deploy windsurf\", \"windsurf deploy\", \"windsurf netlify\", \"windsurf vercel\", \"cascade deploy\".",
+      "description": "Deploy applications using Devin Desktop (formerly Windsurf)'s built-in deployment features and Cascade automation. Use when deploying apps from Windsurf, configuring Netlify/Vercel integration, or building deployment workflows with Cascade. Trigger with phrases like \"deploy windsurf\", \"windsurf deploy\", \"windsurf netlify\", \"windsurf vercel\", \"cascade deploy\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79326,19 +79326,19 @@
         "Bash(git:*)"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-deploy-integration deploy applications using windsurf's built-in deployment features and cascade automation. use when deploying apps from windsurf, configuring netlify/vercel integration, or building deployment workflows with cascade. trigger with phrases like \"deploy windsurf\", \"windsurf deploy\", \"windsurf netlify\", \"windsurf vercel\", \"cascade deploy\". saas-packs read write edit bash(npm:*) bash(npx:*) bash(git:*) "
+      "searchText": "windsurf-deploy-integration deploy applications using devin desktop (formerly windsurf)'s built-in deployment features and cascade automation. use when deploying apps from windsurf, configuring netlify/vercel integration, or building deployment workflows with cascade. trigger with phrases like \"deploy windsurf\", \"windsurf deploy\", \"windsurf netlify\", \"windsurf vercel\", \"cascade deploy\". saas-packs read write edit bash(npm:*) bash(npx:*) bash(git:*) "
     },
     {
       "type": "skill",
       "id": "windsurf-enterprise-rbac",
       "slug": "windsurf-enterprise-rbac",
       "name": "windsurf-enterprise-rbac",
-      "description": "Configure Windsurf enterprise SSO, RBAC, and organization-level controls. Use when implementing SSO/SAML, configuring role-based seat management, or setting up organization-wide Windsurf policies. Trigger with phrases like \"windsurf SSO\", \"windsurf RBAC\", \"windsurf enterprise\", \"windsurf admin\", \"windsurf SAML\", \"windsurf team management\".",
+      "description": "Analyze and design Devin Desktop (formerly Windsurf) enterprise SSO, SCIM, RBAC, and team controls. Use when defining least-privilege roles, identity lifecycle, model or terminal policy, MCP access, or organization-wide rollout governance. Trigger with \"Windsurf SSO\", \"Devin Desktop RBAC\", \"enterprise rollout\", or \"team permissions\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79346,19 +79346,19 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-enterprise-rbac configure windsurf enterprise sso, rbac, and organization-level controls. use when implementing sso/saml, configuring role-based seat management, or setting up organization-wide windsurf policies. trigger with phrases like \"windsurf sso\", \"windsurf rbac\", \"windsurf enterprise\", \"windsurf admin\", \"windsurf saml\", \"windsurf team management\". saas-packs read write edit "
+      "searchText": "windsurf-enterprise-rbac analyze and design devin desktop (formerly windsurf) enterprise sso, scim, rbac, and team controls. use when defining least-privilege roles, identity lifecycle, model or terminal policy, mcp access, or organization-wide rollout governance. trigger with \"windsurf sso\", \"devin desktop rbac\", \"enterprise rollout\", or \"team permissions\". saas-packs read write edit "
     },
     {
       "type": "skill",
       "id": "windsurf-hello-world",
       "slug": "windsurf-hello-world",
       "name": "windsurf-hello-world",
-      "description": "Create your first Windsurf Cascade interaction and Supercomplete experience. Use when starting with Windsurf, testing your setup, or learning basic Cascade and Supercomplete workflows. Trigger with phrases like \"windsurf hello world\", \"windsurf example\", \"windsurf quick start\", \"first windsurf project\", \"try windsurf\".",
+      "description": "Create a first Devin Desktop (formerly Windsurf) Cascade and Supercomplete experience. Use when starting with Windsurf, testing your setup, or learning basic Cascade and Supercomplete workflows. Trigger with phrases like \"windsurf hello world\", \"windsurf example\", \"windsurf quick start\", \"first windsurf project\", \"try windsurf\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79366,19 +79366,19 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-hello-world create your first windsurf cascade interaction and supercomplete experience. use when starting with windsurf, testing your setup, or learning basic cascade and supercomplete workflows. trigger with phrases like \"windsurf hello world\", \"windsurf example\", \"windsurf quick start\", \"first windsurf project\", \"try windsurf\". saas-packs read write edit "
+      "searchText": "windsurf-hello-world create a first devin desktop (formerly windsurf) cascade and supercomplete experience. use when starting with windsurf, testing your setup, or learning basic cascade and supercomplete workflows. trigger with phrases like \"windsurf hello world\", \"windsurf example\", \"windsurf quick start\", \"first windsurf project\", \"try windsurf\". saas-packs read write edit "
     },
     {
       "type": "skill",
       "id": "windsurf-incident-runbook",
       "slug": "windsurf-incident-runbook",
       "name": "windsurf-incident-runbook",
-      "description": "Execute Windsurf incident response when AI features fail or cause production issues. Use when Cascade breaks code, Windsurf service is down, AI-generated code causes production incidents, or team needs emergency Windsurf troubleshooting. Trigger with phrases like \"windsurf incident\", \"windsurf outage\", \"windsurf broke production\", \"cascade caused bug\", \"windsurf emergency\".",
+      "description": "Execute Devin Desktop (formerly Windsurf) incident response when AI features fail or cause production issues. Use when Cascade breaks code, Windsurf service is down, AI-generated code causes production incidents, or team needs emergency Windsurf troubleshooting. Trigger with phrases like \"windsurf incident\", \"windsurf outage\", \"windsurf broke production\", \"cascade caused bug\", \"windsurf emergency\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79387,62 +79387,56 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-incident-runbook execute windsurf incident response when ai features fail or cause production issues. use when cascade breaks code, windsurf service is down, ai-generated code causes production incidents, or team needs emergency windsurf troubleshooting. trigger with phrases like \"windsurf incident\", \"windsurf outage\", \"windsurf broke production\", \"cascade caused bug\", \"windsurf emergency\". saas-packs read grep bash(git:*) bash(curl:*) "
+      "searchText": "windsurf-incident-runbook execute devin desktop (formerly windsurf) incident response when ai features fail or cause production issues. use when cascade breaks code, windsurf service is down, ai-generated code causes production incidents, or team needs emergency windsurf troubleshooting. trigger with phrases like \"windsurf incident\", \"windsurf outage\", \"windsurf broke production\", \"cascade caused bug\", \"windsurf emergency\". saas-packs read grep bash(git:*) bash(curl:*) "
     },
     {
       "type": "skill",
       "id": "windsurf-install-auth",
       "slug": "windsurf-install-auth",
       "name": "windsurf-install-auth",
-      "description": "Install Windsurf IDE and configure Codeium authentication. Use when setting up Windsurf for the first time, logging in to Codeium, or configuring API keys for team/enterprise deployments. Trigger with phrases like \"install windsurf\", \"setup windsurf\", \"windsurf auth\", \"codeium login\", \"windsurf API key\".",
+      "description": "Install and authenticate Devin Desktop, the current name for Windsurf. Use when performing first-time setup, the Windsurf-to-Devin Desktop update, organization selection, or sign-in repair. Trigger with \"install windsurf\", \"install Devin Desktop\", \"windsurf auth\", \"sign in\", or \"choose organization\".",
       "category": "saas-packs",
       "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(brew:*)",
-        "Bash(curl:*)",
-        "Grep"
+        "Read"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-install-auth install windsurf ide and configure codeium authentication. use when setting up windsurf for the first time, logging in to codeium, or configuring api keys for team/enterprise deployments. trigger with phrases like \"install windsurf\", \"setup windsurf\", \"windsurf auth\", \"codeium login\", \"windsurf api key\". saas-packs read write edit bash(npm:*) bash(brew:*) bash(curl:*) grep "
+      "searchText": "windsurf-install-auth install and authenticate devin desktop, the current name for windsurf. use when performing first-time setup, the windsurf-to-devin desktop update, organization selection, or sign-in repair. trigger with \"install windsurf\", \"install devin desktop\", \"windsurf auth\", \"sign in\", or \"choose organization\". saas-packs read "
     },
     {
       "type": "skill",
       "id": "windsurf-known-pitfalls",
       "slug": "windsurf-known-pitfalls",
       "name": "windsurf-known-pitfalls",
-      "description": "Identify and avoid Windsurf anti-patterns and common mistakes. Use when onboarding new developers to Windsurf, reviewing AI workflow practices, or auditing Windsurf configuration for issues. Trigger with phrases like \"windsurf mistakes\", \"windsurf anti-patterns\", \"windsurf pitfalls\", \"windsurf what not to do\", \"windsurf gotchas\".",
+      "description": "Identify and avoid Devin Desktop (formerly Windsurf) anti-patterns and common mistakes. Use when onboarding new developers to Windsurf, reviewing AI workflow practices, or auditing Windsurf configuration for issues. Trigger with phrases like \"windsurf mistakes\", \"windsurf anti-patterns\", \"windsurf pitfalls\", \"windsurf what not to do\", \"windsurf gotchas\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-known-pitfalls identify and avoid windsurf anti-patterns and common mistakes. use when onboarding new developers to windsurf, reviewing ai workflow practices, or auditing windsurf configuration for issues. trigger with phrases like \"windsurf mistakes\", \"windsurf anti-patterns\", \"windsurf pitfalls\", \"windsurf what not to do\", \"windsurf gotchas\". saas-packs read grep "
+      "searchText": "windsurf-known-pitfalls identify and avoid devin desktop (formerly windsurf) anti-patterns and common mistakes. use when onboarding new developers to windsurf, reviewing ai workflow practices, or auditing windsurf configuration for issues. trigger with phrases like \"windsurf mistakes\", \"windsurf anti-patterns\", \"windsurf pitfalls\", \"windsurf what not to do\", \"windsurf gotchas\". saas-packs read grep "
     },
     {
       "type": "skill",
       "id": "windsurf-load-scale",
       "slug": "windsurf-load-scale",
       "name": "windsurf-load-scale",
-      "description": "Scale Windsurf adoption across large organizations with workspace strategies and performance tuning. Use when rolling out Windsurf to 50+ developers, managing large monorepo workspaces, or planning enterprise-scale deployment. Trigger with phrases like \"windsurf at scale\", \"windsurf large team\", \"windsurf monorepo\", \"windsurf organization\", \"windsurf 100 developers\".",
+      "description": "Scale Devin Desktop (formerly Windsurf) adoption across large organizations with workspace strategies and performance tuning. Use when rolling out Windsurf to 50+ developers, managing large monorepo workspaces, or planning enterprise-scale deployment. Trigger with phrases like \"windsurf at scale\", \"windsurf large team\", \"windsurf monorepo\", \"windsurf organization\", \"windsurf 100 developers\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79450,19 +79444,19 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-load-scale scale windsurf adoption across large organizations with workspace strategies and performance tuning. use when rolling out windsurf to 50+ developers, managing large monorepo workspaces, or planning enterprise-scale deployment. trigger with phrases like \"windsurf at scale\", \"windsurf large team\", \"windsurf monorepo\", \"windsurf organization\", \"windsurf 100 developers\". saas-packs read write edit "
+      "searchText": "windsurf-load-scale scale devin desktop (formerly windsurf) adoption across large organizations with workspace strategies and performance tuning. use when rolling out windsurf to 50+ developers, managing large monorepo workspaces, or planning enterprise-scale deployment. trigger with phrases like \"windsurf at scale\", \"windsurf large team\", \"windsurf monorepo\", \"windsurf organization\", \"windsurf 100 developers\". saas-packs read write edit "
     },
     {
       "type": "skill",
       "id": "windsurf-local-dev-loop",
       "slug": "windsurf-local-dev-loop",
       "name": "windsurf-local-dev-loop",
-      "description": "Configure Windsurf local development workflow with Cascade, Previews, and terminal integration. Use when setting up a development environment, configuring Turbo mode, or establishing a fast iteration cycle with Windsurf AI. Trigger with phrases like \"windsurf dev setup\", \"windsurf local development\", \"windsurf dev environment\", \"windsurf workflow\", \"develop with windsurf\".",
+      "description": "Configure Devin Desktop (formerly Windsurf) local development workflow with Cascade, Previews, and terminal integration. Use when setting up a development environment, configuring Turbo mode, or establishing a fast iteration cycle with Windsurf AI. Trigger with phrases like \"windsurf dev setup\", \"windsurf local development\", \"windsurf dev environment\", \"windsurf workflow\", \"develop with windsurf\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79473,19 +79467,19 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-local-dev-loop configure windsurf local development workflow with cascade, previews, and terminal integration. use when setting up a development environment, configuring turbo mode, or establishing a fast iteration cycle with windsurf ai. trigger with phrases like \"windsurf dev setup\", \"windsurf local development\", \"windsurf dev environment\", \"windsurf workflow\", \"develop with windsurf\". saas-packs read write edit bash(npm:*) bash(pnpm:*) grep "
+      "searchText": "windsurf-local-dev-loop configure devin desktop (formerly windsurf) local development workflow with cascade, previews, and terminal integration. use when setting up a development environment, configuring turbo mode, or establishing a fast iteration cycle with windsurf ai. trigger with phrases like \"windsurf dev setup\", \"windsurf local development\", \"windsurf dev environment\", \"windsurf workflow\", \"develop with windsurf\". saas-packs read write edit bash(npm:*) bash(pnpm:*) grep "
     },
     {
       "type": "skill",
       "id": "windsurf-migration-deep-dive",
       "slug": "windsurf-migration-deep-dive",
       "name": "windsurf-migration-deep-dive",
-      "description": "Migrate to Windsurf from VS Code, Cursor, or other AI IDEs with full configuration transfer. Use when migrating a team to Windsurf, transferring Cursor rules, or evaluating Windsurf against other AI editors. Trigger with phrases like \"migrate to windsurf\", \"switch to windsurf\", \"windsurf from cursor\", \"windsurf from copilot\", \"windsurf evaluation\".",
+      "description": "Migrate to Devin Desktop (formerly Windsurf) from VS Code, Cursor, or other AI IDEs with full configuration transfer. Use when migrating a team to Windsurf, transferring Cursor rules, or evaluating Windsurf against other AI editors. Trigger with phrases like \"migrate to windsurf\", \"switch to windsurf\", \"windsurf from cursor\", \"windsurf from copilot\", \"windsurf evaluation\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79495,19 +79489,19 @@
         "Bash(node:*)"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-migration-deep-dive migrate to windsurf from vs code, cursor, or other ai ides with full configuration transfer. use when migrating a team to windsurf, transferring cursor rules, or evaluating windsurf against other ai editors. trigger with phrases like \"migrate to windsurf\", \"switch to windsurf\", \"windsurf from cursor\", \"windsurf from copilot\", \"windsurf evaluation\". saas-packs read write edit bash(npm:*) bash(node:*) "
+      "searchText": "windsurf-migration-deep-dive migrate to devin desktop (formerly windsurf) from vs code, cursor, or other ai ides with full configuration transfer. use when migrating a team to windsurf, transferring cursor rules, or evaluating windsurf against other ai editors. trigger with phrases like \"migrate to windsurf\", \"switch to windsurf\", \"windsurf from cursor\", \"windsurf from copilot\", \"windsurf evaluation\". saas-packs read write edit bash(npm:*) bash(node:*) "
     },
     {
       "type": "skill",
       "id": "windsurf-multi-env-setup",
       "slug": "windsurf-multi-env-setup",
       "name": "windsurf-multi-env-setup",
-      "description": "Configure Windsurf IDE and Cascade AI across team members and project environments. Use when onboarding teams to Windsurf, setting up per-project Cascade configuration, or managing Windsurf settings across development, staging, and production contexts. Trigger with phrases like \"windsurf team setup\", \"windsurf environments\", \"windsurf multi-project\", \"windsurf team config\", \"cascade rules per env\".",
+      "description": "Configure Devin Desktop (formerly Windsurf) IDE and Cascade AI across team members and project environments. Use when onboarding teams to Windsurf, setting up per-project Cascade configuration, or managing Windsurf settings across development, staging, and production contexts. Trigger with phrases like \"windsurf team setup\", \"windsurf environments\", \"windsurf multi-project\", \"windsurf team config\", \"cascade rules per env\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79515,19 +79509,19 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-multi-env-setup configure windsurf ide and cascade ai across team members and project environments. use when onboarding teams to windsurf, setting up per-project cascade configuration, or managing windsurf settings across development, staging, and production contexts. trigger with phrases like \"windsurf team setup\", \"windsurf environments\", \"windsurf multi-project\", \"windsurf team config\", \"cascade rules per env\". saas-packs read write edit "
+      "searchText": "windsurf-multi-env-setup configure devin desktop (formerly windsurf) ide and cascade ai across team members and project environments. use when onboarding teams to windsurf, setting up per-project cascade configuration, or managing windsurf settings across development, staging, and production contexts. trigger with phrases like \"windsurf team setup\", \"windsurf environments\", \"windsurf multi-project\", \"windsurf team config\", \"cascade rules per env\". saas-packs read write edit "
     },
     {
       "type": "skill",
       "id": "windsurf-observability",
       "slug": "windsurf-observability",
       "name": "windsurf-observability",
-      "description": "Monitor Windsurf AI adoption, feature usage, and team productivity metrics. Use when tracking AI feature usage, measuring ROI, setting up dashboards, or analyzing Cascade effectiveness across your team. Trigger with phrases like \"windsurf monitoring\", \"windsurf metrics\", \"windsurf analytics\", \"windsurf usage\", \"windsurf adoption\".",
+      "description": "Monitor Devin Desktop (formerly Windsurf) AI adoption, feature usage, and team productivity metrics. Use when tracking AI feature usage, measuring ROI, setting up dashboards, or analyzing Cascade effectiveness across your team. Trigger with phrases like \"windsurf monitoring\", \"windsurf metrics\", \"windsurf analytics\", \"windsurf usage\", \"windsurf adoption\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79535,19 +79529,19 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-observability monitor windsurf ai adoption, feature usage, and team productivity metrics. use when tracking ai feature usage, measuring roi, setting up dashboards, or analyzing cascade effectiveness across your team. trigger with phrases like \"windsurf monitoring\", \"windsurf metrics\", \"windsurf analytics\", \"windsurf usage\", \"windsurf adoption\". saas-packs read write edit "
+      "searchText": "windsurf-observability monitor devin desktop (formerly windsurf) ai adoption, feature usage, and team productivity metrics. use when tracking ai feature usage, measuring roi, setting up dashboards, or analyzing cascade effectiveness across your team. trigger with phrases like \"windsurf monitoring\", \"windsurf metrics\", \"windsurf analytics\", \"windsurf usage\", \"windsurf adoption\". saas-packs read write edit "
     },
     {
       "type": "skill",
       "id": "windsurf-performance-tuning",
       "slug": "windsurf-performance-tuning",
       "name": "windsurf-performance-tuning",
-      "description": "Optimize Windsurf IDE performance: indexing speed, Cascade responsiveness, and memory usage. Use when Windsurf is slow, indexing takes too long, Cascade times out, or the IDE uses too much memory. Trigger with phrases like \"windsurf slow\", \"windsurf performance\", \"optimize windsurf\", \"windsurf memory\", \"cascade slow\", \"indexing slow\".",
+      "description": "Optimize Devin Desktop (formerly Windsurf) IDE performance: indexing speed, Cascade responsiveness, and memory usage. Use when Windsurf is slow, indexing takes too long, Cascade times out, or the IDE uses too much memory. Trigger with phrases like \"windsurf slow\", \"windsurf performance\", \"optimize windsurf\", \"windsurf memory\", \"cascade slow\", \"indexing slow\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79556,19 +79550,19 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-performance-tuning optimize windsurf ide performance: indexing speed, cascade responsiveness, and memory usage. use when windsurf is slow, indexing takes too long, cascade times out, or the ide uses too much memory. trigger with phrases like \"windsurf slow\", \"windsurf performance\", \"optimize windsurf\", \"windsurf memory\", \"cascade slow\", \"indexing slow\". saas-packs read write edit grep "
+      "searchText": "windsurf-performance-tuning optimize devin desktop (formerly windsurf) ide performance: indexing speed, cascade responsiveness, and memory usage. use when windsurf is slow, indexing takes too long, cascade times out, or the ide uses too much memory. trigger with phrases like \"windsurf slow\", \"windsurf performance\", \"optimize windsurf\", \"windsurf memory\", \"cascade slow\", \"indexing slow\". saas-packs read write edit grep "
     },
     {
       "type": "skill",
       "id": "windsurf-policy-guardrails",
       "slug": "windsurf-policy-guardrails",
       "name": "windsurf-policy-guardrails",
-      "description": "Implement team-wide Windsurf usage policies, code quality gates, and Cascade guardrails. Use when setting up code review policies for AI-generated code, configuring Turbo mode safety controls, or implementing CI gates for Cascade output. Trigger with phrases like \"windsurf policy\", \"windsurf guardrails\", \"cascade safety rules\", \"windsurf team rules\", \"AI code policy\".",
+      "description": "Implement team-wide Devin Desktop (formerly Windsurf) usage policies, code quality gates, and Cascade guardrails. Use when setting up code review policies for AI-generated code, configuring Turbo mode safety controls, or implementing CI gates for Cascade output. Trigger with phrases like \"windsurf policy\", \"windsurf guardrails\", \"cascade safety rules\", \"windsurf team rules\", \"AI code policy\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79577,76 +79571,76 @@
         "Bash(npx:*)"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-policy-guardrails implement team-wide windsurf usage policies, code quality gates, and cascade guardrails. use when setting up code review policies for ai-generated code, configuring turbo mode safety controls, or implementing ci gates for cascade output. trigger with phrases like \"windsurf policy\", \"windsurf guardrails\", \"cascade safety rules\", \"windsurf team rules\", \"ai code policy\". saas-packs read write edit bash(npx:*) "
+      "searchText": "windsurf-policy-guardrails implement team-wide devin desktop (formerly windsurf) usage policies, code quality gates, and cascade guardrails. use when setting up code review policies for ai-generated code, configuring turbo mode safety controls, or implementing ci gates for cascade output. trigger with phrases like \"windsurf policy\", \"windsurf guardrails\", \"cascade safety rules\", \"windsurf team rules\", \"ai code policy\". saas-packs read write edit bash(npx:*) "
     },
     {
       "type": "skill",
       "id": "windsurf-prod-checklist",
       "slug": "windsurf-prod-checklist",
       "name": "windsurf-prod-checklist",
-      "description": "Execute Windsurf production readiness checklist for team and enterprise deployments. Use when rolling out Windsurf to a team, preparing for enterprise deployment, or auditing production configuration. Trigger with phrases like \"windsurf production\", \"windsurf team rollout\", \"windsurf go-live\", \"windsurf enterprise deploy\", \"windsurf checklist\".",
+      "description": "Execute Devin Desktop (formerly Windsurf) production readiness checklist for team and enterprise deployments. Use when rolling out Windsurf to a team, preparing for enterprise deployment, or auditing production configuration. Trigger with phrases like \"windsurf production\", \"windsurf team rollout\", \"windsurf go-live\", \"windsurf enterprise deploy\", \"windsurf checklist\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-prod-checklist execute windsurf production readiness checklist for team and enterprise deployments. use when rolling out windsurf to a team, preparing for enterprise deployment, or auditing production configuration. trigger with phrases like \"windsurf production\", \"windsurf team rollout\", \"windsurf go-live\", \"windsurf enterprise deploy\", \"windsurf checklist\". saas-packs read grep "
+      "searchText": "windsurf-prod-checklist execute devin desktop (formerly windsurf) production readiness checklist for team and enterprise deployments. use when rolling out windsurf to a team, preparing for enterprise deployment, or auditing production configuration. trigger with phrases like \"windsurf production\", \"windsurf team rollout\", \"windsurf go-live\", \"windsurf enterprise deploy\", \"windsurf checklist\". saas-packs read grep "
     },
     {
       "type": "skill",
       "id": "windsurf-rate-limits",
       "slug": "windsurf-rate-limits",
       "name": "windsurf-rate-limits",
-      "description": "Understand and manage Windsurf credit system, usage limits, and model selection. Use when running out of credits, optimizing AI usage costs, or understanding the credit-per-model pricing structure. Trigger with phrases like \"windsurf credits\", \"windsurf rate limit\", \"windsurf usage\", \"windsurf out of credits\", \"windsurf model costs\".",
+      "description": "Analyze Devin Desktop (formerly Windsurf) quota limits, extra usage, and model-cost tradeoffs. Use when usage is blocked, a reset is unclear, or a team needs a current consumption plan. Trigger with phrases like \"windsurf quota\", \"windsurf rate limit\", \"out of usage\", \"extra usage\", or \"windsurf model cost\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-rate-limits understand and manage windsurf credit system, usage limits, and model selection. use when running out of credits, optimizing ai usage costs, or understanding the credit-per-model pricing structure. trigger with phrases like \"windsurf credits\", \"windsurf rate limit\", \"windsurf usage\", \"windsurf out of credits\", \"windsurf model costs\". saas-packs read grep "
+      "searchText": "windsurf-rate-limits analyze devin desktop (formerly windsurf) quota limits, extra usage, and model-cost tradeoffs. use when usage is blocked, a reset is unclear, or a team needs a current consumption plan. trigger with phrases like \"windsurf quota\", \"windsurf rate limit\", \"out of usage\", \"extra usage\", or \"windsurf model cost\". saas-packs read grep "
     },
     {
       "type": "skill",
       "id": "windsurf-reference-architecture",
       "slug": "windsurf-reference-architecture",
       "name": "windsurf-reference-architecture",
-      "description": "Implement Windsurf reference architecture with optimal project structure and AI configuration. Use when designing workspace configuration for Windsurf, setting up team standards, or establishing architecture patterns that maximize Cascade effectiveness. Trigger with phrases like \"windsurf architecture\", \"windsurf project structure\", \"windsurf best practices\", \"windsurf team setup\", \"optimize for cascade\".",
+      "description": "Implement Devin Desktop (formerly Windsurf) reference architecture with optimal project structure and AI configuration. Use when designing workspace configuration for Windsurf, setting up team standards, or establishing architecture patterns that maximize Cascade effectiveness. Trigger with phrases like \"windsurf architecture\", \"windsurf project structure\", \"windsurf best practices\", \"windsurf team setup\", \"optimize for cascade\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-reference-architecture implement windsurf reference architecture with optimal project structure and ai configuration. use when designing workspace configuration for windsurf, setting up team standards, or establishing architecture patterns that maximize cascade effectiveness. trigger with phrases like \"windsurf architecture\", \"windsurf project structure\", \"windsurf best practices\", \"windsurf team setup\", \"optimize for cascade\". saas-packs read grep "
+      "searchText": "windsurf-reference-architecture implement devin desktop (formerly windsurf) reference architecture with optimal project structure and ai configuration. use when designing workspace configuration for windsurf, setting up team standards, or establishing architecture patterns that maximize cascade effectiveness. trigger with phrases like \"windsurf architecture\", \"windsurf project structure\", \"windsurf best practices\", \"windsurf team setup\", \"optimize for cascade\". saas-packs read grep "
     },
     {
       "type": "skill",
       "id": "windsurf-reliability-patterns",
       "slug": "windsurf-reliability-patterns",
       "name": "windsurf-reliability-patterns",
-      "description": "Implement reliable Cascade workflows with checkpoints, rollback, and incremental editing. Use when building fault-tolerant AI coding workflows, preventing Cascade from breaking builds, or establishing safe practices for multi-file AI edits. Trigger with phrases like \"windsurf reliability\", \"cascade safety\", \"windsurf rollback\", \"cascade checkpoint\", \"safe cascade workflow\".",
+      "description": "Implement reliable Devin Desktop (formerly Windsurf) Cascade workflows with checkpoints, rollback, and incremental editing. Use when building fault-tolerant AI coding workflows, preventing Cascade from breaking builds, or establishing safe practices for multi-file AI edits. Trigger with phrases like \"windsurf reliability\", \"cascade safety\", \"windsurf rollback\", \"cascade checkpoint\", \"safe cascade workflow\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79655,19 +79649,19 @@
         "Bash(git:*)"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-reliability-patterns implement reliable cascade workflows with checkpoints, rollback, and incremental editing. use when building fault-tolerant ai coding workflows, preventing cascade from breaking builds, or establishing safe practices for multi-file ai edits. trigger with phrases like \"windsurf reliability\", \"cascade safety\", \"windsurf rollback\", \"cascade checkpoint\", \"safe cascade workflow\". saas-packs read write edit bash(git:*) "
+      "searchText": "windsurf-reliability-patterns implement reliable devin desktop (formerly windsurf) cascade workflows with checkpoints, rollback, and incremental editing. use when building fault-tolerant ai coding workflows, preventing cascade from breaking builds, or establishing safe practices for multi-file ai edits. trigger with phrases like \"windsurf reliability\", \"cascade safety\", \"windsurf rollback\", \"cascade checkpoint\", \"safe cascade workflow\". saas-packs read write edit bash(git:*) "
     },
     {
       "type": "skill",
       "id": "windsurf-sdk-patterns",
       "slug": "windsurf-sdk-patterns",
       "name": "windsurf-sdk-patterns",
-      "description": "Apply production-ready Windsurf workspace configuration and Cascade interaction patterns. Use when configuring .windsurfrules, workspace rules, MCP servers, or establishing team coding standards for Windsurf AI. Trigger with phrases like \"windsurf patterns\", \"windsurf best practices\", \"windsurf config patterns\", \"windsurfrules\", \"windsurf workspace\".",
+      "description": "Analyze and apply production-ready Devin Desktop (formerly Windsurf) workspace configuration and Cascade interaction patterns. Use when configuring .devin/rules/project.md, workspace rules, MCP servers, or establishing team coding standards for Windsurf AI. Trigger with phrases like \"windsurf patterns\", \"windsurf best practices\", \"windsurf config patterns\", \"windsurfrules\", \"windsurf workspace\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79676,19 +79670,19 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-sdk-patterns apply production-ready windsurf workspace configuration and cascade interaction patterns. use when configuring .windsurfrules, workspace rules, mcp servers, or establishing team coding standards for windsurf ai. trigger with phrases like \"windsurf patterns\", \"windsurf best practices\", \"windsurf config patterns\", \"windsurfrules\", \"windsurf workspace\". saas-packs read write edit grep "
+      "searchText": "windsurf-sdk-patterns analyze and apply production-ready devin desktop (formerly windsurf) workspace configuration and cascade interaction patterns. use when configuring .devin/rules/project.md, workspace rules, mcp servers, or establishing team coding standards for windsurf ai. trigger with phrases like \"windsurf patterns\", \"windsurf best practices\", \"windsurf config patterns\", \"windsurfrules\", \"windsurf workspace\". saas-packs read write edit grep "
     },
     {
       "type": "skill",
       "id": "windsurf-security-basics",
       "slug": "windsurf-security-basics",
       "name": "windsurf-security-basics",
-      "description": "Apply Windsurf security best practices for workspace isolation, data privacy, and secret protection. Use when securing sensitive code from AI indexing, configuring telemetry, or auditing Windsurf security posture. Trigger with phrases like \"windsurf security\", \"windsurf secrets\", \"windsurf privacy\", \"windsurf data protection\", \"codeiumignore\".",
+      "description": "Secure Devin Desktop (formerly Windsurf) with context boundaries, repository controls, Rules, Hooks, and MCP review. Use when protecting secrets, hardening a workspace, or assessing AI-editor risk. Trigger with \"windsurf security\", \"windsurf secrets\", \"codeiumignore\", or \"Cascade guardrails\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79696,19 +79690,19 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-security-basics apply windsurf security best practices for workspace isolation, data privacy, and secret protection. use when securing sensitive code from ai indexing, configuring telemetry, or auditing windsurf security posture. trigger with phrases like \"windsurf security\", \"windsurf secrets\", \"windsurf privacy\", \"windsurf data protection\", \"codeiumignore\". saas-packs read write grep "
+      "searchText": "windsurf-security-basics secure devin desktop (formerly windsurf) with context boundaries, repository controls, rules, hooks, and mcp review. use when protecting secrets, hardening a workspace, or assessing ai-editor risk. trigger with \"windsurf security\", \"windsurf secrets\", \"codeiumignore\", or \"cascade guardrails\". saas-packs read write grep "
     },
     {
       "type": "skill",
       "id": "windsurf-upgrade-migration",
       "slug": "windsurf-upgrade-migration",
       "name": "windsurf-upgrade-migration",
-      "description": "Upgrade Windsurf IDE, migrate settings from VS Code or Cursor, and handle breaking changes. Use when upgrading Windsurf versions, migrating from another editor, or handling configuration changes after updates. Trigger with phrases like \"upgrade windsurf\", \"windsurf update\", \"migrate to windsurf\", \"windsurf from cursor\", \"windsurf from vscode\".",
+      "description": "Upgrade Devin Desktop (formerly Windsurf) IDE, migrate settings from VS Code or Cursor, and handle breaking changes. Use when upgrading Windsurf versions, migrating from another editor, or handling configuration changes after updates. Trigger with phrases like \"upgrade windsurf\", \"windsurf update\", \"migrate to windsurf\", \"windsurf from cursor\", \"windsurf from vscode\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79718,19 +79712,19 @@
         "Bash(git:*)"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-upgrade-migration upgrade windsurf ide, migrate settings from vs code or cursor, and handle breaking changes. use when upgrading windsurf versions, migrating from another editor, or handling configuration changes after updates. trigger with phrases like \"upgrade windsurf\", \"windsurf update\", \"migrate to windsurf\", \"windsurf from cursor\", \"windsurf from vscode\". saas-packs read write edit bash(npm:*) bash(git:*) "
+      "searchText": "windsurf-upgrade-migration upgrade devin desktop (formerly windsurf) ide, migrate settings from vs code or cursor, and handle breaking changes. use when upgrading windsurf versions, migrating from another editor, or handling configuration changes after updates. trigger with phrases like \"upgrade windsurf\", \"windsurf update\", \"migrate to windsurf\", \"windsurf from cursor\", \"windsurf from vscode\". saas-packs read write edit bash(npm:*) bash(git:*) "
     },
     {
       "type": "skill",
       "id": "windsurf-webhooks-events",
       "slug": "windsurf-webhooks-events",
       "name": "windsurf-webhooks-events",
-      "description": "Build Windsurf extensions and integrate with VS Code extension API events. Use when building custom Windsurf extensions, tracking editor events, or integrating Windsurf with external tools via extension development. Trigger with phrases like \"windsurf extension\", \"windsurf events\", \"windsurf plugin\", \"build windsurf extension\", \"windsurf API\".",
+      "description": "Build Devin Desktop (formerly Windsurf) extensions and integrate with VS Code extension API events. Use when building custom Windsurf extensions, tracking editor events, or integrating Windsurf with external tools via extension development. Trigger with phrases like \"windsurf extension\", \"windsurf events\", \"windsurf plugin\", \"build windsurf extension\", \"windsurf API\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -79740,12 +79734,12 @@
         "Bash(npx:*)"
       ],
       "compatibleWith": [],
-      "version": "1.11.0",
+      "version": "1.12.0",
       "parentPlugin": {
         "name": "windsurf-pack",
         "category": "saas-packs"
       },
-      "searchText": "windsurf-webhooks-events build windsurf extensions and integrate with vs code extension api events. use when building custom windsurf extensions, tracking editor events, or integrating windsurf with external tools via extension development. trigger with phrases like \"windsurf extension\", \"windsurf events\", \"windsurf plugin\", \"build windsurf extension\", \"windsurf api\". saas-packs read write edit bash(npm:*) bash(npx:*) "
+      "searchText": "windsurf-webhooks-events build devin desktop (formerly windsurf) extensions and integrate with vs code extension api events. use when building custom windsurf extensions, tracking editor events, or integrating windsurf with external tools via extension development. trigger with phrases like \"windsurf extension\", \"windsurf events\", \"windsurf plugin\", \"build windsurf extension\", \"windsurf api\". saas-packs read write edit bash(npm:*) bash(npx:*) "
     },
     {
       "type": "skill",

@@ -5,14 +5,25 @@
     "email": "[email protected]",
     "url": "https://github.com/jeremylongshore"
   },
+  "version": "1.6.0",
+  "description": "A comprehensive marketplace and educational hub for production-grade Claude Code plugins and skills.",
+  "license": "MIT",
+  "homepage": "https://tonsofskills.com",
+  "keywords": [
+    "claude-code",
+    "plugins",
+    "skills",
+    "mcp",
+    "agentic-development"
+  ],
   "metadata": {
-    "description": "A comprehensive marketplace and educational hub for Claude Code plugins",
+    "description": "A comprehensive marketplace and educational hub for production-grade Claude Code plugins and skills.",
     "version": "1.6.0",
-    "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
+    "homepage": "https://tonsofskills.com",
     "pluginRoot": "./plugins",
-    "totalPlugins": 425,
-    "skillsEnabled": 275,
-    "lastUpdated": "2026-05-20"
+    "totalPlugins": 444,
+    "skillsEnabled": 2954,
+    "lastUpdated": "2026-09-09"
   },
   "plugins": [
     {
@@ -7329,17 +7340,17 @@
     {
       "name": "windsurf-pack",
       "source": "./plugins/saas-packs/windsurf-pack",
-      "description": "Complete Windsurf integration skill pack with 30 skills covering AI code editing, Cascade workflows, codebase understanding, and developer productivity. Flagship+ tier vendor pack.",
-      "version": "1.11.0",
+      "description": "Current Devin Desktop (formerly Windsurf) operations pack with 30 Grade-A skills for Cascade, Rules, Skills, Workflows, Hooks, MCP, quota governance, security, and enterprise rollout.",
+      "version": "1.12.0",
       "category": "saas-packs",
       "keywords": [
         "windsurf",
+        "devin-desktop",
         "ai-editor",
         "cascade",
-        "codeium",
         "ai-coding",
-        "code-completion",
-        "refactoring"
+        "rules",
+        "quota"
       ],
       "author": {
         "name": "Jeremy Longshore",
@@ -7350,10 +7361,10 @@
         "skills": 30
       },
       "verification": {
-        "score": 85,
-        "grade": "B",
-        "badge": "silver",
-        "lastValidated": "2026-09-05T00:00:00.000Z"
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-09-09T00:00:00.000Z"
       }
     },
     {

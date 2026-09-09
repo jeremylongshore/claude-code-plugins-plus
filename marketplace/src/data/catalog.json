@@ -7771,17 +7771,17 @@
       "slug": "windsurf-pack",
       "name": "windsurf-pack",
       "displayName": "windsurf pack",
-      "description": "Complete Windsurf integration skill pack with 30 skills covering AI code editing, Cascade workflows, codebase understanding, and developer productivity. Flagship+ tier vendor pack.",
-      "version": "1.11.0",
+      "description": "Current Devin Desktop (formerly Windsurf) operations pack with 30 Grade-A skills for Cascade, Rules, Skills, Workflows, Hooks, MCP, quota governance, security, and enterprise rollout.",
+      "version": "1.12.0",
       "category": "saas-packs",
       "keywords": [
         "windsurf",
+        "devin-desktop",
         "ai-editor",
         "cascade",
-        "codeium",
         "ai-coding",
-        "code-completion",
-        "refactoring"
+        "rules",
+        "quota"
       ],
       "hasSkills": true,
       "skillCount": 30,
