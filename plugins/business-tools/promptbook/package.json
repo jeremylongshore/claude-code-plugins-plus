@@ -24,7 +24,7 @@
     "email": "contact@promptbook.gg"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "restricted"
   },
   "files": [
     "README.md",
@@ -35,5 +35,6 @@
   ],
   "scripts": {
     "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install promptbook\\\\n  or /plugin install promptbook@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
-  }
+  },
+  "private": true
 }

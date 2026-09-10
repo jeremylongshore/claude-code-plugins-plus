@@ -201,8 +201,26 @@ function buildPackageJson(pluginDir, pluginJson) {
   return pkg;
 }
 
-export function reconcileGeneratedPackageMetadata(pkg, relDir, { sourceOwned = false } = {}) {
+export function reconcileGeneratedPackageMetadata(
+  pkg,
+  relDir,
+  { mirrorRoot = false, sourceOwned = false } = {},
+) {
+  // Exact upstream bytes remain immutable. A package.json synthesized beside
+  // a machine-provenance mirror is repository-owned, however, and must be
+  // explicitly non-publishable even when it was generated before the mirror
+  // marker was recovered.
   if (sourceOwned) return { changed: false, pkg };
+  let candidate = pkg;
+  if (mirrorRoot && pkg?.private !== true) {
+    candidate = {
+      ...pkg,
+      private: true,
+      ...(pkg?.publishConfig && typeof pkg.publishConfig === 'object'
+        ? { publishConfig: { ...pkg.publishConfig, access: 'restricted' } }
+        : {}),
+    };
+  }
   const repositoryUrl = typeof pkg?.repository === 'object' ? pkg.repository?.url : null;
   const managedByRepositoryPolicy =
     pkg?.name?.startsWith(`${SCOPE}/`) ||
@@ -210,8 +228,10 @@ export function reconcileGeneratedPackageMetadata(pkg, relDir, { sourceOwned = f
       /^git\+https:\/\/github\.com\/jeremylongshore\/(?:claude-code-plugins(?:-plus-skills)?|tons-of-skills-marketplace)\.git$/.test(
         repositoryUrl ?? '',
       ));
-  if (!managedByRepositoryPolicy) return { changed: false, pkg };
-  const rewritten = rewriteLegacyRepositoryUrls(JSON.stringify(pkg));
+  if (!managedByRepositoryPolicy) {
+    return { changed: candidate !== pkg, pkg: candidate };
+  }
+  const rewritten = rewriteLegacyRepositoryUrls(JSON.stringify(candidate));
   if (rewritten === JSON.stringify(pkg)) return { changed: false, pkg };
   return {
     changed: true,
@@ -317,16 +337,27 @@ async function main() {
       const packagePath = join(pluginDir, 'package.json');
       const source = readFileSync(packagePath, 'utf-8');
       const pkg = JSON.parse(source);
+      const sourceMarkerPath = join(pluginDir, '.source.json');
+      const mirrorRoot = existsSync(sourceMarkerPath);
+      const sourceMarker = mirrorRoot ? readJson(sourceMarkerPath) : null;
+      const sourceOwned =
+        mirrorRoot &&
+        Array.isArray(sourceMarker?.files) &&
+        sourceMarker.files.includes('package.json');
       const reconciled = reconcileGeneratedPackageMetadata(
         pkg,
         repositoryRelativePath(ROOT, pluginDir),
         {
-          sourceOwned: existsSync(join(pluginDir, '.source.json')),
+          mirrorRoot,
+          sourceOwned,
         },
       );
       existing.push(pluginDir);
       if (reconciled.changed) {
-        metadataUpdates.push({ packagePath, source: rewriteLegacyRepositoryUrls(source) });
+        metadataUpdates.push({
+          packagePath,
+          source: JSON.stringify(reconciled.pkg, null, 2) + '\n',
+        });
       }
       continue;
     }

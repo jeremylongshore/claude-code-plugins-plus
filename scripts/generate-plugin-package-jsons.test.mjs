@@ -82,6 +82,38 @@ test('does not rewrite upstream-owned package metadata', () => {
   assert.equal(result.pkg, input);
 });
 
+test('makes a repository-generated mirror package non-publishable', () => {
+  const input = {
+    name: '@intentsolutionsio/upstream-plugin',
+    publishConfig: { access: 'public' },
+    repository: canonicalRepository,
+  };
+
+  const result = reconcileGeneratedPackageMetadata(input, 'plugins/community/upstream-plugin', {
+    mirrorRoot: true,
+  });
+
+  assert.equal(result.changed, true);
+  assert.equal(result.pkg.private, true);
+  assert.equal(result.pkg.publishConfig.access, 'restricted');
+  assert.equal(input.private, undefined);
+});
+
+test('keeps an already-private repository-generated mirror package stable', () => {
+  const input = {
+    name: '@intentsolutionsio/upstream-plugin',
+    private: true,
+    repository: canonicalRepository,
+  };
+
+  const result = reconcileGeneratedPackageMetadata(input, 'plugins/community/upstream-plugin', {
+    mirrorRoot: true,
+  });
+
+  assert.equal(result.changed, false);
+  assert.equal(result.pkg, input);
+});
+
 test('reconciles a repository-managed manifest that uses an older Intent scope', () => {
   const input = {
     name: '@intentsolutions/example-plugin',
@@ -126,6 +158,7 @@ test('does not rewrite a scoped manifest owned by a source-marked mirror', () =>
   };
 
   const result = reconcileGeneratedPackageMetadata(input, 'plugins/community/upstream-plugin', {
+    mirrorRoot: true,
     sourceOwned: true,
   });
 

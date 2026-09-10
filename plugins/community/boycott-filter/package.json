@@ -29,7 +29,7 @@
     "email": "contact@bubbleinvest.com"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "restricted"
   },
   "files": [
     "README.md",
@@ -39,5 +39,6 @@
   ],
   "scripts": {
     "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install boycott-filter\\\\n  or /plugin install boycott-filter@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
-  }
+  },
+  "private": true
 }

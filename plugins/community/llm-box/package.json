@@ -21,7 +21,7 @@
     "directory": "plugins/community/llm-box"
   },
   "homepage": "https://github.com/alib8b8/llm-box",
-  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "bugs": "https://github.com/jeremylongshore/tons-of-skills-marketplace/issues",
   "license": "AGPL-3.0",
   "author": "alib8b8 <https://github.com/alib8b8>",
   "publishConfig": {
