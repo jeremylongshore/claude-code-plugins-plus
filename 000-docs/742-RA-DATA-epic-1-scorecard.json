@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 352,
         "raw_tracked_plugin_skill_files": 3032,
-        "tracked_files": 24078
+        "tracked_files": 24096
       }
     },
     "2": {
@@ -1220,7 +1220,7 @@
         "answers": [
           {
             "cohort": "curated-mirror",
-            "value": 2400
+            "value": 2418
           },
           {
             "cohort": "curriculum",
@@ -1960,7 +1960,7 @@
         "invalid_patterns": 0,
         "invisible_files": 5,
         "target_invisible_files": 0,
-        "tracked_files": 24078
+        "tracked_files": 24096
       }
     },
     "47": {
