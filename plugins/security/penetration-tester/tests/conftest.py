@@ -6,6 +6,7 @@ fixtures here keeps cross-cluster test code DRY.
 
 from __future__ import annotations
 
+import importlib
 import json
 import sys
 from pathlib import Path
@@ -18,6 +19,40 @@ import pytest
 _PACK_ROOT = Path(__file__).resolve().parents[1]
 if str(_PACK_ROOT) not in sys.path:
     sys.path.insert(0, str(_PACK_ROOT))
+
+
+@pytest.fixture(autouse=True)
+def isolate_pack_lib_namespace():
+    """Keep this pack's generic ``lib`` package local to each test.
+
+    The repository-wide pytest lane also collects external plugins that expose
+    their own top-level ``lib`` package. Python caches the first one imported in
+    ``sys.modules``, so changing ``sys.path`` alone cannot make ``lib.finding``
+    resolve to this pack. Snapshot and restore that namespace around every test
+    to avoid both cross-plugin contamination and changes to upstream mirrors.
+    """
+    prior_modules = {name: module for name, module in sys.modules.items() if name == "lib" or name.startswith("lib.")}
+    prior_path = list(sys.path)
+
+    for name in prior_modules:
+        sys.modules.pop(name, None)
+    sys.path[:] = [entry for entry in sys.path if entry != str(_PACK_ROOT)]
+    sys.path.insert(0, str(_PACK_ROOT))
+    importlib.invalidate_caches()
+
+    local_lib = importlib.import_module("lib")
+    expected = (_PACK_ROOT / "lib" / "__init__.py").resolve()
+    if Path(local_lib.__file__).resolve() != expected:
+        raise RuntimeError(f"expected penetration-tester lib at {expected}, got {local_lib.__file__}")
+
+    yield
+
+    for name in list(sys.modules):
+        if name == "lib" or name.startswith("lib."):
+            sys.modules.pop(name, None)
+    sys.modules.update(prior_modules)
+    sys.path[:] = prior_path
+    importlib.invalidate_caches()
 
 
 # --- Sample ROE fixture -----------------------------------------------------
