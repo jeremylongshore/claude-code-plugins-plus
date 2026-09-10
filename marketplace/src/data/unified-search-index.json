@@ -7250,7 +7250,7 @@
         "email": "[email protected]"
       },
       "authorType": "official",
-      "version": "3.30.0",
+      "version": "3.31.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -17688,7 +17688,7 @@
         "Bash(openssl:*)"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -22070,7 +22070,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -22091,7 +22091,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -22113,7 +22113,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -24783,7 +24783,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -24828,7 +24828,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -29343,7 +29343,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -29454,7 +29454,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -32656,7 +32656,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -32771,7 +32771,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -32837,7 +32837,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -32857,7 +32857,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -32878,7 +32878,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -32898,7 +32898,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -32944,7 +32944,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -33035,7 +33035,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -33079,7 +33079,7 @@
         "Bash(openssl:*)"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -33100,7 +33100,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -37372,7 +37372,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -42324,7 +42324,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -54501,7 +54501,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -61391,7 +61391,7 @@
         "Bash(tar:*)"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -63533,7 +63533,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -65525,7 +65525,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -69231,7 +69231,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
@@ -74993,7 +74993,7 @@
         "Glob"
       ],
       "compatibleWith": [],
-      "version": "3.30.0",
+      "version": "3.31.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
