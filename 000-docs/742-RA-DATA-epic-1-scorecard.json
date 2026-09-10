@@ -16,19 +16,19 @@
     "values": {
       "a_error_total": 32,
       "a_failing": 15,
-      "ab_error_total": 575,
-      "ab_failing": 270,
-      "b_failing": 255,
-      "error_files": 691,
-      "error_total": 3670,
+      "ab_error_total": 574,
+      "ab_failing": 269,
+      "b_failing": 254,
+      "error_files": 690,
+      "error_total": 3669,
       "grade_distribution": {
-        "A": 1923,
-        "B": 1046,
+        "A": 1922,
+        "B": 1036,
         "C": 401,
         "D": 157,
         "F": 5
       },
-      "rows": 3532
+      "rows": 3521
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 352,
-        "raw_tracked_plugin_skill_files": 3032,
-        "tracked_files": 24078
+        "raw_tracked_plugin_skill_files": 3021,
+        "tracked_files": 23991
       }
     },
     "2": {
@@ -53,9 +53,9 @@
       "status": "measured",
       "target_status": "pass",
       "values": {
-        "distinct_names": 444,
+        "distinct_names": 438,
         "duplicate_names": [],
-        "entries": 444
+        "entries": 438
       }
     },
     "3": {
@@ -80,45 +80,45 @@
       "values": {
         "agent_lane": {
           "error_total_all_validated_surfaces": 236,
-          "fully_compliant_surfaces": 776,
+          "fully_compliant_surfaces": 770,
           "terminal_denominator": {
             "agents": 363,
-            "files": 958,
+            "files": 952,
             "label": "agents_plus_plugin_manifests",
-            "plugin_manifests": 595
+            "plugin_manifests": 589
           },
-          "validator_reported_mixed_denominator_percent": 81
+          "validator_reported_mixed_denominator_percent": 80.9
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 3907,
-          "fully_compliant_surfaces": 1185,
+          "error_total_all_validated_surfaces": 3906,
+          "fully_compliant_surfaces": 1176,
           "terminal_denominator": {
             "agents": 363,
-            "commands": 373,
-            "files": 4863,
+            "commands": 370,
+            "files": 4843,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
-            "plugin_manifests": 595,
-            "skills": 3532
+            "plugin_manifests": 589,
+            "skills": 3521
           },
-          "validated_plugin_manifests": 603,
-          "validator_reported_mixed_denominator_percent": 24.4
+          "validated_plugin_manifests": 596,
+          "validator_reported_mixed_denominator_percent": 24.3
         },
         "skill_rows": {
           "a_error_total": 32,
           "a_failing": 15,
-          "ab_error_total": 575,
-          "ab_failing": 270,
-          "b_failing": 255,
-          "error_files": 691,
-          "error_total": 3670,
+          "ab_error_total": 574,
+          "ab_failing": 269,
+          "b_failing": 254,
+          "error_files": 690,
+          "error_total": 3669,
           "grade_distribution": {
-            "A": 1923,
-            "B": 1046,
+            "A": 1922,
+            "B": 1036,
             "C": 401,
             "D": 157,
             "F": 5
           },
-          "rows": 3532
+          "rows": 3521
         }
       }
     },
@@ -129,22 +129,22 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "average_score": 87.6,
+        "average_score": 87.7,
         "grade_distribution": {
-          "A": 1923,
-          "B": 1046,
+          "A": 1922,
+          "B": 1036,
           "C": 401,
           "D": 157,
           "F": 5
         },
         "grade_percentages": {
-          "A": 54.4,
-          "B": 29.6,
+          "A": 54.6,
+          "B": 29.4,
           "C": 11.4,
-          "D": 4.4,
+          "D": 4.5,
           "F": 0.1
         },
-        "rows": 3532
+        "rows": 3521
       }
     },
     "6": {
@@ -156,12 +156,12 @@
       "values": {
         "a_error_total": 32,
         "a_failing": 15,
-        "ab_error_total": 575,
-        "ab_failing": 270,
-        "b_error_total": 543,
-        "b_failing": 255,
+        "ab_error_total": 574,
+        "ab_failing": 269,
+        "b_error_total": 542,
+        "b_failing": 254,
         "certified_target": 0,
-        "skill_summary_rows": 3532
+        "skill_summary_rows": 3521
       }
     },
     "7": {
@@ -212,7 +212,7 @@
       "values": {
         "agent_errors": 236,
         "agent_files": 363,
-        "reported_compliance_percent": 81,
+        "reported_compliance_percent": 80.9,
         "target_errors": 0,
         "target_percent_max": 100
       }
@@ -225,7 +225,7 @@
       "status": "measured",
       "target_status": "pass",
       "values": {
-        "candidate_count": 36,
+        "candidate_count": 33,
         "mismatch_count": 0,
         "mismatch_paths": []
       }
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3521,
+        "declared": 3510,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 11,
-        "rows": 3532,
+        "rows": 3521,
         "target_malformed": 0
       }
     },
@@ -367,7 +367,7 @@
             "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18, a persistent local filesystem (the observe-decide-act loop passes state through local turn files), and ~/.kobiton/.credentials written by /automate:setup — scripts/appium.js reads that file directly and never calls the MCP getCredential tool, so it is required, not a fallback. An authenticated Kobiton MCP connection is additionally useful for device selection."
           },
           {
-            "count": 3196,
+            "count": 3185,
             "value": "Designed for Claude Code"
           },
           {
@@ -1220,7 +1220,7 @@
         "answers": [
           {
             "cohort": "curated-mirror",
-            "value": 2400
+            "value": 2389
           },
           {
             "cohort": "curriculum",
@@ -1228,15 +1228,15 @@
           },
           {
             "cohort": "first-party",
-            "value": 2687
+            "value": 2676
           },
           {
             "cohort": "graded",
-            "value": 3532
+            "value": 3521
           },
           {
             "cohort": "marketplace-visible",
-            "value": 2941
+            "value": 2930
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1960,7 +1960,7 @@
         "invalid_patterns": 0,
         "invisible_files": 5,
         "target_invisible_files": 0,
-        "tracked_files": 24078
+        "tracked_files": 23991
       }
     },
     "47": {
@@ -2045,17 +2045,17 @@
       "dimension": "Inventory header versus rows",
       "reproduce": "pnpm run measure:e1 --row=52 --stdout",
       "source": [
-        "freshie/reports/run-delta-46.json",
+        "freshie/reports/run-delta-48.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py"
       ],
       "status": "target_met",
       "values": {
-        "dolt_commit": "8eu20bejkbje4ph44kr2c95heeek7ihb",
-        "header_total_skills": 2954,
-        "run_id": 46,
+        "dolt_commit": "4nqh2h975kvqrtv8vgavh500svam59fe",
+        "header_total_skills": 2944,
+        "run_id": 48,
         "skill_row_delta": 0,
-        "skill_rows": 2954,
+        "skill_rows": 2944,
         "target_skill_row_delta": 0
       }
     },
@@ -2066,32 +2066,32 @@
       "source": [
         "freshie/grade-histogram.json",
         "freshie/grades.csv",
-        "freshie/reports/run-delta-46.json"
+        "freshie/reports/run-delta-48.json"
       ],
       "status": "target_met",
       "values": {
-        "compliance_rows": 3532,
-        "export_dolt_commit": "8eu20bejkbje4ph44kr2c95heeek7ihb",
-        "export_run_id": 46,
-        "grades_csv_rows": 3532,
-        "grades_csv_sha256": "0217da9d276ad664196c8e9d604bc44d6fee1c04e7681a3b710c4262aa661216",
+        "compliance_rows": 3521,
+        "export_dolt_commit": "4nqh2h975kvqrtv8vgavh500svam59fe",
+        "export_run_id": 48,
+        "grades_csv_rows": 3521,
+        "grades_csv_sha256": "fcadc95550fd2c2854030c4b65c0af057ad05e3211a9b1334409e3435eb27ea6",
         "histogram_grades": {
-          "A": 1923,
-          "B": 1046,
+          "A": 1922,
+          "B": 1036,
           "C": 401,
           "D": 157,
           "F": 5
         },
-        "histogram_total": 3532,
+        "histogram_total": 3521,
         "immutable_grade_counts": {
-          "A": 1923,
-          "B": 1046,
+          "A": 1922,
+          "B": 1036,
           "C": 401,
           "D": 157,
           "F": 5
         },
-        "inventory_dolt_commit": "8eu20bejkbje4ph44kr2c95heeek7ihb",
-        "inventory_run_id": 46,
+        "inventory_dolt_commit": "4nqh2h975kvqrtv8vgavh500svam59fe",
+        "inventory_run_id": 48,
         "target_lag_runs": 0
       }
     },
@@ -2102,7 +2102,7 @@
       "source": [
         "freshie/reports/legacy-forge-proofs-demotion.json",
         "freshie/reports/run-delta-19.json",
-        "freshie/reports/run-delta-46.json",
+        "freshie/reports/run-delta-48.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py",
         "scripts/record-jrig-proofs.mjs"
@@ -2115,7 +2115,7 @@
           "E2": 0,
           "E3": 0
         },
-        "current_run_id": 46,
+        "current_run_id": 48,
         "invalid_identities": 0,
         "legacy_e0_records": 3,
         "retained_e2_e3": 0,
@@ -2140,7 +2140,7 @@
         "000-docs/807-DR-STND-evaluation-evidence.md",
         "freshie/reports/legacy-forge-proofs-demotion.json",
         "freshie/reports/run-delta-19.json",
-        "freshie/reports/run-delta-46.json",
+        "freshie/reports/run-delta-48.json",
         "freshie/scripts/dolt-sync.py",
         "freshie/scripts/run-delta.py"
       ],
@@ -2245,7 +2245,7 @@
       "values": {
         "adoption_percent": 1.06,
         "curated_copies": 32,
-        "plugin_skill_rows": 3032,
+        "plugin_skill_rows": 3021,
         "source_eval_specs": 32,
         "tracked_eval_specs": 64
       }
