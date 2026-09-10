@@ -7517,7 +7517,7 @@
       "name": "posthog-pack",
       "source": "./plugins/saas-packs/posthog-pack",
       "description": "Verified PostHog operator pack with 24 workflows for regional ingestion, identity, flags, privacy, costs, incidents, migrations, and safe releases.",
-      "version": "1.13.0",
+      "version": "1.14.0",
       "category": "saas-packs",
       "keywords": [
         "posthog",
