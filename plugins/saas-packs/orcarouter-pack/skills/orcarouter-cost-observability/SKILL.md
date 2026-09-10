@@ -24,7 +24,7 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Understand and control what OrcaRouter costs you. OrcaRouter bills the upstream provider's published per-token price with no per-token markup (see [Billing & usage](https://docs.orcarouter.ai/operations/billing-and-usage)).
+Understand and control what OrcaRouter costs you. Per OrcaRouter's documented billing model, the gateway bills the upstream provider's published per-token price with no per-token markup ([Billing & usage](https://docs.orcarouter.ai/operations/billing-and-usage)) — cited as the vendor's own published model, so reconcile it against your invoice rather than treating it as an independently audited figure.
 
 Per-request cost is available two ways: opt in with the `X-OrcaRouter-Include-Cost: true` header and read `usage.cost_usd` inline on the response, or look the settled amount up after the fact with `GET /v1/generation?id=<request-id>` using the `X-Orca-Request-Id` header. This skill covers reading the cost field, aggregating spend, and setting budget controls.
 
@@ -156,7 +156,7 @@ More cost patterns (SQL aggregation, alert wiring, tier-based budgeting): `refer
 - For exact billing, reconcile against `GET /v1/generation`; the inline figure can differ from the settled amount
 - Tag every request with `agent`/`request_id` for attributable spend
 - Combine per-agent budgets with gateway governance (see `orcarouter-agent-security`) so a runaway agent is blocked, not just billed
-- Zero-markup inference means the returned cost reflects provider pricing, simplifying financial controls
+- The gateway's documented billing model is list price with no per-token markup; reconcile returned costs against your provider invoices before treating the figure as final
 
 ## References
 

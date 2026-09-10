@@ -5,10 +5,10 @@
     "generator": "marketplace/scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 441,
-    "totalSkills": 2941,
+    "totalPlugins": 442,
+    "totalSkills": 2947,
     "totalDocs": 24,
-    "totalItems": 3406,
+    "totalItems": 3413,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -412,6 +412,7 @@
       "agent-protocol",
       "agent-runtime",
       "agent-safety",
+      "agent-security",
       "agent-skill",
       "agent-skills",
       "agent-starter-pack",
@@ -684,6 +685,7 @@
       "corrections",
       "correlation",
       "cost",
+      "cost-observability",
       "cost-optimization",
       "coverage",
       "cpu",
@@ -844,6 +846,7 @@
       "fairness",
       "fake-data",
       "fakes",
+      "fallback",
       "farming",
       "fast-inference",
       "fastapi",
@@ -1202,6 +1205,7 @@
       "options",
       "oracle cloud",
       "oraclecloud",
+      "orcarouter",
       "orchestration",
       "organization",
       "orm",
@@ -1710,8 +1714,8 @@
     "pluginsWithAgents": 91,
     "pluginsWithHooks": 20,
     "officialPlugins": 390,
-    "communityPlugins": 51,
-    "communityContributors": 40
+    "communityPlugins": 52,
+    "communityContributors": 41
   },
   "items": [
     {
@@ -10423,6 +10427,36 @@
       "verificationGrade": "A",
       "verificationBadge": "gold",
       "searchText": "openrouter pack complete openrouter integration skill pack with 30 skills covering llm routing, model selection, cost optimization, and multi-provider orchestration. flagship+ tier vendor pack. saas-packs openrouter llm-routing model-selection ai-gateway multi-model cost-optimization"
+    },
+    {
+      "type": "plugin",
+      "id": "orcarouter-pack",
+      "slug": "orcarouter-pack",
+      "name": "orcarouter-pack",
+      "displayName": "orcarouter pack",
+      "description": "Claude Code skill pack for OrcaRouter, an OpenAI-compatible AI gateway: 6 skills covering install/auth, chat completions, model routing, fallback reliability, gateway agent security, and per-request cost observability against https://api.orcarouter.ai/v1.",
+      "category": "saas-packs",
+      "keywords": [
+        "orcarouter",
+        "ai-gateway",
+        "llm-routing",
+        "model-selection",
+        "fallback",
+        "agent-security",
+        "cost-observability"
+      ],
+      "author": {
+        "name": "Kus Wardhanie",
+        "email": "kuswardhanietidims-svg@users.noreply.github.com",
+        "url": "https://github.com/kuswardhanietidims-svg"
+      },
+      "authorType": "community",
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 6,
+      "searchText": "orcarouter pack claude code skill pack for orcarouter, an openai-compatible ai gateway: 6 skills covering install/auth, chat completions, model routing, fallback reliability, gateway agent security, and per-request cost observability against https://api.orcarouter.ai/v1. saas-packs orcarouter ai-gateway llm-routing model-selection fallback agent-security cost-observability"
     },
     {
       "type": "plugin",
@@ -61002,6 +61036,131 @@
         "category": "saas-packs"
       },
       "searchText": "oraclecloud-webhooks-events wire up event-driven workflows with oci events, notifications, and functions. use when building serverless event processing, subscribing to instance lifecycle changes, or routing audit events to alerting systems. trigger with \"oraclecloud webhooks events\", \"oci events rules\", \"oci notifications\", \"oci ons topics\". saas-packs read write edit bash(pip:*) bash(oci:*) grep "
+    },
+    {
+      "type": "skill",
+      "id": "orcarouter-agent-security",
+      "slug": "orcarouter-agent-security",
+      "name": "orcarouter-agent-security",
+      "description": "Use OrcaRouter's gateway-level zero-trust security for AI agents: prompt and response screening and tool-call governance on the same endpoint. Use when hardening an agent against prompt injection, governing which tool calls an agent may make, or reviewing agent security posture. Triggers: \"orcarouter security\", \"agent security\", \"guardrails\", \"prompt injection\", \"tool governance\", \"zero trust\". Trigger with \"orcarouter-agent-security\" keywords like \"orcarouter\", \"gateway\", or the skill name.",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Bash(curl:*)",
+        "Bash(python3:*)",
+        "Bash(jq:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "orcarouter-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "orcarouter-agent-security use orcarouter's gateway-level zero-trust security for ai agents: prompt and response screening and tool-call governance on the same endpoint. use when hardening an agent against prompt injection, governing which tool calls an agent may make, or reviewing agent security posture. triggers: \"orcarouter security\", \"agent security\", \"guardrails\", \"prompt injection\", \"tool governance\", \"zero trust\". trigger with \"orcarouter-agent-security\" keywords like \"orcarouter\", \"gateway\", or the skill name. saas-packs bash(curl:*) bash(python3:*) bash(jq:*) "
+    },
+    {
+      "type": "skill",
+      "id": "orcarouter-cost-observability",
+      "slug": "orcarouter-cost-observability",
+      "name": "orcarouter-cost-observability",
+      "description": "Track and control LLM spend through OrcaRouter's per-request cost and observability data. Use when building a cost dashboard, setting budget alerts, understanding per-model spend, or auditing agent usage. Triggers: \"orcarouter cost\", \"llm spend\", \"cost tracking\", \"budget\", \"observability\", \"usage dashboard\". Trigger with \"orcarouter-cost-observability\" keywords like \"orcarouter\", \"gateway\", or the skill name.",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Bash(curl:*)",
+        "Bash(python3:*)",
+        "Bash(jq:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "orcarouter-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "orcarouter-cost-observability track and control llm spend through orcarouter's per-request cost and observability data. use when building a cost dashboard, setting budget alerts, understanding per-model spend, or auditing agent usage. triggers: \"orcarouter cost\", \"llm spend\", \"cost tracking\", \"budget\", \"observability\", \"usage dashboard\". trigger with \"orcarouter-cost-observability\" keywords like \"orcarouter\", \"gateway\", or the skill name. saas-packs bash(curl:*) bash(python3:*) bash(jq:*) "
+    },
+    {
+      "type": "skill",
+      "id": "orcarouter-fallback-reliability",
+      "slug": "orcarouter-fallback-reliability",
+      "name": "orcarouter-fallback-reliability",
+      "description": "Make OrcaRouter calls resilient with fallback and retry patterns. Use when a primary model is down or rate-limited, when you need an automatic fallback chain, or when you are hardening a production LLM path. Triggers: \"orcarouter fallback\", \"orcarouter failover\", \"orcarouter retry\", \"resilience\", \"reliability\", \"circuit breaker\". Trigger with \"orcarouter-fallback-reliability\" keywords like \"orcarouter\", \"gateway\", or the skill name.",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Bash(curl:*)",
+        "Bash(grep:*)",
+        "Bash(python3:*)",
+        "Bash(jq:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "orcarouter-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "orcarouter-fallback-reliability make orcarouter calls resilient with fallback and retry patterns. use when a primary model is down or rate-limited, when you need an automatic fallback chain, or when you are hardening a production llm path. triggers: \"orcarouter fallback\", \"orcarouter failover\", \"orcarouter retry\", \"resilience\", \"reliability\", \"circuit breaker\". trigger with \"orcarouter-fallback-reliability\" keywords like \"orcarouter\", \"gateway\", or the skill name. saas-packs bash(curl:*) bash(grep:*) bash(python3:*) bash(jq:*) "
+    },
+    {
+      "type": "skill",
+      "id": "orcarouter-hello-world",
+      "slug": "orcarouter-hello-world",
+      "name": "orcarouter-hello-world",
+      "description": "Send your first OrcaRouter chat completion and understand the response format. Use when learning OrcaRouter, testing gateway connectivity, or verifying a model works. Triggers: \"orcarouter hello world\", \"orcarouter first request\", \"test orcarouter\", \"orcarouter quickstart\". Trigger with \"orcarouter-hello-world\" keywords like \"orcarouter\", \"gateway\", or the skill name.",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Bash(curl:*)",
+        "Bash(grep:*)",
+        "Bash(python3:*)",
+        "Bash(node:*)",
+        "Bash(jq:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "orcarouter-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "orcarouter-hello-world send your first orcarouter chat completion and understand the response format. use when learning orcarouter, testing gateway connectivity, or verifying a model works. triggers: \"orcarouter hello world\", \"orcarouter first request\", \"test orcarouter\", \"orcarouter quickstart\". trigger with \"orcarouter-hello-world\" keywords like \"orcarouter\", \"gateway\", or the skill name. saas-packs bash(curl:*) bash(grep:*) bash(python3:*) bash(node:*) bash(jq:*) "
+    },
+    {
+      "type": "skill",
+      "id": "orcarouter-install-auth",
+      "slug": "orcarouter-install-auth",
+      "name": "orcarouter-install-auth",
+      "description": "Set up OrcaRouter API key authentication and verify connectivity to the gateway. Use when starting a new OrcaRouter integration, configuring ORCAROUTER_API_KEY for an agent or app, or checking that a key is valid. Triggers: \"orcarouter install\", \"orcarouter api key\", \"orcarouter auth\", \"set up orcarouter\", \"configure orcarouter\". Trigger with \"orcarouter-install-auth\" keywords like \"orcarouter\", \"gateway\", or the skill name.",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Bash(curl:*)",
+        "Bash(python3:*)",
+        "Bash(node:*)",
+        "Bash(jq:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "orcarouter-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "orcarouter-install-auth set up orcarouter api key authentication and verify connectivity to the gateway. use when starting a new orcarouter integration, configuring orcarouter_api_key for an agent or app, or checking that a key is valid. triggers: \"orcarouter install\", \"orcarouter api key\", \"orcarouter auth\", \"set up orcarouter\", \"configure orcarouter\". trigger with \"orcarouter-install-auth\" keywords like \"orcarouter\", \"gateway\", or the skill name. saas-packs bash(curl:*) bash(python3:*) bash(node:*) bash(jq:*) "
+    },
+    {
+      "type": "skill",
+      "id": "orcarouter-model-routing",
+      "slug": "orcarouter-model-routing",
+      "name": "orcarouter-model-routing",
+      "description": "Route requests across models with OrcaRouter's routers and provider-prefixed model IDs, and read which concrete model served each request. Use when picking a model per task, comparing model quality/cost/latency, or relying on the gateway's routing instead of hard-coding model IDs. Triggers: \"orcarouter routing\", \"orcarouter model selection\", \"which model\", \"adaptive routing\", \"route my request\". Trigger with \"orcarouter-model-routing\" keywords like \"orcarouter\", \"gateway\", or the skill name.",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Bash(curl:*)",
+        "Bash(grep:*)",
+        "Bash(python3:*)",
+        "Bash(jq:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "orcarouter-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "orcarouter-model-routing route requests across models with orcarouter's routers and provider-prefixed model ids, and read which concrete model served each request. use when picking a model per task, comparing model quality/cost/latency, or relying on the gateway's routing instead of hard-coding model ids. triggers: \"orcarouter routing\", \"orcarouter model selection\", \"which model\", \"adaptive routing\", \"route my request\". trigger with \"orcarouter-model-routing\" keywords like \"orcarouter\", \"gateway\", or the skill name. saas-packs bash(curl:*) bash(grep:*) bash(python3:*) bash(jq:*) "
     },
     {
       "type": "skill",

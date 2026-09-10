@@ -36,22 +36,27 @@ We add a named `orcarouter-pack` that mirrors the `openrouter-pack` structure �
 **Negative / accepted tradeoffs:**
 
 - The pack is 6 skills, not 30 — users needing deeper coverage (fine-tuning, BYOK) must wait or request additions.
-- The author is an OrcaRouter engineer; the pack is unbiased in tone but OrcaRouter-branded, which is the point of a named vendor pack.
+- The author is an OrcaRouter engineer — the contributor/provider relationship is disclosed in the pack README, and the pack's vendor-specific claims are written against OrcaRouter's own published documentation. The pack is unbiased in tone but OrcaRouter-branded, which is the point of a named vendor pack.
+
+## Licensing
+
+The pack is MIT, matching the marketplace default. `LICENSE` at the pack root carries the pack author's copyright (`Copyright (c) 2026 Kus Wardhanie`) rather than the marketplace maintainer's, matching the `license: MIT` field declared in each `SKILL.md` frontmatter and in `plugin.json`/`package.json`.
 
 ## Tool-permission scope
 
-Every skill declares a least-privilege `allowed-tools`: `Read` plus scoped `Bash(curl:*)`, `Bash(python3:*)`, `Bash(node:*)`, `Bash(jq:*)` as the workflow needs. `Bash(curl:*)`/`Bash(jq:*)` are needed for the gateway round-trips; `Bash(python3:*)`/`Bash(node:*)` for the SDK examples. No `Write`/`Edit`/`Grep` and no bare `Bash` is granted — the skills make API calls and run example snippets, they do not edit files.
+Every skill declares a least-privilege `allowed-tools`: scoped `Bash(curl:*)`, `Bash(python3:*)`, `Bash(node:*)`, `Bash(jq:*)`, and `Bash(grep:*)` only in the three skills whose body actually pipes a curl through `grep` (`orcarouter-hello-world`, `orcarouter-model-routing`, `orcarouter-fallback-reliability`). `Bash(curl:*)`/`Bash(jq:*)` are needed for the gateway round-trips; `Bash(python3:*)`/`Bash(node:*)` for the SDK examples; `Bash(grep:*)` for header extraction only. No skill declares a tool it does not use. No `Write`/`Edit` and no bare `Bash` is granted — the skills make API calls and run example snippets, they do not edit files.
 
 ## Evidence and citations
 
 Pack claims are written against the current OrcaRouter documentation, cited in each SKILL.md:
 
-- Zero-markup billing: [Billing & usage](https://docs.orcarouter.ai/operations/billing-and-usage), [Introduction](https://docs.orcarouter.ai/introduction)
+- Zero-markup billing: [Billing & usage](https://docs.orcarouter.ai/operations/billing-and-usage), [Introduction](https://docs.orcarouter.ai/introduction) — stated as the vendor's documented billing model, not as an independently audited figure
 - Per-request cost (`usage.cost_usd`, opt-in header; `GET /v1/generation`): [Per-request cost](https://docs.orcarouter.ai/operations/per-request-cost)
-- Gateway security (scoped keys, guardrails, firewall, default verdicts, no app change): [Securing AI agents](https://docs.orcarouter.ai/security/concepts/securing-ai-agents), [Firewall verdicts](https://docs.orcarouter.ai/security/firewall/verdicts)
+- Gateway security (scoped keys, guardrails, firewall, default verdicts): [Securing AI agents](https://docs.orcarouter.ai/security/concepts/securing-ai-agents), [Firewall verdicts](https://docs.orcarouter.ai/security/firewall/verdicts) — scoped to calls that cross the gateway; no blanket "no application change" claim is made, since covering in-process tools requires registering them behind the gateway or calling the evaluate hook
+- Hosted-data handling (request content, retained metadata, upstream-provider terms, approval for sensitive data): [Billing & usage](https://docs.orcarouter.ai/operations/billing-and-usage), and the pack's own Hosted-Data Disclosure section in `orcarouter-agent-security/SKILL.md`
 - Model surface and routing: [Models](https://docs.orcarouter.ai/getting-started/models), [Auto Router](https://docs.orcarouter.ai/routing/auto-router), [Fusion](https://docs.orcarouter.ai/routing/fusion), [Model Fallbacks](https://docs.orcarouter.ai/routing/model-fallbacks), [Response Headers](https://docs.orcarouter.ai/routing/response-headers)
 - Trust boundary of gateway inspection: [How OrcaRouter inspects requests](https://docs.orcarouter.ai/security/concepts/how-orcarouter-inspects)
 
 ## Manual trust review
 
-See `orcarouter-agent-security/references/security-patterns.md` § Trust boundary for the manual review of the external routing and prompt-governance boundary: the gateway inspects calls that cross it (prompts, responses, model-emitted tool calls, MCP dispatches, reported egress); it does not see tools that run entirely in-process without contacting the gateway, and remote/tool-derived content must be treated as untrusted data governed by output-stage rules.
+See `orcarouter-agent-security/SKILL.md` § Manual Trust Review and § Hosted-Data Disclosure for the manual review of the external routing and prompt-governance boundary: the gateway inspects calls that cross it (prompts, responses, model-emitted tool calls, MCP dispatches, reported egress); it does not see tools that run entirely in-process without contacting the gateway, and remote/tool-derived content must be treated as untrusted data governed by output-stage rules.

@@ -6,7 +6,7 @@ description: |
   verifying a model works. Triggers: "orcarouter hello world", "orcarouter
   first request", "test orcarouter", "orcarouter quickstart".
   Trigger with "orcarouter-hello-world" keywords like "orcarouter", "gateway", or the skill name.
-allowed-tools: Bash(curl:*), Bash(python3:*), Bash(node:*), Bash(jq:*)
+allowed-tools: Bash(curl:*), Bash(grep:*), Bash(python3:*), Bash(node:*), Bash(jq:*)
 version: 1.0.0
 license: MIT
 author: Kus Wardhanie <kuswardhanietidims-svg@users.noreply.github.com>
@@ -137,6 +137,9 @@ models_to_try = [
     "anthropic/claude-sonnet-4.6",  # Provider-qualified model ID
 ]
 
+# Comparison loop, not a retry loop: each iteration is a different model on purpose,
+# so a failure is reported and the loop moves on. Do not reuse this shape for retries —
+# for that, see orcarouter-fallback-reliability and its retryable-status allow-list.
 for model_id in models_to_try:
     try:
         r = client.chat.completions.create(

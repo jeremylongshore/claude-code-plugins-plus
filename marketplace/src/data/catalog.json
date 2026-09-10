@@ -5,10 +5,10 @@
     "generator": "marketplace/scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 441,
-    "totalSkills": 2941,
+    "totalPlugins": 442,
+    "totalSkills": 2947,
     "totalCommands": 85,
-    "pluginsWithSkills": 408,
+    "pluginsWithSkills": 409,
     "byCategory": {
       "productivity": 29,
       "security": 27,
@@ -26,7 +26,7 @@
       "business-tools": 6,
       "community": 21,
       "examples": 5,
-      "saas-packs": 104,
+      "saas-packs": 105,
       "analytics": 1,
       "design": 2
     },
@@ -7677,6 +7677,35 @@
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
         "url": "https://github.com/jeremylongshore"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "orcarouter-pack",
+      "name": "orcarouter-pack",
+      "displayName": "orcarouter pack",
+      "description": "Claude Code skill pack for OrcaRouter, an OpenAI-compatible AI gateway: 6 skills covering install/auth, chat completions, model routing, fallback reliability, gateway agent security, and per-request cost observability against https://api.orcarouter.ai/v1.",
+      "version": "1.0.0",
+      "category": "saas-packs",
+      "keywords": [
+        "orcarouter",
+        "ai-gateway",
+        "llm-routing",
+        "model-selection",
+        "fallback",
+        "agent-security",
+        "cost-observability"
+      ],
+      "hasSkills": true,
+      "skillCount": 6,
+      "commandCount": 0,
+      "installCommand": "/plugin install orcarouter-pack",
+      "sourcePath": "./plugins/saas-packs/orcarouter-pack",
+      "isFeatured": false,
+      "author": {
+        "name": "Kus Wardhanie",
+        "email": "kuswardhanietidims-svg@users.noreply.github.com",
+        "url": "https://github.com/kuswardhanietidims-svg"
       },
       "type": "instruction-plugin"
     },

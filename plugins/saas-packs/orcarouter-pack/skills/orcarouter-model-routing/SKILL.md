@@ -8,7 +8,7 @@ description: |
   routing", "orcarouter model selection", "which model", "adaptive routing",
   "route my request".
   Trigger with "orcarouter-model-routing" keywords like "orcarouter", "gateway", or the skill name.
-allowed-tools: Bash(curl:*), Bash(python3:*), Bash(jq:*)
+allowed-tools: Bash(curl:*), Bash(grep:*), Bash(python3:*), Bash(jq:*)
 version: 1.0.0
 license: MIT
 author: Kus Wardhanie <kuswardhanietidims-svg@users.noreply.github.com>
@@ -66,7 +66,7 @@ The `X-Orca-Resolved-Model` header tells you which concrete model the router pic
 | `orcarouter/fusion-flash` | Budget panel of cheaper models | Cost-sensitive fan-out |
 | `orcarouter/free` | Named router over the no-credit `-free` models | CI, smoke tests, dev loop |
 
-Fusion panels bill as the sum of the panel legs plus the judge call (zero markup) — only on requests that fan out. See [Fusion](https://docs.orcarouter.ai/routing/fusion) and [Auto Router](https://docs.orcarouter.ai/routing/auto-router).
+Fusion panels bill as the sum of the panel legs plus the judge call, at provider list price under OrcaRouter's documented billing model — only on requests that fan out. See [Fusion](https://docs.orcarouter.ai/routing/fusion) and [Auto Router](https://docs.orcarouter.ai/routing/auto-router).
 
 ## Pinned Routing (Python)
 
@@ -121,7 +121,7 @@ More routing patterns (fallback chains, cost ceilings, capability hints): `refer
 | HTTP | Cause | Fix |
 |------|-------|-----|
 | 400 | Invalid model ID or routing hint | Check `/v1/models`; use a valid `orcarouter/*` or provider-prefixed ID |
-| 404 | Model not currently served | Add a fallback chain or retry |
+| 404 | Model not currently served | Do not retry — add a fallback chain or pick another ID from `/v1/models` |
 | 429 | Rate limit or credit constraint | Respect `Retry-After`; use `orcarouter/free` for testing |
 | 402 | Insufficient credits for the routed model | Add credits or switch to a cheaper routing tier |
 

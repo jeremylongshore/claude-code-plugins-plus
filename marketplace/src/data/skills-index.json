@@ -25011,6 +25011,78 @@
       "fallback_for_tools": []
     },
     {
+      "slug": "orcarouter-agent-security",
+      "name": "orcarouter-agent-security",
+      "description": "Use OrcaRouter's gateway-level zero-trust security for AI agents: prompt and response screening and tool-call governance on the same endpoint. Use when hardening an agent against prompt injection, governing which tool calls an agent may make, or reviewing agent security posture. Triggers: \"orcarouter security\", \"agent security\", \"guardrails\", \"prompt injection\", \"tool governance\", \"zero trust\". Trigger with \"orcarouter-agent-security\" keywords like \"orcarouter\", \"gateway\", or the skill name.",
+      "version": "1.0.0",
+      "category": "saas-packs",
+      "parentPlugin": "orcarouter-pack",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
+      "slug": "orcarouter-cost-observability",
+      "name": "orcarouter-cost-observability",
+      "description": "Track and control LLM spend through OrcaRouter's per-request cost and observability data. Use when building a cost dashboard, setting budget alerts, understanding per-model spend, or auditing agent usage. Triggers: \"orcarouter cost\", \"llm spend\", \"cost tracking\", \"budget\", \"observability\", \"usage dashboard\". Trigger with \"orcarouter-cost-observability\" keywords like \"orcarouter\", \"gateway\", or the skill name.",
+      "version": "1.0.0",
+      "category": "saas-packs",
+      "parentPlugin": "orcarouter-pack",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
+      "slug": "orcarouter-fallback-reliability",
+      "name": "orcarouter-fallback-reliability",
+      "description": "Make OrcaRouter calls resilient with fallback and retry patterns. Use when a primary model is down or rate-limited, when you need an automatic fallback chain, or when you are hardening a production LLM path. Triggers: \"orcarouter fallback\", \"orcarouter failover\", \"orcarouter retry\", \"resilience\", \"reliability\", \"circuit breaker\". Trigger with \"orcarouter-fallback-reliability\" keywords like \"orcarouter\", \"gateway\", or the skill name.",
+      "version": "1.0.0",
+      "category": "saas-packs",
+      "parentPlugin": "orcarouter-pack",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
+      "slug": "orcarouter-hello-world",
+      "name": "orcarouter-hello-world",
+      "description": "Send your first OrcaRouter chat completion and understand the response format. Use when learning OrcaRouter, testing gateway connectivity, or verifying a model works. Triggers: \"orcarouter hello world\", \"orcarouter first request\", \"test orcarouter\", \"orcarouter quickstart\". Trigger with \"orcarouter-hello-world\" keywords like \"orcarouter\", \"gateway\", or the skill name.",
+      "version": "1.0.0",
+      "category": "saas-packs",
+      "parentPlugin": "orcarouter-pack",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
+      "slug": "orcarouter-install-auth",
+      "name": "orcarouter-install-auth",
+      "description": "Set up OrcaRouter API key authentication and verify connectivity to the gateway. Use when starting a new OrcaRouter integration, configuring ORCAROUTER_API_KEY for an agent or app, or checking that a key is valid. Triggers: \"orcarouter install\", \"orcarouter api key\", \"orcarouter auth\", \"set up orcarouter\", \"configure orcarouter\". Trigger with \"orcarouter-install-auth\" keywords like \"orcarouter\", \"gateway\", or the skill name.",
+      "version": "1.0.0",
+      "category": "saas-packs",
+      "parentPlugin": "orcarouter-pack",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
+      "slug": "orcarouter-model-routing",
+      "name": "orcarouter-model-routing",
+      "description": "Route requests across models with OrcaRouter's routers and provider-prefixed model IDs, and read which concrete model served each request. Use when picking a model per task, comparing model quality/cost/latency, or relying on the gateway's routing instead of hard-coding model IDs. Triggers: \"orcarouter routing\", \"orcarouter model selection\", \"which model\", \"adaptive routing\", \"route my request\". Trigger with \"orcarouter-model-routing\" keywords like \"orcarouter\", \"gateway\", or the skill name.",
+      "version": "1.0.0",
+      "category": "saas-packs",
+      "parentPlugin": "orcarouter-pack",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
       "slug": "orchestrating-deployment-pipelines",
       "name": "orchestrating-deployment-pipelines",
       "description": "Deploy use when you need to work with deployment and CI/CD. This skill provides deployment automation and orchestration with comprehensive guidance and automation. Trigger with phrases like \"deploy application\", \"create pipeline\", or \"automate deployment\".",
@@ -35295,8 +35367,8 @@
       "fallback_for_tools": []
     }
   ],
-  "count": 2941,
-  "generatedAt": "2026-09-09T21:14:28.997Z",
+  "count": 2947,
+  "generatedAt": "2026-09-10T03:08:48.135Z",
   "categories": [
     "ai-agency",
     "ai-ml",

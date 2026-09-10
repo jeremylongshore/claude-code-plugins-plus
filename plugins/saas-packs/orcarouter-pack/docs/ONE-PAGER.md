@@ -37,9 +37,10 @@ A named `orcarouter-pack` with 6 focused skills against the `https://api.orcarou
 
 Pack claims are written against the current OrcaRouter documentation:
 
-- Zero-markup billing: [Billing & usage](https://docs.orcarouter.ai/operations/billing-and-usage), [Introduction](https://docs.orcarouter.ai/introduction)
+- Zero-markup billing: [Billing & usage](https://docs.orcarouter.ai/operations/billing-and-usage), [Introduction](https://docs.orcarouter.ai/introduction) — the vendor's documented billing model, cited as such rather than as an independently audited figure
 - Per-request cost field name and opt-in header: [Per-request cost](https://docs.orcarouter.ai/operations/per-request-cost)
-- Gateway security (guardrails, firewall, scoped keys, no app change): [Securing AI agents](https://docs.orcarouter.ai/security/concepts/securing-ai-agents), [Firewall verdicts](https://docs.orcarouter.ai/security/firewall/verdicts)
+- Gateway security (guardrails, firewall, scoped keys): [Securing AI agents](https://docs.orcarouter.ai/security/concepts/securing-ai-agents), [Firewall verdicts](https://docs.orcarouter.ai/security/firewall/verdicts) — scoped to calls that cross the gateway; no blanket "no application change" claim
+- Hosted-data handling (request content, retained metadata, upstream-provider terms): documented in `orcarouter-agent-security/SKILL.md` § Hosted-Data Disclosure
 - Routing / routers / fallback chains: [Models](https://docs.orcarouter.ai/getting-started/models), [Model Fallbacks](https://docs.orcarouter.ai/routing/model-fallbacks), [Response Headers](https://docs.orcarouter.ai/routing/response-headers)
 
-The agent-security skill includes a manual trust review of the routing and prompt-governance boundary (what the gateway sees and does not see); see `orcarouter-agent-security/references/security-patterns.md` § Trust boundary.
+The agent-security skill includes a manual trust review of the routing and prompt-governance boundary (what the gateway sees and does not see) plus the hosted-data disclosure; see `orcarouter-agent-security/SKILL.md` § Manual Trust Review and § Hosted-Data Disclosure.

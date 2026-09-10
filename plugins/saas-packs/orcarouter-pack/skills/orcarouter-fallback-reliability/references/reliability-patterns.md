@@ -45,26 +45,70 @@ class CircuitBreaker:
             print(f"circuit opened for {model} for {self.cooldown_seconds}s")
 ```
 
+## Retry classification
+
+The only retryable failures are transport errors, `408`, `429`, and `5xx`. Everything else — `400`, `401`, `402`, `403`, `404`, `422`, and the policy blocks (`guardrail_blocked`, `firewall_blocked`, `firewall_approval_pending`) — is deterministic and must propagate on the first attempt. Keep the classifier as an allow-list so an unrecognized exception type fails closed:
+
+```python
+from openai import APIConnectionError, APITimeoutError, APIStatusError
+
+RETRYABLE_STATUS = {408, 429}
+POLICY_CODES = {"guardrail_blocked", "firewall_blocked", "firewall_approval_pending"}
+
+def error_code(e):
+    body = getattr(e, "body", None)
+    err = body.get("error") if isinstance(body, dict) else None
+    return err.get("code") if isinstance(err, dict) else None
+
+def is_retryable(e):
+    if isinstance(e, (APIConnectionError, APITimeoutError)):
+        return True
+    if isinstance(e, APIStatusError):
+        if error_code(e) in POLICY_CODES:
+            return False
+        return e.status_code in RETRYABLE_STATUS or 500 <= e.status_code < 600
+    return False
+
+def retry_after_seconds(e):
+    resp = getattr(e, "response", None)
+    raw = resp.headers.get("retry-after") if resp is not None else None
+    try:
+        return max(0.0, float(raw))
+    except (TypeError, ValueError):
+        return None  # absent or HTTP-date form -> exponential backoff
+```
+
+`Retry-After` is honored when present and numeric; otherwise back off exponentially with jitter. Never sleep-and-resend a policy verdict.
+
 ## Timeout budget
 
-Cap total chain latency. When the chain is client-side, track a budget across attempts:
+Cap total chain latency. When the chain is client-side, track a budget across attempts and hop only on retryable failures:
 
 ```python
 import time
+from openai import APIConnectionError, APITimeoutError, APIStatusError
 
 def complete_with_budget(client, messages, budget_seconds=20, max_tokens=200):
     start = time.time()
     chain = ["orcarouter/fusion", "anthropic/claude-sonnet-4.6", "openai/gpt-4o-mini"]
+    last_error = None
     for model in chain:
         if time.time() - start > budget_seconds:
-            raise TimeoutError(f"budget {budget_seconds}s exhausted")
+            raise TimeoutError(f"budget {budget_seconds}s exhausted") from last_error
         try:
             return client.chat.completions.create(
                 model=model, messages=messages, max_tokens=max_tokens, timeout=5
             )
-        except Exception as e:
+        except (APIConnectionError, APITimeoutError, APIStatusError) as e:
+            # A hop only absorbs retryable failures. A guardrail/policy denial or a
+            # malformed request is deterministic and must not be masked by hopping.
+            if isinstance(e, APIStatusError) and not (
+                e.status_code in (408, 429) or 500 <= e.status_code < 600
+            ):
+                raise
+            last_error = e
             print(f"  hop {model} failed: {e}")
-    raise RuntimeError("all hops failed")
+    raise RuntimeError("all hops failed") from last_error
 ```
 
 ## Idempotency for agent tool calls

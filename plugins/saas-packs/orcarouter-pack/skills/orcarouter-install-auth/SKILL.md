@@ -103,17 +103,15 @@ A successful setup round-trip produces:
 
 ```text
 $ curl -s https://api.orcarouter.ai/v1/models -H "Authorization: Bearer $ORCAROUTER_API_KEY" | jq '{count: (.data | length)}'
-{
-  "count": 204
-}
+{ "count": <live model count for your account> }
 ```
+
+No fixed catalog size is quoted anywhere in this pack: the gateway's catalog grows as providers and models are added, and the list is scoped to what your account can access — read the live value from `/v1/models` at run time (the command above prints it). The Python and TypeScript blocks above are the canonical setup checks; the connectivity curl is the minimal one-liner.
 
 ```text
 $ python3 hello.py
 Say OK
 ```
-
-The Python and TypeScript blocks above are the canonical setup checks; the connectivity curl is the minimal one-liner.
 
 ## Error Handling
 

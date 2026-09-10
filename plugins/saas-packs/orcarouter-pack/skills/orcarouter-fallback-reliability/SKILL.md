@@ -7,7 +7,7 @@ description: |
   "orcarouter fallback", "orcarouter failover", "orcarouter retry",
   "resilience", "reliability", "circuit breaker".
   Trigger with "orcarouter-fallback-reliability" keywords like "orcarouter", "gateway", or the skill name.
-allowed-tools: Bash(curl:*), Bash(python3:*), Bash(jq:*)
+allowed-tools: Bash(curl:*), Bash(grep:*), Bash(python3:*), Bash(jq:*)
 version: 1.0.0
 license: MIT
 author: Kus Wardhanie <kuswardhanietidims-svg@users.noreply.github.com>
@@ -24,7 +24,9 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Build resilience into OrcaRouter calls. The gateway supports **server-side fallback chains** via `extra_body.models` + `route: "fallback"` — if the primary model fails (5xx / 429 / network error), the gateway tries the next entry before returning. On top of that you layer client-side retries with backoff for the cases the gateway cannot absorb (auth, a chain that exhausted every entry, budget). This skill covers both layers.
+Build resilience into OrcaRouter calls. The gateway supports **server-side fallback chains** via `extra_body.models` + `route: "fallback"` — if the primary model fails (5xx / 429 / network error), the gateway tries the next entry before returning. On top of that you layer client-side retries with backoff for the cases the gateway cannot absorb (a chain that exhausted every entry, a transient 5xx/429 the gateway surfaced to you).
+
+Retries are **fail-closed**: only network failures, `408`, `429`, and `5xx` are retried. Auth, malformed-request, policy-denial, guardrail, and approval-pending responses never retry — they are deterministic, and looping on them burns quota without changing the outcome. This skill covers both layers.
 
 ## Prerequisites
 
@@ -35,8 +37,8 @@ Build resilience into OrcaRouter calls. The gateway supports **server-side fallb
 ## Instructions
 
 1. Start with a server-side fallback chain (`extra_body.models` + `route: "fallback"`) for upstream failures.
-2. Add client-side retries with exponential backoff for 429 and transient 5xx.
-3. Fail fast on 4xx (except 408/429) and on gateway policy blocks (`guardrail_blocked` / `firewall_blocked` — these are deterministic, skip-retry).
+2. Add client-side retries with exponential backoff for `429` and transient `5xx` — and only for those, plus network failures and `408`.
+3. Fail closed on everything else: `400`, `401`, `402`, `403`, `404`, `422`, and the gateway policy blocks (`guardrail_blocked` / `firewall_blocked` / `firewall_approval_pending`). These are deterministic — re-raise instead of retrying.
 4. Log the served model from the `X-Orca-Fallback-Model` header to verify the chain.
 
 ## Server-Side Fallback Chain
@@ -86,11 +88,21 @@ curl -si https://api.orcarouter.ai/v1/chat/completions \
 
 ## Client-Side Retry with Backoff
 
-On a `429`, read `Retry-After`, wait that long, retry the same request; if a second `429` occurs, double the wait up to 60s. The OpenAI SDKs handle `Retry-After` automatically by default. Custom code is only needed if you disabled SDK retries:
+Only three classes of failure are worth retrying:
+
+| Class | Examples | Retry? |
+| ----- | -------- | ------ |
+| Transport | connection error, timeout, DNS/socket failure | Yes — no HTTP status was produced |
+| Rate limit | `408` (request timeout), `429` (rate limit / credit constraint) | Yes — honor `Retry-After` |
+| Server | `500`, `502`, `503`, `504` | Yes — transient upstream failure |
+
+Everything else fails closed. `401`/`403` (auth), `400`/`422` (malformed request), `402` (insufficient credits), `404` (unknown model/route), and the policy blocks (`guardrail_blocked`, `firewall_blocked`, `firewall_approval_pending`) are deterministic: retrying sends the identical request to the identical verdict. Re-raise them.
+
+The classifier below is explicit about both directions — it retries an allow-list of transient failures and re-raises everything else, including exception types it does not recognize:
 
 ```python
-from openai import OpenAI
-import os, time
+from openai import OpenAI, APIConnectionError, APITimeoutError, APIStatusError
+import os, time, random
 
 client = OpenAI(
     base_url="https://api.orcarouter.ai/v1",
@@ -98,16 +110,45 @@ client = OpenAI(
     max_retries=0,  # we manage retries ourselves below
 )
 
+RETRYABLE_STATUS = {408, 429}                                # + any 5xx
+POLICY_CODES = {"guardrail_blocked", "firewall_blocked",  # deterministic, skip-retry
+                "firewall_approval_pending"}
+
+def _error_code(e):
+    body = getattr(e, "body", None)
+    err = body.get("error") if isinstance(body, dict) else None
+    return err.get("code") if isinstance(err, dict) else None
+
+def _retry_after(e):
+    """Seconds to wait, or None when the header is absent/non-numeric."""
+    resp = getattr(e, "response", None)
+    raw = resp.headers.get("retry-after") if resp is not None else None
+    try:
+        return max(0.0, float(raw))
+    except (TypeError, ValueError):
+        return None  # absent or HTTP-date form -> fall back to exponential backoff
+
+def _is_retryable(e):
+    if isinstance(e, (APIConnectionError, APITimeoutError)):   # transport: no status
+        return True
+    if isinstance(e, APIStatusError):
+        if _error_code(e) in POLICY_CODES:
+            return False                                       # policy block: fail closed
+        return e.status_code in RETRYABLE_STATUS or 500 <= e.status_code < 600
+    return False                                               # unknown type: fail closed
+
 def call_with_retry(**kwargs):
-    max_retries = 3
-    for attempt in range(max_retries):
+    max_attempts = 4
+    for attempt in range(max_attempts):
         try:
             return client.chat.completions.create(**kwargs)
         except Exception as e:
-            if attempt == max_retries - 1:
-                raise
-            wait = min(60, 2 ** attempt)  # 1s, 2s, 4s ...
-            print(f"retry in {wait}s after: {e}")
+            if not _is_retryable(e) or attempt == max_attempts - 1:
+                raise                                        # fail closed: no retry, or out of attempts
+            wait = _retry_after(e)
+            if wait is None:
+                wait = min(60.0, 2 ** attempt + random.uniform(0, 0.5))  # 1s, 2s, 4s + jitter
+            print(f"retry in {wait:.1f}s after: {type(e).__name__}")
             time.sleep(wait)
 
 r = call_with_retry(
@@ -117,16 +158,21 @@ r = call_with_retry(
 )
 ```
 
+A retry that raised `400 guardrail_blocked` or `401` propagates immediately — the caller sees the real error on the first attempt instead of after four identical sends. The broad `except Exception` here is safe only because `_is_retryable` gates it; do not drop that guard, and do not replace the classifier with a bare "retry on any exception".
+
 ## What Not to Retry
 
-- **4xx (except 408/429)** — retrying a malformed request wastes quota
-- **401** — invalid key; fix config and fail fast
-- **`guardrail_blocked` / `firewall_blocked` / `firewall_approval_pending`** — deterministic policy blocks marked skip-retry; fix the input or resolve the approval instead (see `orcarouter-agent-security`)
-- **Free-tier `429` without `Retry-After`** — the request exceeded the free tier's prompt cap; retrying unchanged fails forever
+- **`401` / `403`** — invalid or restricted key; fix the credential/scope and fail fast
+- **`400` / `422`** — malformed request; retrying wastes quota
+- **`402`** — insufficient credits; top up or switch to a cheaper routing tier
+- **`404`** — unknown model or route; check `/v1/models`
+- **`guardrail_blocked` / `firewall_blocked` / `firewall_approval_pending`** — deterministic policy blocks marked skip-retry; change the input or resolve the approval instead (see `orcarouter-agent-security`)
+- **Anything not on the retryable allow-list**, including exception types the classifier does not recognize
+- **A `429` that repeats identically after backoff** — on the free tier this means the prompt exceeded the per-request cap; shrink or restructure the request rather than looping unchanged
 
 ## Output
 
-A resilient call path returns a completion. When the primary route fails, the gateway (server-side chain) or your client retry loop handles it, and the response headers tell you which model served. Transient 429/5xx become handled delays instead of raised exceptions.
+A resilient call path returns a completion. When the primary route fails, the gateway (server-side chain) or your client retry loop handles it, and the response headers tell you which model served. Transient `429`/`5xx` and transport failures become handled delays instead of raised exceptions; everything deterministic propagates to the caller unchanged.
 
 ## Examples
 
@@ -135,9 +181,13 @@ A resilient call path returns a completion. When the primary route fails, the ga
 x-orca-fallback-level: 1
 x-orca-fallback-model: openai/gpt-4o-mini
 
-# Client retry handled a 429:
-retry in 1s after: 429 rate limited
-retry in 2s after: 429 rate limited
+# Client retry honored Retry-After on a 429, then succeeded:
+retry in 2.0s after: RateLimitError
+
+# Fail-closed paths — these raise on the first attempt, no retry:
+HTTP 401                          -> AuthenticationError (no delay, no second attempt)
+HTTP 400 {"error": {"code": "guardrail_blocked"}}  -> raised as-is
+HTTP 402                          -> raised as-is
 ```
 
 More reliability patterns (circuit breaker, idempotency, timeout budgets): `references/reliability-patterns.md`.
@@ -146,14 +196,19 @@ More reliability patterns (circuit breaker, idempotency, timeout budgets): `refe
 
 | HTTP | Cause | Client response |
 |------|-------|-----------------|
-| 429 | Rate limit | Wait `Retry-After`, retry; then exponential backoff |
+| 408 | Request timeout at the gateway | Retry after `Retry-After`, then exponential backoff |
+| 429 | Rate limit or credit constraint | Honor `Retry-After`, retry; then exponential backoff |
 | 5xx | Upstream provider failure | Server-side fallback chain handles most; client retry handles the rest |
+| 400 | Malformed request, or a policy block | Do not retry; branch on `error.code` for policy blocks |
 | 401 | Invalid key | Do not retry — fail fast with a config error |
-| 400 | Bad request or policy block | Do not retry; branch on `error.code` for policy blocks |
+| 402 | Insufficient credits | Do not retry — top up or change routing tier |
+| 403 | Key restricted (scope/IP/model allowlist) | Do not retry — change model or key settings |
+| 404 | Unknown model or route | Do not retry — check `/v1/models` |
+| 422 | Unprocessable request body | Do not retry — fix the request |
 
 ## Enterprise Considerations
 
-- Do not retry 4xx (except 408/429) — retrying a malformed request wastes quota
+- Retry only the allow-list (network, `408`, `429`, `5xx`); a bare `except Exception` that retries everything turns a deterministic denial into wasted quota and a delayed error
 - Set a timeout budget per call; total chain latency = sum of attempts
 - Log `X-Orca-Fallback-Model` on every hop for audit and cost control
 - Combine server-side fallback chains with client retries for the strongest path
@@ -161,4 +216,4 @@ More reliability patterns (circuit breaker, idempotency, timeout budgets): `refe
 ## References
 
 - Circuit breaker and timeout patterns: `references/reliability-patterns.md`
-- [Model Fallbacks](https://docs.orcarouter.ai/routing/model-fallbacks) · [Rate Limits](https://docs.orcarouter.ai/operations/rate-limits) · [Free Models](https://docs.orcarouter.ai/routing/free-models)
+- [Model Fallbacks](https://docs.orcarouter.ai/routing/model-fallbacks) · [Rate Limits](https://docs.orcarouter.ai/operations/rate-limits) · [Error codes](https://docs.orcarouter.ai/security/reference/error-codes) · [Free Models](https://docs.orcarouter.ai/routing/free-models)
