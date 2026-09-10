@@ -1518,15 +1518,8 @@
       ],
       "status": "partial",
       "values": {
-        "non_private": [
-          "plugins/ai-ml/local-tts/package.json",
-          "plugins/business-tools/executive-assistant-skills/package.json",
-          "plugins/business-tools/promptbook/package.json",
-          "plugins/community/boycott-filter/package.json",
-          "plugins/community/claude-reflect/package.json",
-          "plugins/productivity/hyperfocus/package.json"
-        ],
-        "private_packages": 37,
+        "non_private": [],
+        "private_packages": 43,
         "repository_package_mirrors": 43,
         "scoped_packages": 38,
         "target_publishable": 0
@@ -1631,12 +1624,12 @@
       ],
       "status": "measured",
       "values": {
-        "boundaries_live": 1,
+        "boundaries_live": 2,
         "mirror_capable_publishers": [
           ".github/workflows/publish-all-packages.yml",
           ".github/workflows/publish-changed-packages.yml"
         ],
-        "package_private_boundary": false,
+        "package_private_boundary": true,
         "publisher_provenance_boundary": true,
         "target_boundaries": 2
       }
